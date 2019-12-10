@@ -1,0 +1,262 @@
+﻿/*
+ * DAWN OF LIGHT - The first free open source DAoC server emulator
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+using System;
+using System.Collections.Generic;
+
+using DOL.AI.Brain;
+using DOL.Database;
+using DOL.Events;
+using DOL.GS.Effects;
+using DOL.GS.PacketHandler;
+
+namespace DOL.GS.Spells
+{
+    /// <summary>
+    /// Dex/Qui/Str/Con stat specline debuff and transfers them to the caster.
+    /// </summary>
+    [SpellHandler("DexStrConQuiTap")]
+    public class DexStrConQuiTap : SpellHandler
+    {
+        public IList<eProperty> Stats { get; set; }
+
+        public DexStrConQuiTap(GameLiving caster, Spell spell, SpellLine line)
+            : base(caster, spell, line)
+        {
+            Stats = new List<eProperty>
+            {
+                eProperty.Dexterity,
+                eProperty.Strength,
+                eProperty.Constitution,
+                eProperty.Quickness
+            };
+        }
+
+        public override void OnEffectStart(GameSpellEffect effect)
+        {
+            base.OnEffectStart(effect);
+            foreach (eProperty property in Stats)
+            {
+                Caster.BaseBuffBonusCategory[(int)property] += (int)Spell.Value;
+                m_spellTarget.DebuffCategory[(int)property] -= (int)Spell.Value;
+            }
+        }
+
+        public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
+        {
+            foreach (eProperty property in Stats)
+            {
+                m_spellTarget.DebuffCategory[(int)property] += (int)Spell.Value;
+                Caster.BaseBuffBonusCategory[(int)property] -= (int)Spell.Value;
+            }
+
+            return base.OnEffectExpires(effect, noMessages);
+        }
+    }
+
+    /// <summary>
+    /// A proc to lower target's ArmorFactor and ArmorAbsorption.
+    /// </summary>
+    [SpellHandler("ArmorReducingEffectiveness")]
+    public class ArmorReducingEffectiveness : DualStatDebuff
+    {
+        public override eProperty Property1 => eProperty.ArmorFactor;
+
+        public override eProperty Property2 => eProperty.ArmorAbsorption;
+
+        public ArmorReducingEffectiveness(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+    }
+
+    /// <summary>
+    /// Summons a Elemental that only follows the caster.
+    /// </summary>
+    [SpellHandler("SummonHealingElemental")]
+    public class SummonHealingElemental : MasterlevelHandling
+    {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        GameNPC summoned;
+        GameSpellEffect beffect;
+
+        public SummonHealingElemental(GameLiving caster, Spell spell, SpellLine line)
+            : base(caster, spell, line) { }
+
+        /// <summary>
+        /// Apply effect on target or do spell action if non duration spell
+        /// </summary>
+        /// <param name="target">target that gets the effect</param>
+        /// <param name="effectiveness">factor from 0..1 (0%-100%)</param>
+        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        {
+            if (!(Caster is GamePlayer player))
+            {
+                return;
+            }
+
+            INpcTemplate template = NpcTemplateMgr.GetTemplate(Spell.LifeDrainReturn);
+            if (template == null)
+            {
+                if (log.IsWarnEnabled)
+                {
+                    log.Warn($"NPC template {Spell.LifeDrainReturn} not found! Spell: {Spell}");
+                }
+
+                MessageToCaster($"NPC template {Spell.LifeDrainReturn} not found!", eChatType.CT_System);
+                return;
+            }
+
+            beffect = CreateSpellEffect(target, effectiveness);
+            {
+                var summonloc = target.GetPointFromHeading(target.Heading, 64);
+
+                BrittleBrain controlledBrain = new BrittleBrain(player);
+                controlledBrain.IsMainPet = false;
+                summoned = new GameNPC(template);
+                summoned.SetOwnBrain(controlledBrain);
+                summoned.X = summonloc.X;
+                summoned.Y = summonloc.Y;
+                summoned.Z = target.Z;
+                summoned.CurrentRegion = target.CurrentRegion;
+                summoned.Heading = (ushort)((target.Heading + 2048) % 4096);
+                summoned.Realm = target.Realm;
+                summoned.CurrentSpeed = 0;
+                summoned.Level = Caster.Level;
+                summoned.Size = 50;
+                summoned.AddToWorld();
+                controlledBrain.AggressionState = eAggressionState.Passive;
+                beffect.Start(Caster);
+            }
+        }
+
+        /// <summary>
+        /// When an applied effect expires.
+        /// Duration spells only.
+        /// </summary>
+        /// <param name="effect">The expired effect</param>
+        /// <param name="noMessages">true, when no messages should be sent to player and surrounding</param>
+        /// <returns>immunity duration in milliseconds</returns>
+        public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
+        {
+            if (summoned != null)
+            {
+                summoned.Health = 0; // to send proper remove packet
+                summoned.Delete();
+            }
+
+            return base.OnEffectExpires(effect, noMessages);
+        }
+    }
+
+    /// <summary>
+    /// Summons a Elemental that follows the target and attacks the target.
+    /// </summary>
+    [SpellHandler("SummonElemental")]
+    public class SummonElemental : SummonSpellHandler
+    {
+        private ISpellHandler _trap;
+
+        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        {
+            // Set pet infos & Brain
+            base.ApplyEffectOnTarget(target, effectiveness);
+            ProcPetBrain petBrain = (ProcPetBrain)m_pet.Brain;
+            m_pet.Level = Caster.Level;
+            m_pet.Strength = 0;
+            petBrain.AddToAggroList(target, 1);
+            petBrain.Think();
+        }
+
+        protected override GamePet GetGamePet(INpcTemplate template) { return new SummonElementalPet(template); }
+
+        protected override IControlledBrain GetPetBrain(GameLiving owner) { return new ProcPetBrain(owner); }
+
+        protected override void SetBrainToOwner(IControlledBrain brain) { }
+
+        protected override void AddHandlers() { GameEventMgr.AddHandler(m_pet, GameLivingEvent.AttackFinished, EventHandler); }
+
+        protected void EventHandler(DOLEvent e, object sender, EventArgs arguments)
+        {
+            if (!(arguments is AttackFinishedEventArgs args) || args.AttackData == null)
+            {
+                return;
+            }
+
+            if (_trap == null)
+            {
+                _trap = MakeTrap();
+            }
+
+            if (Util.Chance(99))
+            {
+                _trap.CastSpell(args.AttackData.Target);
+            }
+        }
+
+        // Creates the trap(spell)
+        private ISpellHandler MakeTrap()
+        {
+            DBSpell dbs = new DBSpell
+            {
+                Name = "irritatin wisp",
+                Icon = 4107,
+                ClientEffect = 5435,
+                DamageType = 15,
+                Target = "Enemy",
+                Radius = 0,
+                Type = "DirectDamage",
+                Damage = 80,
+                Value = 0,
+                Duration = 0,
+                Frequency = 0,
+                Pulse = 0,
+                PulsePower = 0,
+                Power = 0,
+                CastTime = 0,
+                Range = 1500
+            };
+
+            Spell s = new Spell(dbs, 50);
+            SpellLine sl = SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells);
+            return ScriptMgr.CreateSpellHandler(m_pet, s, sl);
+        }
+
+        public SummonElemental(GameLiving caster, Spell spell, SpellLine line)
+            : base(caster, spell, line) { }
+    }
+}
+
+namespace DOL.GS
+{
+    public class SummonHealingElementalPet : GamePet
+    {
+        public override int MaxHealth => Level * 10;
+
+        public override void OnAttackedByEnemy(AttackData ad) { }
+
+        public SummonHealingElementalPet(INpcTemplate npcTemplate) : base(npcTemplate) { }
+    }
+
+    public class SummonElementalPet : GamePet
+    {
+        public override int MaxHealth => Level * 10;
+
+        public override void OnAttackedByEnemy(AttackData ad) { }
+
+        public SummonElementalPet(INpcTemplate npcTemplate) : base(npcTemplate) { }
+    }
+}
