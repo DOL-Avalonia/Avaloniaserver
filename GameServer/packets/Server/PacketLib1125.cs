@@ -199,8 +199,9 @@ namespace DOL.GS.PacketHandler
                             string locationDescription = string.Empty;
                             Region region = WorldMgr.GetRegion((ushort)c.Region);
                             if (region != null)
-                            {                                
-                                locationDescription = region.GetTranslatedSpotDescription(GameClient, c.Xpos, c.Ypos, c.Zpos);
+                            {
+                                var desc = region.GetTranslatedSpotDescription(GameClient, c.Xpos, c.Ypos, c.Zpos);
+                                locationDescription = string.IsNullOrWhiteSpace(desc) ? "..." : desc;
                             }
 							if (locationDescription.Length > 23) // location name over 23 chars has to be truncated eg. "The Great Pyramid of Stygia"
                             {
