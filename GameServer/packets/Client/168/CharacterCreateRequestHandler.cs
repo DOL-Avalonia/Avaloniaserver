@@ -526,16 +526,18 @@ namespace DOL.GS.PacketHandler.Client.v168
                 return true;
             }
 
+            //Remove Invalid Char Check 
+            //Issue Client 1125 allows to create invalid class
             // check if client tried to create invalid char
-            if (!IsCharacterValid(ch))
-            {
-                if (log.IsWarnEnabled)
-                {
-                    log.Warn($"{ch.AccountName} tried to create invalid character:\nchar name={ch.Name}, gender={ch.Gender}, race={ch.Race}, realm={ch.Realm}, class={ch.Class}, region={ch.Region}\nstr={ch.Strength}, con={ch.Constitution}, dex={ch.Dexterity}, qui={ch.Quickness}, int={ch.Intelligence}, pie={ch.Piety}, emp={ch.Empathy}, chr={ch.Charisma}");
-                }
+            //if (!IsCharacterValid(ch))
+            //{
+            //    if (log.IsWarnEnabled)
+            //    {
+            //        log.Warn($"{ch.AccountName} tried to create invalid character:\nchar name={ch.Name}, gender={ch.Gender}, race={ch.Race}, realm={ch.Realm}, class={ch.Class}, region={ch.Region}\nstr={ch.Strength}, con={ch.Constitution}, dex={ch.Dexterity}, qui={ch.Quickness}, int={ch.Intelligence}, pie={ch.Piety}, emp={ch.Empathy}, chr={ch.Charisma}");
+            //    }
 
-                return true;
-            }
+            //    return true;
+            //}
 
             // Save the character in the database
             GameServer.Database.AddObject(ch);
