@@ -136,6 +136,7 @@ namespace DOL.GS.Quests
         
         private readonly GameNPC _startNpc;
         private IDataQuestStep _customQuestStep;
+        protected int id;
 
         /// <summary>
         /// In order to avoid conflicts with scripted quests data quest ID's are added to this number when sending a quest ID to the client
@@ -252,6 +253,7 @@ namespace DOL.GS.Quests
         {
             _questPlayer = null;
             DbDataQuest = dataQuest;
+            id = dataQuest.ID;
             ParseQuestData();
         }
 
@@ -264,6 +266,7 @@ namespace DOL.GS.Quests
             _questPlayer = null;
             DbDataQuest = dataQuest;
             StartObject = startingObject;
+            id = dataQuest.ID;
             LastErrorText = string.Empty;
             ParseSearchAreas();
             ParseQuestData();
@@ -291,6 +294,7 @@ namespace DOL.GS.Quests
             _questPlayer = questingPlayer;
             DbDataQuest = dataQuest;
             CharDataQuest = charQuest;
+            id = dataQuest.ID;
 
             if (sourceObject != null)
             {
@@ -736,7 +740,7 @@ namespace DOL.GS.Quests
         /// <summary>
         /// The unique ID for this quest
         /// </summary>
-        public virtual int Id => DbDataQuest.ID;
+        public virtual int Id => id;
 
         /// <summary>
         /// Unique quest ID to send to the client

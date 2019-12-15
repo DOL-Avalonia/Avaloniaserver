@@ -26,15 +26,26 @@ namespace DOL.Database
 	/// </summary>
 	[DataTable(TableName = "DataQuestRewardQuest")]
 	public class DBDQRewardQ : DataObject
-	{
+    {
 		private int m_id;
-		private string m_questName;		
-		private string m_startNPC;
+        private string m_name;
+        private byte m_startType;
+        private string m_questName;
+        private string m_startName;
+        private string m_description;
+        private string m_startNPC;
 		private ushort m_startRegionID;
 		private string m_storyText;
 		private string m_summary;
+        private string m_sourceName;
+        private string m_sourceText;
         private string m_acceptText;
-		private string m_questGoals;
+        private string m_stepType;
+        private string m_stepText;
+        private string m_targetName;
+        private string m_targetText;
+        private string m_stepItemTemplates;
+        private string m_questGoals;
 		private string m_goalType;		
 		private string m_goalRepeatNo;
 		private string m_goaltargetName;
@@ -152,11 +163,101 @@ namespace DOL.Database
 			get { return m_goalType; }
 			set { m_goalType = value; Dirty = true; }
 		}
-		
-		/// <summary>
-		/// how many times goal must be repeated to be achieved
-		/// </summary>
-		[DataElement(AllowDbNull = true)]
+
+        /// <summary>
+        /// Description to show to start quest
+        /// </summary>
+        [DataElement(AllowDbNull = true)]
+        public string Description
+        {
+            get { return m_description; }
+            set { m_description = value; Dirty = true; }
+        }
+
+        /// <summary>
+        /// Who to talk to for each step
+        /// Format: SourceName;RegionID|SourceName;RegionID
+        /// </summary>
+        [DataElement(AllowDbNull = true)]
+        public string SourceName
+        {
+            get { return m_sourceName; }
+            set { m_sourceName = value; Dirty = true; }
+        }
+
+
+        /// <summary>
+        /// The text for each source
+        /// Format:  Step 1 Source text|Step 2 Source text
+        /// </summary>
+        [DataElement(AllowDbNull = true)]
+        public string SourceText
+        {
+            get { return m_sourceText; }
+            set { m_sourceText = value; Dirty = true; }
+        }
+
+        /// <summary>
+        /// Type of each step (kill, give, collect, etc)
+        /// Format: Step1Type|Step2Type
+        /// </summary>
+        [DataElement(AllowDbNull = true)]
+        public string StepType
+        {
+            get { return m_stepType; }
+            set { m_stepType = value; Dirty = true; }
+        }
+
+        /// <summary>
+        /// Items given to the player at a step
+        /// Format: id_nb|idnb
+        /// </summary>
+        [DataElement(AllowDbNull = true)]
+        public string StepItemTemplates
+        {
+            get { return m_stepItemTemplates; }
+            set { m_stepItemTemplates = value; Dirty = true; }
+        }
+
+        /// <summary>
+        /// Name of the target for each step
+        /// Format: TargetName;RegionID|TargetName;RegionID
+        /// </summary>
+        [DataElement(AllowDbNull = true)]
+        public string TargetName
+        {
+            get { return m_targetName; }
+            set { m_targetName = value; Dirty = true; }
+        }
+
+        /// <summary>
+        /// Text for each target
+        /// Format:  Step 1 Target text|Step 2 Target text| ...
+        /// </summary>
+        [DataElement(AllowDbNull = true)]
+        public string TargetText
+        {
+            get { return m_targetText; }
+            set { m_targetText = value; Dirty = true; }
+        }
+
+        /// <summary>
+        /// Description text for each step
+        /// Format: Step 1 Text|Step 2 Text
+        /// </summary>
+        [DataElement(AllowDbNull = true)]
+        public string StepText
+        {
+            get { return m_stepText; }
+            set { m_stepText = value; Dirty = true; }
+        }
+
+
+
+        /// <summary>
+        /// how many times goal must be repeated to be achieved
+        /// </summary>
+        [DataElement(AllowDbNull = true)]
 		public string GoalRepeatNo
 		{
 			get { return m_goalRepeatNo; }
@@ -173,10 +274,40 @@ namespace DOL.Database
 			set { m_goaltargetName = value; Dirty = true; }
 		}
 
-		/// <summary>
-		/// Text a target will say to player 		
-		/// </summary>
-		[DataElement(AllowDbNull = true)]
+        /// <summary>
+        /// The name of this quest
+        /// </summary>
+        [DataElement(Varchar = 255, AllowDbNull = false)]
+        public string Name
+        {
+            get { return m_name; }
+            set { m_name = value; Dirty = true; }
+        }
+
+        /// <summary>
+        /// The name of the object that starts this quest
+        /// </summary>
+        [DataElement(Varchar = 100, AllowDbNull = false)]
+        public string StartName
+        {
+            get { return m_startName; }
+            set { m_startName = value; Dirty = true; }
+        }
+
+        /// <summary>
+        /// The start type of this quest (eStartType)
+        /// </summary>
+        [DataElement(AllowDbNull = false)]
+        public byte StartType
+        {
+            get { return m_startType; }
+            set { m_startType = value; Dirty = true; }
+        }
+
+        /// <summary>
+        /// Text a target will say to player 		
+        /// </summary>
+        [DataElement(AllowDbNull = true)]
 		public string GoalTargetText
 		{
 			get { return m_goaltargetText; }
