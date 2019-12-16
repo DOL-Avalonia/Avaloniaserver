@@ -131,7 +131,6 @@ namespace DOL.GS.Quests
             m_step = 1;
             id = dqrewardq.ID;
             m_dqRewardQ = dqrewardq;
-            startType = (eStartType)dqrewardq.StartType;
             ParseQuestData();            
         }
 
@@ -144,7 +143,6 @@ namespace DOL.GS.Quests
 			m_step = 1;
 			m_dqRewardQ = dqrewardq;
             id = dqrewardq.ID;
-            startType = (eStartType)dqrewardq.StartType;
             m_startObject = startingObject;
             m_lastErrorText = "";            
 			ParseQuestData();			
@@ -160,7 +158,6 @@ namespace DOL.GS.Quests
 			m_dqRewardQ = dqrewardq;
 			m_charQuest = charQuest;
             id = dqrewardq.ID;
-            startType = (eStartType)dqrewardq.StartType;
 			ParseQuestData();
 			ParseDQCustomProperties();
 			
@@ -186,7 +183,6 @@ namespace DOL.GS.Quests
 			m_dqRewardQ = dqrewardq;
 			m_charQuest = charQuest;
             id = dqrewardq.ID;
-            startType = (eStartType)dqrewardq.StartType;
             if (sourceObject != null)
 			{
 				if (sourceObject is GameNPC)
@@ -1220,7 +1216,53 @@ namespace DOL.GS.Quests
             }
 		}
 
-		public static void DQRewardQuestNotify(DOLEvent e, object sender, EventArgs args)
+        protected override void OnPlayerGiveItem(GamePlayer player, GameObject obj, InventoryItem item)
+        {
+            if (item?.OwnerID == null || m_collectItems?.Count == 0)
+            {
+                return;
+            }
+
+            if ((string.IsNullOrEmpty(this.m_dqRewardQ.TargetName) || this.m_dqRewardQ.TargetName == obj.Name) && (this.m_dqRewardQ.StartRegionID == obj.CurrentRegionID || TargetRegion == 0)
+               && player.Level >= Level && player.Level <= this.m_dqRewardQ.MaxLevel)
+            {
+                if (m_collectItems.Count >= Step &&
+                    !string.IsNullOrEmpty(m_collectItems[Step - 1]) &&
+                    item.Id_nb.ToLower().Contains(m_collectItems[Step - 1].ToLower()) &&
+                    ExecuteCustomQuestStep(player, Step, eStepCheckType.GiveItem))
+                {
+                    if (m_goalType[Step - 1] == DQRQuestGoal.GoalType.Collect)
+                    {                    
+                        TryTurnTo(obj, player);
+
+                        if (m_goalTargetText?.Count >= Step && !string.IsNullOrEmpty(m_goalTargetText[Step - 1]))
+                        {
+                            if (obj.Realm == eRealm.None)
+                            {
+                                // mobs and other non realm objects send chat text and not popup text.
+                                SendMessage(QuestPlayer, m_goalTargetText[Step - 1], 0, eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+                            }
+                            else
+                            {
+                                SendMessage(QuestPlayer, m_goalTargetText[Step - 1], 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                            }
+                        }
+
+                        if (AdvanceQuestStep(obj))
+                        {
+                            RemoveItem(obj, player, item, true);
+                        }
+                    }
+                }
+                else
+                {
+                    ChatUtil.SendDebugMessage(player, "Received item not in Collect or Step item list.");
+                }
+            }
+        }
+
+
+        public static void DQRewardQuestNotify(DOLEvent e, object sender, EventArgs args)
 		{
 			try
 			{	// Reward Quest accept
@@ -1849,7 +1891,7 @@ namespace DOL.GS.Quests
 			InteractFinish = 5,		// Interact with the target to finish the quest.
 			InteractWhisper = 6,	// Whisper to the target to advance the goal. 
 			InteractDeliver = 7,	// Deliver a dummy item to the target to advance the goal.
-			// unsupported Collect = 10,			// Player must give the target an item to advance the step	
+			Collect = 10,			// Player must give the target an item to advance the step	
 			Unknown = 255
 		}
 		/// <summary>
