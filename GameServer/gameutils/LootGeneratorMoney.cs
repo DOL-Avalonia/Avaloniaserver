@@ -26,13 +26,17 @@ namespace DOL.GS
     /// </summary>
     public class LootGeneratorMoney : LootGeneratorBase
     {
+        //To be called you need to override the method like this: 
+        //public override LootList GenerateLoot(GameNPC mob, GameObject killer)
+        //Bugfix money drop 2 times
+
         /// <summary>
         /// Generate loot for given mob
         /// </summary>
         /// <param name="mob"></param>
         /// <param name="killer"></param>
         /// <returns></returns>
-        public override LootList GenerateLoot(GameNPC mob, GameObject killer)
+        public LootList GenerateLoot(GameNPC mob, GameObject killer)
         {
             LootList loot = base.GenerateLoot(mob, killer);
 

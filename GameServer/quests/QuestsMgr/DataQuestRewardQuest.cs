@@ -145,8 +145,8 @@ namespace DOL.GS.Quests
             id = dqrewardq.ID;
             m_startObject = startingObject;
             m_lastErrorText = "";            
-			ParseQuestData();			
-		}
+			ParseQuestData();
+        }
 
 		/// <summary>
 		/// Dataquest that belongs to a player
@@ -169,7 +169,8 @@ namespace DOL.GS.Quests
 				{
 					collectItem = m_collectItems[i];
 				}
-				newgoals = AddGoal(m_questGoals[i], m_goalType[i], m_goalRepeatNo[i], collectItem, m_goalTargetName[i]);				
+                newgoals = AddGoal(m_questGoals[i], m_goalType[i], m_goalRepeatNo[i], collectItem, m_goalTargetName[i]);
+                CurrentGoal = newgoals;
 			}
 		}		
 		
@@ -204,7 +205,8 @@ namespace DOL.GS.Quests
 				{
 					collectItem = m_collectItems[i];
 				}
-				newgoals = AddGoal(m_questGoals[i], m_goalType[i], m_goalRepeatNo[i], collectItem, m_goalTargetName[i]);				
+				newgoals = AddGoal(m_questGoals[i], m_goalType[i], m_goalRepeatNo[i], collectItem, m_goalTargetName[i]);
+                CurrentGoal = newgoals;
 			}		
 		}
 
@@ -1040,8 +1042,7 @@ namespace DOL.GS.Quests
 
 				if (advance)
 				{
-					
-					CurrentGoal.Advance();
+                    newgoals.Advance();
                     //_questPlayer.Out.SendQuestListUpdate(); //TODO check which is better, this call, or the one in the questgoal.advance
 
 
@@ -1053,6 +1054,15 @@ namespace DOL.GS.Quests
 									return true;
 						}							
 					}
+
+                    if (GoalsCompleted() && CurrentGoal.Type == DQRQuestGoal.GoalType.Collect)
+                    {
+                        if (obj as GameNPC != null)
+                        {
+                            _questPlayer.Out.SendQuestRewardWindow(obj as GameNPC, _questPlayer, this);
+                            return true;
+                        }
+                    }
 
                     // Then say any source text for the new step
                     /* TODO maybe put something here to support text after receiving a quest item or something
@@ -1151,14 +1161,13 @@ namespace DOL.GS.Quests
 					return;
 				}
 
-                //Delegate GiveItem event to Dataquest
                 if (e == GamePlayerEvent.GiveItem)
                 {
                     var giveArgs = args as GiveItemEventArgs;
                     var player = sender as GamePlayer;
                     if (giveArgs != null)
                     {
-                        OnPlayerGiveItem(player, giveArgs.Source, giveArgs.Item);
+                        OnPlayerGiveItem(player, giveArgs.Target, giveArgs.Item);
                     }
                     
                     return;
@@ -1231,7 +1240,7 @@ namespace DOL.GS.Quests
                     item.Id_nb.ToLower().Contains(m_collectItems[Step - 1].ToLower()) &&
                     ExecuteCustomQuestStep(player, Step, eStepCheckType.GiveItem))
                 {
-                    if (m_goalType[Step - 1] == DQRQuestGoal.GoalType.Collect)
+                    if (CurrentGoal.Type == DQRQuestGoal.GoalType.Collect)
                     {                    
                         TryTurnTo(obj, player);
 

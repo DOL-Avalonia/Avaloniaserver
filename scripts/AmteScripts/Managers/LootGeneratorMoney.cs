@@ -26,7 +26,7 @@ namespace DOL.GS
         //To be called you need to override the method like this: 
         //public override LootList GenerateLoot(GameNPC mob, GameObject killer)
         //Bugfix money drop 2 times
-        public LootList GenerateLoot(GameNPC mob, GameObject killer)
+        public override LootList GenerateLoot(GameNPC mob, GameObject killer)
         {
             LootList loot = base.GenerateLoot(mob, killer);
 
