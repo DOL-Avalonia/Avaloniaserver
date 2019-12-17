@@ -87,7 +87,8 @@ namespace DOL.GS.Quests
 		protected List<ItemTemplate> m_finalRewards = new List<ItemTemplate>(); // standard rewards for this quest		
 		protected List<string> m_questDependencies = new List<string>(); // quests that needed completion before this quest is offered
 		protected List<byte> m_allowedClasses = new List<byte>(); // allowed classes for this quest		
-		string m_classType = ""; // the optional classtype/script that can be called to implement custom actions during the quest.
+        protected List<short> m_allowedRaces= new List<short>(); // allowed Races for this quest		
+        string m_classType = ""; // the optional classtype/script that can be called to implement custom actions during the quest.
 		// location info of goal to put red dot on map
 		protected List<int> m_xOffset = new List<int>();
 		protected List<int> m_yOffset = new List<int>();
@@ -290,6 +291,17 @@ namespace DOL.GS.Quests
                     }
                 }
 
+                // the text that npc / mob says after interact or die
+                lastParse = m_dqRewardQ.GoalTargetText;
+                if (!string.IsNullOrEmpty(lastParse))
+                {
+                    parse1 = lastParse.Split('|');
+                    foreach (string str in parse1)
+                    {
+                        m_goalTargetText.Add(str);
+                    }
+                }
+
                 // the text that must be whispered to the target to advance the quest
                 lastParse = m_dqRewardQ.AdvanceText;
 				if (!string.IsNullOrEmpty(lastParse))
@@ -377,8 +389,20 @@ namespace DOL.GS.Quests
 						m_allowedClasses.Add(Convert.ToByte(str));
 					}
 				}
-				// quest classtype, used if tying to implement custom code to execute with this quest
-				lastParse = m_dqRewardQ.ClassType;
+
+                // allowed Races who can be offered this quest
+                lastParse = m_dqRewardQ.AllowedRaces;
+                if (!string.IsNullOrEmpty(lastParse))
+                {
+                    parse1 = lastParse.Split('|');
+                    foreach (string str in parse1)
+                    {
+                        m_allowedRaces.Add(Convert.ToInt16(str));
+                    }
+                }
+
+                // quest classtype, used if tying to implement custom code to execute with this quest
+                lastParse = m_dqRewardQ.ClassType;
 				if (!string.IsNullOrEmpty(lastParse))
 				{
 					m_classType = lastParse;					
@@ -728,13 +752,21 @@ namespace DOL.GS.Quests
 
 			if (m_allowedClasses.Count > 0)
 			{
-				if (!m_allowedClasses.Contains((byte)player.CharacterClass.ID))
+				if (!m_allowedRaces.Contains((byte)player.Race))
 				{
 					return false;
 				}
-			}						
+			}
 
-			lock (player.QuestList)
+            if (m_allowedRaces.Count > 0)
+            {
+                if (!m_allowedRaces.Contains(player.Race))
+                {
+                    return false;
+                }
+            }
+
+            lock (player.QuestList)
 			{
 				foreach (AbstractQuest q in player.QuestList)
 				{
@@ -1032,7 +1064,7 @@ namespace DOL.GS.Quests
 		/// <summary>
 		/// Try to advance the quest step, doing any actions required to start the next step
 		/// </summary>		
-		protected virtual bool AdvanceQuestStep(GameObject obj = null)
+		protected virtual bool AdvanceQuestStep(GameObject obj = null, int? countItem = null)
 		{
 			try
 			{				
@@ -1045,7 +1077,7 @@ namespace DOL.GS.Quests
 
 				if (advance)
 				{
-                    newgoals.Advance();
+                    newgoals.Advance(countItem.HasValue ? countItem.Value : 1);
                     //_questPlayer.Out.SendQuestListUpdate(); //TODO check which is better, this call, or the one in the questgoal.advance
 
 
@@ -1230,12 +1262,12 @@ namespace DOL.GS.Quests
 
         protected override void OnPlayerGiveItem(GamePlayer player, GameObject obj, InventoryItem item)
         {
-            if (item?.OwnerID == null || m_collectItems?.Count == 0 && Step > 0 && m_goalTargetName.Count < newgoals.Current)
+            if (item?.OwnerID == null || m_collectItems?.Count == 0 || Step == 0 || m_goalTargetName.Count < newgoals.GoalIndex)
             {
                 return;
             }
 
-            if (m_goalTargetName[newgoals.Current] == obj.Name && (TargetRegion == obj.CurrentRegionID || TargetRegion == 0)
+            if (m_goalTargetName[newgoals.GoalIndex - 1] == obj.Name && (TargetRegion == obj.CurrentRegionID || TargetRegion == 0)
                && player.Level >= Level && player.Level <= this.m_dqRewardQ.MaxLevel)
             {
                 if (m_collectItems.Count >= Step &&
@@ -1260,7 +1292,7 @@ namespace DOL.GS.Quests
                             }
                         }
 
-                        if (AdvanceQuestStep(obj))
+                        if (AdvanceQuestStep(obj, item.Count))
                         {
                             RemoveItem(obj, player, item, true);
                         }
@@ -2024,11 +2056,12 @@ namespace DOL.GS.Quests
 			get { return (Current == Target); }
 		}
 
-		public void Advance()
+		public void Advance(int countItem)
 		{
-			if (Current < Target)
+			if (Current <= Target)
 			{
-				Current++;
+                //Handle stacked item on collect Step
+                Current = Current + countItem;
 				m_quest.QuestPlayer.Out.SendMessage(Description, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 				m_quest.QuestPlayer.Out.SendQuestUpdate(m_quest);
 				

@@ -70,9 +70,11 @@ namespace DOL.Database
 		private string m_classType;
 		private string m_xOffset;
 		private string m_yOffset;
-		private string m_zoneID;		
-		
-		public DBDQRewardQ()
+		private string m_zoneID;
+        private string m_allowedRaces;
+        private bool m_isRenaissance;
+
+        public DBDQRewardQ()
 		{
 		}
 
@@ -489,10 +491,28 @@ namespace DOL.Database
 			set { m_allowedClasses = value; Dirty = true; }
 		}
 
-		/// <summary>
-		/// Code that can be used for various quest activities		
-		/// </summary>
-		[DataElement(AllowDbNull = true)]
+
+        [DataElement(AllowDbNull = false)]
+        public bool IsRenaissance
+        {
+            get { return m_isRenaissance; }
+            set { m_isRenaissance = value; Dirty = true; }
+        }
+
+        /// <summary>
+        /// Player Races that can do this quest.  Null for all.
+        /// </summary>
+        [DataElement(AllowDbNull = true, Varchar = 200)]
+        public string AllowedRaces
+        {
+            get { return m_allowedRaces; }
+            set { m_allowedRaces = value; Dirty = true; }
+        }
+
+        /// <summary>
+        /// Code that can be used for various quest activities		
+        /// </summary>
+        [DataElement(AllowDbNull = true)]
 		public string ClassType
 		{
 			get { return m_classType; }

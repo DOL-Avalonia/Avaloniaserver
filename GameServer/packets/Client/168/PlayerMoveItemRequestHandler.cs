@@ -105,7 +105,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                         return;
                     }
 
-                    if (obj is GameNPC == false || item.Count == 1)
+                    if (obj is GameNPC)
                     {
                         // see if any event handlers will handle this move
                         client.Player.Notify(GamePlayerEvent.GiveItem, client.Player, new GiveItemEventArgs(client.Player, obj, item));
