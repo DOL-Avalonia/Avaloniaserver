@@ -267,28 +267,31 @@ namespace DOL.GS.Quests
 						m_goalRepeatNo.Add(Convert.ToUInt16(str));
 					}
 				}
+
 				// the name of the target in the goal
-				lastParse = m_dqRewardQ.GoalTargetName;
-				if (!string.IsNullOrEmpty(lastParse))
-				{
-					parse1 = lastParse.Split('|');
-					foreach (string str in parse1)
-					{
-						m_goalTargetName.Add(str);
-					}
-				}
-				// target text if this is a interact goaltype
-				lastParse = m_dqRewardQ.GoalTargetText;
-				if (!string.IsNullOrEmpty(lastParse))
-				{
-					parse1 = lastParse.Split('|');
-					foreach (string str in parse1)
-					{
-						m_goalTargetText.Add(str);
-					}
-				}
-				// the text that must be whispered to the target to advance the quest
-				lastParse = m_dqRewardQ.AdvanceText;
+                lastParse = m_dqRewardQ.GoalTargetName;
+                if (!string.IsNullOrEmpty(lastParse))
+                {
+                    parse1 = lastParse.Split('|');
+                    foreach (string str in parse1)
+                    {
+                        if (str == string.Empty)
+                        {
+                            // if there's not npc for this step then empty is ok
+                            m_goalTargetName.Add(string.Empty);
+                            TargetRegions.Add(0);
+                        }
+                        else
+                        {
+                            string[] parse2 = str.Split(';');
+                            m_goalTargetName.Add(parse2[0]);
+                            TargetRegions.Add(Convert.ToUInt16(parse2[1]));
+                        }
+                    }
+                }
+
+                // the text that must be whispered to the target to advance the quest
+                lastParse = m_dqRewardQ.AdvanceText;
 				if (!string.IsNullOrEmpty(lastParse))
 				{
 					parse1 = lastParse.Split('|');
@@ -1227,12 +1230,12 @@ namespace DOL.GS.Quests
 
         protected override void OnPlayerGiveItem(GamePlayer player, GameObject obj, InventoryItem item)
         {
-            if (item?.OwnerID == null || m_collectItems?.Count == 0)
+            if (item?.OwnerID == null || m_collectItems?.Count == 0 && Step > 0 && m_goalTargetName.Count < newgoals.Current)
             {
                 return;
             }
 
-            if ((string.IsNullOrEmpty(this.m_dqRewardQ.TargetName) || this.m_dqRewardQ.TargetName == obj.Name) && (this.m_dqRewardQ.StartRegionID == obj.CurrentRegionID || TargetRegion == 0)
+            if (m_goalTargetName[newgoals.Current] == obj.Name && (TargetRegion == obj.CurrentRegionID || TargetRegion == 0)
                && player.Level >= Level && player.Level <= this.m_dqRewardQ.MaxLevel)
             {
                 if (m_collectItems.Count >= Step &&
@@ -1958,7 +1961,7 @@ namespace DOL.GS.Quests
 		/// <summary>
 		/// Current status of this goal.
 		/// </summary>
-		protected int Current
+		public int Current
 		{
 			get 
 			{
