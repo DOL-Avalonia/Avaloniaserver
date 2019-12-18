@@ -1268,7 +1268,7 @@ namespace DOL.GS.Quests
             }
 
             if (m_goalTargetName[newgoals.GoalIndex - 1] == obj.Name && (TargetRegion == obj.CurrentRegionID || TargetRegion == 0)
-               && player.Level >= Level && player.Level <= this.m_dqRewardQ.MaxLevel)
+               && player.Level >= Level)
             {
                 if (m_collectItems.Count >= Step &&
                     !string.IsNullOrEmpty(m_collectItems[Step - 1]) &&
@@ -2062,6 +2062,13 @@ namespace DOL.GS.Quests
 			{
                 //Handle stacked item on collect Step
                 Current = Current + countItem;
+
+                //Handle overload
+                if (Current > Target)
+                {
+                    Current = Target;
+                }
+
 				m_quest.QuestPlayer.Out.SendMessage(Description, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 				m_quest.QuestPlayer.Out.SendQuestUpdate(m_quest);
 				
