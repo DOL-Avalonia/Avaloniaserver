@@ -319,7 +319,10 @@ namespace DOL.GS.Quests
 					parse1 = lastParse.Split('|');
 					foreach (string str in parse1)
 					{
-						m_collectItems.Add(str);
+                        if (!string.IsNullOrEmpty(str))
+                        {
+                            m_collectItems.Add(str);
+                        }  
 					}
 				}			
 				// list of optional rewards for this quest
@@ -414,7 +417,10 @@ namespace DOL.GS.Quests
 					parse1 = lastParse.Split('|');
 					foreach (string str in parse1)
 					{
-						m_xOffset.Add(Convert.ToInt32(str));
+                        if (!string.IsNullOrEmpty(str))
+                        {
+                            m_xOffset.Add(Convert.ToInt32(str));
+                        }
 					}
 				}
 				// yloc for questgoal dot on map
@@ -424,7 +430,10 @@ namespace DOL.GS.Quests
 					parse1 = lastParse.Split('|');
 					foreach (string str in parse1)
 					{
-						m_yOffset.Add(Convert.ToInt32(str));
+                        if (!string.IsNullOrEmpty(str))
+                        {
+                            m_yOffset.Add(Convert.ToInt32(str));
+                        }            
 					}
 				}
 				// zoneid for questgoal dot on map
@@ -434,7 +443,10 @@ namespace DOL.GS.Quests
 					parse1 = lastParse.Split('|');
 					foreach (string str in parse1)
 					{
-						m_zoneID.Add(Convert.ToInt32(str));
+                        if (!string.IsNullOrEmpty(str))
+                        {
+                            m_zoneID.Add(Convert.ToInt32(str));
+                        }              
 					}
 				}				
             }			
@@ -1081,23 +1093,23 @@ namespace DOL.GS.Quests
                     //_questPlayer.Out.SendQuestListUpdate(); //TODO check which is better, this call, or the one in the questgoal.advance
 
 
-                    if (GoalsCompleted() && CurrentGoal.Type == DQRQuestGoal.GoalType.InteractFinish)
-					{                        					         	
-                        if (obj as GameNPC != null && FinishName == obj.Name)									
-				     	{                            
-                            _questPlayer.Out.SendQuestRewardWindow(obj as GameNPC, _questPlayer, this);
-									return true;
-						}							
-					}
-
-                    if (GoalsCompleted() && CurrentGoal.Type == DQRQuestGoal.GoalType.Collect)
-                    {
-                        if (obj as GameNPC != null)
+                    if (GoalsCompleted())
+					{
+                        if (CurrentGoal.Type == DQRQuestGoal.GoalType.InteractFinish)
                         {
-                            _questPlayer.Out.SendQuestRewardWindow(obj as GameNPC, _questPlayer, this);
-                            return true;
+                            if (obj as GameNPC != null && FinishName == obj.Name)
+                            {
+                                _questPlayer.Out.SendQuestRewardWindow(obj as GameNPC, _questPlayer, this);
+                            }
                         }
-                    }
+                        else if (CurrentGoal.Type == DQRQuestGoal.GoalType.Collect)
+                        {
+                            if (obj as GameNPC != null)
+                            {
+                                _questPlayer.Out.SendQuestRewardWindow(obj as GameNPC, _questPlayer, this);
+                            }
+                        }                      			
+					}                  
 
                     // Then say any source text for the new step
                     /* TODO maybe put something here to support text after receiving a quest item or something

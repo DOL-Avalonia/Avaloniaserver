@@ -289,7 +289,7 @@ namespace DOL.Database
         /// <summary>
         /// The name of the object that starts this quest
         /// </summary>
-        [DataElement(Varchar = 100, AllowDbNull = false)]
+        [DataElement(Varchar = 100, AllowDbNull = true)]
         public string StartName
         {
             get { return m_startName; }
