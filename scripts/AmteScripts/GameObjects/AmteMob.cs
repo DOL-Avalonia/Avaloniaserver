@@ -15,10 +15,26 @@ public class AmteMob : GameNPC, IAmteNPC
 	public AmteMob()
 	{
 		SetOwnBrain(new AmteMobBrain(Brain));
-		_linkParam = new AmteCustomParam(
-			"link",
-			() => ((AmteMobBrain) Brain).AggroLink.ToString(),
-			v => ((AmteMobBrain) Brain).AggroLink = int.Parse(v),
+        _linkParam = new AmteCustomParam(
+            "link",
+            () => {       
+                
+                if (Brain is StandardMobBrain)
+                {
+                    SetOwnBrain(new AmteMobBrain(Brain));      
+                }
+
+                return ((AmteMobBrain)Brain).AggroLink.ToString();
+            },
+            v => {
+
+                if (Brain is StandardMobBrain)
+                {
+                    SetOwnBrain(new AmteMobBrain(Brain));
+                }
+
+                ((AmteMobBrain)Brain).AggroLink = int.Parse(v);                
+            },
 			"0");
 	}
 
@@ -28,9 +44,25 @@ public class AmteMob : GameNPC, IAmteNPC
 		SetOwnBrain(new AmteMobBrain(Brain));
 		_linkParam = new AmteCustomParam(
 			"link",
-			() => ((AmteMobBrain) Brain).AggroLink.ToString(),
-			v => ((AmteMobBrain) Brain).AggroLink = int.Parse(v),
-			"0");
+           () => {
+
+               if (Brain is StandardMobBrain)
+               {
+                   SetOwnBrain(new AmteMobBrain(Brain));
+               }
+
+               return ((AmteMobBrain)Brain).AggroLink.ToString();
+           },
+            v => {
+
+                if (Brain is StandardMobBrain)
+                {
+                    SetOwnBrain(new AmteMobBrain(Brain));
+                }
+
+                ((AmteMobBrain)Brain).AggroLink = int.Parse(v);
+            },
+            "0");
 	}
 
 	public override bool IsFriend(GameNPC npc)
