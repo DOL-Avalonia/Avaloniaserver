@@ -318,11 +318,8 @@ namespace DOL.GS.Quests
 				{
 					parse1 = lastParse.Split('|');
 					foreach (string str in parse1)
-					{
-                        if (!string.IsNullOrEmpty(str))
-                        {
-                            m_collectItems.Add(str);
-                        }  
+					{                     
+                        m_collectItems.Add(str);                         
 					}
 				}			
 				// list of optional rewards for this quest
@@ -522,7 +519,7 @@ namespace DOL.GS.Quests
 					{
 						int index = m_goalStepPosition.IndexOf(nextGoals);
 						collectItem = "";
-						if (m_collectItems.Count > 0 && m_collectItems[index] != null)
+						if (m_collectItems.Count > index && m_collectItems[index] != null)
 						{
 							collectItem = m_collectItems[index];
 						}
@@ -764,7 +761,7 @@ namespace DOL.GS.Quests
 
 			if (m_allowedClasses.Count > 0)
 			{
-				if (!m_allowedRaces.Contains((byte)player.Race))
+				if (!m_allowedClasses.Contains((byte)player.Race))
 				{
 					return false;
 				}
@@ -1304,9 +1301,26 @@ namespace DOL.GS.Quests
                             }
                         }
 
-                        if (AdvanceQuestStep(obj, item.Count))
+                        GameInventoryItem deltaItem = null;
+                        var position = (eInventorySlot)item.SlotPosition;
+                        int overloadCount = item.Count - CurrentGoal.Target + CurrentGoal.Current;
+
+                        if (overloadCount > 0)
                         {
+                            int previousCount = item.Count;                     
+                            item.Count = overloadCount;
+                            deltaItem = GameInventoryItem.Create(item);
+                            item.Count = previousCount;
+                        }
+
+                        if (AdvanceQuestStep(obj, item.Count))
+                        {                          
                             RemoveItem(obj, player, item, true);
+
+                            if (overloadCount > 0 && deltaItem != null)
+                            {
+                                player.Inventory.AddItem(position, deltaItem);
+                            }
                         }
                     }
                 }
@@ -2034,7 +2048,7 @@ namespace DOL.GS.Quests
 		/// <summary>
 		/// Target status of this goal.
 		/// </summary>
-		protected int Target
+		public int Target
 		{
 			get 
 			{
@@ -2048,7 +2062,7 @@ namespace DOL.GS.Quests
 				}
 				return Int16.Parse(propertyValue); 
 			}
-			set 
+			protected set 
 			{
 				if (m_quest.QuestPlayer == null)
 					m_target = value;
