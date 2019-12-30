@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS;
@@ -19,7 +20,7 @@ public class AmteMob : GameNPC, IAmteNPC
             "link",
             () => {       
                 
-                if (Brain is StandardMobBrain)
+                if (!(Brain is AmteMobBrain))
                 {
                     SetOwnBrain(new AmteMobBrain(Brain));      
                 }
@@ -28,7 +29,7 @@ public class AmteMob : GameNPC, IAmteNPC
             },
             v => {
 
-                if (Brain is StandardMobBrain)
+                if (!(Brain is AmteMobBrain))
                 {
                     SetOwnBrain(new AmteMobBrain(Brain));
                 }
@@ -148,7 +149,12 @@ public class AmteMob : GameNPC, IAmteNPC
 		_nameXcp.Values.ForEach(o => GameServer.Database.DeleteObject(o));
 	}
 
-	public virtual AmteCustomParam GetCustomParam()
+    public override ABrain SetOwnBrain(ABrain brain)
+    {
+        return base.SetOwnBrain(new AmteMobBrain(brain));
+    }
+
+    public virtual AmteCustomParam GetCustomParam()
 	{
 		return _linkParam;
 	}
