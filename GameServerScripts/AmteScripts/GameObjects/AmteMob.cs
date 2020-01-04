@@ -79,6 +79,11 @@ public class AmteMob : GameNPC, IAmteNPC
 	{
 		base.LoadFromDatabase(obj);
 
+        if (Brain != null)
+        {
+            SetOwnBrain(Brain);
+        }    
+
 		var data = GameServer.Database.SelectObjects<DBBrainsParam>("`MobID` = '" + obj.ObjectId + "'");
 		for (var cp = GetCustomParam(); cp != null; cp = cp.next)
 		{
@@ -151,7 +156,17 @@ public class AmteMob : GameNPC, IAmteNPC
 
     public override ABrain SetOwnBrain(ABrain brain)
     {
-        return base.SetOwnBrain(new AmteMobBrain(brain));
+        if (this is IGuardNPC)
+        {
+            return base.SetOwnBrain(brain);
+        }
+      
+        if (!(brain is AmteMobBrain))
+        {
+            return base.SetOwnBrain(new AmteMobBrain(brain));
+        }
+
+        return base.SetOwnBrain(brain);
     }
 
     public virtual AmteCustomParam GetCustomParam()

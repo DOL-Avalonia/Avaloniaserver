@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS;
@@ -19,7 +20,7 @@ public class AmteMob : GameNPC, IAmteNPC
             "link",
             () => {       
                 
-                if (Brain is StandardMobBrain)
+                if (!(Brain is AmteMobBrain))
                 {
                     SetOwnBrain(new AmteMobBrain(Brain));      
                 }
@@ -28,7 +29,7 @@ public class AmteMob : GameNPC, IAmteNPC
             },
             v => {
 
-                if (Brain is StandardMobBrain)
+                if (!(Brain is AmteMobBrain))
                 {
                     SetOwnBrain(new AmteMobBrain(Brain));
                 }
@@ -77,6 +78,11 @@ public class AmteMob : GameNPC, IAmteNPC
 	public override void LoadFromDatabase(DataObject obj)
 	{
 		base.LoadFromDatabase(obj);
+
+        if (Brain != null)
+        {
+            SetOwnBrain(Brain);
+        }    
 
 		var data = GameServer.Database.SelectObjects<DBBrainsParam>("`MobID` = '" + obj.ObjectId + "'");
 		for (var cp = GetCustomParam(); cp != null; cp = cp.next)
@@ -148,7 +154,22 @@ public class AmteMob : GameNPC, IAmteNPC
 		_nameXcp.Values.ForEach(o => GameServer.Database.DeleteObject(o));
 	}
 
-	public virtual AmteCustomParam GetCustomParam()
+    public override ABrain SetOwnBrain(ABrain brain)
+    {
+        if (this is IGuardNPC)
+        {
+            return base.SetOwnBrain(brain);
+        }
+      
+        if (!(brain is AmteMobBrain))
+        {
+            return base.SetOwnBrain(new AmteMobBrain(brain));
+        }
+
+        return base.SetOwnBrain(brain);
+    }
+
+    public virtual AmteCustomParam GetCustomParam()
 	{
 		return _linkParam;
 	}

@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using DOL.AI;
 using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
 
@@ -17,7 +18,12 @@ namespace DOL.GS.Scripts
             SetOwnBrain(new GuardNPCBrain());
         }
 
-		public override bool Interact(GamePlayer player)
+        public override ABrain SetOwnBrain(ABrain brain)
+        {
+            return  base.SetOwnBrain(brain);
+        }
+
+        public override bool Interact(GamePlayer player)
 		{
 			if (!base.Interact(player) || BlacklistMgr.IsBlacklisted((AmtePlayer)player))
 				return false;
