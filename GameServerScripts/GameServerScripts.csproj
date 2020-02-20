@@ -110,6 +110,7 @@
     <Compile Include="Amtescripts\Blacklist\BlacklistPlayer.cs" />
     <Compile Include="Amtescripts\GameObjects\Coffre\DBCoffre.cs" />
     <Compile Include="Amtescripts\GameObjects\Coffre\GameCoffre.cs" />
+    <Compile Include="Amtescripts\GameObjects\MobHirule.cs" />
     <Compile Include="Amtescripts\SpecialItems\BeerItem.cs" />
     <Compile Include="Amtescripts\SpecialItems\BindStone.cs" />
     <Compile Include="Amtescripts\SpecialItems\FeuArtificeItem.cs" />

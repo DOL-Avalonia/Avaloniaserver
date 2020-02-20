@@ -127,7 +127,7 @@ namespace DOL.GS
         {
             get { return m_targetInView; }
             set { m_targetInView = value; }
-        }
+        } 
 
         /// <summary>
         /// Holds the ground target visibility flag
@@ -14555,6 +14555,8 @@ break;
             Z = DBCharacter.Zpos;
             m_Heading = (ushort)DBCharacter.Direction;
 
+            IsRenaissance = DBCharacter.IsRenaissance;
+
             // important, use CurrentRegion property
             // instead because it sets the Region too
             CurrentRegionID = (ushort)DBCharacter.Region;
@@ -14710,6 +14712,7 @@ break;
                 SaveCraftingSkills();
                 DBCharacter.PlayedTime = PlayedTime;  // We have to set the PlayedTime on the character before setting the LastPlayed
                 DBCharacter.LastPlayed = DateTime.Now;
+                DBCharacter.IsRenaissance = IsRenaissance;
 
                 DBCharacter.ActiveWeaponSlot = (byte)((byte)ActiveWeaponSlot | (byte)ActiveQuiverSlot);
                 if (m_stuckFlag)
@@ -16577,6 +16580,12 @@ break;
                 bool shadeModel = Model == ShadeModel;
                 return m_ShadeEffect != null ? true : shadeModel;
             }
+        }
+
+        public bool IsRenaissance
+        {
+            get;
+            set;
         }
 
         /// <summary>
