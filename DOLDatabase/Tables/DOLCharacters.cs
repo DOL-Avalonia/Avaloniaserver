@@ -267,6 +267,7 @@ namespace DOL.Database
             }
         }
 
+        [DataElement(AllowDbNull = true)]
         public bool IsRenaissance
         {
             get

@@ -235,6 +235,8 @@ namespace DOL.GS
 			// Let them know that they're about to die.
 			HiruleBroadcast(Name + " incante un sort sur " + target.Name);
 			TargetObject = m_hiruleTarget;
+			//AOE Nuke
+			CastSpell(MobHirule.Glare, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 		}
 
 		void ActionHiruleThrow(GameLiving target)
@@ -412,15 +414,15 @@ namespace DOL.AI.Brain
 			else if (hirule.HealthPercent < 50 && hirule.HealthPercent > 25 && hirule.stage == 1)
 			{
 
-				hirule.Model = 2351; ///lapin géant
+				hirule.Model = 919; ///Combattant Ogre
 				hirule.Size = 200;
 				//ajouter un cast pour faire joli
 
-                          	  foreach (GamePlayer pl in hirule.GetPlayersInRadius(5000))
-                          	  {
-                         	       pl.Out.SendSpellEffectAnimation(hirule, hirule, 14367, 0, false, 5);
+                foreach (GamePlayer pl in hirule.GetPlayersInRadius(5000))
+                {
+                    pl.Out.SendSpellEffectAnimation(hirule, hirule, 14367, 0, false, 5);
 
-                         	   }
+                }
 
 				hirule.HiruleTarget = CalculateNextAttackTarget();
 				if (hirule.HiruleTarget != null)
@@ -442,11 +444,11 @@ namespace DOL.AI.Brain
 				hirule.Size = 100;
 				//ajouter un cast pour faire joli
 
-                          	  foreach (GamePlayer pl in hirule.GetPlayersInRadius(5000))
-                          	  {
-                         	       pl.Out.SendSpellEffectAnimation(hirule, hirule, 14367, 0, false, 5);
+                foreach (GamePlayer pl in hirule.GetPlayersInRadius(5000))
+                {
+                    pl.Out.SendSpellEffectAnimation(hirule, hirule, 14367, 0, false, 5);
 
-                         	   }
+                }
 
 
 				hirule.HiruleTarget = CalculateNextAttackTarget();
@@ -464,13 +466,11 @@ namespace DOL.AI.Brain
 				hirule.Size = 50;
 				//ajouter un cast pour faire joli
 
-                          	  foreach (GamePlayer pl in hirule.GetPlayersInRadius(5000))
-                          	  {
-                         	       pl.Out.SendSpellEffectAnimation(hirule, hirule, 14367, 0, false, 5);
+                foreach (GamePlayer pl in hirule.GetPlayersInRadius(5000))
+                {
+                    pl.Out.SendSpellEffectAnimation(hirule, hirule, 14367, 0, false, 5);
 
-                         	   }
-
-
+                }
 
 				hirule.HiruleTarget = CalculateNextAttackTarget();
 				if (hirule.HiruleTarget != null)
