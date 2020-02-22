@@ -41,6 +41,7 @@ namespace AmteScripts.Managers
         private static readonly TimeSpan _endTime = new TimeSpan(2, 0, 0).Add(TimeSpan.FromDays(1)); //2h du mat
         private const int _checkInterval = 30 * 1000; // 30 seconds
         private static readonly GameLocation _stuckSpawn = new GameLocation("", 51, 434303, 493165, 3088, 1069);
+        private Dictionary<ushort, IList<string>> RvrStats = new Dictionary<ushort, IList<string>>();
 
         #region Static part
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -250,6 +251,7 @@ namespace AmteScripts.Managers
             });
 
             _regions = _maps.Values.GroupBy(v => v.Item2.RegionID).Select(v => v.Key);
+            _regions.ForEach(r => this.RvrStats.Add(r, new string[] { }));
        
             return (from m in _maps select m.Value.Item2.RegionID);
         }
@@ -479,12 +481,17 @@ namespace AmteScripts.Managers
         private IList<string> _statCache = new List<string>();
         private DateTime _statLastCacheUpdate = DateTime.Now;
 
-        public IList<string> GetStatistics(ushort region)
+        public IList<string> GetStatistics(GamePlayer player)
         {
-            if (DateTime.Now.Subtract(_statLastCacheUpdate) >= new TimeSpan(0, 0, 30))
+            if (!IsInRvr(player))
             {
+                return new string[] { "Vous n'etes pas dans un RvR actuellement." };
+            }
+
+            if (DateTime.Now.Subtract(_statLastCacheUpdate) >= new TimeSpan(0, 0, 30))
+            {             
                 _statLastCacheUpdate = DateTime.Now;
-                var clients = WorldMgr.GetClientsOfRegion(region);
+                var clients = WorldMgr.GetClientsOfRegion(player.CurrentRegionID);
                 var albCount = clients.Where(c => c.Player.Realm == eRealm.Albion).Count();
                 var midCount = clients.Where(c => c.Player.Realm == eRealm.Midgard).Count();
                 var hibCount = clients.Where(c => c.Player.Realm == eRealm.Hibernia).Count();
@@ -493,7 +500,8 @@ namespace AmteScripts.Managers
                 long prHib = clients.Where(c => c.Player.Realm == eRealm.Hibernia).Sum(c => c.Player.Guild.RealmPoints);
                 long prMid = clients.Where(c => c.Player.Realm == eRealm.Midgard).Sum(c => c.Player.Guild.RealmPoints);
 
-               _statCache = new List<string>
+
+                this.RvrStats[player.CurrentRegionID] = new List<string>
                     {
                         "Statistiques du RvR:",
                         " - Albion: ",
@@ -503,7 +511,7 @@ namespace AmteScripts.Managers
                          (_isOpen ? midCount : 0) + " joueurs",
                           (_isOpen ? prMid : 0) + " PR",
                         " - Hibernia: ",
-                         (IsOpen ? hibCount : 0) + " joueurs",
+                         (_isOpen ? hibCount : 0) + " joueurs",
                           (_isOpen ? prHib : 0) + " PR",
                         "",
                         " - Total: ",
@@ -514,7 +522,7 @@ namespace AmteScripts.Managers
                         "(Mise à jour toutes les 30 secondes)"
                     };
             }
-            return _statCache;
+            return this.RvrStats[player.CurrentRegionID];
         }
 
         public bool IsInRvr(GameLiving obj)

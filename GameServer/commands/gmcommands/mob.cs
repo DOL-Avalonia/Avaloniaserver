@@ -157,8 +157,9 @@ namespace DOL.GS.Commands
                     && args[1] != "modeldec"
                     && args[1] != "copy"
                     && args[1] != "select"
-                    && args[1] != "reload"
+                    && args[1] != "load"
                     && args[1] != "findname"
+                    && args[1] != "respawn"
                     && targetMob == null)
                 {
                     // it is not a mob

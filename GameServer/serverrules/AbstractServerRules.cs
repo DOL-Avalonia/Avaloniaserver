@@ -423,11 +423,13 @@ namespace DOL.GS.ServerRules
                 }
             }
 
+#if RELEASE
             // GMs can't be attacked
             if (playerDefender != null && playerDefender.Client.Account.PrivLevel > 1)
             {
                 return false;
             }
+#endif
 
             // Safe area support for defender
             foreach (AbstractArea area in defender.CurrentAreas)
