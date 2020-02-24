@@ -10,7 +10,8 @@ namespace DOL.GS.Commands
         "'/rvr open' Force l'ouverture des rvr (ne se ferme jamais)",
         "'/rvr close' Force la fermeture des rvr",
         "'/rvr unforce' Permet après un '/rvr open' de fermer les rvr s'il ne sont pas dans les bonnes horaires",
-        "'/rvr refresh' Permet de rafraichir les maps disponibles aux rvr (voir le wiki)")]
+        "'/rvr refresh' Permet de rafraichir les maps disponibles aux rvr (voir le wiki)",
+        "'/rvr status' Permet de vérifier le status des rvr (open/close)")]
     public class RvRCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
@@ -53,6 +54,9 @@ namespace DOL.GS.Commands
                     string regions = "";
                     RvrManager.Instance.FindRvRMaps().GroupBy(id => id).Foreach(id => regions += " " + id.Key);
                     DisplayMessage(client, "Les rvr utilisent les maps:" + regions + ".");
+                    break;
+                case "status":
+                    DisplayMessage(client, "Les rvr sont actuellement: " + (RvrManager.Instance.IsOpen ? "open" : "close") + ", les regions open sont: " + string.Join("-", RvrManager.Instance.Regions) + ".");
                     break;
             }
         }

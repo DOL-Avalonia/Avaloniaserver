@@ -111,6 +111,7 @@
     <Compile Include="Amtescripts\GameObjects\Coffre\DBCoffre.cs" />
     <Compile Include="Amtescripts\GameObjects\Coffre\GameCoffre.cs" />
     <Compile Include="Amtescripts\GameObjects\GameMobKamikaze.cs" />
+    <Compile Include="Amtescripts\GameObjects\MasterTrainer.cs" />
     <Compile Include="Amtescripts\GameObjects\MobHirule.cs" />
     <Compile Include="Amtescripts\SpecialItems\BeerItem.cs" />
     <Compile Include="Amtescripts\SpecialItems\BindStone.cs" />

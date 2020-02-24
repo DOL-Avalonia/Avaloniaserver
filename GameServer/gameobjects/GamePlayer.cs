@@ -4170,6 +4170,36 @@ namespace DOL.GS
         }
 
         /// <summary>
+        /// updates the levels of all spell lines
+        /// specialized spell lines depend from spec levels
+        /// base lines depend from player level
+        /// </summary>
+        /// <param name="sendMessages">sends "You gain power" messages if true</param>
+        public virtual void UpdateSpellLineLevels(bool sendMessages)
+        {
+            lock (lockSpellLinesList)
+            {
+                foreach (SpellLine line in m_spellLines)
+                {
+                    if (line.IsBaseLine)
+                    {
+                        line.Level = Level;
+                    }
+                    else
+                    {
+                        int newSpec = GetBaseSpecLevel(line.Spec);
+                        if (newSpec > 0)
+                        {
+                            if (sendMessages && line.Level < newSpec)
+                                Out.SendMessage(LanguageMgr.GetTranslation(Client, "GamePlayer.UpdateSpellLine.GainPower", line.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            line.Level = newSpec;
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Adds a spell line to the player
         /// </summary>
         /// <param name="line"></param>
@@ -4651,6 +4681,33 @@ namespace DOL.GS
             get { return GameServer.ServerRules.GetPlayerRealmPointsTotal(this)
                     - GetRealmAbilities().Where(ab => !(ab is RR5RealmAbility))
                     .Sum(ab => Enumerable.Range(0, ab.Level).Sum(i => ab.CostForUpgrade(i))); }
+        }
+
+        /// <summary>
+        /// Retrieves a specific specialization by key name
+        /// </summary>
+        /// <param name="keyName">the key name</param>
+        /// <returns>the found specialization or null</returns>
+        public virtual Specialization GetSpecialization(string keyName)
+        {
+            Specialization spec = null;
+            
+            m_specialization.TryGetValue(keyName, out spec);
+
+            if (spec == null)
+            {
+                // try case insensitive search
+                foreach (Specialization sp in m_specialization.Values)
+                {
+                    if (sp.KeyName.ToLower() == keyName.ToLower())
+                    {
+                        spec = sp;
+                        break;
+                    }
+                }
+            }
+
+            return spec;
         }
 
         /// <summary>

@@ -250,7 +250,7 @@ namespace AmteScripts.Managers
                      new GameLocation(divine.Name, divine.CurrentRegionID, divine.X, divine.Y, divine.Z, divine.Heading)));
             });
 
-            _regions = _maps.Values.GroupBy(v => v.Item2.RegionID).Select(v => v.Key);
+            _regions = _maps.Values.GroupBy(v => v.Item2.RegionID).Select(v => v.Key).OrderBy(v => v);
             _regions.ForEach(r => this.RvrStats.Add(r, new string[] { }));
        
             return (from m in _maps select m.Value.Item2.RegionID);

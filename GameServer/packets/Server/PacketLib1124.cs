@@ -2051,8 +2051,9 @@ namespace DOL.GS.PacketHandler
 					flags3 |= 0x01;
 				if (questIndicator == eQuestIndicator.Lore)
 					flags3 |= 0x02;
-				if (questIndicator == eQuestIndicator.Pending) // new? patch 0031
-					flags3 |= 0x20;
+				if (questIndicator == eQuestIndicator.Pending || questIndicator == eQuestIndicator.New) // new? patch 0031
+					flags3 |= 0x20;	
+
 				pak.WriteByte(flags3); // new in 1.71 (region instance ID from StoC_0x20) OR flags 3?
 				pak.WriteShort(0x00); // new in 1.71 unknown
 	
