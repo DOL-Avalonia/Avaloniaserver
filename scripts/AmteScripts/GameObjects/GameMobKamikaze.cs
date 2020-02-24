@@ -51,8 +51,9 @@ namespace DOL.GS
 
 				ad.Damage = (int)(target.MaxHealth * Factor);
 				ad.CriticalDamage = 0;
-				ad.DamageType = Spell.DamageType;
+				ad.DamageType = DetermineSpellDamageType();
 				ad.Modifier = 0;
+				m_lastAttackData = ad;
 
 				return ad;
 			}
@@ -60,6 +61,7 @@ namespace DOL.GS
 			public override void OnAfterSpellCastSequence()
 			{
 				Caster.Die(null);
+				base.OnAfterSpellCastSequence();
 			}
 		}
 	}
@@ -133,12 +135,18 @@ namespace DOL.GS
 					}
 				}
 			}
-		}
+		}	
 
 		public override void DealDamage(AttackData ad)
 		{
-			// Le mob kamikaze ne peut pas faire de dommage de manière 'normale'
+			//Le mob kamikaze ne peut pas faire de dommage de manière 'normale'
 			// Ca signifirait simplement qu'il est buggé..
+
+			//On ne permet que les dégats de spell
+			if (ad.AttackType == AttackData.eAttackType.Spell)
+			{
+				base.DealDamage(ad);
+			}
 		}
 	}
 }

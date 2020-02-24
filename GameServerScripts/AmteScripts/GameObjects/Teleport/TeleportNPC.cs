@@ -24,7 +24,7 @@ namespace DOL.GS.Scripts
         private string m_Text = "{5}";
         private string m_Text_Refuse = "Vous n'avez pas le niveau requis pour être téléporté.";
         private DBTeleportNPC db;
-        private bool m_Occupe;
+        protected bool m_Occupe;
 
         public int Range
         {

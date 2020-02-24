@@ -50,6 +50,9 @@ namespace DOL.GS
             m_player = player;
         }
 
+
+        public GamePlayer Player => m_player;
+
         /// <summary>
         /// Loads the inventory from the DataBase
         /// </summary>

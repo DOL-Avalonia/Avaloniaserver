@@ -11447,10 +11447,10 @@ break;
 
             // If the x,y inside this region doesn't point to a zone
             // return false
-            if (rgn.GetZone(x, y) == null)
-            {
-                return false;
-            }
+            //if (rgn.GetZone(x, y) == null)
+            //{
+            //    return false;
+            //}
 
             Diving(waterBreath.Normal);
 

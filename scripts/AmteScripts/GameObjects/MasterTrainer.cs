@@ -28,6 +28,10 @@ namespace DOL.GS.Trainer
 
         }
 
+        public override eQuestIndicator GetQuestIndicator(GamePlayer player)
+        {
+            return eQuestIndicator.Lesson;
+        }
 
         public override bool Interact(GamePlayer player)
         {
@@ -35,46 +39,6 @@ namespace DOL.GS.Trainer
                 return false;
 
                 TurnTo(player, 50);
-
-            if (player.Level < 50)
-            {
-
-
-                #region Advance Level
-
-                int curLevel = player.Level;
-                byte newLevel = 50;
-                bool curSecondStage = player.IsLevelSecondStage;
-                if (newLevel > curLevel && curSecondStage)
-                {
-                    player.GainExperience(GameLiving.eXPSource.Other, player.GetExperienceValueForLevel(++curLevel));
-                }
-                if (newLevel != curLevel || !curSecondStage)
-                    player.Level = newLevel;
-                if (newLevel > 40)
-                {
-                    if (curLevel < 40)
-                        curLevel = 40;
-                    for (int i = curLevel; i < newLevel; i++)
-                    {
-                        if (curSecondStage)
-                            curSecondStage = false;
-  //                      else
-  //                          player.SkillSpecialtyPoints += player.CharacterClass.SpecPointsMultiplier * i / 20;
-                    }
-                }
-
-                #endregion
-
-                player.UpdateSpellLineLevels(true);
-                player.Out.SendUpdatePlayerSkills();
-                player.Out.SendUpdatePlayer();
-                player.Out.SendUpdatePoints();
-                player.UpdatePlayerStatus();
-                player.Health = player.MaxHealth;
-                player.Endurance = player.MaxEndurance;
-                player.Mana = player.MaxMana;
-            }
 
                 player.Out.SendMessage("I can give you free [Realmranks].", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 				
@@ -84,6 +48,8 @@ namespace DOL.GS.Trainer
             player.Out.SendTrainerWindow();
             return true;
         }
+
+
 
         public override bool WhisperReceive(GameLiving source, string str)
         {

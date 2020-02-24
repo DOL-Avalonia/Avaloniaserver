@@ -110,14 +110,17 @@
     <Compile Include="Amtescripts\Blacklist\BlacklistPlayer.cs" />
     <Compile Include="Amtescripts\GameObjects\Coffre\DBCoffre.cs" />
     <Compile Include="Amtescripts\GameObjects\Coffre\GameCoffre.cs" />
+    <Compile Include="Amtescripts\GameObjects\Douanier.cs" />
     <Compile Include="Amtescripts\GameObjects\GameMobKamikaze.cs" />
     <Compile Include="Amtescripts\GameObjects\MasterTrainer.cs" />
     <Compile Include="Amtescripts\GameObjects\MobHirule.cs" />
     <Compile Include="Amtescripts\SpecialItems\BeerItem.cs" />
     <Compile Include="Amtescripts\SpecialItems\BindStone.cs" />
     <Compile Include="Amtescripts\SpecialItems\FeuArtificeItem.cs" />
+    <Compile Include="Amtescripts\SpecialItems\GuarksRing.cs" />
     <Compile Include="Amtescripts\SpecialItems\Minipet_script_Amte.cs" />
     <Compile Include="Amtescripts\SpecialItems\RegenItemEffect.cs" />
+    <Compile Include="Amtescripts\Spells\GuarksTeleport.cs" />
     <Compile Include="Amtescripts\Utils\FunctionnalHelpers.cs" />
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
