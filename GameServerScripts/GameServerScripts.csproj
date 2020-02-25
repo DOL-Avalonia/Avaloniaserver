@@ -111,6 +111,8 @@
     <Compile Include="Amtescripts\GameObjects\Coffre\DBCoffre.cs" />
     <Compile Include="Amtescripts\GameObjects\Coffre\GameCoffre.cs" />
     <Compile Include="Amtescripts\GameObjects\Douanier.cs" />
+    <Compile Include="Amtescripts\GameObjects\GameBossNPC.cs" />
+    <Compile Include="Amtescripts\GameObjects\MobChieftain.cs" />
     <Compile Include="Amtescripts\GameObjects\GameMobKamikaze.cs" />
     <Compile Include="Amtescripts\GameObjects\MasterTrainer.cs" />
     <Compile Include="Amtescripts\GameObjects\MobHirule.cs" />
