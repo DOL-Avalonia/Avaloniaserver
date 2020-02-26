@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <Import Project="..\packages\NUnit.3.12.0\build\NUnit.props" Condition="Exists('..\packages\NUnit.3.12.0\build\NUnit.props')" />
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
     <ProductVersion>9.0.21022</ProductVersion>
@@ -36,6 +37,8 @@
     <IntermediateOutputPath>..\build\UnitTests\$(Configuration)\obj\</IntermediateOutputPath>
     <NoWin32Manifest>False</NoWin32Manifest>
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -73,6 +76,8 @@
     <Compile Include="SetUpTests.cs" />
     <Compile Include="TestPacketLib.cs" />
     <Compile Include="UPnP.cs" />
+    <Compile Include="Vol\GamePlayerMoq.cs" />
+    <Compile Include="Vol\VolTests.cs" />
     <ProjectReference Include="..\DOLBase\DOLBase.csproj">
       <Name>DOLBase</Name>
       <Project>{A4A0FB22-124C-45CA-A653-2887DE0CC3E0}</Project>
@@ -89,19 +94,55 @@
       <Project>{6ddf274a-91a3-4eaf-b0e3-30fd559abd51}</Project>
       <Name>DOLServer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GameServerScripts\GameServerScripts.csproj">
+      <Project>{136FE76A-A70A-4E52-BCE5-03B587BCB31B}</Project>
+      <Name>GameServerScripts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GameServer\GameServer.csproj">
       <Name>GameServer</Name>
       <Project>{ACB92917-3D42-4F40-97F9-EA904A41DE36}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
       <Private>True</Private>
     </ProjectReference>
+    <Reference Include="AutoMoq, Version=1.8.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMoq.2.0.0\lib\net45\AutoMoq.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.4\lib\net45-full\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework">
-      <Name>nunit.framework</Name>
-      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Configuration, Version=4.0.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.RegistrationByConvention, Version=4.0.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.RegistrationByConvention.dll</HintPath>
+    </Reference>
+    <Reference Include="Moq, Version=4.0.10827.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.core, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnitTestAdapter.WithFramework.2.0.0\lib\nunit.core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="nunit.core.interfaces, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnitTestAdapter.WithFramework.2.0.0\lib\nunit.core.interfaces.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnitTestAdapter.WithFramework.2.0.0\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.util, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnitTestAdapter.WithFramework.2.0.0\lib\nunit.util.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NUnit.VisualStudio.TestAdapter, Version=2.0.0.0, Culture=neutral, PublicKeyToken=4cb40d35494691ac, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnitTestAdapter.WithFramework.2.0.0\lib\NUnit.VisualStudio.TestAdapter.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
@@ -156,7 +197,9 @@
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <BaseIntermediateOutputPath>..\build\UnitTests\$(Configuration)\</BaseIntermediateOutputPath>
@@ -173,4 +216,10 @@
       cd "$(SolutionDir)/GameServer/language/"; mkdir -p "$(ProjectDir)/$(OutputPath)/../languages/"; find ./ -name "*.txt" | xargs -i -t cp --parents -f {} "$(ProjectDir)/$(OutputPath)/../languages/"
       cd "$(SolutionDir)/GameServerScripts/"; mkdir -p "$(ProjectDir)/$(OutputPath)/../scripts/"; find ./ -name "*.cs" | xargs -i -t cp --parents -f {} "$(ProjectDir)/$(OutputPath)/../scripts/"; find "./dbupdater" -name "*.xml" | xargs -i -t cp --parents -f {} "$(ProjectDir)/$(OutputPath)/../scripts"</PostBuildEvent>
   </PropertyGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\NUnit.3.12.0\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit.3.12.0\build\NUnit.props'))" />
+  </Target>
 </Project>

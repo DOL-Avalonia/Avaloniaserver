@@ -50,7 +50,7 @@ namespace DOL.GS
     /// <summary>
     /// This class represents a player inside the game
     /// </summary>
-    public class GamePlayer : GameLiving
+    public class GamePlayer : GameLiving, IGamePlayer
     {
         private static readonly log4net.ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -276,6 +276,13 @@ namespace DOL.GS
         {
             get { return m_statsAnon; }
             set { m_statsAnon = value; }
+        }
+
+
+        public string PlayerAfkMessage
+        {
+            get;
+            set;
         }
 
         protected Dictionary<int, eDoorState> m_doorUpdateList = null;

@@ -238,7 +238,6 @@
     <Compile Include="commands\RefreshCommandAttribute.cs" />
     <Compile Include="commands\playercommands\advice.cs" />
     <Compile Include="commands\playercommands\advisor.cs" />
-    <Compile Include="commands\playercommands\afk.cs" />
     <Compile Include="commands\playercommands\assist.cs" />
     <Compile Include="commands\playercommands\autoloot.cs" />
     <Compile Include="commands\playercommands\autosplit.cs" />
@@ -421,6 +420,7 @@
     <Compile Include="gameutils\Specializations\LiveSpellLineSpecialization.cs" />
     <Compile Include="gameutils\Specializations\LiveWeaponSpecialization.cs" />
     <Compile Include="gameutils\Timer\RegionTimerAction.cs" />
+    <Compile Include="IGamePlayer.cs" />
     <Compile Include="keeps\IGameKeep.cs" />
     <Compile Include="keeps\IGameKeepComponent.cs" />
     <Compile Include="keeps\IKeepManager.cs" />

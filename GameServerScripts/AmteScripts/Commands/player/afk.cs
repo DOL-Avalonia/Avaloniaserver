@@ -16,37 +16,37 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using DOL.GS.PacketHandler;
-using DOL.Language;
+
+using DOL.GS.SkillHandler;
 
 namespace DOL.GS.Commands
 {
     [Cmd(
         "&afk",
         ePrivLevel.Player,
-        "Toggle away from keyboard. You may optional set a message to display.", "/afk <text>")]
+         "Activer ou désactiver l'absence. Se désactive au déplacement du personnage.",
+          "/afk <text> (AFk par défaut)")]
     public class AFKCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
         {
-            if (client.Player.TempProperties.getProperty<string>(GamePlayer.AFK_MESSAGE) != null && args.Length == 1)
+            if ((client.Player.PlayerAfkMessage != null) && args.Length == 1)
             {
-                client.Player.TempProperties.removeProperty(GamePlayer.AFK_MESSAGE);
-                client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Afk.Off"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                client.Player.PlayerAfkMessage = null;
+                client.Player.DisableSkill(SkillBase.GetAbility(Abilities.Vol),
+                    VolAbilityHandler.DISABLE_DURATION);
             }
             else
             {
                 if (args.Length > 1)
                 {
-                    string message = string.Join(" ", args, 1, args.Length - 1);
-                    client.Player.TempProperties.setProperty(GamePlayer.AFK_MESSAGE, message);
+                    client.Player.PlayerAfkMessage = string.Join(" ",
+                        args, 1, args.Length - 1);
                 }
                 else
                 {
-                    client.Player.TempProperties.setProperty(GamePlayer.AFK_MESSAGE, string.Empty);
+                    client.Player.PlayerAfkMessage = "AFK";
                 }
-
-                client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Afk.On"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
         }
     }
