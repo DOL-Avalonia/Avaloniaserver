@@ -45,7 +45,7 @@ namespace DOL.Vol
         }
 
         [Test]
-        public void ShouldHigherPlayerCanVol()
+        public void ShoulStealdHigherPlayer()
         {
             stealer.Level = 25;
             target.Level = 30;
@@ -53,31 +53,64 @@ namespace DOL.Vol
             Assert.AreEqual(true, VolCommandHandler.CanVol(stealer, target));
         }
 
-        /*
-        Je pense qu'on pourrait laisser la possibilité de voler de l'argent OU un item,
-        mais probablement mettre 80% de chance que ce soit de l'argent et 20% de chance que ce soit 1 objet.
+        [Test]
+        public void ShouldHigherPlayerCanNotVolLowerLevels()
+        {
+            stealer.Level = 45;
+            target.Level = 34;
+
+            Assert.AreEqual(VolResultStatus.FAILED, VolCommandHandler.Vol(stealer, target).Status);
+        }
+
+        [Test]
+        public void ShouldPlayerWithHigherTargetLevelLostStealth()
+        {
+            stealer.Level = 25;
+            target.Level = 48;
+
+            Assert.AreEqual(VolResultStatus.STEALTHLOST, VolCommandHandler.Vol(stealer, target).Status);
+        }
+
+        [Test]
+        public void ShouldPlayerWithLowerTargetLevelNotLostStealth()
+        {
+            stealer.Level = 48;
+            target.Level = 25;
+
+            Assert.AreEqual(true, VolCommandHandler.Vol(stealer, target).Status != VolResultStatus.STEALTHLOST);
+        }
+
+        [Test]
+        public void ShouldPlayerLostStealth()
+        {
+            stealer.Level = 25;
+            target.Level = 48;
+
+            Assert.AreEqual(VolResultStatus.STEALTHLOST, VolCommandHandler.Vol(stealer, target).Status);
+        }
+
+        /*   
         Je pense qu'en effet il faudrait faire en sorte que la somme volée 
         soit multipliée par un facteur correspondant au level du joueur.
         Aussi, fixer cette somme random entre 5% et 70% de l'argent en poche chez le joueur,
         pour ne pas non plus qu'il perde tout, ce serait trop sinon.
+
         Cela pourrait être en effet atténué selon le level du joueur.
-        Aussi faire en sorte que les joueurs de level < lvl 20 ne puissent pas être volés si possible.
-        Sinon fixer la limite à 10 level de difference pour les niveaux superieur 
-        (par exemple un joueur lv 45 pourra voler un joueur lvl 35 mais pas un joueur lvl 34).
-        Pour la perte du Stealth oui je pense que plus le level du joueur en face est élevé plus le risque d'echec
-        / perte de stealth doit etre élevé.
+     
          */
 
         [Test]
-        public void VolAbility_ShouldSameLevelRangeShouldSuccess()
+        public void VolAbility_ShouldSameLevelRangeShouldNotLostStealth()
         {
             stealer.Level = 30;
             target.Level = 35;
 
             var result = VolCommandHandler.Vol(stealer, target);
 
-            Assert.AreNotEqual(VolResultStatus.FAILED, result.Status);
+            Assert.AreNotEqual(VolResultStatus.STEALTHLOST, result.Status);
         }
+
+     
 
     }
 }

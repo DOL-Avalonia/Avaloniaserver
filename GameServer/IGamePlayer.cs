@@ -13,5 +13,9 @@ namespace DOL
             get;
             set;
         }
+
+        long GetCurrentMoney();
+
+        bool HasAbility(string keyName);
     }
 }

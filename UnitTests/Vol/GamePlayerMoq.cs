@@ -10,5 +10,15 @@ namespace DOL.Vol
         : IGamePlayer
     {
         public byte Level { get; set ; }
+
+        public long GetCurrentMoney()
+        {
+            return 100L;
+        }
+
+        public bool HasAbility(string keyName)
+        {
+            return true;
+        }
     }
 }
