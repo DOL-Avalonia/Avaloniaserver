@@ -11002,6 +11002,11 @@ break;
                                 eChatType.CT_Say, eChatLoc.CL_ChatWindow);
             }
 
+            if (this.PlayerAfkMessage != null)
+            {
+                this.Whisper(source, this.PlayerAfkMessage);
+            }
+
             return true;
         }
 
@@ -12674,6 +12679,12 @@ break;
             if (IsCasting)
             {
                 m_runningSpellHandler.CasterMoves();
+            }
+
+            if (this.PlayerAfkMessage != null)
+            {
+                this.PlayerAfkMessage = null;
+                Out.SendMessage("Vous n'etes désormais plus afk", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
             }
 
             if (IsCastingRealmAbility)

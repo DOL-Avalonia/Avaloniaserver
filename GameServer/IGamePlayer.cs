@@ -17,5 +17,7 @@ namespace DOL
         long GetCurrentMoney();
 
         bool HasAbility(string keyName);
+
+        int GetBaseSpecLevel(string keyname);
     }
 }

@@ -41,7 +41,7 @@ namespace DOL.GS
         /// <summary>
         /// Number of items a single vault can hold.
         /// </summary>
-        private const int VAULT_SIZE = 100;
+        private const int VAULT_SIZE = 300;
 
         protected int m_vaultIndex;
 

@@ -97,20 +97,17 @@ namespace DOL.GS.Commands
 			var result = new VolResult();
 			int deltaLevel = Math.Abs(stealer.Level - target.Level);
 			bool shouldTryToSteal = false;
-			if (deltaLevel > 20)
+			if (deltaLevel > 10)
 			{
 				if (target.Level > stealer.Level)
 				{
-					result.Status = VolResultStatus.STEALTHLOST;
+					result.Status = deltaLevel >= 20 ? VolResultStatus.STEALTHLOST : VolResultStatus.FAILED;
+
 				}
 				else
 				{
 					shouldTryToSteal = true;
-				}				
-				
-			}else if (deltaLevel > 10 && deltaLevel < 20)
-			{
-				result.Status = VolResultStatus.FAILED;
+				}
 			}
 			else
 			{
@@ -119,12 +116,21 @@ namespace DOL.GS.Commands
 
 			if (shouldTryToSteal)
 			{
+				int specLevel = stealer.GetBaseSpecLevel("Stealth");
+				float chance = (specLevel * 100) / stealer.Level;
 				var rand = new Random(DateTime.Now.Millisecond);
+				
+				if (rand.Next(1, 101) > chance)
+				{
+					result.Status = VolResultStatus.FAILED;
+					return result;
+				}
+
 				result.Status = rand.Next(1, 101) <= 80 ? VolResultStatus.SUCCESS_MONEY : VolResultStatus.SUSSCES_ITEM;
 				
 				if (result.Status == VolResultStatus.SUCCESS_MONEY)
 				{
-					var moneyPerc = rand.Next(4, 30);
+					var moneyPerc = rand.Next(10, 41);
 					result.Money = ((target.GetCurrentMoney() * moneyPerc) / 100);
 				}
 			}
@@ -207,7 +213,13 @@ namespace DOL.GS.Commands
 					eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				return;
 			}
-			
+
+			if (Player.TargetObject != null && (Player.TargetObject as GamePlayer)?.PlayerAfkMessage != null)
+			{
+				Player.Out.SendMessage("Vous ne pouvez pas voler un joueur afk !",
+					eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
 
 			long VolChangeTick = Player.TempProperties.getProperty<long>(
 				VolAbilityHandler.DISABLE_PROPERTY, 0L);
@@ -264,8 +276,10 @@ namespace DOL.GS.Commands
 			GamePlayer target = (GamePlayer)Timer.Properties.getProperty<object>(TARGET_STOLE, null);
 
 			VolResult result = Vol(stealer, target);
-			if (result.Status == VolResultStatus.STEALTHLOST && stealer.IsStealthed)
+			if (result.Status == VolResultStatus.STEALTHLOST)
 			{
+				stealer.Out.SendMessage("Vous n'avez pas réussi à voler ce personnage !",
+					eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				stealer.Stealth(false);	
 			}		
 			else if (result.Status == VolResultStatus.FAILED)
@@ -302,7 +316,7 @@ namespace DOL.GS.Commands
 				}
 				else
 				{
-					var items = target.Inventory.AllItems.Where(i => !i.IsDropable && !i.IsTradable);
+					var items = target.Inventory.AllItems.Where(i => !i.IsDropable || !i.IsTradable);
 					int stealableItems = items.Count();
 					if (stealableItems < 1)
 					{

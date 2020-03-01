@@ -11,6 +11,11 @@ namespace DOL.Vol
     {
         public byte Level { get; set ; }
 
+        public int GetBaseSpecLevel(string keyname)
+        {
+            return 10;
+        }
+
         public long GetCurrentMoney()
         {
             return 100L;

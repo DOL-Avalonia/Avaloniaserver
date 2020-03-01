@@ -54,12 +54,12 @@ namespace DOL.Vol
         }
 
         [Test]
-        public void ShouldHigherPlayerCanNotVolLowerLevels()
+        public void ShouldHigherPlayerCanNotLostStealthAgainstLowerLevels()
         {
             stealer.Level = 45;
-            target.Level = 34;
-
-            Assert.AreEqual(VolResultStatus.FAILED, VolCommandHandler.Vol(stealer, target).Status);
+            target.Level = 24;
+            var res = VolCommandHandler.Vol(stealer, target);
+            Assert.AreEqual(true, res.Status != VolResultStatus.STEALTHLOST);
         }
 
         [Test]
@@ -77,7 +77,8 @@ namespace DOL.Vol
             stealer.Level = 48;
             target.Level = 25;
 
-            Assert.AreEqual(true, VolCommandHandler.Vol(stealer, target).Status != VolResultStatus.STEALTHLOST);
+            var res = VolCommandHandler.Vol(stealer, target);
+            Assert.AreEqual(true, res.Status != VolResultStatus.STEALTHLOST);
         }
 
         [Test]
