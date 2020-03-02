@@ -12,12 +12,16 @@ namespace DOL.Database
     {
         private string m_feuxCampXItemId_nb;
         private int m_radius;
-        private int m_power;
+        private int m_enduranceRatePercent;
         private int m_lifetime;
         private bool m_isHealthType;
         private bool m_isManaType;
-        private bool m_isTrapType;
-        private int m_trapDamagePercent;
+        private bool m_isHealthTrapType; 
+        private bool m_isEnduranceType;
+        private bool m_isManaTrapType;
+        private int m_manaTrapDamagePercent;
+        private int m_healthTrapDamagePercent;
+        private int m_healthRatePercent;
 
         public FeuxCampXItem()
         {
@@ -65,17 +69,32 @@ namespace DOL.Database
         }
 
         [DataElement(AllowDbNull = false)]
-        public int Power
+        public int EnduranceRatePercent
         {
             get
             {
-                return m_power;
+                return m_enduranceRatePercent;
             }
 
             set
             {
                 Dirty = true;
-                m_power = value;
+                m_enduranceRatePercent = value;
+            }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public int HealthRatePercent
+        {
+            get
+            {
+                return m_healthRatePercent;
+            }
+
+            set
+            {
+                Dirty = true;
+                m_healthRatePercent = value;
             }
         }
 
@@ -110,6 +129,21 @@ namespace DOL.Database
             }
         }
 
+        [DataElement(AllowDbNull = false)]
+        public bool IsEnduranceType
+        {
+            get
+            {
+                return m_isEnduranceType;
+            }
+
+            set
+            {
+                Dirty = true;
+                m_isEnduranceType = value;
+            }
+        }
+
 
         [DataElement(AllowDbNull = false)]
         public bool IsManaType
@@ -127,32 +161,64 @@ namespace DOL.Database
         }
 
         [DataElement(AllowDbNull = false)]
-        public bool IsTrapType
+        public bool IsHealthTrapType
         {
             get
             {
-                return m_isTrapType;
+                return m_isHealthTrapType;
             }
 
             set
             {
                 Dirty = true;
-                m_isTrapType = value;
+                m_isHealthTrapType = value;
             }
         }
 
-        [DataElement(AllowDbNull = true)]
-        public int TrapDamagePercent
+        [DataElement(AllowDbNull = false)]
+        public bool IsManaTrapType
         {
             get
             {
-                return m_trapDamagePercent;
+                return m_isManaTrapType;
             }
 
             set
             {
                 Dirty = true;
-                m_trapDamagePercent = value;
+                m_isManaTrapType = value;
+            }
+        }
+
+
+        [DataElement(AllowDbNull = true)]
+        public int HealthTrapDamagePercent
+        {
+            get
+            {
+                return m_healthTrapDamagePercent;
+            }
+
+            set
+            {
+                Dirty = true;
+                m_healthTrapDamagePercent = value;
+            }
+        }
+
+
+        [DataElement(AllowDbNull = true)]
+        public int ManaTrapDamagePercent
+        {
+            get
+            {
+                return m_manaTrapDamagePercent;
+            }
+
+            set
+            {
+                Dirty = true;
+                m_manaTrapDamagePercent = value;
             }
         }
     }

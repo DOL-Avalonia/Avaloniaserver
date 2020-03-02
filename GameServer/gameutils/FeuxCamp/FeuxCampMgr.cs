@@ -26,18 +26,34 @@ namespace GameServerScripts.Utils
 
                 if (template != null)
                 {
-                    var firecamp = new FeuDeCamp(firecampItem.Radius,
-                        firecampItem.Lifetime, firecampItem.Power,
-                        firecampItem.IsHealthType,
-                        firecampItem.IsManaType,
-                        firecampItem.IsTrapType,
-                        firecampItem.TrapDamagePercent);
-                   
-                    m_firecamps.Add(firecampItem.FeuxCampXItem_ID, firecamp);
+                    var firecamp = new FeuDeCamp()
+                    {
+                        Template_ID = firecampItem.FeuxCampItemId_nb,
+                        Model = (ushort)template.Model,
+                        Radius = (ushort)firecampItem.Radius,
+                        Lifetime = firecampItem.Lifetime,
+                        EndurancePercentRate = firecampItem.EnduranceRatePercent,
+                        IsHealthType = firecampItem.IsHealthType,
+                        IsManaType = firecampItem.IsManaType,
+                        IsHealthTrapType = firecampItem.IsHealthType,
+                        ManaTrapDamagePercent = firecampItem.ManaTrapDamagePercent,
+                        HealthTrapDamagePercent = firecampItem.HealthTrapDamagePercent,
+                        IsEnduranceType = firecampItem.IsEnduranceType,
+                        HealthPercentRate = firecampItem.HealthRatePercent
+                    };                    
+            
+                    if (m_firecamps.ContainsKey(firecampItem.FeuxCampXItem_ID))
+                    {
+                        m_firecamps[firecampItem.FeuxCampXItem_ID] = firecamp;
+                    }
+                    else
+                    {
+                        m_firecamps.Add(firecampItem.FeuxCampXItem_ID, firecamp);
+                    }           
                 }             
             }
 
-            return m_firecamps.Count > 0;
+            return true;
         }
 
 

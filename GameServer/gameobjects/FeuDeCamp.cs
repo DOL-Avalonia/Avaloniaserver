@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Reflection;
+using System.Linq;
 
 using DOL.Database;
-
 using DOL.Events;
-using DOL.GS.Spells;
-using DOL.GS.PacketHandler;
 using log4net;
-using System.Collections;
-using System.Collections.Generic;
 using System.Timers;
+using GameServerScripts.Utils;
 
 namespace DOL.GS
 {
@@ -26,16 +23,6 @@ namespace DOL.GS
             LoadedFromScript = true;
         }
 
-        public FeuDeCamp(int radius, int lifetime, int power, bool isHealthType, bool isManaType, bool isTrapType, int? trapDamage = null)
-        {
-            Radius = (ushort)radius;
-            Lifetime = (lifetime <= 0 ? 1 : lifetime) * 60 * 1000;
-            Power = power;
-            IsHealthType = isHealthType;
-            IsManaType = isManaType;
-            IsTrapType = isTrapType;
-            TrapDamagePercent = trapDamage;            
-        }
 
         private ushort m_Range;
         // 4 secondes entre chaque tests
@@ -45,47 +32,84 @@ namespace DOL.GS
         private Timer m_ProximityCheckTimer;
         private Timer m_LifeTimer;
 
-        GameStaticItem m_RealFeu;
+        GameStaticItem m_RealFeu;    
+
+        public string Template_ID
+        {
+            get;
+            set;
+        }
 
         public ushort Radius
         {
             get;
+            set;
         }
         
         public double Lifetime
         {
             get;
+            set;
         }
 
-        public int Power
+        public int EndurancePercentRate
         {
             get;
+            set;
         }
+
+        public int HealthPercentRate
+        {
+            get;
+            set;
+        }
+
 
         public bool IsHealthType
         {
             get;
+            set;
         }
 
         public bool IsManaType
         {
             get;
+            set;
         }
 
-        public bool IsTrapType
+        public bool IsHealthTrapType
         {
             get;
+            set;
         }
 
-        public int? TrapDamagePercent
+        public bool IsManaTrapType
         {
             get;
+            set;
+        }
+
+        public bool IsEnduranceType
+        {
+            get;
+            set;
+        }
+
+        public int HealthTrapDamagePercent
+        {
+            get;
+            set;
+        }
+
+        public int ManaTrapDamagePercent
+        {
+            get;
+            set;
         }
 
 
         public override bool AddToWorld()
         {
-            Model = 1;
             Level = 0;
             Flags = (eFlags)GameNPC.eFlags.PEACE |
                 (eFlags)GameNPC.eFlags.CANTTARGET;
@@ -94,7 +118,7 @@ namespace DOL.GS
             m_ProximityCheckTimer.Elapsed +=
                 new ElapsedEventHandler(ProximityCheck);
 
-            m_LifeTimer = new Timer(Lifetime);
+            m_LifeTimer = new Timer(Lifetime * 60 * 1000);
             m_LifeTimer.Elapsed +=
                 new ElapsedEventHandler(DeleteObject);
 
@@ -104,11 +128,10 @@ namespace DOL.GS
             m_RealFeu = new GameStaticItem();
 
             m_RealFeu.Name = Name = "Feu de Camp";
-            m_RealFeu.Model = 2656;
-
             m_RealFeu.X = X;
             m_RealFeu.Y = Y;
             m_RealFeu.Z = Z;
+            m_RealFeu.Model = Model;
             m_RealFeu.CurrentRegion = CurrentRegion;
             m_RealFeu.Heading = Heading;
 
@@ -121,37 +144,60 @@ namespace DOL.GS
 
         void ProximityCheck(object sender, ElapsedEventArgs e)
         {
-            FeuDeCamp camp = (FeuDeCamp)sender;
+           
 
             foreach (GamePlayer Player in WorldMgr.GetPlayersCloseToSpot(this.CurrentRegionID, this.X, this.Y, this.Z, Radius))
             {
                 if (Player.IsSitting)
                 {  
-                    if (camp.IsHealthType)
+                    if (IsHealthType)
                     {
-                        Player.Health += camp.HealthPercent * (Player.MaxHealth / 100);
+                        Player.Health += HealthPercentRate * (Player.MaxHealth / 100);
 
-                        if (Player.Health < Player.MaxHealth)
+                        if (Player.Health > Player.MaxHealth)
                         {
                             Player.Health = Player.MaxHealth;
                         }
+                    }
 
-                    }else if (camp.IsManaType)
+                    if (IsEnduranceType)
                     {
-                        Player.Mana += camp.ManaPercent * (Player.MaxMana / 100);
+                        Player.Endurance += Endurance * (Player.MaxEndurance / 100);
 
-                        if (Player.Mana < Player.MaxMana)
+                        if (Player.Endurance > Player.Endurance)
                         {
-                            Player.Mana = Player.Mana;
+                            Player.Endurance = Player.MaxEndurance;
                         }
                     }
-                    else if (camp.IsTrapType && TrapDamagePercent.HasValue)
+                    
+                    if (IsManaType)
                     {
-                        Player.Health -= camp.TrapDamagePercent.Value * (Player.MaxHealth / 100);
+                        Player.Mana += ManaPercent * (Player.MaxMana / 100);
 
-                        if (Player.Health < 0)
+                        if (Player.Mana > Player.MaxMana)
                         {
+                            Player.Mana = Player.MaxMana;
+                        }
+                    }
+
+                    if (IsHealthTrapType && HealthTrapDamagePercent > 0)
+                    {
+                        Player.Health -= HealthTrapDamagePercent * (Player.MaxHealth / 100);
+
+                        if (Player.Health <= 0)
+                        {
+                            Player.Health = 0;
                             Player.Die(null);
+                        }
+                    }
+
+                    if (IsManaTrapType && ManaTrapDamagePercent > 0)
+                    {
+                        Player.Mana -= ManaTrapDamagePercent * (Player.MaxMana / 100);
+
+                        if (Player.Mana < 0)
+                        {
+                            Player.Mana = 0;
                         }
                     }
                 }            
@@ -179,8 +225,6 @@ namespace DOL.GS
         [ScriptLoadedEvent]
         public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)
         {
-            ItemTemplate Temp;
-            Temp = Feu;
             GameEventMgr.AddHandler(PlayerInventoryEvent.ItemDropped,
                 new DOLEventHandler(EventPlayerDropItem));
             log.Info("FeuDeCamp chargé.");
@@ -228,12 +272,13 @@ namespace DOL.GS
         {
             ItemDroppedEventArgs Args = args as ItemDroppedEventArgs;
             GamePlayer Player = sender as GamePlayer;
-            if (Player != null && Args.SourceItem.Id_nb == "tif_s_feu")
+            var Feu = FeuxCampMgr.Instance.m_firecamps.Values.FirstOrDefault(f => f.Template_ID == Args.SourceItem.Id_nb);
+
+            if (Player != null && Feu != null)
             {
-                FeuDeCamp Feu = new FeuDeCamp();
                 Feu.X = Player.X;
                 Feu.Y = Player.Y;
-                Feu.Z = Player.Z;
+                Feu.Z = Player.Z; 
                 Feu.CurrentRegion = Player.CurrentRegion;
                 Feu.Heading = Player.Heading;
                 Feu.AddToWorld();
