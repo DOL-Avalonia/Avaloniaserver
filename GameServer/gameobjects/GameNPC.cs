@@ -5253,7 +5253,7 @@ namespace DOL.GS
                         loot.X = X;
                         loot.Y = Y;
                         loot.Z = Z;
-                        loot.Heading = Heading;
+                        loot.Heading = Heading;                      
                         loot.CurrentRegion = CurrentRegion;
                         (loot as WorldInventoryItem).Item.IsCrafted = false;
                         (loot as WorldInventoryItem).Item.Creator = Name;

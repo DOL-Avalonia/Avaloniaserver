@@ -44,6 +44,7 @@ using DOL.Network;
 using log4net;
 using log4net.Config;
 using log4net.Core;
+using GameServerScripts.Utils;
 
 namespace DOL.GS
 {
@@ -875,6 +876,13 @@ namespace DOL.GS
                 else
                 {
                     log.InfoFormat("Not Loading Quest Manager : Obeying Server Property <load_quests> - {0}", Properties.LOAD_QUESTS);
+                }
+
+
+                //Load Gravstone manager
+                if (!InitComponent(FeuxCampMgr.Instance.Init(), "FeuDeCamp Manager"))
+                {
+                    return false;
                 }
 
                 //---------------------------------------------------------------

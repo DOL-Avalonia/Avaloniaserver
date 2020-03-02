@@ -124,6 +124,7 @@
     <Compile Include="Tables\ClassXSpecialization.cs" />
     <Compile Include="Tables\CharacterXDQRewardQ.cs" />
     <Compile Include="Tables\DataQuestRewardQuest.cs" />
+    <Compile Include="Tables\FeuxCampXItem.cs" />
     <Compile Include="Tables\Gravestones.cs" />
     <Compile Include="Tables\HousingConsignmentMerchant.cs" />
     <Compile Include="Tables\JumpPoint.cs" />

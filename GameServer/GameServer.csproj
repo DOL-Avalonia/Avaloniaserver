@@ -66,7 +66,7 @@
     <OutputPath>..\Debug\lib\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG;RELEASE</DefineConstants>
+    <DefineConstants>TRACE;RELEASE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net">
@@ -381,6 +381,8 @@
     <Compile Include="gameobjects\CharacterClasses\CharacterClassBase.cs" />
     <Compile Include="gameobjects\CharacterClasses\Midgard\CharacterClassBoneDancer.cs" />
     <Compile Include="gameobjects\CustomNPC\BuffMerchant.cs" />
+    <Compile Include="gameobjects\FeuDeCamp.cs" />
+    <Compile Include="gameutils\FeuxCamp\FeuxCampMgr.cs" />
     <Compile Include="gameobjects\GameInventoryObject.cs" />
     <Compile Include="gameobjects\GameMythirian.cs" />
     <Compile Include="gameobjects\GameNPChelper.cs" />

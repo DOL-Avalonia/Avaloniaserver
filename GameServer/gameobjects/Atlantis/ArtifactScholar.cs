@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using DOL.GS.Quests;
 using DOL.GS.Quests.Atlantis;
 using DOL.Database;
+using DOL.GS.Quests.Atlantis.Artifacts;
 
 namespace DOL.GS
 {
@@ -31,7 +32,9 @@ namespace DOL.GS
     public class ArtifactScholar : Researcher
     {
         public ArtifactScholar()
-            : base() { }
+            : base() 
+        {
+        }
 
         /// <summary>
         /// Invoked when scholar receives an item.
