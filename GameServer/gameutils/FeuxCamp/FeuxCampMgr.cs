@@ -35,6 +35,7 @@ namespace GameServerScripts.Utils
                         EndurancePercentRate = firecampItem.EnduranceRatePercent,
                         IsHealthType = firecampItem.IsHealthType,
                         IsManaType = firecampItem.IsManaType,
+                        IsManaTrapType = firecampItem.IsManaTrapType,
                         IsHealthTrapType = firecampItem.IsHealthType,
                         ManaTrapDamagePercent = firecampItem.ManaTrapDamagePercent,
                         HealthTrapDamagePercent = firecampItem.HealthTrapDamagePercent,

@@ -115,12 +115,10 @@ namespace DOL.GS
                 (eFlags)GameNPC.eFlags.CANTTARGET;
 
             m_ProximityCheckTimer = new Timer(PROXIMITY_CHECK_INTERVAL);
-            m_ProximityCheckTimer.Elapsed +=
-                new ElapsedEventHandler(ProximityCheck);
+            m_ProximityCheckTimer.Elapsed += new ElapsedEventHandler(ProximityCheck);
 
             m_LifeTimer = new Timer(Lifetime * 60 * 1000);
-            m_LifeTimer.Elapsed +=
-                new ElapsedEventHandler(DeleteObject);
+            m_LifeTimer.Elapsed += new ElapsedEventHandler(DeleteObject);
 
             m_ProximityCheckTimer.Start();
             m_LifeTimer.Start();
