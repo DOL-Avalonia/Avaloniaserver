@@ -56,6 +56,8 @@ namespace DOL.Database
 		private int			m_itemChance;
 		private int			m_lockDifficult;
 		private string		m_keyItem;
+		private int			m_trapRate;
+		private string m_npctemplateId;
 
 		[DataElement(AllowDbNull=false)]
 		public string Name
@@ -186,6 +188,38 @@ namespace DOL.Database
 			{
 				Dirty = true;
 				m_itemChance = value;
+			}
+		}
+
+		/// <summary>
+		/// Pourcentage de chance de voir pop un mob
+		/// </summary>
+		[DataElement(AllowDbNull = true)]
+		public int TrapRate
+		{
+			get
+			{
+				return m_trapRate;
+			}
+			set
+			{
+				Dirty = true;
+				m_trapRate = value;
+			}
+		}
+
+		[DataElement(AllowDbNull = true)]
+		public string NpctemplateId
+		{
+			get
+			{
+				return m_npctemplateId;
+			}
+
+			set
+			{
+				Dirty = true;
+				m_npctemplateId = value;
 			}
 		}
 

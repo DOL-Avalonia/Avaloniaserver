@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.Commands;
+using System.Linq;
 
 namespace DOL.GS.Scripts
 {
@@ -22,7 +23,10 @@ namespace DOL.GS.Scripts
          "'/coffre copy' copie le coffre selectionné à votre position",
          "'/coffre randomcopy' copie le coffre selectionné à votre position mais change les valeurs de plus ou moin 10%",
          "'/coffre key <id_nb>' Id_nb de la clef necessaire à l'ouverture du coffre (\"nokey\" pour retirer la clé)",
-         "'/coffre difficult <difficulté>' difficulté pour crocheter le coffre (en %) si 0, le coffre ne peut pas être crocheté")]
+         "'/coffre difficult <difficulté>' difficulté pour crocheter le coffre (en %) si 0, le coffre ne peut pas être crocheté",
+         "'/coffre traprate <value>' Set la valeur du TrapRate, qui est le pourcentage de faire pop un mob",
+         "'/coffre npctemplate <value>' Set le npctemplate associé au pop mob de ce coffre",
+         "'/coffre respawn <name>' Respawn un coffre en donnant son name (reset du timer a 0)")]
     public class CoffreCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
@@ -53,6 +57,7 @@ namespace DOL.GS.Scripts
                         ItemInterval = 60,
                         ItemChance = 100
                     };
+                    coffre.RespawnTimer = new System.Timers.Timer(60 * 60 * 1000);
                     coffre.LoadedFromScript = false;
                     coffre.AddToWorld();
                     coffre.SaveIntoDatabase();
@@ -323,6 +328,84 @@ namespace DOL.GS.Scripts
                         ChatUtil.SendSystemMessage(client, "Le coffre \"" + coffre.Name + "\" a maintenant une difficulté pour être crocheter de " + coffre.LockDifficult + "%.");
                     else
                         ChatUtil.SendSystemMessage(client, "Le coffre \"" + coffre.Name + "\" ne peut plus être crocheté.");
+                    break;
+
+                case "traprate":
+                    if (coffre == null || args.Length < 3)
+                    {
+                        DisplaySyntax(client);
+                        break;
+                    }
+                    try
+                    {
+                        coffre.TrapRate = int.Parse(args[2]);
+                        coffre.SaveIntoDatabase();
+                    }
+                    catch
+                    {
+                        DisplaySyntax(client);
+                        break;
+                    }
+                    ChatUtil.SendSystemMessage(client, "Le coffre \"" + coffre.Name + "\" a maintenant le traprate de " + coffre.TrapRate);
+                    break;
+
+                case "npctemplate":
+                    if (coffre == null || args.Length < 3)
+                    {
+                        DisplaySyntax(client);
+                        break;
+                    }
+                    try
+                    {
+                        coffre.NpctemplateId = args[2];
+                        coffre.SaveIntoDatabase();
+                    }
+                    catch
+                    {
+                        DisplaySyntax(client);
+                        break;
+                    }
+                    ChatUtil.SendSystemMessage(client, "Le coffre \"" + coffre.Name + "\" a maintenant le npctemplate de " + coffre.NpctemplateId);
+                    break;
+
+                case "respawn":
+                    if (args.Length < 3)
+                    {
+                        DisplaySyntax(client);
+                        break;
+                    }
+                    GameCoffre selectedCoffre = null;
+                    try
+                    {
+                        string name = args[2];
+
+                        if (name != null)
+                        {
+                            var coffres = GameCoffre.Coffres.Where(c => c.Name.Equals(name));
+
+                            if (coffres != null && coffres.Count() == 1)
+                            {
+                                selectedCoffre = coffres.First();
+                            }                           
+                        }                   
+
+                        if (selectedCoffre == null)
+                        {
+                            ChatUtil.SendSystemMessage(client, "Le coffre \"" + name + "\" n'a pas été trouvé ou plusieurs coffres avec le meme nom existent.");
+                            break;
+                        }
+                        else
+                        {
+                            selectedCoffre.RespawnTimer.Stop();
+                            selectedCoffre.AddToWorld();
+                        }                     
+                    }
+                    catch
+                    {
+                        DisplaySyntax(client);
+                        break;
+                    }
+                    ChatUtil.SendSystemMessage(client, "Le coffre \"" + selectedCoffre.Name + "\" apparait devant vous.");
                     break;
                     #endregion
             }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Timers;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 
@@ -12,6 +13,7 @@ namespace DOL.GS.Scripts
 		public const int	UNLOCK_TIME = 10; //Temps pour crocheter une serrure en secondes
 	    private GamePlayer m_interactPlayer;
 	    private DateTime m_lastInteract;
+		
 
 		#region Variables - Constructeur
 		private DBCoffre Coffre;
@@ -20,6 +22,15 @@ namespace DOL.GS.Scripts
 		{
 			get { return m_Items; }
 		}
+
+		public Timer RespawnTimer
+		{
+			get;
+			set;
+		}
+
+        public static List<GameCoffre> Coffres;
+
 
 		private int m_ItemChance;
 		/// <summary>
@@ -37,6 +48,18 @@ namespace DOL.GS.Scripts
 				else
 					m_ItemChance = value;
 			}
+		}
+
+		public int TrapRate
+		{
+			get;
+			set;
+		}
+
+		public string NpctemplateId
+		{
+			get;
+			set;
 		}
 
 		public int	AllChance
@@ -70,17 +93,36 @@ namespace DOL.GS.Scripts
 		}
 		#endregion
 
+		public override bool AddToWorld()
+		{
+			base.AddToWorld();
+
+			if (Coffres == null)
+			{
+				Coffres = new List<GameCoffre>();
+			}
+
+			Coffres.Add(this);
+
+			return true;
+		}
+
+		public void RespawnCoffre()
+		{
+			base.AddToWorld();
+		}
+
 		#region Interact - GetRandomItem
 		public override bool Interact(GamePlayer player)
 		{
 			if (!base.Interact (player) || !player.IsAlive) return false;
 
-			//Coffre vide
-			if ((LastOpen.Ticks / 600000000 + ItemInterval) > DateTime.Now.Ticks / 600000000)
-			{
-                player.Out.SendMessage("Quelqu'un a déjà regardé par ici... Revenez-plus tard.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				return true;
-			}
+			////Coffre vide
+			//if ((LastOpen.Ticks / 600000000 + ItemInterval) > DateTime.Now.Ticks / 600000000)
+			//{
+   //             player.Out.SendMessage("Quelqu'un a déjà regardé par ici... Revenez-plus tard.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			//	return true;
+			//}
 
 			if (LockDifficult > 0 || KeyItem != "")
 			{
@@ -167,13 +209,51 @@ namespace DOL.GS.Scripts
                     }
 					else
 						player.Out.SendMessage("Vous récupérez un objet mais votre sac-à-dos est plein.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+
+					HandlePopMob();
 				}
 			}
             m_interactPlayer = null;
             m_lastInteract = DateTime.MinValue;
             LastOpen = DateTime.Now;
-            SaveIntoDatabase();
+			RemoveFromWorld(ItemInterval * 60);
+			RespawnTimer.Start();
+
+			SaveIntoDatabase();
 			return true;
+		}
+
+		private void HandlePopMob()
+		{
+			if (TrapRate > 0 && NpctemplateId != null)
+			{
+				var rand = new Random(DateTime.Now.Millisecond);
+				if (rand.Next(1,TrapRate + 1) <= TrapRate)
+				{
+					var template = GameServer.Database.FindObjectByKey<DBNpcTemplate>(NpctemplateId);
+					if (template != null)
+					{
+						var mob = new AmteMob(new NpcTemplate(template))
+						{
+							X = X,
+							Y = Y,
+							Z = Z,						
+							Heading = Heading,
+							CurrentRegionID = CurrentRegionID,
+							CurrentRegion = CurrentRegion,
+							Size = 50,
+							Name = "Gardien du Coffre"
+						};
+
+						mob.AddToWorld();						
+					}
+				}				
+			}
+		}
+
+		private void Repop_Elapsed(object sender, ElapsedEventArgs e)
+		{
+			AddToWorld();
 		}
 		#endregion
 
@@ -371,6 +451,15 @@ namespace DOL.GS.Scripts
             KeyItem = coffre.KeyItem;
             LockDifficult = coffre.LockDifficult;
             Coffre = coffre;
+			TrapRate = coffre.TrapRate;
+			NpctemplateId = coffre.NpctemplateId;
+			double interval = (double)ItemInterval * 60D * 1000D;
+			if (interval > int.MaxValue)
+			{
+				interval = (double)int.MaxValue;
+			}
+			RespawnTimer = new Timer(interval);
+			RespawnTimer.Elapsed += Repop_Elapsed;
 
 			m_Items = new List<CoffreItem>();
             if (coffre.ItemList != "")
@@ -396,8 +485,10 @@ namespace DOL.GS.Scripts
 
 			Coffre.KeyItem = KeyItem;
 			Coffre.LockDifficult = LockDifficult;
+			Coffre.TrapRate = TrapRate;
+			Coffre.NpctemplateId = NpctemplateId;
 
-			if(Items != null)
+			if (Items != null)
 			{
 				string list = "";
 				foreach(CoffreItem item in m_Items)
