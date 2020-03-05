@@ -61,6 +61,54 @@ namespace DOL.GS.Scripts
 			get;
 			set;
 		}
+		
+		public int TpX
+		{
+			get;
+			set;			
+		}
+
+		public int TpY
+		{
+			get;
+			set;			
+		}
+	
+		public int TpZ
+		{
+			get;
+			set;		
+		}
+
+		public bool IsTeleporter
+		{
+			get;
+			set;
+		}
+		
+		public int TpLevelRequirement
+		{
+			get;
+			set;
+		}
+
+		public bool TpIsRenaissance
+		{
+			get;
+			set;
+		}
+
+		public int TpEffect
+		{
+			get;
+			set;
+		}
+
+		public int TpRegion
+		{
+			get;
+			set;
+		}
 
 		public int	AllChance
 		{
@@ -105,6 +153,11 @@ namespace DOL.GS.Scripts
 			Coffres.Add(this);
 
 			return true;
+		}
+
+		public void RespawnCoffre()
+		{
+			base.AddToWorld();
 		}
 
 		#region Interact - GetRandomItem
@@ -177,37 +230,63 @@ namespace DOL.GS.Scripts
 			    player.Out.SendMessage("Un problème est survenue.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
 			}
-		    InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Other, it.Template);
+			InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Other, it.Template);
 			InteractEnd(player);
 		}
 
 		private bool InteractEnd(GamePlayer player)
 		{
-			CoffreItem coffre = GetRandomItem();
-			if(coffre.Id_nb == "" && coffre.Chance == 0)
-                player.Out.SendMessage("Vous ne trouvez rien d'intéressant.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			if (!IsTeleporter)
+			{
+				CoffreItem coffre = GetRandomItem();
+				if (coffre.Id_nb == "" && coffre.Chance == 0)
+					player.Out.SendMessage("Vous ne trouvez rien d'intéressant.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				else
+				{
+					ItemTemplate item = GameServer.Database.SelectObject<ItemTemplate>("Id_nb = '" + GameServer.Database.Escape(coffre.Id_nb) + "'");
+					if (item == null)
+					{
+						player.Out.SendMessage("Vous ne trouvez rien d'intéressant. (Erreur de donnée, veuillez le signaliser à un GameMaster)", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						coffre.Chance = 0;
+					}
+					else
+					{
+						if (player.Inventory.AddTemplate(GameInventoryItem.Create(item), 1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+						{
+							player.Out.SendMessage("Vous récupérez un objet!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+							//GameServer.Instance.LogTradeAction("[COFFRE] "+Name+" ("+ToString()+") -> " + player.Name + " (" + player.Client.Account.Name + "): [ITEM] 1 '" + item.Id_nb + "' (" + item.ObjectId + ")", 2);
+							InventoryLogging.LogInventoryAction(this, player, eInventoryActionType.Loot, item);
+						}
+						else
+							player.Out.SendMessage("Vous récupérez un objet mais votre sac-à-dos est plein.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+
+						HandlePopMob();
+					}
+				}
+			}
 			else
 			{
-				ItemTemplate item = GameServer.Database.SelectObject<ItemTemplate>("Id_nb = '" + GameServer.Database.Escape(coffre.Id_nb) + "'");
-				if(item == null)
+				bool failed = false;
+				if (TpLevelRequirement > 0 && player.Level < TpLevelRequirement)
 				{
-					player.Out.SendMessage("Vous ne trouvez rien d'intéressant. (Erreur de donnée, veuillez le signaliser à un GameMaster)", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-					coffre.Chance = 0;
+					failed = true;					
+				}
+				
+				if (TpIsRenaissance && !player.IsRenaissance)
+				{					
+					failed = true;					
+				}
+
+				if (failed)
+				{
+					player.Out.SendMessage("Ce coffre ne parvient pas à vous téléporter. Vous devriez revenir plus tard.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				}
 				else
 				{
-					if(player.Inventory.AddTemplate(GameInventoryItem.Create(item), 1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
-                    {
-                        player.Out.SendMessage("Vous récupérez un objet!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                        //GameServer.Instance.LogTradeAction("[COFFRE] "+Name+" ("+ToString()+") -> " + player.Name + " (" + player.Client.Account.Name + "): [ITEM] 1 '" + item.Id_nb + "' (" + item.ObjectId + ")", 2);
-                        InventoryLogging.LogInventoryAction(this, player, eInventoryActionType.Loot, item);
-                    }
-					else
-						player.Out.SendMessage("Vous récupérez un objet mais votre sac-à-dos est plein.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-
-					HandlePopMob();
+					HandleTeleporter(player);
 				}
 			}
+		
             m_interactPlayer = null;
             m_lastInteract = DateTime.MinValue;
             LastOpen = DateTime.Now;
@@ -216,6 +295,39 @@ namespace DOL.GS.Scripts
 
 			SaveIntoDatabase();
 			return true;
+		}
+
+		private void HandleTeleporter(GamePlayer player)
+		{
+			if (TpX > 0 && TpY > 0 && TpZ > 0)
+			{
+				if (TpEffect > 0)
+				{
+					//handle effect
+					player.Out.SendSpellCastAnimation(player, (ushort)TpEffect, 20);
+				}
+
+				RegionTimer TimerTL = new RegionTimer(this, Teleportation);
+				TimerTL.Properties.setProperty("TP", new GameLocation("Coffre Location", (ushort)TpRegion, TpX, TpY, TpZ, player.Heading));
+				TimerTL.Properties.setProperty("player", player);
+				TimerTL.Start(3000);
+
+				foreach (GamePlayer players in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				{			
+					players.Out.SendEmoteAnimation(player, eEmote.Bind);
+				}
+			}
+		}
+
+		private int Teleportation(RegionTimer timer)
+		{
+			GameLocation pos = timer.Properties.getProperty<GameLocation>("TP", null);
+			GamePlayer player = timer.Properties.getProperty<GamePlayer>("player", null);
+
+			player.MoveTo(pos.RegionID, pos.X, pos.Y, pos.Z, pos.Heading);		
+			player.Bind(true);
+
+			return 0;
 		}
 
 		private void HandlePopMob()
@@ -261,7 +373,7 @@ namespace DOL.GS.Scripts
                 return;
             }
 
-		    RegionTimer timer = new RegionTimer(player, UnlockCallback);
+			RegionTimer timer = new RegionTimer(player, UnlockCallback);
 			timer.Properties.setProperty("X", player.X);
 			timer.Properties.setProperty("Y", player.Y);
 			timer.Properties.setProperty("Z", player.Z);
@@ -448,6 +560,15 @@ namespace DOL.GS.Scripts
             Coffre = coffre;
 			TrapRate = coffre.TrapRate;
 			NpctemplateId = coffre.NpctemplateId;
+			TpX = coffre.TpX;
+			TpY = coffre.TpY;
+			TpZ = coffre.TpZ;
+			TpLevelRequirement = coffre.TpLevelRequirement;
+			TpIsRenaissance = coffre.TpIsRenaissance;
+			IsTeleporter = coffre.IsTeleporter;
+			TpEffect = coffre.TpEffect;
+			TpRegion = coffre.TpRegion;
+
 			double interval = (double)ItemInterval * 60D * 1000D;
 			if (interval > int.MaxValue)
 			{
@@ -477,11 +598,18 @@ namespace DOL.GS.Scripts
 			Coffre.LastOpen = LastOpen;
 			Coffre.ItemInterval = ItemInterval;
 			Coffre.ItemChance = ItemChance;
-
 			Coffre.KeyItem = KeyItem;
 			Coffre.LockDifficult = LockDifficult;
 			Coffre.TrapRate = TrapRate;
 			Coffre.NpctemplateId = NpctemplateId;
+			Coffre.TpX = TpX;
+			Coffre.TpY = TpY;
+			Coffre.TpZ = TpZ;
+			Coffre.TpLevelRequirement = TpLevelRequirement;
+			Coffre.TpIsRenaissance = TpIsRenaissance;
+			Coffre.IsTeleporter = IsTeleporter;
+			Coffre.TpEffect = TpEffect;
+			Coffre.TpRegion = TpRegion;
 
 			if (Items != null)
 			{

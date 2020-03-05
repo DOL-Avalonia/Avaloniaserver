@@ -397,7 +397,7 @@ namespace DOL.GS.Scripts
                         else
                         {
                             selectedCoffre.RespawnTimer.Stop();
-                            selectedCoffre.AddToWorld();
+                            selectedCoffre.RespawnCoffre();
                         }                     
                     }
                     catch

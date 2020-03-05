@@ -58,6 +58,14 @@ namespace DOL.Database
 		private string		m_keyItem;
 		private int			m_trapRate;
 		private string m_npctemplateId;
+		private int m_tpY;
+		private int m_tpX;
+		private int m_tpZ;
+		private bool m_isTeleporter;
+		private int m_tpLevelRequirement;
+		private bool m_tpIsRenaissance;
+		private int m_tpEffect;
+		private int m_tpRegion;
 
 		[DataElement(AllowDbNull=false)]
 		public string Name
@@ -282,6 +290,125 @@ namespace DOL.Database
 			{
 				Dirty = true;
 				m_keyItem = value;
+			}
+		}
+
+		[DataElement(AllowDbNull = true)]
+		public int TpX
+		{
+			get
+			{
+				return m_tpX;
+			}
+			set
+			{
+				Dirty = true;
+				m_tpX = value;
+			}
+		}
+
+
+		[DataElement(AllowDbNull = true)]
+		public int TpY
+		{
+			get
+			{
+				return m_tpY;
+			}
+			set
+			{
+				Dirty = true;
+				m_tpY = value;
+			}
+		}
+
+
+		[DataElement(AllowDbNull = true)]
+		public int TpZ
+		{
+			get
+			{
+				return m_tpZ;
+			}
+			set
+			{
+				Dirty = true;
+				m_tpZ = value;
+			}
+		}
+
+		[DataElement(AllowDbNull = true)]
+		public bool IsTeleporter
+		{
+			get
+			{
+				return m_isTeleporter;
+			}
+
+			set
+			{
+				Dirty = true;
+				m_isTeleporter = value;
+			}
+		}
+
+		[DataElement(AllowDbNull = true)]
+		public int TpLevelRequirement
+		{
+			get
+			{
+				return m_tpLevelRequirement;
+			}
+
+			set
+			{
+				Dirty = true;
+				m_tpLevelRequirement = value;
+			}
+		}
+
+		[DataElement(AllowDbNull = true)]
+		public bool TpIsRenaissance
+		{
+			get
+			{
+				return m_tpIsRenaissance;
+			}
+
+			set
+			{
+				Dirty = true;
+				m_tpIsRenaissance = value;
+			}
+		}
+
+		[DataElement(AllowDbNull = true)]
+		public int TpEffect
+		{
+			get
+			{
+				return m_tpEffect;
+			}
+
+			set
+			{
+				Dirty = true;
+				m_tpEffect = value;
+			}
+		}
+
+		[DataElement(AllowDbNull = true)]
+		public int TpRegion
+		{
+			get
+			{
+				return m_tpRegion;
+			}
+
+			set
+			{
+				Dirty = true;
+				m_tpRegion = value;
 			}
 		}
 	}
