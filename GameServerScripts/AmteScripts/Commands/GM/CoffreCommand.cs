@@ -26,7 +26,12 @@ namespace DOL.GS.Scripts
          "'/coffre difficult <difficulté>' difficulté pour crocheter le coffre (en %) si 0, le coffre ne peut pas être crocheté",
          "'/coffre traprate <value>' Set la valeur du TrapRate, qui est le pourcentage de faire pop un mob",
          "'/coffre npctemplate <value>' Set le npctemplate associé au pop mob de ce coffre",
-         "'/coffre respawn <name>' Respawn un coffre en donnant son name (reset du timer a 0)")]
+         "'/coffre respawn <name>' Respawn un coffre en donnant son name (reset du timer a 0)",
+         "'/coffre isteleporter' Alterne l'etat IsTeleporter du coffre",
+         "'/coffre teleporter <X> <Y> <Z> <RegionID>' Définit la destination du Téléporteur de ce coffre",
+         "'/coffre tprequirement <level>' Definit le Level minimum pour pouvoir utiliser le Téléporteur de ce coffre",
+         "'/coffre tpeffect <SpellID>' Definit l'effect utilisé par la téléportation de ce coffre basé sur son SpellID",
+         "'/coffre tpisrenaissance' Alterne l'état IsRenaissance du coffre")]
     public class CoffreCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
@@ -368,6 +373,25 @@ namespace DOL.GS.Scripts
                     ChatUtil.SendSystemMessage(client, "Le coffre \"" + coffre.Name + "\" a maintenant le npctemplate de " + coffre.NpctemplateId);
                     break;
 
+                case "isteleporter":
+                    if (coffre == null || args.Length != 2)
+                    {
+                        DisplaySyntax(client);
+                        break;
+                    }
+                    try
+                    {
+                        coffre.IsTeleporter = !coffre.IsTeleporter;
+                        coffre.SaveIntoDatabase();
+                    }
+                    catch
+                    {
+                        DisplaySyntax(client);
+                        break;
+                    }
+                    ChatUtil.SendSystemMessage(client, "Le statut IsTeleporter du coffre \"" + coffre.Name + "\" est maitenant: " + coffre.IsTeleporter);
+                    break;
+
                 case "respawn":
                     if (args.Length < 3)
                     {
@@ -406,6 +430,102 @@ namespace DOL.GS.Scripts
                         break;
                     }
                     ChatUtil.SendSystemMessage(client, "Le coffre \"" + selectedCoffre.Name + "\" apparait devant vous.");
+                    break;
+
+                case "teleporter":
+                    if (coffre == null || args.Length <= 5)
+                    {
+                        DisplaySyntax(client);
+                        return;
+                    }
+                    int X;
+                    int Y;
+                    int Z;
+                    ushort RegionID;
+                    try
+                    {
+                        X = int.Parse(args[2]);
+                        Y = int.Parse(args[3]);
+                        Z = int.Parse(args[4]);         
+                        RegionID = (ushort)int.Parse(args[5]);      
+                    }
+                    catch { DisplaySyntax(client); return; }
+
+                    coffre.TpX = X;
+                    coffre.TpY = Y;
+                    coffre.TpZ = Z;
+                    coffre.TpRegion = RegionID;
+                    coffre.Heading = client.Player.Heading;
+                    coffre.SaveIntoDatabase();
+                    player.Out.SendMessage("Le Coffre \"" + coffre + "\" a recu une nouvelle destination de téléportation",  PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
+                    
+                    if (!coffre.IsTeleporter)
+                    {
+                        player.Out.SendMessage("Le statut IsTeleporter du Coffre \"" + coffre + "\" n'est pas activé, changez le pour activer la téléportation.", PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
+                    }
+                    break;
+
+                case "tprequirement":
+                    if (coffre == null || args.Length < 3)
+                    {
+                        DisplaySyntax(client);
+                        break;
+                    }
+                    try
+                    {
+                        int level = int.Parse(args[2]);
+                        if (level < 1)
+                        {
+                            level = 1;
+                        }
+
+                        coffre.TpLevelRequirement = level;
+                        coffre.SaveIntoDatabase();
+                    }
+                    catch
+                    {
+                        DisplaySyntax(client);
+                        break;
+                    }
+                    ChatUtil.SendSystemMessage(client, "Le Niveau minimum pour utiliser le téléporteur du coffre \"" + coffre.Name + "\" est maitenant: " + coffre.TpLevelRequirement);
+                    break;
+
+                case "tpeffect":
+                    if (coffre == null || args.Length < 3)
+                    {
+                        DisplaySyntax(client);
+                        break;
+                    }
+                    try
+                    {            
+                        coffre.TpEffect = int.Parse(args[2]);
+                        coffre.SaveIntoDatabase();
+                    }
+                    catch
+                    {
+                        DisplaySyntax(client);
+                        break;
+                    }
+                    ChatUtil.SendSystemMessage(client, "L'effet utilisé pour le téléporteur du coffre \"" + coffre.Name + "\" est maitenant lié au SpellID: " + coffre.TpEffect);
+                    break;
+
+                case "tpisrenaissance":
+                    if (coffre == null || args.Length != 2)
+                    {
+                        DisplaySyntax(client);
+                        break;
+                    }
+                    try
+                    {
+                        coffre.TpIsRenaissance = !coffre.TpIsRenaissance;
+                        coffre.SaveIntoDatabase();
+                    }
+                    catch
+                    {
+                        DisplaySyntax(client);
+                        break;
+                    }
+                    ChatUtil.SendSystemMessage(client, "Le statut IsRenaissance du coffre \"" + coffre.Name + "\" est maitenant: " + coffre.TpIsRenaissance);
                     break;
                     #endregion
             }

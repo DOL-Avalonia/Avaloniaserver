@@ -299,18 +299,18 @@ namespace DOL.GS.Scripts
 
 		private void HandleTeleporter(GamePlayer player)
 		{
-			if (TpX > 0 && TpY > 0 && TpZ > 0)
-			{
+			if (TpX > 0 && TpY > 0 && TpZ > 0 && TpRegion > 0)
+			{			
+				RegionTimer TimerTL = new RegionTimer(this, Teleportation);
+				TimerTL.Properties.setProperty("TP", new GameLocation("Coffre Location", (ushort)TpRegion, TpX, TpY, TpZ, player.Heading));
+				TimerTL.Properties.setProperty("player", player);
+				TimerTL.Start(3000);
+				
 				if (TpEffect > 0)
 				{
 					//handle effect
 					player.Out.SendSpellCastAnimation(player, (ushort)TpEffect, 20);
 				}
-
-				RegionTimer TimerTL = new RegionTimer(this, Teleportation);
-				TimerTL.Properties.setProperty("TP", new GameLocation("Coffre Location", (ushort)TpRegion, TpX, TpY, TpZ, player.Heading));
-				TimerTL.Properties.setProperty("player", player);
-				TimerTL.Start(3000);
 
 				foreach (GamePlayer players in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				{			
@@ -349,7 +349,7 @@ namespace DOL.GS.Scripts
 							CurrentRegionID = CurrentRegionID,
 							CurrentRegion = CurrentRegion,
 							Size = 50,
-							Name = "Gardien du Coffre"
+							Name = "Gardien du Coffre"							
 						};
 
 						mob.AddToWorld();						
