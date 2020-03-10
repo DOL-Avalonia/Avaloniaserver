@@ -1287,6 +1287,7 @@ namespace DOL.GS.Quests
 						else
 						{
 							player.Inventory.AddItem(slot, new GameInventoryItem(CurrentGoal.QuestItem));
+							UpdateNextTargetNPCIcon(player.CurrentRegionID);
 						}
 					}
 				}
@@ -1521,11 +1522,12 @@ namespace DOL.GS.Quests
 						{
 							AdvanceQuestStep(obj);
                             if (obj as GameNPC != null)
-                            {
+							{
 								player.Inventory.RemoveItem(deliverItem);
 								UpdateQuestIndicator(obj as GameNPC, _questPlayer);
-                            }
-                            else
+								UpdateNextTargetNPCIcon(obj.CurrentRegionID);
+							}
+							else
                             {
                                 foreach (GamePlayer others in _questPlayer.GetPlayersInRadius(1000))
                                 {
@@ -1550,9 +1552,17 @@ namespace DOL.GS.Quests
 			{
 				log.Error("error trying to interact", ex);
 			}
-		}		
+		}
 
-		
+		private void UpdateNextTargetNPCIcon(ushort regionId)
+		{
+			var target = WorldMgr.GetObjectsByNameFromRegion<GameNPC>(CurrentGoal.TargetObject, regionId, eRealm.None);
+			if (target != null && target.Count() == 1)
+			{
+				UpdateQuestIndicator(target[0], QuestPlayer);
+			}
+		}
+
 
 		InventoryItem GetPlayerDeliverItem(GamePlayer player)
 		{
