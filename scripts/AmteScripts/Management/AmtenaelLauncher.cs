@@ -130,11 +130,11 @@ namespace DOL.GS.Scripts
             var token = Convert.ToBase64String(buffer);
 
             lock (LoginRequestHandler.Token2AccountSync)
-                LoginRequestHandler.Token2Account.Add(token, (account.Name, uuid));
+                LoginRequestHandler.Token2Account.Add(token, new Tuple<string, string>(account.Name, uuid));
             var charlist = "";
             if (account.Characters != null)
-                charlist = account.Characters.Aggregate("", (list, ch) => $"{ch.Name} {ch.Realm}\n{list}");
-            return $"{token}\n{charlist}";
+                charlist = account.Characters.Aggregate("", (list, ch) => ch.Name + " " + ch.Realm + "\n" + list);
+            return token + "\n" + charlist;
         }
 
         private static bool _IsBan(Account account)

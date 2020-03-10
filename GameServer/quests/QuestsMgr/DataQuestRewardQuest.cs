@@ -170,7 +170,11 @@ namespace DOL.GS.Quests
 				{
 					collectItem = m_collectItems[i];
 				}
-                newgoals = AddGoal(m_questGoals[i], m_goalType[i], m_goalRepeatNo[i], collectItem, m_goalTargetName[i]);
+				else if (_stepItemTemplates.Count > 0 && _stepItemTemplates[i] != null)
+				{
+					collectItem = _stepItemTemplates[i];
+				}
+				newgoals = AddGoal(m_questGoals[i], m_goalType[i], m_goalRepeatNo[i], collectItem, m_goalTargetName[i]);
                 CurrentGoal = newgoals;
 			}
 		}		
@@ -205,6 +209,10 @@ namespace DOL.GS.Quests
 				if (m_collectItems.Count > 0 && m_collectItems[i] != null)
 				{
 					collectItem = m_collectItems[i];
+				}
+				else if (_stepItemTemplates.Count > 0 && _stepItemTemplates[i] != null)
+				{
+					collectItem = _stepItemTemplates[i];
 				}
 				newgoals = AddGoal(m_questGoals[i], m_goalType[i], m_goalRepeatNo[i], collectItem, m_goalTargetName[i]);
                 CurrentGoal = newgoals;
@@ -445,8 +453,28 @@ namespace DOL.GS.Quests
                             m_zoneID.Add(Convert.ToInt32(str));
                         }              
 					}
-				}				
-            }			
+				}
+
+				lastParse = m_dqRewardQ.StepText;
+				if (!string.IsNullOrEmpty(lastParse))
+				{
+					parse1 = lastParse.Split('|');
+					foreach (string str in parse1)
+					{
+						StepTexts.Add(str);
+					}
+				}
+
+				lastParse = m_dqRewardQ.StepItemTemplates;
+				if (!string.IsNullOrEmpty(lastParse))
+				{
+					parse1 = lastParse.Split('|');
+					foreach (string str in parse1)
+					{
+						_stepItemTemplates.Add(str);
+					}
+				}
+			}			
 			
 			catch (Exception ex)
 			{
@@ -522,6 +550,10 @@ namespace DOL.GS.Quests
 						if (m_collectItems.Count > index && m_collectItems[index] != null)
 						{
 							collectItem = m_collectItems[index];
+						}
+						else if (_stepItemTemplates.Count > index && _stepItemTemplates[index] != null)
+						{
+							collectItem = _stepItemTemplates[index];
 						}
 						
 						newgoals = AddGoal(m_questGoals[index], m_goalType[index], m_goalRepeatNo[index], collectItem, m_goalTargetName[index]);
@@ -1105,8 +1137,29 @@ namespace DOL.GS.Quests
                             {
                                 _questPlayer.Out.SendQuestRewardWindow(obj as GameNPC, _questPlayer, this);
                             }
-                        }                      			
-					}                  
+                        }
+					}
+					else
+					{
+						if ((CurrentGoal.Type == DQRQuestGoal.GoalType.DeliverFinish || CurrentGoal.Type == DQRQuestGoal.GoalType.InteractDeliver) && CurrentGoal.QuestItem != null)
+						{
+							var slot = QuestPlayer.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+
+							if (slot != eInventorySlot.Invalid)
+							{
+								QuestPlayer.Inventory.AddItem(slot, new GameInventoryItem(CurrentGoal.QuestItem));
+
+								if (StepTexts.Count >= Step && StepTexts[Step - 1] != null)
+								{
+									QuestPlayer.Out.SendCustomTextWindow(obj.Name + " dit", new string[] { StepTexts[Step - 1] });
+								}						
+							}
+							else
+							{
+								QuestPlayer.Out.SendMessage("Vos Sacs sont pleins pour recevoir l'objet de quete", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+							}
+						}
+					}                
 
                     // Then say any source text for the new step
                     /* TODO maybe put something here to support text after receiving a quest item or something
@@ -1216,6 +1269,27 @@ namespace DOL.GS.Quests
                     
                     return;
                 }
+
+				if (e == GamePlayerEvent.AcceptQuest 
+					&& (CurrentGoal.Type == DQRQuestGoal.GoalType.InteractDeliver || CurrentGoal.Type == DQRQuestGoal.GoalType.DeliverFinish)
+					&& CurrentGoal.QuestItem != null)
+				{
+					var player = sender as GamePlayer;
+
+					if (player != null)
+					{
+						var slot = player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+
+						if (slot == eInventorySlot.Invalid)
+						{
+							player.Out.SendMessage("Vous n'avez plus de place dans vos sacs pour faire cette quete", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						}
+						else
+						{
+							player.Inventory.AddItem(slot, new GameInventoryItem(CurrentGoal.QuestItem));
+						}
+					}
+				}
 
                 // Player completes a /search command in quest area
                 //if (e == GamePlayerEvent.SearchArea)
@@ -1359,13 +1433,19 @@ namespace DOL.GS.Quests
 	                            player.Out.SendNPCsQuestEffect(npc, npc.GetQuestIndicator(player));
 							}
 							player.Out.SendSoundEffect(7, 0, 0, 0, 0, 0);
-							player.Out.SendMessage("You have acquired the quest: " + dq.Name, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+							player.Out.SendMessage("Vous avez reçu la quete: " + dq.Name, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 							if (!string.IsNullOrWhiteSpace(dq.AcceptText))
                             {
                                 var formatMsg = dq.AcceptText.Replace(@"\n", "\n");
-                                var finalMsg = formatMsg.SplitCSV(true);
 
-                                player.Out.SendCustomTextWindow(giver.Name + " says", finalMsg);
+								if (dq.StepTexts.Count > 0 && dq.StepTexts[0] != null)
+								{
+									formatMsg += ";\n" + dq.StepTexts[0];
+								}
+
+								var finalMsg = formatMsg.SplitCSV(true);
+
+								player.Out.SendCustomTextWindow(giver.Name + " dit", finalMsg);
                             }
 							break;
 						}
@@ -1422,25 +1502,28 @@ namespace DOL.GS.Quests
 		/// A player with this quest has interacted with an object.
 		/// See if this object is part of the quest and respond accordingly
 		/// </summary>		
-		protected virtual void OnPlayerInteract(GamePlayer player, GameObject obj)
+		protected override void OnPlayerInteract(GamePlayer player, GameObject obj)
 		{
 			try
 			{
 				if (CheckInteractPending(obj))
 				{
 					if (CurrentGoal != null)
-					{						
+					{
+						var deliverItem = GetPlayerDeliverItem(player);
+
 						TryTurnTo(obj, player);		
 						if (!string.IsNullOrEmpty(GoalTargetText)) // TODO this might need to be changed to send a custommessage to allow for \n \r formatting
 						{
 							SendMessage(_questPlayer, GoalTargetText, 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
 						}
-						if (CurrentGoal.Type == DQRQuestGoal.GoalType.Interact || CurrentGoal.Type == DQRQuestGoal.GoalType.InteractDeliver)
+						if (CurrentGoal.Type == DQRQuestGoal.GoalType.Interact || ((CurrentGoal.Type == DQRQuestGoal.GoalType.InteractDeliver || CurrentGoal.Type == DQRQuestGoal.GoalType.DeliverFinish) && deliverItem != null))
 						{
 							AdvanceQuestStep(obj);
                             if (obj as GameNPC != null)
                             {
-                                UpdateQuestIndicator(obj as GameNPC, _questPlayer);
+								player.Inventory.RemoveItem(deliverItem);
+								UpdateQuestIndicator(obj as GameNPC, _questPlayer);
                             }
                             else
                             {
@@ -1449,13 +1532,12 @@ namespace DOL.GS.Quests
                                     others.Out.SendEmoteAnimation(_questPlayer, eEmote.PlayerPickup);
                                 }                                
                             }
-                            return;
-						}
+  						}
 						if (CurrentGoal.Type == DQRQuestGoal.GoalType.InteractFinish)
 						{
 							AdvanceQuestStep(obj);                            
                         }
-                        return;
+						return;
 					}
 				}
 				if (GoalsCompleted() && obj as GameNPC != null && FinishName == obj.Name)
@@ -1469,6 +1551,18 @@ namespace DOL.GS.Quests
 				log.Error("error trying to interact", ex);
 			}
 		}		
+
+		
+
+		InventoryItem GetPlayerDeliverItem(GamePlayer player)
+		{
+			if (_stepItemTemplates.Count >= Step)
+			{
+				return player.Inventory.GetFirstItemByID(_stepItemTemplates[Step - 1], eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+			}
+
+			return null;
+		}
 		
 		/// <summary>
 		/// Check if a target object is the current goal target for interact/interactDeliver.
@@ -1483,7 +1577,12 @@ namespace DOL.GS.Quests
 				}			
 				foreach (DQRQuestGoal goal in Goals)
 				{
-					if (!goal.IsAchieved && (goal.Type == DQRQuestGoal.GoalType.Interact || goal.Type == DQRQuestGoal.GoalType.InteractDeliver || goal.Type == DQRQuestGoal.GoalType.InteractWhisper|| goal.Type == DQRQuestGoal.GoalType.InteractFinish) && goal.TargetObject == target.Name)
+					if (!goal.IsAchieved && 
+						(goal.Type == DQRQuestGoal.GoalType.Interact ||
+						goal.Type == DQRQuestGoal.GoalType.InteractDeliver ||
+						goal.Type == DQRQuestGoal.GoalType.InteractWhisper||
+						goal.Type == DQRQuestGoal.GoalType.InteractFinish ||
+						goal.Type == DQRQuestGoal.GoalType.DeliverFinish) && goal.TargetObject == target.Name)
 					{
 						CurrentGoal = goal;
 						
@@ -1960,7 +2059,8 @@ namespace DOL.GS.Quests
 			Interact = 4,			// Interact with the target to advance the goal.
 			InteractFinish = 5,		// Interact with the target to finish the quest.
 			InteractWhisper = 6,	// Whisper to the target to advance the goal. 
-			InteractDeliver = 7,	// Deliver a dummy item to the target to advance the goal.
+			InteractDeliver = 7,    // Deliver a dummy item to the target to advance the goal.
+			DeliverFinish = 8,      // Deliver item to the target to finish the quest.
 			Collect = 10,			// Player must give the target an item to advance the step	
 			Unknown = 255
 		}
@@ -2012,7 +2112,7 @@ namespace DOL.GS.Quests
         /// </summary>
         public ItemTemplate QuestItem
 		{
-			get { return ((Current > 0) || Type == GoalType.InteractDeliver || Type == GoalType.InteractFinish) ? goalItem : null; }
+			get { return ((Current > 0) || Type == GoalType.InteractDeliver || Type == GoalType.InteractFinish || Type == GoalType.DeliverFinish) ? goalItem : null; }
 			set { goalItem = value; }
 		}
 

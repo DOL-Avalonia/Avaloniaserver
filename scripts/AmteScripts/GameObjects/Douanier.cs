@@ -13,7 +13,7 @@ namespace DOL.GS
 	{
 		public long Price { get; set; }
 
-		public string paystring => "payer " + Money.GetString(Price) + " pièces d'or pour les éviter";
+		public string paystring => "payer la somme de: " + Money.GetString(Price) + " pour les éviter";
 
 		public Douanier()
 		{

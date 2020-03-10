@@ -226,7 +226,7 @@ namespace DOL.GS.Quests
         private readonly List<string> _targetNames = new List<string>();
         private readonly List<string> _targetTexts = new List<string>();
         private readonly List<eStepType> _stepTypes = new List<eStepType>();
-        private readonly List<string> _stepItemTemplates = new List<string>();
+        protected readonly List<string> _stepItemTemplates = new List<string>();
         private readonly List<string> _advanceTexts = new List<string>();
         private readonly List<string> _collectItems = new List<string>();
         private readonly List<long> _rewardXPs = new List<long>();
