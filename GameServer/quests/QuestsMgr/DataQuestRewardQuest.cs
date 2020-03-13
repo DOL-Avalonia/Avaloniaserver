@@ -972,7 +972,7 @@ namespace DOL.GS.Quests
 				{
 					if (m_advanceTexts.Count > 0 && CurrentGoal != null)
 					{
-                        return !string.IsNullOrEmpty(m_advanceTexts[CurrentGoal.GoalIndex]) ? m_advanceTexts[CurrentGoal.GoalIndex] : "";
+                        return !string.IsNullOrEmpty(m_advanceTexts[CurrentGoal.GoalIndex - 1]) ? m_advanceTexts[CurrentGoal.GoalIndex - 1] : "";
                     }
 				}
 				catch (Exception ex)
@@ -1123,7 +1123,7 @@ namespace DOL.GS.Quests
 
 
                     if (GoalsCompleted())
-					{
+					{	
                         if (CurrentGoal.Type == DQRQuestGoal.GoalType.InteractFinish)
                         {
                             if (obj as GameNPC != null && FinishName == obj.Name)
@@ -1131,9 +1131,11 @@ namespace DOL.GS.Quests
                                 _questPlayer.Out.SendQuestRewardWindow(obj as GameNPC, _questPlayer, this);
                             }
                         }
-                        else if (CurrentGoal.Type == DQRQuestGoal.GoalType.Collect)
+                        else if (CurrentGoal.Type == DQRQuestGoal.GoalType.Collect ||
+							CurrentGoal.Type == DQRQuestGoal.GoalType.DeliverFinish ||
+							CurrentGoal.Type == DQRQuestGoal.GoalType.InteractWhisper)
                         {
-                            if (obj as GameNPC != null)
+                            if (obj is GameNPC npc && npc.Name == this.CurrentGoal.TargetObject)
                             {
                                 _questPlayer.Out.SendQuestRewardWindow(obj as GameNPC, _questPlayer, this);
                             }
@@ -1141,7 +1143,9 @@ namespace DOL.GS.Quests
 					}
 					else
 					{
-						if ((CurrentGoal.Type == DQRQuestGoal.GoalType.DeliverFinish || CurrentGoal.Type == DQRQuestGoal.GoalType.InteractDeliver) && CurrentGoal.QuestItem != null)
+						if ((CurrentGoal.Type == DQRQuestGoal.GoalType.DeliverFinish ||
+							CurrentGoal.Type == DQRQuestGoal.GoalType.InteractDeliver ||
+							CurrentGoal.Type == DQRQuestGoal.GoalType.InteractWhisper) && CurrentGoal.QuestItem != null)
 						{
 							var slot = QuestPlayer.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 
@@ -1149,7 +1153,7 @@ namespace DOL.GS.Quests
 							{
 								QuestPlayer.Inventory.AddItem(slot, new GameInventoryItem(CurrentGoal.QuestItem));
 
-								if (StepTexts.Count >= Step && StepTexts[Step - 1] != null)
+								if (StepTexts.Count >= Step && StepTexts[Step - 1] != null && obj as GameNPC != null)
 								{
 									QuestPlayer.Out.SendCustomTextWindow(obj.Name + " dit", new string[] { StepTexts[Step - 1] });
 								}						
@@ -1197,8 +1201,17 @@ namespace DOL.GS.Quests
 		/// </summary>		
 		public virtual void OnPlayerWhisper(GamePlayer p, GameObject obj, string text)
 		{			
-			if (CurrentGoal != null && CurrentGoal.Type == DQRQuestGoal.GoalType.InteractWhisper && CurrentGoal.TargetObject == obj.Name && CurrentGoal.ZoneID1 == obj.CurrentZone.ID && text == CurrentGoal.AdvanceText)
-			{			
+			if (CurrentGoal != null && CurrentGoal.Type == DQRQuestGoal.GoalType.InteractWhisper && CurrentGoal.TargetObject == obj.Name && text == CurrentGoal.AdvanceText)
+			{
+				var deliverItem = GetPlayerDeliverItem(p);
+
+				if (deliverItem != null && obj is GameNPC npc)
+				{				
+					p.Inventory.RemoveItem(deliverItem);
+					UpdateQuestIndicator(npc, _questPlayer);
+					UpdateNextTargetNPCIcon(obj.CurrentRegionID);					
+				}
+
 				AdvanceQuestStep(obj);			
 			}			
 		}
@@ -1271,8 +1284,9 @@ namespace DOL.GS.Quests
                 }
 
 				if (e == GamePlayerEvent.AcceptQuest 
-					&& (CurrentGoal.Type == DQRQuestGoal.GoalType.InteractDeliver || CurrentGoal.Type == DQRQuestGoal.GoalType.DeliverFinish)
-					&& CurrentGoal.QuestItem != null)
+					&& (CurrentGoal.Type == DQRQuestGoal.GoalType.InteractDeliver ||
+					CurrentGoal.Type == DQRQuestGoal.GoalType.DeliverFinish ||
+					CurrentGoal.Type == DQRQuestGoal.GoalType.InteractWhisper) && CurrentGoal.QuestItem != null)
 				{
 					var player = sender as GamePlayer;
 
@@ -1282,7 +1296,7 @@ namespace DOL.GS.Quests
 
 						if (slot == eInventorySlot.Invalid)
 						{
-							player.Out.SendMessage("Vous n'avez plus de place dans vos sacs pour faire cette quete", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+							player.Out.SendMessage("Vous n'avez plus de places dans vos sacs pour faire cette quete", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 						}
 						else
 						{
@@ -1518,22 +1532,32 @@ namespace DOL.GS.Quests
 						{
 							SendMessage(_questPlayer, GoalTargetText, 0, eChatType.CT_System, eChatLoc.CL_PopupWindow);
 						}
-						if (CurrentGoal.Type == DQRQuestGoal.GoalType.Interact || ((CurrentGoal.Type == DQRQuestGoal.GoalType.InteractDeliver || CurrentGoal.Type == DQRQuestGoal.GoalType.DeliverFinish) && deliverItem != null))
+						if (CurrentGoal.Type == DQRQuestGoal.GoalType.Interact || CurrentGoal.Type == DQRQuestGoal.GoalType.InteractDeliver || CurrentGoal.Type == DQRQuestGoal.GoalType.DeliverFinish)
 						{
-							AdvanceQuestStep(obj);
-                            if (obj as GameNPC != null)
+							if (deliverItem == null)
 							{
-								player.Inventory.RemoveItem(deliverItem);
-								UpdateQuestIndicator(obj as GameNPC, _questPlayer);
-								UpdateNextTargetNPCIcon(obj.CurrentRegionID);
+								if (_stepItemTemplates != null && _stepItemTemplates.Count >= Step)
+								{
+									player.Out.SendMessage("Malheuresement vous ne possedez pas " + _stepItemTemplates[Step - 1] + ".", eChatType.CT_Chat, eChatLoc.CL_SystemWindow);
+								}
 							}
 							else
-                            {
-                                foreach (GamePlayer others in _questPlayer.GetPlayersInRadius(1000))
-                                {
-                                    others.Out.SendEmoteAnimation(_questPlayer, eEmote.PlayerPickup);
-                                }                                
-                            }
+							{
+								AdvanceQuestStep(obj);
+								if (obj as GameNPC != null)
+								{
+									player.Inventory.RemoveItem(deliverItem);
+									UpdateQuestIndicator(obj as GameNPC, _questPlayer);
+									UpdateNextTargetNPCIcon(obj.CurrentRegionID);
+								}
+								else
+								{
+									foreach (GamePlayer others in _questPlayer.GetPlayersInRadius(1000))
+									{
+										others.Out.SendEmoteAnimation(_questPlayer, eEmote.PlayerPickup);
+									}
+								}
+							}							
   						}
 						if (CurrentGoal.Type == DQRQuestGoal.GoalType.InteractFinish)
 						{
@@ -2122,7 +2146,11 @@ namespace DOL.GS.Quests
         /// </summary>
         public ItemTemplate QuestItem
 		{
-			get { return ((Current > 0) || Type == GoalType.InteractDeliver || Type == GoalType.InteractFinish || Type == GoalType.DeliverFinish) ? goalItem : null; }
+			get { return ((Current > 0) || 
+					Type == GoalType.InteractDeliver || 
+					Type == GoalType.InteractFinish ||
+					Type == GoalType.DeliverFinish ||
+					Type == GoalType.InteractWhisper) ? goalItem : null; }
 			set { goalItem = value; }
 		}
 
