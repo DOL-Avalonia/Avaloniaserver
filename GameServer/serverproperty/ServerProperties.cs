@@ -1792,6 +1792,24 @@ namespace DOL.GS.ServerProperties
         public static int ALLIANCE_MAX { get; set; }
 
         /// <summary>
+        /// AFK Timeout Logout in Minutes
+        /// </summary>
+        [ServerProperty("system", "afk_timeout", "Define AFK Timeout in Minutes", 180)]
+        public static int AFK_TIMEOUT { get; set; }
+
+        /// <summary>
+        /// Define XP Interval Minutes
+        /// </summary>
+        [ServerProperty("system", "afk_xp_interval", "Define XP Interval Minutes", 5)]
+        public static int AFK_XP_INTERVAL { get; set; }
+
+        /// <summary>
+        /// Define XP Percentage a player gets every AFK_XP_INTERVAL
+        /// </summary>
+        [ServerProperty("system", "afk_xp_percentage", "Define XP Percentage a player gets every AFK_XP_INTERVAL", 5)]
+        public static int AFK_XP_PERCENTAGE { get; set; }
+
+        /// <summary>
         /// The number of players needed to form a guild
         /// </summary>
         [ServerProperty("guild", "guild_num", "Players Needed For Guild Form - Edit this to change the amount of players required to form a guild", 8)]

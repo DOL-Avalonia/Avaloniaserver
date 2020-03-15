@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-
+using System.Timers;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -55,6 +55,10 @@ namespace DOL.GS
         private static readonly log4net.ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly object m_LockObject = new object();
+
+        private Timer afkXpTimer;
+
+        private Timer kickoutTimer;
 
         /// <summary>
         /// This is our gameclient!
@@ -128,6 +132,16 @@ namespace DOL.GS
             get { return m_targetInView; }
             set { m_targetInView = value; }
         } 
+
+        public Timer AfkXpTimer
+        {
+            get => this.afkXpTimer ?? (this.afkXpTimer = new Timer());
+        }
+
+        public Timer KickoutTimer
+        {
+            get => this.kickoutTimer ?? (this.kickoutTimer = new Timer());
+        }
 
         /// <summary>
         /// Holds the ground target visibility flag
@@ -12684,6 +12698,7 @@ break;
             if (this.PlayerAfkMessage != null)
             {
                 this.PlayerAfkMessage = null;
+                ResetAfkTimers();
                 Out.SendMessage("Vous n'etes désormais plus afk", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
             }
 
@@ -16420,6 +16435,62 @@ break;
                 return true;
             }
         }
+
+        public void ResetAfkTimers()
+        {
+            AfkXpTimer.Stop();
+            AfkXpTimer.Elapsed -= (object sender, ElapsedEventArgs e) => this.OnAfkXpTick();
+            AfkXpTimer.Close();
+            KickoutTimer.Elapsed -= (object sender, ElapsedEventArgs e) => this.OnAfkTimerTimeout();
+            KickoutTimer.Close();
+        }
+
+        public void InitAfkTimers()
+        {
+            //Kickout timer
+            int kickoutMilliseconds = Properties.AFK_TIMEOUT * 60 * 1000;
+
+            if (kickoutMilliseconds < 0)
+            {
+                kickoutMilliseconds = int.MaxValue;
+            }
+
+            KickoutTimer.AutoReset = false;
+            KickoutTimer.Interval = kickoutMilliseconds;
+            KickoutTimer.Elapsed += (object sender, ElapsedEventArgs e) => this.OnAfkTimerTimeout();
+            KickoutTimer.Start();
+
+            //xp timer
+            int experienceMilliseconds = Properties.AFK_XP_INTERVAL * 60 * 1000;
+
+            if (experienceMilliseconds < 0)
+            {
+                experienceMilliseconds = int.MaxValue;
+            }
+            AfkXpTimer.Stop();
+            AfkXpTimer.Interval = experienceMilliseconds;
+            AfkXpTimer.Elapsed += (object sender, ElapsedEventArgs e) => OnAfkXpTick();
+            AfkXpTimer.Start();
+        }
+
+        public void OnAfkXpTick()
+        {
+            long bonusXP = Experience * Properties.AFK_XP_PERCENTAGE / 100;
+            GainExperience(GameLiving.eXPSource.Other, bonusXP, 0, 0, 0, false);
+
+            if (bonusXP > 0)
+            {
+                Out.SendMessage("Vous gagnez " + bonusXP + " points d'experiences grâce à votre statut AFK!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+            }
+        }
+
+
+        private void OnAfkTimerTimeout()
+        {
+            this.Client.Out.SendPlayerQuit(true);
+            this.Client.Disconnect();
+        }
+
 
         /// <summary>
         /// Sets the controlled object for this player

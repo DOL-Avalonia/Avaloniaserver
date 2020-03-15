@@ -17,7 +17,9 @@
  *
  */
 
+using DOL.GS.PacketHandler;
 using DOL.GS.SkillHandler;
+using System.Timers;
 
 namespace DOL.GS.Commands
 {
@@ -35,9 +37,12 @@ namespace DOL.GS.Commands
                 client.Player.PlayerAfkMessage = null;
                 client.Player.DisableSkill(SkillBase.GetAbility(Abilities.Vol),
                     VolAbilityHandler.DISABLE_DURATION);
+                client.Player.ResetAfkTimers();
             }
             else
             {
+                client.Player.InitAfkTimers();
+
                 if (args.Length > 1)
                 {
                     client.Player.PlayerAfkMessage = string.Join(" ",
