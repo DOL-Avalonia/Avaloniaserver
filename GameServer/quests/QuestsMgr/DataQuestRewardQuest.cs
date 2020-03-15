@@ -497,7 +497,7 @@ namespace DOL.GS.Quests
 		{
 			foreach (DQRQuestGoal goal in Goals)
 			{
-				if (goal.Type == DQRQuestGoal.GoalType.InteractFinish)
+				if (goal.Type == DQRQuestGoal.GoalType.InteractFinish || goal.Type == DQRQuestGoal.GoalType.DeliverFinish)
 				{
 					return true;
 				}
@@ -1156,6 +1156,7 @@ namespace DOL.GS.Quests
 								if (StepTexts.Count >= Step && StepTexts[Step - 1] != null && obj as GameNPC != null)
 								{
 									QuestPlayer.Out.SendCustomTextWindow(obj.Name + " dit", new string[] { StepTexts[Step - 1] });
+									this.UpdateNextTargetNPCIcon(obj.CurrentRegionID);
 								}						
 							}
 							else
@@ -1208,8 +1209,7 @@ namespace DOL.GS.Quests
 				if (deliverItem != null && obj is GameNPC npc)
 				{				
 					p.Inventory.RemoveItem(deliverItem);
-					UpdateQuestIndicator(npc, _questPlayer);
-					UpdateNextTargetNPCIcon(obj.CurrentRegionID);					
+					UpdateQuestIndicator(npc, _questPlayer);				
 				}
 
 				AdvanceQuestStep(obj);			

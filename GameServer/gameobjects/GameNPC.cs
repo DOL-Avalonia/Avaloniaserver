@@ -2914,7 +2914,7 @@ namespace DOL.GS
                 {
                     dqrQuest = (DQRewardQ)q;
 
-                    if (dqrQuest != null && dqrQuest.CheckGoalsCompleted() && dqrQuest.TargetName == Name) // patch 0026
+                    if (dqrQuest != null && dqrQuest.CheckGoalsCompleted() && (dqrQuest.FinishName == Name || dqrQuest.CurrentGoal.TargetObject == Name)) // patch 0026
                     {
                         return true;
                     }
