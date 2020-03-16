@@ -125,14 +125,17 @@ namespace DOL.GS
 		{
 			if (sender is GameMobKamikaze)
 			{
-				var finishArgs = (args as AttackFinishedEventArgs);
+				var finishArgs = args as AttackFinishedEventArgs;				
+
 				if (finishArgs != null)
 				{
-					if (finishArgs.AttackData.Attacker is GameNPC attacker)
+					var attacker = finishArgs.AttackData.Attacker as GameNPC;
+
+					if (attacker != null)
 					{
 						attacker.CastSpell(KamiSpell,
 						SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-					}
+					}							
 				}
 			}
 		}	

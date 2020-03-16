@@ -49,7 +49,9 @@ namespace DOL.GS.Scripts
                             break;
                         }
 
-                        if (!int.TryParse(args[3], out int price))
+                        int price = 0;
+
+                        if (!int.TryParse(args[3], out price))
                         {
                             DisplaySyntax(client);
                             break;
