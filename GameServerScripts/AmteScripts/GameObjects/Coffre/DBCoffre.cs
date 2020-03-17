@@ -66,6 +66,8 @@ namespace DOL.Database
 		private bool m_tpIsRenaissance;
 		private int m_tpEffect;
 		private int m_tpRegion;
+		private bool m_isOpeningRenaissanceType;
+		private int m_punishSpellId;
 
 		[DataElement(AllowDbNull=false)]
 		public string Name
@@ -379,6 +381,36 @@ namespace DOL.Database
 			{
 				Dirty = true;
 				m_tpIsRenaissance = value;
+			}
+		}
+
+		[DataElement(AllowDbNull = true)]
+		public int PunishSpellId
+		{
+			get
+			{
+				return m_punishSpellId;
+			}
+
+			set
+			{
+				Dirty = true;
+				m_punishSpellId = value;
+			}
+		}
+
+		[DataElement(AllowDbNull = true)]
+		public bool IsOpeningRenaissanceType
+		{
+			get
+			{
+				return m_isOpeningRenaissanceType;
+			}
+
+			set
+			{
+				Dirty = true;
+				m_isOpeningRenaissanceType = value;
 			}
 		}
 

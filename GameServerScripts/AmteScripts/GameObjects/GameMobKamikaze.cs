@@ -60,8 +60,12 @@ namespace DOL.GS
 
 			public override void OnAfterSpellCastSequence()
 			{
-				Caster.Die(null);
-				base.OnAfterSpellCastSequence();
+				var mob = Caster as GameMobKamikaze;
+				if (mob != null)
+				{
+					mob.Health = 0;
+					mob.Die(null);
+				}
 			}
 		}
 	}

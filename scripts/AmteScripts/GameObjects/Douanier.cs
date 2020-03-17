@@ -14,12 +14,12 @@ namespace DOL.GS
 		public long Price { get; set; }
 
 		public string paystring
-                {
-                   get
-                   {
-                      return "payer la somme de: " + Money.GetString(Price) + " pour les éviter";
-                   }
-                }
+		{
+			get
+			{
+				return "payer la somme de: " + Money.GetString(Price) + " pour les éviter";
+			}
+		}		
 
 		public Douanier()
 		{
@@ -44,7 +44,8 @@ namespace DOL.GS
         }
 		public override bool WhisperReceive(GameLiving source, string str)
 		{
-			if (!(source is GamePlayer player))
+			var player = source as GamePlayer;
+			if (player == null)
 				return false;
 
 			if (str == paystring)

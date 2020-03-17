@@ -182,7 +182,8 @@ namespace DOL.GS
 
 		public override void Notify(DOLEvent e, object sender, EventArgs args)
 		{
-			if (args is EnemyHealedEventArgs healEvent)
+			var healEvent = args as EnemyHealedEventArgs;
+			if (healEvent != null)
 			{
 				OnEnemyHealed(healEvent.Enemy, healEvent.HealSource, healEvent.ChangeType, healEvent.HealAmount);
 			}

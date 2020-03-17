@@ -12,6 +12,9 @@ namespace AmteScripts.Managers
 {
     public class RvrManager
     {
+        const string ALBION = "Albion";
+        const string HIBERNIA = "Hibernia";
+        const string MIDGARD = "Midgard";
 
         const string RvRNoviceALB = "RvR-Novice-ALB";
         const string RvRNoviceHIB = "RvR-Novice-HIB";
@@ -91,17 +94,17 @@ namespace AmteScripts.Managers
 
         private RvrManager()
         {
-            Albion = GuildMgr.GetGuildByName(nameof(Albion));
+            Albion = GuildMgr.GetGuildByName(ALBION);
             if (Albion == null)
-                Albion = GuildMgr.CreateGuild(eRealm.Albion, nameof(Albion));
+                Albion = GuildMgr.CreateGuild(eRealm.Albion, ALBION);
 
-            Hibernia = GuildMgr.GetGuildByName(nameof(Hibernia));
+            Hibernia = GuildMgr.GetGuildByName(HIBERNIA);
             if (Hibernia == null)
-                Hibernia = GuildMgr.CreateGuild(eRealm.Hibernia, nameof(Hibernia));
+                Hibernia = GuildMgr.CreateGuild(eRealm.Hibernia, HIBERNIA);
 
-            Midgard = GuildMgr.GetGuildByName(nameof(Midgard));
+            Midgard = GuildMgr.GetGuildByName(MIDGARD);
             if (Midgard == null)
-                Midgard = GuildMgr.CreateGuild(eRealm.Midgard, nameof(Midgard));
+                Midgard = GuildMgr.CreateGuild(eRealm.Midgard, MIDGARD);
 
 
             Albion.SaveIntoDatabase();

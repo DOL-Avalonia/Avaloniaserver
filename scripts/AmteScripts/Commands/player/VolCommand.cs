@@ -214,11 +214,15 @@ namespace DOL.GS.Commands
 				return;
 			}
 
-			if (Player.TargetObject != null && (Player.TargetObject as GamePlayer)?.PlayerAfkMessage != null)
+			var targetPlayer = Player.TargetObject as GamePlayer;
+
+			if (targetPlayer != null)
 			{
-				Player.Out.SendMessage("Vous ne pouvez pas voler un joueur afk !",
-					eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return;
+				if (targetPlayer.PlayerAfkMessage != null)
+				{
+					Player.Out.SendMessage("Vous ne pouvez pas voler un joueur afk !", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return;
+				}			
 			}
 
 			long VolChangeTick = Player.TempProperties.getProperty<long>(

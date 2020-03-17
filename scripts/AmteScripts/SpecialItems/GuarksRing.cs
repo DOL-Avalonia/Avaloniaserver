@@ -35,7 +35,8 @@ namespace DOL.GS.Scripts
 
 		public static void Say(DOLEvent e, object sender, EventArgs args)
 		{
-			if (!(sender is GamePlayer player))
+			var player = sender as GamePlayer;
+			if (player == null)
 				return;
 			if (!_playerIDs.Contains(player.InternalID))
 				return;
@@ -318,8 +319,8 @@ namespace DOL.GS.Scripts
 		private static void EnterWorld(DOLEvent e, object sender, EventArgs args)
 		{
 			GameEventMgr.RemoveHandler(sender, GamePlayerEvent.RegionChanged, EnterWorld);
-
-			if (!(sender is GamePlayer player))
+			var player = sender as GamePlayer;
+			if (player == null)
 				return;
 			new RegionTimer(player, EffectCallback, 500);
 		}
