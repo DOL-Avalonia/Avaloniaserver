@@ -13,6 +13,8 @@ namespace DOL.GS
 {
 	public class MobHirule : GameNPC
 	{
+		public ushort originalModel;
+
 		public MobHirule()
 			: base()
 		{
@@ -125,11 +127,21 @@ namespace DOL.GS
 			ActionHiruleGlare(m_hiruleTarget);
 		}
 
-		public override void Die(GameObject killer)
+
+		public override void LoadFromDatabase(DataObject obj)
 		{
+			base.LoadFromDatabase(obj);
 
+			var mob = obj as Mob;
 
-	
+			if (mob != null)
+			{
+				originalModel = mob.Model;
+			}
+		}
+
+		public override void Die(GameObject killer)
+		{	
 			int count = 0;
 			lock (this.XPGainers.SyncRoot)
 			{
@@ -151,6 +163,7 @@ namespace DOL.GS
 						}
 					}
 				}
+				base.Die(killer);
 			}
 
 		///	string message = this.Name + " a été vaincu par une force de " + count + " guerriers du royaume de " + GlobalConstants.RealmToName((eRealm)killer.Realm);
@@ -204,6 +217,12 @@ namespace DOL.GS
 					PickAction();
 				}
 			}
+		}
+
+		public override void StopAttack()
+		{
+			base.StopAttack();
+			this.Model = originalModel;
 		}
 
 		void PickAction()

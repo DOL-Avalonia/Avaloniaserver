@@ -60,6 +60,7 @@ namespace DOL.GS
 
 			public override void OnAfterSpellCastSequence()
 			{
+				base.OnAfterSpellCastSequence();
 				var mob = Caster as GameMobKamikaze;
 				if (mob != null)
 				{

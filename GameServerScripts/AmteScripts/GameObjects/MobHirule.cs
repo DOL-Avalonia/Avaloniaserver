@@ -14,6 +14,8 @@ namespace DOL.GS
 	public class MobHirule : GameNPC
 	{
 		public ushort originalModel;
+		public byte originalSize;
+		private bool isDying;
 
 		public MobHirule()
 			: base()
@@ -131,12 +133,14 @@ namespace DOL.GS
 		public override void LoadFromDatabase(DataObject obj)
 		{
 			base.LoadFromDatabase(obj);
+			isDying = false;
 
 			var mob = obj as Mob;
 
 			if (mob != null)
 			{
 				originalModel = mob.Model;
+				originalSize = mob.Size;
 			}
 		}
 
@@ -164,19 +168,18 @@ namespace DOL.GS
 					}
 				}
 			}
-
-		///	string message = this.Name + " a été vaincu par une force de " + count + " guerriers du royaume de " + GlobalConstants.RealmToName((eRealm)killer.Realm);
-		//NewsMgr.CreateNews(message, killer.Realm, eNewsType.PvE, true);
-           	 //BroadcastMain(message);
-		base.Die(killer);
-		// dragon died message
-		HiruleBroadcast(Name + " crie, \"Vous remportez cette bataille, mais la Guerre ne fait que commencer !\"");
-			//Event dragons dont respawn
+			isDying = true;
+			base.Die(killer);
+			// dragon died message
+			HiruleBroadcast(Name + " crie, \"Vous remportez cette bataille, mais la Guerre ne fait que commencer !\"");
+				//Event dragons dont respawn
 			if (RespawnInterval == -1)
 			{
 				Delete();
 				DeleteFromDatabase();
 			}
+
+			isDying = false;
 		}
 
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
@@ -218,10 +221,25 @@ namespace DOL.GS
 			}
 		}
 
+		public override bool AddToWorld()
+		{
+			bool added = false;
+			added = base.AddToWorld();
+
+			this.Model = originalModel;
+			this.Size = originalSize;
+			return added;
+		}
+
 		public override void StopAttack()
 		{
 			base.StopAttack();
-			this.Model = originalModel;
+
+			if (!isDying)
+			{
+				this.Model = originalModel;
+				this.Size = originalSize;
+			}		
 		}
 
 		void PickAction()

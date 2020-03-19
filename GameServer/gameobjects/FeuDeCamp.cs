@@ -177,28 +177,28 @@ namespace DOL.GS
                             Player.Mana = Player.MaxMana;
                         }
                     }
+                }
 
-                    if (IsHealthTrapType && HealthTrapDamagePercent > 0)
+                if (IsHealthTrapType && HealthTrapDamagePercent > 0)
+                {
+                    Player.Health -= HealthTrapDamagePercent * (Player.MaxHealth / 100);
+
+                    if (Player.Health <= 0)
                     {
-                        Player.Health -= HealthTrapDamagePercent * (Player.MaxHealth / 100);
-
-                        if (Player.Health <= 0)
-                        {
-                            Player.Health = 0;
-                            Player.Die(null);
-                        }
+                        Player.Health = 0;
+                        Player.Die(null);
                     }
+                }
 
-                    if (IsManaTrapType && ManaTrapDamagePercent > 0)
+                if (IsManaTrapType && ManaTrapDamagePercent > 0)
+                {
+                    Player.Mana -= ManaTrapDamagePercent * (Player.MaxMana / 100);
+
+                    if (Player.Mana < 0)
                     {
-                        Player.Mana -= ManaTrapDamagePercent * (Player.MaxMana / 100);
-
-                        if (Player.Mana < 0)
-                        {
-                            Player.Mana = 0;
-                        }
+                        Player.Mana = 0;
                     }
-                }            
+                }
             }
         }
 

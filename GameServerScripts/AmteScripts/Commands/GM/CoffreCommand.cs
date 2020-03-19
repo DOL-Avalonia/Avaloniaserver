@@ -64,7 +64,7 @@ namespace DOL.GS.Scripts
                         ItemInterval = 60,
                         ItemChance = 100
                     };
-                    coffre.RespawnTimer = new System.Timers.Timer(60 * 60 * 1000);
+                    coffre.InitTimer();
                     coffre.LoadedFromScript = false;
                     coffre.AddToWorld();
                     coffre.SaveIntoDatabase();
@@ -102,6 +102,7 @@ namespace DOL.GS.Scripts
                     {
                         coffre.ItemChance = int.Parse(args[2]);
                         coffre.ItemInterval = int.Parse(args[3]);
+                        coffre.InitTimer();
                         coffre.SaveIntoDatabase();
                     }
                     catch
@@ -246,7 +247,7 @@ namespace DOL.GS.Scripts
                     else
                         coffre2 = new GameCoffre(coffre.Items);
 
-                    coffre2.Name = coffre.Name;
+                    coffre2.Name = coffre.Name + "_cpy";
                     coffre2.X = player.X;
                     coffre2.Y = player.Y;
                     coffre2.Z = player.Z;
@@ -254,6 +255,20 @@ namespace DOL.GS.Scripts
                     coffre2.CurrentRegion = player.CurrentRegion;
                     coffre2.Model = coffre.Model;
                     coffre2.ItemInterval = coffre.ItemInterval;
+                    coffre2.TpEffect = coffre.TpEffect;
+                    coffre2.TpIsRenaissance = coffre.TpIsRenaissance;
+                    coffre2.TpLevelRequirement = coffre.TpLevelRequirement;
+                    coffre2.TpX = coffre.TpX;
+                    coffre2.TpY = coffre.TpY;
+                    coffre2.TpZ = coffre.TpZ;
+                    coffre2.TpRegion = coffre.TpRegion;
+                    coffre2.TrapRate = coffre.TrapRate;
+                    coffre2.NpctemplateId = coffre.NpctemplateId;
+                    coffre2.PunishSpellId = coffre.PunishSpellId;
+                    coffre2.IsOpeningRenaissanceType = coffre.IsOpeningRenaissanceType;
+                    coffre2.IsTeleporter = coffre.IsTeleporter;
+                    coffre2.InitTimer();    
+
                     coffre2.ItemChance = coffre.ItemChance;
                     if (args[1].ToLower() == "randomcopy")
                     {

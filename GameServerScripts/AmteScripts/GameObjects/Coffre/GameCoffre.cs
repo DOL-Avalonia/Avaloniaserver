@@ -320,7 +320,7 @@ namespace DOL.GS.Scripts
 				}
 			}
 
-			if (gotItemOrUsedTeleporter)
+			if (gotItemOrUsedTeleporter && ItemInterval != 0)
 			{
 				m_lastInteract = DateTime.MinValue;
 				LastOpen = DateTime.Now;
@@ -388,7 +388,7 @@ namespace DOL.GS.Scripts
 				var rand = new Random(DateTime.Now.Millisecond);
 				if (rand.Next(1,TrapRate + 1) <= TrapRate)
 				{
-					var template = GameServer.Database.FindObjectByKey<DBNpcTemplate>(NpctemplateId);
+					var template = GameServer.Database.SelectObject<DBNpcTemplate>("TemplateId = " + NpctemplateId);
 					if (template != null)
 					{
 						var mob = new AmteMob(new NpcTemplate(template))
@@ -592,23 +592,23 @@ namespace DOL.GS.Scripts
 
 		#region Database
         public override void LoadFromDatabase(DataObject obj)
-        {
-            DBCoffre coffre = obj as DBCoffre;
-            if (coffre == null) return;
-            Name = coffre.Name;
-            X = coffre.X;
-            Y = coffre.Y;
-            Z = coffre.Z;
-            Heading = (ushort) (coffre.Heading & 0xFFF);
-            CurrentRegionID = coffre.Region;
-            Model = coffre.Model;
-            LastOpen = coffre.LastOpen;
-            ItemInterval = coffre.ItemInterval;
-            InternalID = coffre.ObjectId;
-            ItemChance = coffre.ItemChance;
-            KeyItem = coffre.KeyItem;
-            LockDifficult = coffre.LockDifficult;
-            Coffre = coffre;
+		{
+			DBCoffre coffre = obj as DBCoffre;
+			if (coffre == null) return;
+			Name = coffre.Name;
+			X = coffre.X;
+			Y = coffre.Y;
+			Z = coffre.Z;
+			Heading = (ushort)(coffre.Heading & 0xFFF);
+			CurrentRegionID = coffre.Region;
+			Model = coffre.Model;
+			LastOpen = coffre.LastOpen;
+			ItemInterval = coffre.ItemInterval;
+			InternalID = coffre.ObjectId;
+			ItemChance = coffre.ItemChance;
+			KeyItem = coffre.KeyItem;
+			LockDifficult = coffre.LockDifficult;
+			Coffre = coffre;
 			TrapRate = coffre.TrapRate;
 			NpctemplateId = coffre.NpctemplateId;
 			TpX = coffre.TpX;
@@ -622,21 +622,32 @@ namespace DOL.GS.Scripts
 			TpEffect = coffre.TpEffect;
 			TpRegion = coffre.TpRegion;
 
+			InitTimer();
+
+			m_Items = new List<CoffreItem>();
+			if (coffre.ItemList != "")
+				foreach (string item in coffre.ItemList.Split(';'))
+					m_Items.Add(new CoffreItem(item));
+		}
+
+		public void InitTimer()
+		{
 			double interval = (double)ItemInterval * 60D * 1000D;
 			if (interval > int.MaxValue)
 			{
 				interval = (double)int.MaxValue;
 			}
+
+			if (interval == 0)
+			{
+				interval = 1;
+			}
+
 			RespawnTimer = new Timer(interval);
 			RespawnTimer.Elapsed += Repop_Elapsed;
+		}
 
-			m_Items = new List<CoffreItem>();
-            if (coffre.ItemList != "")
-                foreach (string item in coffre.ItemList.Split(';'))
-                    m_Items.Add(new CoffreItem(item));
-        }
-
-	    public override void SaveIntoDatabase()
+		public override void SaveIntoDatabase()
 		{
 			if(Coffre == null)
 				Coffre = new DBCoffre();
@@ -764,6 +775,7 @@ namespace DOL.GS.Scripts
 			text.Add("");
 			text.Add("-- Teleport Info --");
 			text.Add("IsTeleporter: " + this.IsTeleporter);
+			text.Add("TP Level Requirement: " + this.TpLevelRequirement);
 			text.Add("X: " + TpX);
 			text.Add("Y: " + TpY);
 			text.Add("Z: " + TpZ);

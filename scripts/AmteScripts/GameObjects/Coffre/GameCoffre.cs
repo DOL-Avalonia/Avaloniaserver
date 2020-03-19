@@ -110,6 +110,18 @@ namespace DOL.GS.Scripts
 			set;
 		}
 
+		public bool IsOpeningRenaissanceType
+		{
+			get;
+			set;
+		}
+
+		public int PunishSpellId
+		{
+			get;
+			set;
+		}
+
 		public int	AllChance
 		{
 			get 
@@ -236,6 +248,7 @@ namespace DOL.GS.Scripts
 
 		private bool InteractEnd(GamePlayer player)
 		{
+			bool gotItemOrUsedTeleporter = false;
 			if (!IsTeleporter)
 			{
 				CoffreItem coffre = GetRandomItem();
@@ -251,14 +264,33 @@ namespace DOL.GS.Scripts
 					}
 					else
 					{
-						if (player.Inventory.AddTemplate(GameInventoryItem.Create(item), 1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+						if (!IsOpeningRenaissanceType)
 						{
-							player.Out.SendMessage("Vous récupérez un objet!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-							//GameServer.Instance.LogTradeAction("[COFFRE] "+Name+" ("+ToString()+") -> " + player.Name + " (" + player.Client.Account.Name + "): [ITEM] 1 '" + item.Id_nb + "' (" + item.ObjectId + ")", 2);
-							InventoryLogging.LogInventoryAction(this, player, eInventoryActionType.Loot, item);
+							gotItemOrUsedTeleporter = GetItem(player, item);
 						}
 						else
-							player.Out.SendMessage("Vous récupérez un objet mais votre sac-à-dos est plein.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						{
+							if (player.IsRenaissance)
+							{
+								gotItemOrUsedTeleporter = GetItem(player, item);
+							}
+							else
+							{
+								if (PunishSpellId > 0)
+								{
+									var spell = GameServer.Database.SelectObject<DBSpell>("SpellID = " + PunishSpellId);							
+
+									if (spell != null)
+									{
+										foreach (GamePlayer pl in this.GetPlayersInRadius(5000))
+										{
+											pl.Out.SendSpellEffectAnimation(pl, pl, (ushort)PunishSpellId, 0, false, 5);
+										}
+										player.TakeDamage(this, eDamageType.Energy, (int)spell.Damage, 0);
+									}
+								}
+							}
+						}			
 
 						HandlePopMob();
 					}
@@ -284,23 +316,42 @@ namespace DOL.GS.Scripts
 				else
 				{
 					HandleTeleporter(player);
+					gotItemOrUsedTeleporter = true;
 				}
+			}
+
+			if (gotItemOrUsedTeleporter && ItemInterval != 0)
+			{
+				m_lastInteract = DateTime.MinValue;
+				LastOpen = DateTime.Now;
+				RemoveFromWorld(ItemInterval * 60);
+				RespawnTimer.Start();
+				SaveIntoDatabase();
 			}
 		
             m_interactPlayer = null;
-            m_lastInteract = DateTime.MinValue;
-            LastOpen = DateTime.Now;
-			RemoveFromWorld(ItemInterval * 60);
-			RespawnTimer.Start();
-
-			SaveIntoDatabase();
+         
 			return true;
+		}
+
+		private bool GetItem(GamePlayer player, ItemTemplate item)
+		{
+			if (player.Inventory.AddTemplate(GameInventoryItem.Create(item), 1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			{
+				player.Out.SendMessage("Vous récupérez un objet!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				InventoryLogging.LogInventoryAction(this, player, eInventoryActionType.Loot, item);
+				return true;
+			}
+			else
+				player.Out.SendMessage("Vous récupérez un objet mais votre sac-à-dos est plein.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+
+			return false;
 		}
 
 		private void HandleTeleporter(GamePlayer player)
 		{
 			if (TpX > 0 && TpY > 0 && TpZ > 0 && TpRegion > 0)
-			{			
+			{
 				RegionTimer TimerTL = new RegionTimer(this, Teleportation);
 				TimerTL.Properties.setProperty("TP", new GameLocation("Coffre Location", (ushort)TpRegion, TpX, TpY, TpZ, player.Heading));
 				TimerTL.Properties.setProperty("player", player);
@@ -337,7 +388,7 @@ namespace DOL.GS.Scripts
 				var rand = new Random(DateTime.Now.Millisecond);
 				if (rand.Next(1,TrapRate + 1) <= TrapRate)
 				{
-					var template = GameServer.Database.FindObjectByKey<DBNpcTemplate>(NpctemplateId);
+					var template = GameServer.Database.SelectObject<DBNpcTemplate>("TemplateId = " + NpctemplateId);
 					if (template != null)
 					{
 						var mob = new AmteMob(new NpcTemplate(template))
@@ -351,7 +402,7 @@ namespace DOL.GS.Scripts
 							Size = 50,
 							Name = "Gardien du Coffre"							
 						};
-
+						mob.RespawnInterval = -1;
 						mob.AddToWorld();						
 					}
 				}				
@@ -541,49 +592,62 @@ namespace DOL.GS.Scripts
 
 		#region Database
         public override void LoadFromDatabase(DataObject obj)
-        {
-            DBCoffre coffre = obj as DBCoffre;
-            if (coffre == null) return;
-            Name = coffre.Name;
-            X = coffre.X;
-            Y = coffre.Y;
-            Z = coffre.Z;
-            Heading = (ushort) (coffre.Heading & 0xFFF);
-            CurrentRegionID = coffre.Region;
-            Model = coffre.Model;
-            LastOpen = coffre.LastOpen;
-            ItemInterval = coffre.ItemInterval;
-            InternalID = coffre.ObjectId;
-            ItemChance = coffre.ItemChance;
-            KeyItem = coffre.KeyItem;
-            LockDifficult = coffre.LockDifficult;
-            Coffre = coffre;
+		{
+			DBCoffre coffre = obj as DBCoffre;
+			if (coffre == null) return;
+			Name = coffre.Name;
+			X = coffre.X;
+			Y = coffre.Y;
+			Z = coffre.Z;
+			Heading = (ushort)(coffre.Heading & 0xFFF);
+			CurrentRegionID = coffre.Region;
+			Model = coffre.Model;
+			LastOpen = coffre.LastOpen;
+			ItemInterval = coffre.ItemInterval;
+			InternalID = coffre.ObjectId;
+			ItemChance = coffre.ItemChance;
+			KeyItem = coffre.KeyItem;
+			LockDifficult = coffre.LockDifficult;
+			Coffre = coffre;
 			TrapRate = coffre.TrapRate;
 			NpctemplateId = coffre.NpctemplateId;
 			TpX = coffre.TpX;
 			TpY = coffre.TpY;
 			TpZ = coffre.TpZ;
+			PunishSpellId = coffre.PunishSpellId;
 			TpLevelRequirement = coffre.TpLevelRequirement;
 			TpIsRenaissance = coffre.TpIsRenaissance;
+			IsOpeningRenaissanceType = coffre.IsOpeningRenaissanceType;
 			IsTeleporter = coffre.IsTeleporter;
 			TpEffect = coffre.TpEffect;
 			TpRegion = coffre.TpRegion;
 
+			InitTimer();
+
+			m_Items = new List<CoffreItem>();
+			if (coffre.ItemList != "")
+				foreach (string item in coffre.ItemList.Split(';'))
+					m_Items.Add(new CoffreItem(item));
+		}
+
+		public void InitTimer()
+		{
 			double interval = (double)ItemInterval * 60D * 1000D;
 			if (interval > int.MaxValue)
 			{
 				interval = (double)int.MaxValue;
 			}
+
+			if (interval == 0)
+			{
+				interval = 1;
+			}
+
 			RespawnTimer = new Timer(interval);
 			RespawnTimer.Elapsed += Repop_Elapsed;
+		}
 
-			m_Items = new List<CoffreItem>();
-            if (coffre.ItemList != "")
-                foreach (string item in coffre.ItemList.Split(';'))
-                    m_Items.Add(new CoffreItem(item));
-        }
-
-	    public override void SaveIntoDatabase()
+		public override void SaveIntoDatabase()
 		{
 			if(Coffre == null)
 				Coffre = new DBCoffre();
@@ -605,11 +669,13 @@ namespace DOL.GS.Scripts
 			Coffre.TpX = TpX;
 			Coffre.TpY = TpY;
 			Coffre.TpZ = TpZ;
+			Coffre.PunishSpellId = PunishSpellId;
 			Coffre.TpLevelRequirement = TpLevelRequirement;
 			Coffre.TpIsRenaissance = TpIsRenaissance;
 			Coffre.IsTeleporter = IsTeleporter;
 			Coffre.TpEffect = TpEffect;
 			Coffre.TpRegion = TpRegion;
+			Coffre.IsOpeningRenaissanceType = IsOpeningRenaissanceType;
 
 			if (Items != null)
 			{
@@ -693,6 +759,7 @@ namespace DOL.GS.Scripts
 				text.Add(" + Id_nb de la clef: " + KeyItem);
 			else
 				text.Add(" + Le coffre n'a pas besoin de clef");
+
 			text.Add("");
 			text.Add(" + Listes des items (" + Items.Count + " items):");
 			int i = 0;
@@ -703,7 +770,27 @@ namespace DOL.GS.Scripts
 				TotalChance += item.Chance;
 				text.Add("  " + i + ". " + item.Id_nb + " - " + item.Chance);
 			}
-			text.Add("Total des chances: " + TotalChance);
+			text.Add("Total des chances: " + TotalChance);			
+			
+			text.Add("");
+			text.Add("-- Teleport Info --");
+			text.Add("IsTeleporter: " + this.IsTeleporter);
+			text.Add("TP Level Requirement: " + this.TpLevelRequirement);
+			text.Add("X: " + TpX);
+			text.Add("Y: " + TpY);
+			text.Add("Z: " + TpZ);
+			text.Add("RegionID: " + TpRegion);			
+			
+			text.Add("");
+			text.Add("-- Trap Info --");
+			text.Add("NPCTemplate: " + (this.NpctemplateId != null ? this.NpctemplateId : "-"));
+			text.Add("Trap Rate: " + this.TrapRate);			
+			
+			text.Add("");
+			text.Add("-- Is Renaissance Info --");
+			text.Add("IsOpeningRenaissanceType: " + this.IsOpeningRenaissanceType);
+			text.Add("TpIsRenaissance: " + this.TpIsRenaissance);
+			text.Add("PunishSpellId: " + this.PunishSpellId);
 			return text;
 		}
 	}

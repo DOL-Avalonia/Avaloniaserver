@@ -1,4 +1,5 @@
 ﻿using DOL.AI.Brain;
+using System.Text.RegularExpressions;
 
 namespace DOL.GS
 {
@@ -25,7 +26,8 @@ namespace DOL.GS
             bool yell = false;
             foreach (GameNPC npc in GetNPCsInRadius(LINK_DISTANCE))
             {
-                if (npc is GameNPC && this.Name.EndsWith(npc.GuildName) && !npc.InCombat)
+                var match = Regex.Match(this.Name, @"\s("+ npc.GuildName +")$");
+                if (npc is GameNPC && match != null && match.Length > 1 && !npc.InCombat)
                 {
                     npc.StartAttack(attackTarget);
                     yell = true;
