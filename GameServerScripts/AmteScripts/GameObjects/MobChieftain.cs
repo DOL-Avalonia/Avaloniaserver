@@ -5,7 +5,7 @@ namespace DOL.GS
 {
     public class MobChieftain : GameNPC
     {
-        public static ushort LINK_DISTANCE = 1000;
+        public static ushort LINK_DISTANCE = 2000;
 
         public MobChieftain()
             : base()

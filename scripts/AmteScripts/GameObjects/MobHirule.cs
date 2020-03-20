@@ -14,6 +14,8 @@ namespace DOL.GS
 	public class MobHirule : GameNPC
 	{
 		public ushort originalModel;
+		public byte originalSize;
+		private bool isDying;
 
 		public MobHirule()
 			: base()
@@ -137,6 +139,7 @@ namespace DOL.GS
 			if (mob != null)
 			{
 				originalModel = mob.Model;
+				originalSize = mob.Size;
 			}
 		}
 
@@ -163,21 +166,19 @@ namespace DOL.GS
 						}
 					}
 				}
-				base.Die(killer);
 			}
-
-		///	string message = this.Name + " a été vaincu par une force de " + count + " guerriers du royaume de " + GlobalConstants.RealmToName((eRealm)killer.Realm);
-		//NewsMgr.CreateNews(message, killer.Realm, eNewsType.PvE, true);
-           	 //BroadcastMain(message);
-		base.Die(killer);
-		// dragon died message
-		HiruleBroadcast(Name + " crie, \"Vous remportez cette bataille, mais la Guerre ne fait que commencer !\"");
-			//Event dragons dont respawn
+			isDying = true;
+			base.Die(killer);
+			// dragon died message
+			HiruleBroadcast(Name + " crie, \"Vous remportez cette bataille, mais la Guerre ne fait que commencer !\"");
+				//Event dragons dont respawn
 			if (RespawnInterval == -1)
 			{
 				Delete();
 				DeleteFromDatabase();
 			}
+
+			isDying = false;
 		}
 
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
@@ -219,10 +220,44 @@ namespace DOL.GS
 			}
 		}
 
+		public override bool AddToWorld()
+		{
+			bool added = false;
+			isDying = false;
+			added = base.AddToWorld();
+
+			//If added by command create or copy save original values
+			if (originalModel == 0 && originalSize == 0)
+			{
+				originalModel = this.Model;
+				originalSize = this.Size;
+			}
+			//Otherwise restore original values from database load
+			else
+			{				
+				this.Model = originalModel;
+				this.Size = originalSize;
+			}
+		
+			return added;
+		}
+
+		public override void SaveIntoDatabase()
+		{
+			originalSize = Size;
+			originalModel = Model;
+			base.SaveIntoDatabase();
+		}
+
 		public override void StopAttack()
 		{
 			base.StopAttack();
-			this.Model = originalModel;
+
+			if (!isDying)
+			{
+				this.Model = originalModel;
+				this.Size = originalSize;
+			}		
 		}
 
 		void PickAction()

@@ -117,7 +117,19 @@ namespace DOL.GS
             m_ProximityCheckTimer = new Timer(PROXIMITY_CHECK_INTERVAL);
             m_ProximityCheckTimer.Elapsed += new ElapsedEventHandler(ProximityCheck);
 
-            m_LifeTimer = new Timer(Lifetime * 60 * 1000);
+            if (double.IsNaN(Lifetime))
+            {
+                Lifetime = 2;
+            }
+
+            int minutes = (int)Lifetime * 60 * 1000;
+
+            if (minutes < 0)
+            {
+                minutes = int.MaxValue;
+            }
+
+            m_LifeTimer = new Timer(minutes);
             m_LifeTimer.Elapsed += new ElapsedEventHandler(DeleteObject);
 
             m_ProximityCheckTimer.Start();
@@ -274,12 +286,29 @@ namespace DOL.GS
 
             if (Player != null && Feu != null)
             {
-                Feu.X = Player.X;
-                Feu.Y = Player.Y;
-                Feu.Z = Player.Z; 
-                Feu.CurrentRegion = Player.CurrentRegion;
-                Feu.Heading = Player.Heading;
-                Feu.AddToWorld();
+                var firecamp = new FeuDeCamp()
+                {
+                    Template_ID = Feu.Template_ID,
+                    Model = Feu.Model,
+                    Radius = Feu.Radius,
+                    Lifetime = Feu.Lifetime,
+                    EndurancePercentRate = Feu.EndurancePercentRate,
+                    IsHealthType = Feu.IsHealthType,
+                    IsManaType = Feu.IsManaType,
+                    IsManaTrapType = Feu.IsManaTrapType,
+                    IsHealthTrapType = Feu.IsHealthType,
+                    ManaTrapDamagePercent = Feu.ManaTrapDamagePercent,
+                    HealthTrapDamagePercent = Feu.HealthTrapDamagePercent,
+                    IsEnduranceType = Feu.IsEnduranceType,
+                    HealthPercentRate = Feu.HealthPercentRate
+                };
+
+                firecamp.X = Player.X;
+                firecamp.Y = Player.Y;
+                firecamp.Z = Player.Z;
+                firecamp.CurrentRegion = Player.CurrentRegion;
+                firecamp.Heading = Player.Heading;
+                firecamp.AddToWorld();
 
                 Args.GroundItem.Delete();
             }

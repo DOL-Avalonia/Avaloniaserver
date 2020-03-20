@@ -133,7 +133,6 @@ namespace DOL.GS
 		public override void LoadFromDatabase(DataObject obj)
 		{
 			base.LoadFromDatabase(obj);
-			isDying = false;
 
 			var mob = obj as Mob;
 
@@ -224,11 +223,30 @@ namespace DOL.GS
 		public override bool AddToWorld()
 		{
 			bool added = false;
+			isDying = false;
 			added = base.AddToWorld();
 
-			this.Model = originalModel;
-			this.Size = originalSize;
+			//If added by command create or copy save original values
+			if (originalModel == 0 && originalSize == 0)
+			{
+				originalModel = this.Model;
+				originalSize = this.Size;
+			}
+			//Otherwise restore original values from database load
+			else
+			{				
+				this.Model = originalModel;
+				this.Size = originalSize;
+			}
+		
 			return added;
+		}
+
+		public override void SaveIntoDatabase()
+		{
+			originalSize = Size;
+			originalModel = Model;
+			base.SaveIntoDatabase();
 		}
 
 		public override void StopAttack()
