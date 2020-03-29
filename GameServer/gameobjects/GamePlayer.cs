@@ -93,6 +93,12 @@ namespace DOL.GS
         /// Is this player being 'jumped' to a new location?
         /// </summary>
         public bool IsJumping { get; set; }
+        
+        /// <summary>
+        /// stores the players last updated map location that is sent to other group members
+        /// used when checking if a player has moved far enough to broadcast another map update
+        /// </summary>
+        public Point2D GroupMapOldLoc { get; set; }
 
         /// <summary>
         /// true if the targetObject is visible

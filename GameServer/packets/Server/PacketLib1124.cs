@@ -2051,9 +2051,8 @@ namespace DOL.GS.PacketHandler
 					flags3 |= 0x01;
 				if (questIndicator == eQuestIndicator.Lore)
 					flags3 |= 0x02;
-				if (questIndicator == eQuestIndicator.Pending || questIndicator == eQuestIndicator.New) // new? patch 0031
-					flags3 |= 0x20;	
-
+				if (questIndicator == eQuestIndicator.Pending) // new? patch 0031
+					flags3 |= 0x20;
 				pak.WriteByte(flags3); // new in 1.71 (region instance ID from StoC_0x20) OR flags 3?
 				pak.WriteShort(0x00); // new in 1.71 unknown
 	
@@ -4866,7 +4865,7 @@ namespace DOL.GS.PacketHandler
 				}
 			}
 		}
-		protected virtual void WriteGroupMemberUpdate(GSTCPPacketOut pak, bool updateIcons, GameLiving living)
+		protected virtual void WriteGroupMemberUpdate(GSTCPPacketOut pak, bool updateIcons, bool updateMap, GameLiving living)
 		{
 			pak.WriteByte((byte)(living.GroupIndex + 1)); // From 1 to 8
 			bool sameRegion = living.CurrentRegion == GameClient.Player.CurrentRegion;
@@ -4926,7 +4925,7 @@ namespace DOL.GS.PacketHandler
 							}
 					}
 				}
-				WriteGroupMemberMapUpdate(pak, living);
+				WriteGroupMemberMapUpdate(pak, updateMap, living);
 			}
 			else
 			{
@@ -4938,11 +4937,11 @@ namespace DOL.GS.PacketHandler
 				}
 			}
 		}
-		protected virtual void WriteGroupMemberMapUpdate(GSTCPPacketOut pak, GameLiving living)
+		protected virtual void WriteGroupMemberMapUpdate(GSTCPPacketOut pak, bool updateMap, GameLiving living)
 		{
 			bool sameRegion = living.CurrentRegion == GameClient.Player.CurrentRegion;
-			if (sameRegion && living.CurrentSpeed != 0)//todo : find a better way to detect when player change coord
-			{
+            if (updateMap || sameRegion && living.Group.CheckMemberNeedsUpdate((GamePlayer)living))
+            {
 				Zone zone = living.CurrentZone;
 				if (zone == null)
 					return;
@@ -5822,13 +5821,19 @@ namespace DOL.GS.PacketHandler
             }
         }        
 
-        public void SendGroupMemberUpdate(bool updateIcons, GameLiving living)
+        public void SendGroupMemberUpdate(bool updateIcons, bool updateMap, GameLiving living)
         {
             if (GameClient.Player == null)
+            {
                 return;
+            }
+
             Group group = GameClient.Player.Group;
+
             if (group == null)
+            {
                 return;
+            }
 
             using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.GroupMemberUpdate)))
             {
@@ -5836,8 +5841,11 @@ namespace DOL.GS.PacketHandler
                 {
                     // make sure group is not modified before update is sent else player index could change _before_ update
                     if (living.Group != group)
+                    {
                         return;
-                    WriteGroupMemberUpdate(pak, updateIcons, living);
+                    }
+
+                    WriteGroupMemberUpdate(pak, updateIcons, updateMap, living);
                     pak.WriteByte(0x00);
                     SendTCP(pak);
                 }
@@ -5855,8 +5863,43 @@ namespace DOL.GS.PacketHandler
             using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.GroupMemberUpdate)))
             {
                 foreach (GameLiving living in group.GetMembersInTheGroup())
-                    WriteGroupMemberUpdate(pak, updateIcons, living);
+                {
+                    WriteGroupMemberUpdate(pak, updateIcons, true, living);
+                }
+
                 pak.WriteByte(0x00);
+                SendTCP(pak);
+            }
+        }
+
+        public virtual void SendGroupMapUpdate(List<GroupMemberLocation> grpMembers)
+        {
+            if (GameClient.Player == null)
+            {
+                return;
+            }
+
+            using (GSTCPPacketOut pak = new GSTCPPacketOut((byte)eServerPackets.GroupMemberUpdate))
+            {
+                foreach (var member in grpMembers)
+                {
+                    if (GameClient.Player == member.grpMember)
+                    {
+                        if (grpMembers.Count == 1)
+                        {
+                            return; // same player and only one in the list, so return;
+                        }
+                        continue; // dont need to send yourself your own update, but more players in list to update so continue.
+                    }
+                    if (GameClient.Player.CurrentRegion == member.grpMember.CurrentRegion)
+                    {
+                        pak.WriteByte(member.GroupIndex);
+                        pak.WriteShort(member.ZoneID);
+                        pak.WriteShort(member.PlayerMapX);
+                        pak.WriteShort(member.PlayerMapY);
+                    }
+                }
+                pak.WriteByte(0x00); // null terminated
                 SendTCP(pak);
             }
         }

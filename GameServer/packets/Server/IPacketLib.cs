@@ -102,6 +102,7 @@ namespace DOL.GS.PacketHandler
 		CharacterStatusUpdate = 0xAD,
 		PlayerDeath = 0xAE,
 		Message = 0xAF,
+		StartArena = 0xB1,
 		MaxSpeed = 0xB6,
 		RegionChanged = 0xB7,
 		PlayerHeading = 0xBA,
@@ -139,6 +140,7 @@ namespace DOL.GS.PacketHandler
 		EmoteAnimation = 0xF9,
 		MoneyUpdate = 0xFA,
 		StatsUpdate = 0xFB,
+		CharacterOverview1126 = 0xFC,
 		CharacterOverview = 0xFD,
 		Realm = 0xFE,
 		MasterLevelWindow = 0x13,
@@ -403,7 +405,7 @@ namespace DOL.GS.PacketHandler
         Talk = 0x51,        
         Monty = 0x54,
         Loco = 0x55,  
-		//Cower = ??, unknown
+		Cower = 0x5B,
         SiegeWeaponEmote = 0xc9
 	};
 
@@ -702,9 +704,10 @@ namespace DOL.GS.PacketHandler
 		void SendQuestSubscribeCommand(GameNPC invitingNPC, ushort questid, string inviteMessage);
 		void SendQuestAbortCommand(GameNPC abortingNPC, ushort questid, string abortMessage);
 		void SendGroupWindowUpdate();
-		void SendGroupMemberUpdate(bool updateIcons, GameLiving living);
+		void SendGroupMemberUpdate(bool updateIcons, bool updateMap, GameLiving living);
 		void SendGroupMembersUpdate(bool updateIcons);
-		void SendInventoryItemsUpdate(ICollection<InventoryItem> itemsToUpdate);
+        void SendGroupMapUpdate(List<GroupMemberLocation> grpMem);
+        void SendInventoryItemsUpdate(ICollection<InventoryItem> itemsToUpdate);
 		void SendInventorySlotsUpdate(ICollection<int> slots);
 		void SendInventoryItemsUpdate(eInventoryWindowType windowType, ICollection<InventoryItem> itemsToUpdate);
 		void SendInventoryItemsUpdate(IDictionary<int, InventoryItem> updateItems, eInventoryWindowType windowType);

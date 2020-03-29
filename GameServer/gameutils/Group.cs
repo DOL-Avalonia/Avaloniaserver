@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Text;
 using DOL.GS.PacketHandler;
 using DOL.Events;
+using System.Timers;
 
 namespace DOL.GS
 {
@@ -30,12 +31,23 @@ namespace DOL.GS
     public class Group
     {
         /// <summary>
+        /// Timer for group map location update checks
+        /// </summary>
+        public Timer GroupMapUpdateTimer;
+
+        /// <summary>
+        /// List holding group members location variables
+        /// </summary>
+        List<GroupMemberLocation> GrpMemUpdateList;
+
+        /// <summary>
         /// Default Constructor with GamePlayer Leader.
         /// </summary>
         /// <param name="leader"></param>
         public Group(GamePlayer leader)
             : this((GameLiving)leader)
         {
+            StartGroupTimer(2000); // start timer with 2 second callback timer. Could change
         }
 
         /// <summary>
@@ -187,19 +199,7 @@ namespace DOL.GS
                                                   }))
             {
                 return false;
-            }
-
-            UpdateGroupWindow();
-
-            // update icons of joined player to everyone in the group
-            UpdateMember(living, true, false);
-
-            // update all icons for just joined player
-            var player = living as GamePlayer;
-            if (player != null)
-            {
-                player.Out.SendGroupMembersUpdate(true);
-            }
+            }            
 
             SendMessageToGroupMembers(string.Format("{0} has joined the group.", living.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             GameEventMgr.Notify(GroupEvent.MemberJoined, this, new MemberJoinedEventArgs(living));
@@ -288,6 +288,7 @@ namespace DOL.GS
 
             LivingLeader = null;
             m_groupMembers.Clear();
+            GroupMapUpdateTimer.Dispose();
         }
 
         /// <summary>
@@ -378,7 +379,8 @@ namespace DOL.GS
         /// <param name="living">living to update</param>
         /// <param name="updateIcons">Do icons need an update</param>
         /// <param name="updateOtherRegions">Should updates be sent to players in other regions</param>
-        public void UpdateMember(GameLiving living, bool updateIcons, bool updateOtherRegions)
+        /// <param name="updateMap">Does map need forced update</param>
+        public void UpdateMember(GameLiving living, bool updateIcons, bool updateOtherRegions, bool updateMap = false)
         {
             if (living.Group != this)
             {
@@ -389,7 +391,7 @@ namespace DOL.GS
             {
                 if (updateOtherRegions || player.CurrentRegion == living.CurrentRegion)
                 {
-                    player.Out.SendGroupMemberUpdate(updateIcons, living);
+                    player.Out.SendGroupMemberUpdate(updateIcons, updateMap, living);
                 }
             }
         }
@@ -400,7 +402,8 @@ namespace DOL.GS
         /// <param name="player">The player that should receive updates</param>
         /// <param name="updateIcons">Do icons need an update</param>
         /// <param name="updateOtherRegions">Should updates be sent to players in other regions</param>
-        public void UpdateAllToMember(GamePlayer player, bool updateIcons, bool updateOtherRegions)
+        /// <param name="updateMap">Does map need forced update</param>
+        public void UpdateAllToMember(GamePlayer player, bool updateIcons, bool updateOtherRegions, bool updateMap = false)
         {
             if (player.Group != this)
             {
@@ -411,7 +414,7 @@ namespace DOL.GS
             {
                 if (updateOtherRegions || living.CurrentRegion == player.CurrentRegion)
                 {
-                    player.Out.SendGroupMemberUpdate(updateIcons, living);
+                    player.Out.SendGroupMemberUpdate(updateIcons, updateMap, living);
                 }
             }
         }
@@ -425,6 +428,15 @@ namespace DOL.GS
             {
                 player.Out.SendGroupWindowUpdate();
             }
+        }
+
+        /// <summary>
+        /// create players map location reference and send out 
+        /// </summary>        
+        public void SendGroupUpdates(GamePlayer player)
+        {
+            player.GroupMapOldLoc = new Point2D(player.X, player.Y);
+            player.Out.SendGroupMembersUpdate(true);
         }
 
         /// <summary>
@@ -506,5 +518,95 @@ namespace DOL.GS
                 return text.ToString();
             }
         }
+
+        /// <summary>
+        /// Set some variables for the group timer
+        /// </summary> 
+        private void StartGroupTimer(int callBack)
+        {
+            GroupMapUpdateTimer = new Timer(callBack);
+            GroupMapUpdateTimer.Elapsed += GroupMapUpdateTimerCallback;
+            GroupMapUpdateTimer.AutoReset = true;
+            GroupMapUpdateTimer.Enabled = true;
+
+            GrpMemUpdateList = new List<GroupMemberLocation>();            
+        }
+
+        /// <summary>
+        /// method called when callback timer elapses
+        /// </summary>        
+        private void GroupMapUpdateTimerCallback(object source, ElapsedEventArgs e) // patch 0218
+        {
+            // check all the group members for a required map update
+            foreach (GamePlayer grpMem in this.GetMembersInTheGroup())
+            {
+                if (CheckMemberNeedsUpdate(grpMem))
+                {                    
+                    AddMemberToUpdateList(grpMem);
+                }
+            }
+            // someone needs an update, send it group members
+            if (GrpMemUpdateList.Count > 0)
+            {                
+                foreach (GamePlayer grpMem in this.GetMembersInTheGroup())
+                {                    
+                    grpMem.Out.SendGroupMapUpdate(GrpMemUpdateList);
+                }
+
+                GrpMemUpdateList.Clear();
+            }
+        }
+
+        /// <summary>
+        /// does a member location need an update?
+        /// </summary>        
+        public bool CheckMemberNeedsUpdate(GamePlayer player)
+        {            
+            var playerLoc = new Point2D(player.X, player.Y);
+            if (playerLoc.GetDistance(player.GroupMapOldLoc) > 1000) // no real basis for this 1000 value, can be changed to suit 
+            {
+                player.GroupMapOldLoc = playerLoc;
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// get the group members location details and add to the update list
+        /// </summary>        
+        private void AddMemberToUpdateList(GamePlayer player)
+        {
+            Zone zone = player.CurrentZone;
+            if (zone == null)
+            {
+                return;
+            }
+
+            var updMember = new GroupMemberLocation(player)
+            {
+                GroupIndex = (byte)(0x40 | player.GroupIndex),
+                ZoneID = zone.ZoneSkinID,
+                PlayerMapX = (ushort)(player.X - zone.XOffset),
+                PlayerMapY = (ushort)(player.Y - zone.YOffset)
+            };
+            GrpMemUpdateList.Add(updMember);
+        }
+    }
+
+    /// <summary>
+    /// This class holds information about a group member send in the map update packet
+    /// </summary>
+    public class GroupMemberLocation
+    {
+        public GroupMemberLocation(GamePlayer player)
+        {
+            grpMember = player;
+        }
+        public byte GroupIndex;
+        public ushort ZoneID;
+        public ushort PlayerMapX;
+        public ushort PlayerMapY;
+        public GamePlayer grpMember;
     }
 }

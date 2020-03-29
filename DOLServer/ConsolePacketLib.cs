@@ -203,9 +203,10 @@ namespace DOLGameServerConsole
 
         public void SendGroupWindowUpdate() { }
 
-        public void SendGroupMemberUpdate(bool updateIcons, GameLiving living) { }
+        public void SendGroupMemberUpdate(bool updateIcons, bool updateMap, GameLiving living) { }
 
         public void SendGroupMembersUpdate(bool updateIcons) { }
+        public void SendGroupMapUpdate(List<GroupMemberLocation> grpMembers) { }
 
         public void SendInventoryItemsUpdate(ICollection<InventoryItem> itemsToUpdate) { }
 

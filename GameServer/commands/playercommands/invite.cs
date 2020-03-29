@@ -109,10 +109,15 @@ namespace DOL.GS.Commands
                     GroupMgr.AddGroup(group);
                     group.AddMember(client.Player);
                     group.AddMember(target);
+                    group.UpdateGroupWindow();
+                    group.SendGroupUpdates(client.Player);
+                    group.SendGroupUpdates(target);
                 }
                 else
                 {
                     client.Player.Group.AddMember(target);
+                    client.Player.Group.UpdateGroupWindow();
+                    client.Player.Group.SendGroupUpdates(target);
                 }
 
                 client.Out.SendMessage("(GM) You have added " + target.Name + " to your group.", eChatType.CT_System, eChatLoc.CL_SystemWindow);

@@ -784,13 +784,13 @@ namespace DOL.Tests
             }
         }
 
-        public Action<TestPacketLib, bool, GameLiving> SendGroupMemberUpdateMethod { get; set; }
+        public Action<TestPacketLib, bool, bool, GameLiving> SendGroupMemberUpdateMethod { get; set; }
 
-        public void SendGroupMemberUpdate(bool updateIcons, GameLiving living)
+        public void SendGroupMemberUpdate(bool updateIcons, bool updateMap, GameLiving living)
         {
             if (SendGroupMemberUpdateMethod != null)
             {
-                SendGroupMemberUpdateMethod(this, updateIcons, living);
+                SendGroupMemberUpdateMethod(this, updateIcons, updateMap, living);
             }
         }
 
@@ -803,6 +803,8 @@ namespace DOL.Tests
                 SendGroupMembersUpdateMethod(this, updateIcons);
             }
         }
+
+        public void SendGroupMapUpdate(List<GroupMemberLocation> grpMembers) { }
 
         public Action<TestPacketLib, ICollection<InventoryItem>> SendInventoryItemsUpdateMethod { get; set; }
 

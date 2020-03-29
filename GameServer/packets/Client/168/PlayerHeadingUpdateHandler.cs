@@ -36,15 +36,13 @@ namespace DOL.GS.PacketHandler.Client.v168
 
             if (client.Player.ObjectState != GameObject.eObjectState.Active) return;
 
-            ushort sessionId = packet.ReadShort(); // session ID
+            ushort sessionId = packet.ReadShort();
             if (client.SessionID != sessionId)
             {
                 // GameServer.BanAccount(client, 120, "Hack sessionId", string.Format("Wrong sessionId:0x{0} in 0xBA packet (SessionID:{1})", sessionId, client.SessionID));
                 return; // client hack
             }
-
-            //ushort head = packet.ReadShort();
-            //client.Player.Heading = (ushort)(head & 0xFFF);
+            
             client.Player.Heading = packet.ReadShort();
             packet.Skip(1); // unknown
             int flags = packet.ReadByte();
@@ -74,25 +72,24 @@ namespace DOL.GS.PacketHandler.Client.v168
 			
             byte steedSlot = (byte)client.Player.SteedSeatPosition;
 			
-            GSUDPPacketOut outpak190 = new GSUDPPacketOut(client.Out.GetPacketCode(eServerPackets.PlayerHeading));
+            GSUDPPacketOut outpak = new GSUDPPacketOut(client.Out.GetPacketCode(eServerPackets.PlayerHeading));
+            outpak.WriteShort((ushort)client.SessionID);
+            outpak.WriteShort(client.Player.Heading);
+            outpak.WriteByte(steedSlot);            
+            outpak.WriteByte((byte)flags);
+            outpak.WriteByte(0);
+            outpak.WriteByte(ridingFlag);
+            outpak.WriteByte(client.Player.HealthPercent);
+            outpak.WriteByte(client.Player.ManaPercent);
+            outpak.WriteByte(client.Player.EndurancePercent);
+            outpak.WriteByte(0); // null term?
+            outpak.WritePacketLength();
 
             foreach (GamePlayer player in client.Player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 if (player != null && player != client.Player)
-                {
-                    outpak190.WriteShort((ushort)client.SessionID);
-                    outpak190.WriteShort(client.Player.Heading);
-                    outpak190.WriteByte(steedSlot);
-                    //outpak190.WriteShort((ushort)flags);
-                    outpak190.WriteByte((byte)flags);
-                    outpak190.WriteByte(0);
-                    outpak190.WriteByte(ridingFlag);
-                    outpak190.WriteByte(client.Player.HealthPercent);
-                    outpak190.WriteByte(client.Player.ManaPercent);
-                    outpak190.WriteByte(client.Player.EndurancePercent);
-                    outpak190.WriteByte(0);// unknown yet
-                    outpak190.WritePacketLength();
-                    player.Out.SendUDPRaw(outpak190);
+                {                   
+                    player.Out.SendUDPRaw(outpak);
                 }
             }
         }

@@ -78,7 +78,7 @@ namespace DOL.GS.Commands
     [Cmd("&talk", ePrivLevel.Player, "Talk", "/talk")]
     [Cmd("&monty", ePrivLevel.Player, "Think Camelot is a silly place", "/monty")]
     [Cmd("&loco", ePrivLevel.Player, "Think this is crazy", "/loco")]
-    [Cmd("&cower", ePrivLevel.Player, "Cower", "/cower")] // currently unknown ID
+    [Cmd("&cower", ePrivLevel.Player, "Cower", "/cower")]
 	
     public class EmoteCommandHandler : AbstractCommandHandler, ICommandHandler
     {
@@ -355,10 +355,10 @@ namespace DOL.GS.Commands
                     emoteID = eEmote.Loco;
                     emoteMessages = EMOTE_MESSAGES_LOCO;
                     break;
-                //case "&cower": // unknown for now
-                //    emoteID = eEmote.Cower;
-                //    emoteMessages = EMOTE_MESSAGES_COWER;
-                //    break;
+                case "&cower":
+                    emoteID = eEmote.Cower;
+                    emoteMessages = EMOTE_MESSAGES_COWER;
+                    break;
                 default:
                     return;
             }

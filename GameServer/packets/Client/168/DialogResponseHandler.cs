@@ -244,6 +244,8 @@ namespace DOL.GS.PacketHandler.Client.v168
                                     }
 
                                     groupLeader.Group.AddMember(player);
+                                    groupLeader.Group.UpdateGroupWindow();
+                                    groupLeader.Group.SendGroupUpdates(player);
                                     GameEventMgr.Notify(GamePlayerEvent.AcceptGroup, player);
                                     return;
                                 }
@@ -253,6 +255,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                                 group.AddMember(groupLeader);
                                 group.AddMember(player);
+                                groupLeader.Group.UpdateGroupWindow();
+                                group.SendGroupUpdates(groupLeader);
+                                group.SendGroupUpdates(player);
 
                                 GameEventMgr.Notify(GamePlayerEvent.AcceptGroup, player);
                             }

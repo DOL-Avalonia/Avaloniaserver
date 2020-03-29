@@ -17,6 +17,9 @@
  *
  */
 using DOL.Database;
+using DOL.GS.Effects;
+using DOL.GS.Housing;
+using DOL.GS.Spells;
 using log4net;
 using System;
 using System.Collections;
@@ -68,7 +71,7 @@ namespace DOL.GS.PacketHandler
                 pak.WritePascalString(GameServer.Instance.Configuration.ServerNameShort); //server name
                 pak.WriteByte(0x05); //Server ID, seems irrelevant
                 pak.WriteByte(color); // 00 normal type?, 01 mordred type, 03 gaheris type, 07 ywain type
-                pak.WriteByte(0x01); // always sent as 0x01 , unsure of significance
+                pak.WriteByte(0x00); // Trial switch 0x00 - subbed, 0x01 - trial acc
                 SendTCP(pak);
             }
         }
@@ -199,9 +202,8 @@ namespace DOL.GS.PacketHandler
                             string locationDescription = string.Empty;
                             Region region = WorldMgr.GetRegion((ushort)c.Region);
                             if (region != null)
-                            {
-                                var desc = region.GetTranslatedSpotDescription(GameClient, c.Xpos, c.Ypos, c.Zpos);
-                                locationDescription = string.IsNullOrWhiteSpace(desc) ? "..." : desc;
+                            {                                
+                                locationDescription = region.GetTranslatedSpotDescription(GameClient, c.Xpos, c.Ypos, c.Zpos);
                             }
 							if (locationDescription.Length > 23) // location name over 23 chars has to be truncated eg. "The Great Pyramid of Stygia"
                             {
@@ -382,6 +384,134 @@ namespace DOL.GS.PacketHandler
                 SendTCP(pak);
             }
         }
+
+		
+		/// <summary>
+        /// updated group window packet for 1125
+        /// </summary>
+        public override void SendGroupWindowUpdate()
+        {
+            if (GameClient.Player == null) return;
+
+            using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate)))
+            {
+                pak.WriteByte(0x06); // subcode - player group window
+				// a 06 00 packet is sent when logging in.
+                Group group = GameClient.Player.Group;
+                if (group == null)
+                {
+                    pak.WriteByte(0x00); // a 06 00 packet is sent when logging in.						
+                }
+                else
+                {
+                    pak.WriteByte((byte)group.MemberCount);
+					foreach (GameLiving living in group.GetMembersInTheGroup())
+                    {                        
+                        pak.WritePascalString(living.Name);
+                        pak.WritePascalString(living is GamePlayer ? ((GamePlayer)living).CharacterClass.Name : "NPC");
+                        pak.WriteShort((ushort)living.ObjectID); //or session id?
+                        pak.WriteByte(living.Level);
+                    }   
+                }
+                
+                SendTCP(pak);
+            }
+        }			
+
+		protected override void WriteGroupMemberUpdate(GSTCPPacketOut pak, bool updateIcons, bool updateMap, GameLiving living)
+        {
+            pak.WriteByte((byte)(0x20 | living.GroupIndex)); // From 1 to 8 // 0x20 is player status code
+            bool sameRegion = living.CurrentRegion == GameClient.Player.CurrentRegion;
+            GamePlayer player = null;
+
+            if (sameRegion)
+            {
+                player = living as GamePlayer;
+
+                if (player != null)
+                {
+                    pak.WriteByte(player.CharacterClass.HealthPercentGroupWindow);
+                }
+                else
+                {
+                    pak.WriteByte(living.HealthPercent);
+                }
+                pak.WriteByte(living.ManaPercent);
+                pak.WriteByte(living.EndurancePercent); // new in 1.69
+
+                byte playerStatus = 0;
+                if (!living.IsAlive)
+                {
+                    playerStatus |= 0x01;
+                }
+                if (living.IsMezzed)
+                {
+                    playerStatus |= 0x02;
+                }
+                if (living.IsDiseased)
+                {
+                    playerStatus |= 0x04;
+                }
+                if (SpellHelper.FindEffectOnTarget(living, "DamageOverTime") != null)
+                {
+                    playerStatus |= 0x08;
+                }
+                if (living is GamePlayer)
+                {
+                    if ((living as GamePlayer).Client.ClientState == GameClient.eClientState.Linkdead)
+                    {
+                        playerStatus |= 0x10;
+                    }
+                }
+                if (!sameRegion)
+                {
+                    playerStatus |= 0x20;
+                }
+                if (living.DebuffCategory[(int)eProperty.SpellRange] != 0 || living.DebuffCategory[(int)eProperty.ArcheryRange] != 0)
+                {
+                    playerStatus |= 0x40;
+                }
+                pak.WriteByte(playerStatus);
+                // 0x00 = Normal , 0x01 = Dead , 0x02 = Mezzed , 0x04 = Diseased ,
+                // 0x08 = Poisoned , 0x10 = Link Dead , 0x20 = In Another Region, 0x40 - NS
+
+                WriteGroupMemberMapUpdate(pak, updateMap, living); // moved here 
+
+                if (updateIcons)
+                {
+                    pak.WriteByte((byte)(0x80 | living.GroupIndex));
+                    lock (living.EffectList)
+                    {
+                        byte i = 0;
+                        foreach (IGameEffect effect in living.EffectList)
+                        {
+                            if (effect is GameSpellEffect)
+                            {
+                                i++;
+                            }
+                        }
+                        pak.WriteByte(i);
+                        foreach (IGameEffect effect in living.EffectList)
+                        {
+                            if (effect is GameSpellEffect)
+                            {
+                                pak.WriteByte(0);
+                                pak.WriteShort(effect.Icon);
+                            }
+                        }
+                    }
+                }                
+            }
+            else
+            {
+                pak.WriteInt(0x20);
+                if (updateIcons)
+                {
+                    pak.WriteByte((byte)(0x80 | living.GroupIndex));
+                    pak.WriteByte(0);
+                }
+            }
+        }		
 
         /// <summary>
         /// 1125 UDPinit reply
@@ -665,6 +795,102 @@ namespace DOL.GS.PacketHandler
                     SendTCP(pak);
                 }
             }
+        }
+
+        /// <summary>
+        /// short to low endian
+        /// </summary> 
+        public override void SendFurniture(House house)
+        {
+            using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.HousingItem)))
+            {
+                pak.WriteShortLowEndian((ushort)house.HouseNumber);
+                pak.WriteByte((byte)house.IndoorItems.Count);
+                pak.WriteByte(0x80); //0x00 = update, 0x80 = complete package
+
+                foreach (var entry in house.IndoorItems.OrderBy(entry => entry.Key))
+                {
+                    var item = entry.Value;
+                    WriteHouseFurniture(pak, item, entry.Key);
+                }
+
+                SendTCP(pak);
+            }
+        }
+
+        /// <summary>
+        /// short to low endian
+        /// </summary>        
+        public override void SendFurniture(House house, int i)
+        {
+            using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.HousingItem)))
+            {
+                pak.WriteShortLowEndian((ushort)house.HouseNumber);
+                pak.WriteByte(0x01); //cnt
+                pak.WriteByte(0x00); //upd
+                var item = (IndoorItem)house.IndoorItems[i];
+                WriteHouseFurniture(pak, item, i);
+                SendTCP(pak);
+            }
+        }
+
+        /// <summary>
+        /// Shorts changed to low endian
+        /// </summary>        
+        protected override void WriteHouseFurniture(GSTCPPacketOut pak, IndoorItem item, int index)
+        {
+            pak.WriteByte((byte)index);
+            byte type = 0;
+            if (item.Emblem > 0)
+            {
+                item.Color = item.Emblem;
+            }
+
+            if (item.Color > 0)
+            {
+                if (item.Color <= 0xFF)
+                {
+                    type |= 1; // colored
+                }
+                else if (item.Color <= 0xFFFF)
+                {
+                    type |= 2; // old emblem
+                }
+                else
+                {
+                    type |= 6; // new emblem
+                }
+            }
+            if (item.Size != 0)
+            {
+                type |= 8; // have size
+            }
+
+            pak.WriteByte(type);
+            pak.WriteShortLowEndian((ushort)item.Model);
+            if ((type & 1) == 1)
+            {
+                pak.WriteByte((byte)item.Color);
+            }
+            else if ((type & 6) == 2)
+            {
+                pak.WriteShortLowEndian((ushort)item.Color);
+            }
+            else if ((type & 6) == 6)
+            {
+                pak.WriteShortLowEndian((ushort)(item.Color & 0xFFFF));
+            }
+
+            pak.WriteShortLowEndian((ushort)item.X);
+            pak.WriteShortLowEndian((ushort)item.Y);
+            pak.WriteShortLowEndian((ushort)item.Rotation);
+            if ((type & 8) == 8)
+            {
+                pak.WriteByte((byte)item.Size);
+            }
+
+            pak.WriteByte((byte)item.Position);
+            pak.WriteByte((byte)(item.PlacementMode - 2));
         }
     }
 }

@@ -160,6 +160,7 @@ namespace DOL.GS.Commands
                     && args[1] != "load"
                     && args[1] != "findname"
                     && args[1] != "respawn"
+ 					&& args[1] != "reload"
                     && targetMob == null)
                 {
                     // it is not a mob
@@ -1457,6 +1458,19 @@ namespace DOL.GS.Commands
             if (targetMob.Inventory != null)
             {
                 info.Add(" + Inventory: " + targetMob.Inventory.AllItems.Count + " items");
+            }
+
+            if (targetMob is GameMerchant targetM)
+            {
+                info.Add(" + Is Merchant ");
+                if (targetM.TradeItems != null)
+                {
+                    info.Add(" + Sell List: " + targetM.TradeItems.ItemsListID);
+                }
+                else
+                {
+                    info.Add(" + Sell List:  Not Present !\n");
+                }
             }
 
             info.Add(" + Quests to give:  " + targetMob.QuestListToGive.Count);
