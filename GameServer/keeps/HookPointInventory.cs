@@ -342,9 +342,9 @@ break;
             }
 
             hookPointObj.AddToWorld();
-            if (hookPointObj is GameKeepGuard)
+            if (hookPointObj is GameKeepGuard guard)
             {
-                (hookPointObj as GameKeepGuard).Component.AbstractKeep.Guards.Add(hookPointObj.ObjectID, hookPointObj);
+                guard.Component.AbstractKeep.Guards.Add(hookPointObj.ObjectID.ToString(), guard);
                 ((GameNPC)hookPointObj).RespawnInterval = Util.Random(10, 30) * 60 * 1000;
             }
 
@@ -415,9 +415,9 @@ break;
             }
 
             hookPointObj.AddToWorld();
-            if (hookPointObj is GameKeepGuard)
+            if (hookPointObj is GameKeepGuard guard)
             {
-                (hookPointObj as GameKeepGuard).Component.AbstractKeep.Guards.Add(hookPointObj.ObjectID, hookPointObj);
+                guard.Component.AbstractKeep.Guards.Add(hookPointObj.ObjectID.ToString(), guard);
                 ((GameNPC)hookPointObj).RespawnInterval = Util.Random(10, 30) * 60 * 1000;
             }
 

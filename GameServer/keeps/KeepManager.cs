@@ -139,8 +139,8 @@ namespace DOL.GS.Keeps
                             log.WarnFormat("Tower.OwnerKeepID < 10 for KeepID {0}. Doors on this tower will not be targetable! ({0} & 0xFF < 10). Choose a different KeepID to correct this issue.", tower.KeepID);
                         }
                     }
-                }
-
+                }                                
+            
                 if (ServerProperties.Properties.USE_NEW_KEEPS == 2)
                 {
                     log.ErrorFormat("ServerProperty USE_NEW_KEEPS is actually set to 2 but it is no longer used. Loading as if he were 0 but please set to 0 or 1 !");
@@ -156,7 +156,7 @@ namespace DOL.GS.Keeps
                 {
                     keepcomponents = GameServer.Database.SelectObjects<DBKeepComponent>("`Skin` > @Skin", new QueryParameter("@Skin", 20));
                 }
-
+                                
                 keepcomponents
                     ?.GroupBy(x => x.KeepID)
                     .AsParallel()

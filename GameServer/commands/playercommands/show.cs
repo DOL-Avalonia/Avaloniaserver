@@ -1,15 +1,15 @@
 namespace DOL.GS.Commands
 {
-    [Cmd(
-        "&show",
-        ePrivLevel.Player,
-        "Show all your cards to the other players (all cards become 'up').",
-        "/show")]
-    public class ShowCommandHandler : AbstractCommandHandler, ICommandHandler
-    {
-        public void OnCommand(GameClient client, string[] args)
-        {
-            CardMgr.Show(client);
-        }
-    }
+	[CmdAttribute(
+		"&show",
+		ePrivLevel.Player,
+		"Commands.Players.Show.Description",
+		"Commands.Players.Show.Usage")]
+	public class ShowCommandHandler : AbstractCommandHandler, ICommandHandler
+	{
+		public void OnCommand(GameClient client, string[] args)
+		{
+			CardMgr.Show(client);
+		}
+	}
 }

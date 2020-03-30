@@ -89,6 +89,7 @@ namespace DOL.GS.Housing
             }
 
             dbitem.Color = Color;
+            dbitem.Emblem = Emblem;
             dbitem.Rotation = Rotation;
             dbitem.Size = Size;
 

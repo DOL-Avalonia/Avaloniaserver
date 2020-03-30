@@ -89,7 +89,7 @@ namespace DOL.GS.Keeps
             {
                 if (Component.AbstractKeep != null)
                 {
-                    Component.AbstractKeep.Banners.Remove(ObjectID);
+                    Component.AbstractKeep.Banners.Remove(ObjectID.ToString());
                 }
 
                 Component.Delete();

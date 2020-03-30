@@ -26,9 +26,9 @@ namespace DOL.AI.Brain
     {
         public const string HAS_PET = "HasNoveltyPet";
 
-        private GamePlayer m_owner;
+        private GameLiving m_owner;
 
-        public NoveltyPetBrain(GamePlayer owner)
+        public NoveltyPetBrain(GameLiving owner)
             : base()
         {
             m_owner = owner;
@@ -36,7 +36,7 @@ namespace DOL.AI.Brain
 
         public virtual GameNPC GetNPCOwner()
         {
-            return null;
+            return m_owner as GameNPC;
         }
 
         public virtual GameLiving GetLivingOwner()
@@ -67,7 +67,7 @@ namespace DOL.AI.Brain
 
             if (m_owner == null ||
                 m_owner.IsAlive == false ||
-                m_owner.Client.ClientState != GameClient.eClientState.Playing ||
+                (m_owner is GamePlayer player && player.Client.ClientState != GameClient.eClientState.Playing) ||
                 Body.IsWithinRadius(m_owner, WorldMgr.VISIBILITY_DISTANCE) == false)
             {
                 Body.Delete();

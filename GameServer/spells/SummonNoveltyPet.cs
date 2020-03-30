@@ -77,7 +77,7 @@ namespace DOL.GS.Spells
 
         protected override IControlledBrain GetPetBrain(GameLiving owner)
         {
-            return new NoveltyPetBrain(owner as GamePlayer);
+            return new NoveltyPetBrain(owner);
         }
 
         public override IList<string> DelveInfo

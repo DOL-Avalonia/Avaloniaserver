@@ -5,422 +5,436 @@
 using System;
 using System.Text.RegularExpressions;
 using DOL.GS.PacketHandler;
+using DOL.Language;
 
 namespace DOL.GS.Commands
 {
-    [Cmd(
-        "&email",
-        ePrivLevel.Player,
-        "Set e-mail address for current account",
-        "/email <address>")]
-    public class EmailCommand : AbstractCommandHandler, ICommandHandler
-    {
-        public void OnCommand(GameClient client, string[] args)
-        {
-            if (IsSpammingCommand(client.Player, "email"))
-            {
-                return;
-            }
+	[Cmd(
+		"&email",
+		ePrivLevel.Player,
+		"Commands.Players.Email.Description",
+		"Commands.Players.Email.Usage")]
+	public class EmailCommand : AbstractCommandHandler, ICommandHandler
+	{
+		#region ICommandHandler Members
 
-            if (args.Length == 1)
-            {
-                client.Out.SendMessage(
-                    "Usage: /email <address>",
-                                       eChatType.CT_System,
-                                       eChatLoc.CL_SystemWindow);
-                return;
-            }
+		public void OnCommand(GameClient client, string[] args)
+		{
+			if (IsSpammingCommand(client.Player, "email"))
+				return;
 
-            EmailSyntaxValidator emailsyntaxvalidator; // validate mail
-            string EmailAddy = args[1];
-            emailsyntaxvalidator = new EmailSyntaxValidator(EmailAddy, true);
-            if (!emailsyntaxvalidator.IsValid)
-            {
-                client.Out.SendMessage(
-                    "Please enter a valid e-mail address.",
-                                       eChatType.CT_System,
-                                       eChatLoc.CL_SystemWindow);
-                return;
-            }
+			if (args.Length == 1)
+			{
+				client.Out.SendMessage(
+					LanguageMgr.GetTranslation(
+						client.Account.Language, "Commands.Players.Email.Usage"),
+				eChatType.CT_System,
+				eChatLoc.CL_SystemWindow);
+				return;
+			}
+			EmailSyntaxValidator emailsyntaxvalidator; // validate mail
+			string EmailAddy = args[1];
+			emailsyntaxvalidator = new EmailSyntaxValidator(EmailAddy, true);
+			if (!emailsyntaxvalidator.IsValid)
+			{
+				client.Out.SendMessage(
+					LanguageMgr.GetTranslation(
+						client.Account.Language, "Commands.Players.Email.EmailNotValid"),
+					eChatType.CT_System,
+					eChatLoc.CL_SystemWindow);
+				return;
+			}
 
-            try
-            {
-                var obj = (GamePlayer)client.Player;
 
-                if (obj != null)
-                {
-                    string oldEmail = obj.Client.Account.Mail;
-                    obj.Client.Account.Mail = EmailAddy; // Set email
+			try
+			{
+				var obj = (GamePlayer) client.Player;
 
-                    GameServer.Database.SaveObject(obj.Client.Account); // Save account.
+				if (obj != null)
+				{
+					string oldEmail = obj.Client.Account.Mail;
+					obj.Client.Account.Mail = EmailAddy; // Set email
 
-                    // Log change
-                    AuditMgr.AddAuditEntry(client, AuditType.Account, AuditSubtype.AccountEmailChange, oldEmail, EmailAddy);
+					GameServer.Database.SaveObject(obj.Client.Account); // Save account.
 
-                    client.Out.SendMessage(
-                        "Contact e-mail address set to " +
-                                           obj.Client.Account.Mail + ". Thanks!",
-                                           eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                }
-            }
-            catch (Exception)
-            {
-                client.Out.SendMessage(
-                    "Error - Usage: /email <address>",
-                                       eChatType.CT_System, eChatLoc.CL_SystemWindow);
-            }
-        }
-    }
+					// Log change
+					AuditMgr.AddAuditEntry(client, AuditType.Account, AuditSubtype.AccountEmailChange, oldEmail, EmailAddy);
 
-    public class EmailSyntaxValidator
-    {
-        private string account, domain, inputemail;
-        private bool syntaxvalid = false;
+					client.Out.SendMessage(
+						LanguageMgr.GetTranslation(
+							client.Account.Language, "Commands.Players.Email.SetTo", obj.Client.Account.Mail),
+						eChatType.CT_System,
+						eChatLoc.CL_SystemWindow);
+				}
+			}
+			catch (Exception)
+			{
+				client.Out.SendMessage(
+					LanguageMgr.GetTranslation(
+						client.Account.Language, "Commands.Players.Email.Usage"),
+					eChatType.CT_System,
+					eChatLoc.CL_SystemWindow);
+			}
+		}
 
-        /// <summary>
-        /// Initializes a new instance of the EmailSyntaxValidator
-        /// </summary>
-        /// <param name="email">the email to test</param>
-        /// <param name="TLDrequired">indicates whether or not the
-        /// email must end with a known TLD to be considered valid</param>
-        /// <remarks>
-        /// The initializer creates an instance of the EmailSyntaxValidator
-        /// class to validate a single email. You can specify whether or not
-        /// the TLD is required and should be validated.
-        /// </remarks>
-        public EmailSyntaxValidator(string email, bool TLDrequired)
-        {
-            string tmpmail;
+		#endregion
+	}
 
-            // save email as validated
-            inputemail = email;
+	public class EmailSyntaxValidator
+	{
+		private string account, domain, inputemail;
+		private bool syntaxvalid = false;
 
-            // remove <brackets> if found
-            tmpmail = RemoveBrackets(email);
+		/// <summary>
+		/// Initializes a new instance of the EmailSyntaxValidator
+		/// </summary>
+		/// <param name="email">the email to test</param>
+		/// <param name="TLDrequired">indicates whether or not the 
+		/// email must end with a known TLD to be considered valid</param>
+		/// <remarks>
+		/// The initializer creates an instance of the EmailSyntaxValidator
+		/// class to validate a single email. You can specify whether or not
+		/// the TLD is required and should be validated.
+		/// </remarks>
+		public EmailSyntaxValidator(string email, bool TLDrequired)
+		{
+			string tmpmail;
 
-            // then trim
-            tmpmail = Trim(tmpmail);
+			//save email as validated
+			inputemail = email;
 
-            // separate account from domain, quit if unable to separate
-            if (!CrackEmail(tmpmail))
-            {
-                return;
-            }
+			//remove <brackets> if found
+			tmpmail = RemoveBrackets(email);
 
-            // validate the domain, quit if domain is bad
-            if (!DomainValid(TLDrequired))
-            {
-                return;
-            }
+			//then trim
+			tmpmail = Trim(tmpmail);
 
-            // if the TLD is required, validate the domain extension,
-            // quit if the domain extension is bad
-            if (TLDrequired && !DomainExtensionValid())
-            {
-                return;
-            }
+			//separate account from domain, quit if unable to separate
+			if (!CrackEmail(tmpmail))
+			{
+				return;
+			}
 
-            // email syntax is valid
-            syntaxvalid = true;
-        }
+			//validate the domain, quit if domain is bad
+			if (!DomainValid(TLDrequired))
+			{
+				return;
+			}
 
-        /// <summary>
-        /// Gets a value indicating whether or not the email address
-        /// has valid syntax
-        /// </summary>
-        /// <remarks>
-        /// This property returns a boolean indicating whether or not
-        /// the email address has valid syntax as determined by the
-        /// class.
-        /// </remarks>
-        /// <value>boolean indicating the validity of the email</value>
-        public bool IsValid
-        {
-            get { return syntaxvalid; }
-        }
+			//if the TLD is required, validate the domain extension,
+			//quit if the domain extension is bad
+			if (TLDrequired && !DomainExtensionValid())
+			{
+				return;
+			}
 
-        /// <summary>
-        /// Get the domain part of the email address.
-        /// </summary>
-        /// <remarks>
-        /// This property returns the domain part of the email
-        /// address if and only if the email is considered valid
-        /// by the class. Otherwise null is returned.
-        /// </remarks>
-        /// <value>string representing the domain of the email</value>
-        public string Domain
-        {
-            get { return domain; }
-        }
+			//email syntax is valid
+			syntaxvalid = true;
+		}
 
-        /// <summary>
-        /// Get the account part of the email address.
-        /// </summary>
-        /// <remarks>
-        /// This property returns the account part of the email
-        /// address if and only if the email is considered valid
-        /// by the class. Otherwise null is returned.
-        /// </remarks>
-        /// <value>string representing the account of the email</value>
-        public string Account
-        {
-            get { return account; }
-        }
+		/// <summary>
+		/// Gets a value indicating whether or not the email address 
+		/// has valid syntax
+		/// </summary>
+		/// <remarks>
+		/// This property returns a boolean indicating whether or not
+		/// the email address has valid syntax as determined by the
+		/// class.
+		/// </remarks>
+		/// <value>boolean indicating the validity of the email</value>
+		public bool IsValid
+		{
+			get { return syntaxvalid; }
+		}
 
-        /// <summary>
-        /// Gets the email address as entered.
-        /// </summary>
-        /// <remarks>
-        /// This property is filled regardless of the validity of the email.
-        /// It contains the email as it was entered into the class.
-        /// </remarks>
-        /// <value>string representing the email address as entered</value>
-        public string Address
-        {
-            get { return inputemail; }
-        }
+		/// <summary>
+		/// Get the domain part of the email address.
+		/// </summary>
+		/// <remarks>
+		/// This property returns the domain part of the email
+		/// address if and only if the email is considered valid
+		/// by the class. Otherwise null is returned.
+		/// </remarks>
+		/// <value>string representing the domain of the email</value>
+		public string Domain
+		{
+			get { return domain; }
+		}
 
-        /// <summary>
-        /// Determines if an email has valid syntax
-        /// </summary>
-        /// <param name="email">the email to test</param>
-        /// <param name="TLDrequired">indicates whether or not the
-        /// email must end with a known TLD to be considered valid</param>
-        /// <returns>boolean indicating if the email has valid syntax</returns>
-        /// <remarks>
-        /// Validates an email address specifying whether or not
-        /// the email is required to have a TLD that is valid.
-        /// </remarks>
-        public static bool Valid(string email, bool TLDrequired)
-        {
-            EmailSyntaxValidator v;
-            bool valid;
+		/// <summary>
+		/// Get the account part of the email address.
+		/// </summary>
+		/// <remarks>
+		/// This property returns the account part of the email
+		/// address if and only if the email is considered valid
+		/// by the class. Otherwise null is returned.
+		/// </remarks>
+		/// <value>string representing the account of the email</value>
+		public string Account
+		{
+			get { return account; }
+		}
 
-            // call syntax validator
-            v = new EmailSyntaxValidator(email, TLDrequired);
+		/// <summary>
+		/// Gets the email address as entered.
+		/// </summary>
+		/// <remarks>
+		/// This property is filled regardless of the validity of the email.
+		/// It contains the email as it was entered into the class.
+		/// </remarks>
+		/// <value>string representing the email address as entered</value>
+		public string Address
+		{
+			get { return inputemail; }
+		}
 
-            // determine validity
-            valid = v.IsValid;
+		/// <summary>
+		/// Determines if an email has valid syntax
+		/// </summary>
+		/// <param name="email">the email to test</param>
+		/// <param name="TLDrequired">indicates whether or not the 
+		/// email must end with a known TLD to be considered valid</param>
+		/// <returns>boolean indicating if the email has valid syntax</returns>
+		/// <remarks>
+		/// Validates an email address specifying whether or not
+		/// the email is required to have a TLD that is valid.
+		/// </remarks>
+		public static bool Valid(string email, bool TLDrequired)
+		{
+			EmailSyntaxValidator v;
+			bool valid;
 
-            // cleanup
-            v = null;
+			//call syntax validator
+			v = new EmailSyntaxValidator(email, TLDrequired);
 
-            // return indication of validity
-            return valid;
-        }
+			//determine validity
+			valid = v.IsValid;
 
-        /// <summary>
-        /// separates email account from domain
-        /// </summary>
-        /// <param name="email">the email to parse</param>
-        /// <returns>boolean indicating success of separation</returns>
-        private bool CrackEmail(string email)
-        {
-            Regex re;
-            Match m;
-            bool ok = false;
+			//cleanup
+			v = null;
 
-            try
-            {
-                // pattern to separate email into account and domain.
-                // note that we parse from right to left, thereby forcing
-                // this pattern to match the last @ symbol in the email.
-                re = new Regex(
-                    "^(.+?)\\@(.+?)$",
-                    RegexOptions.Singleline | RegexOptions.RightToLeft);
+			//return indication of validity
+			return valid;
+		}
 
-                // determine if email matches pattern (email contains one
-                // or more @'s)
-                if (re.IsMatch(email))
-                {
-                    // if matched, separate account and domain as noted
-                    // in our pattern with the () sections.
-                    m = re.Match(email);
+		/// <summary>
+		/// separates email account from domain
+		/// </summary>
+		/// <param name="email">the email to parse</param>
+		/// <returns>boolean indicating success of separation</returns>
+		private bool CrackEmail(string email)
+		{
+			Regex re;
+			Match m;
+			bool ok = false;
 
-                    // first group is the account
-                    account = m.Groups[1].Value;
+			try
+			{
+				//pattern to separate email into account and domain.
+				//note that we parse from right to left, thereby forcing
+				//this pattern to match the last @ symbol in the email.
+				re = new Regex(
+					"^(.+?)\\@(.+?)$",
+					RegexOptions.Singleline | RegexOptions.RightToLeft
+					);
 
-                    // second group is the domain
-                    domain = m.Groups[2].Value;
+				//determine if email matches pattern (email contains one
+				//or more @'s)
+				if (re.IsMatch(email))
+				{
+					//if matched, separate account and domain as noted
+					//in our pattern with the () sections.
+					m = re.Match(email);
 
-                    // cleanup
-                    m = null;
+					//first group is the account
+					account = m.Groups[1].Value;
 
-                    // indicate success
-                    ok = true;
-                }
+					//second group is the domain
+					domain = m.Groups[2].Value;
 
-                // cleanup
-                re = null;
-            }
-            catch
-            {
-                // catch any exceptions and just consider the string
-                // unparsable
-                ok = false;
-            }
+					//cleanup
+					m = null;
 
-            // return the indication of parse success or failure
-            return ok;
-        }
+					//indicate success
+					ok = true;
+				}
 
-        /// <summary>
-        /// removes outer brackets from an email address
-        /// </summary>
-        /// <param name="input">the email to parse</param>
-        /// <returns>the email without brackets</returns>
-        private string RemoveBrackets(string input)
-        {
-            string output = null;
-            Regex re;
+				//cleanup
+				re = null;
+			}
+			catch
+			{
+				//catch any exceptions and just consider the string
+				//unparsable
+				ok = false;
+			}
 
-            // pattern to match brackets or no brackets
-            re = new Regex(
-                "^\\<*|\\>*$",
-                RegexOptions.IgnoreCase | RegexOptions.Singleline);
+			//return the indication of parse success or failure
+			return ok;
+		}
 
-            // if email matches (it will always match this pattern)
-            if (re.IsMatch(input))
-            {
-                // replace them with nothing
-                output = re.Replace(input, string.Empty);
-            }
+		/// <summary>
+		/// removes outer brackets from an email address
+		/// </summary>
+		/// <param name="input">the email to parse</param>
+		/// <returns>the email without brackets</returns>
+		private string RemoveBrackets(string input)
+		{
+			string output = null;
+			Regex re;
 
-            // cleanup
-            re = null;
+			//pattern to match brackets or no brackets
+			re = new Regex(
+				"^\\<*|\\>*$",
+				RegexOptions.IgnoreCase | RegexOptions.Singleline
+				);
 
-            // return the email without brackets
-            return output;
-        }
+			//if email matches (it will always match this pattern)
+			if (re.IsMatch(input))
+			{
+				//replace them with nothing
+				output = re.Replace(input, "");
+			}
 
-        /// <summary>
-        /// trims any leading and trailing white space from the email
-        /// </summary>
-        /// <param name="input">the email to parse</param>
-        /// <returns>the email with no leading or trailing white space</returns>
-        private string Trim(string input)
-        {
-            string output = null;
-            Regex re;
+			//cleanup
+			re = null;
 
-            // pattern to trim leading and trailing white space from string
-            re = new Regex(
-                "^\\s*|\\s*$",
-                RegexOptions.IgnoreCase | RegexOptions.Singleline);
+			//return the email without brackets
+			return output;
+		}
 
-            // if matches
-            if (re.IsMatch(input))
-            {
-                // remove whitespace
-                output = re.Replace(input, string.Empty);
-            }
+		/// <summary>
+		/// trims any leading and trailing white space from the email
+		/// </summary>
+		/// <param name="input">the email to parse</param>
+		/// <returns>the email with no leading or trailing white space</returns>
+		private string Trim(string input)
+		{
+			string output = null;
+			Regex re;
 
-            // cleanup
-            re = null;
+			//pattern to trim leading and trailing white space from string
+			re = new Regex(
+				"^\\s*|\\s*$",
+				RegexOptions.IgnoreCase | RegexOptions.Singleline
+				);
 
-            // return the email with no leading or trailing white space
-            return output;
-        }
+			//if matches
+			if (re.IsMatch(input))
+			{
+				//remove whitespace
+				output = re.Replace(input, "");
+			}
 
-        private bool DomainValid(bool TLDrequired)
-        {
-            bool valid;
-            Regex re;
-            string pattern, emaildomain;
+			//cleanup
+			re = null;
 
-            if (TLDrequired)
-            {
-                // if the TLD is required, the pattern contains
-                // a basic TLD length check at the end
-                pattern = "^((([a-z0-9-]+)\\.)+)[a-z]{2,6}$";
-                emaildomain = domain;
-            }
-            else
-            {
-                // when the tld is not required, the pattern is
-                // the same except for the tld length check.
-                // note the pattern ends with a . in the loop.
-                // This means that we must append a . to the domain
-                // temporarily to test the email.
-                pattern = "^((([a-z0-9-]+)\\.)+)$";
-                emaildomain = domain + ".";
-            }
+			//return the email with no leading or trailing white space
+			return output;
+		}
 
-            re = new Regex(
-                pattern,
-                RegexOptions.IgnoreCase | RegexOptions.Singleline);
+		private bool DomainValid(bool TLDrequired)
+		{
+			bool valid;
+			Regex re;
+			string pattern, emaildomain;
 
-            // if the email matches, it's valid
-            valid = re.IsMatch(emaildomain);
+			if (TLDrequired)
+			{
+				//if the TLD is required, the pattern contains
+				//a basic TLD length check at the end
+				pattern = "^((([a-z0-9-]+)\\.)+)[a-z]{2,6}$";
+				emaildomain = domain;
+			}
+			else
+			{
+				//when the tld is not required, the pattern is
+				//the same except for the tld length check.
+				//note the pattern ends with a . in the loop.
+				//This means that we must append a . to the domain
+				//temporarily to test the email.
+				pattern = "^((([a-z0-9-]+)\\.)+)$";
+				emaildomain = domain + ".";
+			}
 
-            // cleanup
-            re = null;
+			re = new Regex(
+				pattern,
+				RegexOptions.IgnoreCase | RegexOptions.Singleline
+				);
 
-            // return indication of validity
-            return valid;
-        }
+			//if the email matches, it's valid
+			valid = re.IsMatch(emaildomain);
 
-        private bool DomainExtensionValid()
-        {
-            bool valid;
-            Regex re;
-            string domainvalidatorpattern = string.Empty;
+			//cleanup
+			re = null;
 
-            // pattern to validate all known TLD's
-            domainvalidatorpattern += "\\.(";
-            domainvalidatorpattern += "a[c-gil-oq-uwz]|"; // ac,ad,ae,af,ag,ai,al,am,an,ao,aq,ar,as,at,au,aw,az
-            domainvalidatorpattern += "b[a-bd-jm-or-tvwyz]|"; // ba,bb,bd,be,bf,bg,bh,bi,bj,bm,bn,bo,br,bs,bt,bv,bw,by,bz
-            domainvalidatorpattern += "c[acdf-ik-orsuvx-z]|"; // ca,cc,cd,cf,cg,ch,ci,ck,cl,cm,cn,co,cr,cs,cu,cv,cz,cy,cz
-            domainvalidatorpattern += "d[ejkmoz]|"; // de,dj,dk,dm,do,dz
-            domainvalidatorpattern += "e[ceghr-u]|"; // ec,ee,eg,eh,er,es,et,eu
-            domainvalidatorpattern += "f[i-kmorx]|"; // fi,fj,fk,fm,fo,fr,fx
-            domainvalidatorpattern += "g[abd-ilmnp-uwy]|"; // ga,gb,gd,ge,gf,gg,gh,gi,gl,gm,gn,gp,gq,gr,gs,gt,gu,gw,gy
-            domainvalidatorpattern += "h[kmnrtu]|"; // hk,hm,hn,hr,ht,hu
-            domainvalidatorpattern += "i[delm-oq-t]|"; // id,ie,il,im,in,io,iq,ir,is,it
-            domainvalidatorpattern += "j[emop]|"; // je,jm,jo,jp
-            domainvalidatorpattern += "k[eg-imnprwyz]|"; // ke,kg,kh,ki,km,kn,kp,kr,kw,ky,kz
-            domainvalidatorpattern += "l[a-cikr-vy]|"; // la,lb,lc,li,lk,lr,ls,lt,lu,lv,ly
-            domainvalidatorpattern += "m[acdghk-z]|"; // ma,mc,md,mg,mh,mk,ml,mm,mn,mo,mp,mq,mr,ms,mt,mu,mv,mw,mx,my,mz
-            domainvalidatorpattern += "n[ace-giloprtuz]|"; // na,nc,ne,nf,ng,ni,nl,no,np,nr,nt,nu,nz
-            domainvalidatorpattern += "om|"; // om
-            domainvalidatorpattern += "p[ae-hk-nrtwy]|"; // pa,pe,pf,pg,ph,pk,pl,pm,pn,pr,pt,pw,py
-            domainvalidatorpattern += "qa|"; // qa
-            domainvalidatorpattern += "r[eouw]|"; // re,ro,ru,rw
-            domainvalidatorpattern += "s[a-eg-ort-vyz]|"; // sa,sb,sc,sd,se,sg,sh,si,sj,sk,sl,sm,sn,so,sr,st,su,sv,sy,sz
-            domainvalidatorpattern += "t[cdf-hjkm-prtvwz]|"; // tc,td,tf,tg,th,tj,tk,tm,tn,to,tp,tr,tt,tv,tx,tz
-            domainvalidatorpattern += "u[agkmsyz]|"; // ua,ug,uk,um,us,uy,uz
-            domainvalidatorpattern += "v[aceginu]|"; // va,vc,ve,vg,vy,vn,vu
-            domainvalidatorpattern += "w[fs]|"; // wf,ws
-            domainvalidatorpattern += "y[etu]|"; // ye,yt,yu
-            domainvalidatorpattern += "z[admrw]|"; // za,zd,zm,zr,zw
-            domainvalidatorpattern += "com|"; // com
-            domainvalidatorpattern += "edu|"; // edu
-            domainvalidatorpattern += "net|"; // net
-            domainvalidatorpattern += "org|"; // org
-            domainvalidatorpattern += "mil|"; // mil
-            domainvalidatorpattern += "gov|"; // gov
-            domainvalidatorpattern += "biz|"; // biz
-            domainvalidatorpattern += "pro|"; // pro
-            domainvalidatorpattern += "aero|"; // aero
-            domainvalidatorpattern += "coop|"; // coop
-            domainvalidatorpattern += "info|"; // info
-            domainvalidatorpattern += "name|"; // name
-            domainvalidatorpattern += "int|"; // int
-            domainvalidatorpattern += "museum"; // museum
-            domainvalidatorpattern += ")$";
+			//return indication of validity
+			return valid;
+		}
 
-            re = new Regex(
-                domainvalidatorpattern,
-                RegexOptions.IgnoreCase | RegexOptions.Singleline);
+		private bool DomainExtensionValid()
+		{
+			bool valid;
+			Regex re;
+			string domainvalidatorpattern = "";
 
-            // if domain matches pattern, it has a valid TLD
-            valid = re.IsMatch(domain);
+			//pattern to validate all known TLD's
+			domainvalidatorpattern += "\\.(";
+			domainvalidatorpattern += "a[c-gil-oq-uwz]|"; //ac,ad,ae,af,ag,ai,al,am,an,ao,aq,ar,as,at,au,aw,az
+			domainvalidatorpattern += "b[a-bd-jm-or-tvwyz]|"; //ba,bb,bd,be,bf,bg,bh,bi,bj,bm,bn,bo,br,bs,bt,bv,bw,by,bz
+			domainvalidatorpattern += "c[acdf-ik-orsuvx-z]|"; //ca,cc,cd,cf,cg,ch,ci,ck,cl,cm,cn,co,cr,cs,cu,cv,cz,cy,cz
+			domainvalidatorpattern += "d[ejkmoz]|"; //de,dj,dk,dm,do,dz
+			domainvalidatorpattern += "e[ceghr-u]|"; //ec,ee,eg,eh,er,es,et,eu
+			domainvalidatorpattern += "f[i-kmorx]|"; //fi,fj,fk,fm,fo,fr,fx
+			domainvalidatorpattern += "g[abd-ilmnp-uwy]|"; //ga,gb,gd,ge,gf,gg,gh,gi,gl,gm,gn,gp,gq,gr,gs,gt,gu,gw,gy
+			domainvalidatorpattern += "h[kmnrtu]|"; //hk,hm,hn,hr,ht,hu
+			domainvalidatorpattern += "i[delm-oq-t]|"; //id,ie,il,im,in,io,iq,ir,is,it
+			domainvalidatorpattern += "j[emop]|"; //je,jm,jo,jp
+			domainvalidatorpattern += "k[eg-imnprwyz]|"; //ke,kg,kh,ki,km,kn,kp,kr,kw,ky,kz
+			domainvalidatorpattern += "l[a-cikr-vy]|"; //la,lb,lc,li,lk,lr,ls,lt,lu,lv,ly
+			domainvalidatorpattern += "m[acdeghk-z]|"; //ma,mc,md,me,mg,mh,mk,ml,mm,mn,mo,mp,mq,mr,ms,mt,mu,mv,mw,mx,my,mz
+			domainvalidatorpattern += "n[ace-giloprtuz]|"; //na,nc,ne,nf,ng,ni,nl,no,np,nr,nt,nu,nz
+			domainvalidatorpattern += "om|"; //om
+			domainvalidatorpattern += "p[ae-hk-nrtwy]|"; //pa,pe,pf,pg,ph,pk,pl,pm,pn,pr,pt,pw,py
+			domainvalidatorpattern += "qa|"; //qa
+			domainvalidatorpattern += "r[eouw]|"; //re,ro,ru,rw
+			domainvalidatorpattern += "s[a-eg-ort-vyz]|"; //sa,sb,sc,sd,se,sg,sh,si,sj,sk,sl,sm,sn,so,sr,st,su,sv,sy,sz
+			domainvalidatorpattern += "ski|"; //ski
+			domainvalidatorpattern += "t[cdf-hjkm-prtvwz]|"; //tc,td,tf,tg,th,tj,tk,tm,tn,to,tp,tr,tt,tv,tx,tz
+			domainvalidatorpattern += "u[agkmsyz]|"; //ua,ug,uk,um,us,uy,uz
+			domainvalidatorpattern += "v[aceginu]|"; //va,vc,ve,vg,vy,vn,vu
+			domainvalidatorpattern += "w[fs]|"; //wf,ws
+			domainvalidatorpattern += "y[etu]|"; //ye,yt,yu
+			domainvalidatorpattern += "z[admrw]|"; //za,zd,zm,zr,zw
+			domainvalidatorpattern += "com|"; //com
+			domainvalidatorpattern += "edu|"; //edu
+			domainvalidatorpattern += "net|"; //net
+			domainvalidatorpattern += "org|"; //org
+			domainvalidatorpattern += "mil|"; //mil
+			domainvalidatorpattern += "gov|"; //gov
+			domainvalidatorpattern += "biz|"; //biz
+			domainvalidatorpattern += "pro|"; //pro
+			domainvalidatorpattern += "aero|"; //aero
+			domainvalidatorpattern += "coop|"; //coop
+			domainvalidatorpattern += "info|"; //info
+			domainvalidatorpattern += "name|"; //name
+			domainvalidatorpattern += "int|"; //int
+			domainvalidatorpattern += "museum"; //museum
+			domainvalidatorpattern += ")$";
 
-            // cleanup
-            re = null;
+			re = new Regex(
+				domainvalidatorpattern,
+				RegexOptions.IgnoreCase | RegexOptions.Singleline
+				);
 
-            // return an indication of TLD validity
-            return valid;
-        }
-    }
+			//if domain matches pattern, it has a valid TLD
+			valid = re.IsMatch(domain);
+
+			//cleanup
+			re = null;
+
+			//return an indication of TLD validity
+			return valid;
+		}
+	}
 }

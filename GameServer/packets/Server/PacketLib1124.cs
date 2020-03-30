@@ -1814,8 +1814,8 @@ namespace DOL.GS.PacketHandler
 					str = "##";
 				else
 					str = "";
-
-				pak.WriteString(str+msg);
+				//msg = msg.Replace('\'', '@');
+				pak.WriteString(str+ msg);
 				SendTCP(pak);
 			}
 		}

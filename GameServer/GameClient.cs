@@ -89,7 +89,8 @@ namespace DOL.GS
         {
             VersionNotChecked = -1,
             VersionUnknown = 0,
-            _FirstVersion = 1124,            
+            _FirstVersion = 1124,
+            Version1105 = 1105,
             Version1124 = 1124,
             Version1125 = 1125,
             _LastVersion = 1125

@@ -449,16 +449,18 @@ namespace DOL.GS.Keeps
                     if (position != null)
                     {
                         bool create = false;
+                        string sKey = position.TemplateID;
+
                         if (position.ClassType == "DOL.GS.Keeps.GameKeepBanner")
                         {
-                            if (AbstractKeep.Banners[position.TemplateID] == null)
+                            if (!AbstractKeep.Banners.ContainsKey(sKey))
                             {
                                 create = true;
                             }
                         }
                         else if (position.ClassType == "DOL.GS.Keeps.GameKeepDoor")
                         {
-                            if (AbstractKeep.Doors[position.TemplateID] == null)
+                            if (!AbstractKeep.Doors.ContainsKey(sKey))
                             {
                                 create = true;
                             }
@@ -472,25 +474,46 @@ namespace DOL.GS.Keeps
                         }
                         else if (position.ClassType == "DOL.GS.Keeps.Patrol")
                         {
-                            if (position.KeepType == (int)AbstractGameKeep.eKeepType.Any || position.KeepType == (int)AbstractKeep.KeepType)
+                            if (position.KeepType == (int)AbstractGameKeep.eKeepType.Any || position.KeepType == (int)AbstractKeep.KeepType
+                                && !this.AbstractKeep.Patrols.ContainsKey(sKey))
                             {
-                                if (AbstractKeep.Patrols[position.TemplateID] == null)
-                                {
-                                    Patrol p = new Patrol(this);
-                                    p.SpawnPosition = position;
-                                    p.PatrolID = position.TemplateID;
-                                    p.InitialiseGuards();
-                                }
+                                Patrol p = new Patrol(this);
+                                p.SpawnPosition = position;
+                                p.PatrolID = position.TemplateID;
+                                p.InitialiseGuards();
                             }
 
                             continue;
                         }
-                        else
+                        else if (position.ClassType == "DOL.GS.Keeps.MissionMaster")
                         {
-                            if (AbstractKeep.Guards[position.TemplateID] == null)
+                            if (AbstractKeep.HasCommander && log.IsWarnEnabled)
+                                log.Warn($"FillPositions(): KeepComponent_ID {this.InternalID}, KeepPosition_ID {position.ObjectId}: There is already a {position.ClassType} on Keep {AbstractKeep.KeepID}");
+
+                            if (this.AbstractKeep.Guards.ContainsKey(sKey) == false)
                             {
+                                AbstractKeep.HasCommander = true;
                                 create = true;
                             }
+                        }
+
+                        else if (position.ClassType == "DOL.GS.Keeps.GuardLord")
+                        {
+                            if (AbstractKeep.HasLord && log.IsWarnEnabled)
+                                log.Warn($"FillPositions(): KeepComponent_ID {this.InternalID}, KeepPosition_ID {position.ObjectId}: There is already a {position.ClassType} on Keep {AbstractKeep.KeepID}");
+
+                            if (!AbstractKeep.Guards.ContainsKey(sKey))
+                            {
+                                AbstractKeep.HasLord = true;
+                                create = true;
+                            }
+                        }
+                        else
+                        {
+                            if (!this.AbstractKeep.Guards.ContainsKey(sKey))
+                            {
+                                create = true;
+                            }                       
                         }
 
                         if (create)

@@ -16,29 +16,28 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+using System;
+using DOL.Database;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Commands
 {
-    [Cmd(
-        "&news",
-        ePrivLevel.Player,
-        "Show news on social interface",
-        "/news")]
-    public class NewsCommandHandler : AbstractCommandHandler, ICommandHandler
-    {
-        public void OnCommand(GameClient client, string[] args)
-        {
-            if (client.Player == null)
-            {
-                return;
-            }
+	[CmdAttribute(
+		"&news",
+		ePrivLevel.Player,
+		"Commands.Players.News.Description",
+		"Commands.Players.News.Usage")]
+	public class NewsCommandHandler : AbstractCommandHandler, ICommandHandler
+	{
+		public void OnCommand(GameClient client, string[] args)
+		{
+			if (client.Player == null)
+				return;
 
-            if (IsSpammingCommand(client.Player, "news"))
-            {
-                return;
-            }
+			if (IsSpammingCommand(client.Player, "news"))
+				return;
 
-            NewsMgr.DisplayNews(client);
-        }
-    }
+			NewsMgr.DisplayNews(client);
+		}
+	}
 }
