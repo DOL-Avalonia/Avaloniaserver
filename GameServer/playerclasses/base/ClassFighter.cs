@@ -27,9 +27,9 @@ namespace DOL.GS.PlayerClass
     {
         public ClassFighter()
         {
-            SpecPointsMultiplier = 10;
-            WeaponSkillBase = 440;
-            BaseHP = 880;
+            m_specializationMultiplier = 10;
+            m_wsbase = 440;
+            m_baseHP = 880;
         }
 
         public override string GetTitle(GamePlayer player, int level)

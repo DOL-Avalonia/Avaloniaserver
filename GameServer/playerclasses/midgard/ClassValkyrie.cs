@@ -28,14 +28,14 @@ namespace DOL.GS.PlayerClass
 
         public ClassValkyrie()
         {
-            Profession = "PlayerClass.Profession.HouseofOdin";
-            SpecPointsMultiplier = 20;
-            PrimaryStat = eStat.CON;
-            SecondaryStat = eStat.STR;
-            TertiaryStat = eStat.DEX;
-            ManaStat = eStat.PIE;
-            WeaponSkillBase = 360;
-            BaseHP = 720;
+            m_profession = "PlayerClass.Profession.HouseofOdin";
+            m_specializationMultiplier = 20;
+            m_primaryStat = eStat.CON;
+            m_secondaryStat = eStat.STR;
+            m_tertiaryStat = eStat.DEX;
+            m_manaStat = eStat.PIE;
+            m_wsbase = 360;
+            m_baseHP = 720;
         }
 
         public override eClassType ClassType => eClassType.Hybrid;

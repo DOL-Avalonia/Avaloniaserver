@@ -337,6 +337,8 @@ namespace DOL.GS.ServerProperties
         [ServerProperty("system", "log_pvp_kills", "Turn on logging of pvp kills?", false)]
         public static bool LOG_PVP_KILLS { get; set; }
 
+
+
         /// <summary>
         /// Log All GM commands
         /// </summary>
@@ -348,6 +350,18 @@ namespace DOL.GS.ServerProperties
         /// </summary>
         [ServerProperty("system", "log_trades", "Should the server Log all trades a player makes, values True,False", false)]
         public static bool LOG_TRADES { get; set; }
+
+        /// <summary>
+		/// Property to enable crush/slash/thrust determining damage variance for polearms and 2H weapons
+		/// </summary>
+		[ServerProperty("server", "enable_albion_advanced_weapon_spec", "Set to true to determine damage variance for polearms and 2H weapons on 1H crush/slash/thrust spec.", true)]
+        public static bool ENABLE_ALBION_ADVANCED_WEAPON_SPEC { get; set; }
+
+        /// <summary>
+        /// Disable quit timers for players?
+        /// </summary>
+        [ServerProperty("server", "disable_quit_timer", "Allow players to log out without waiting?", false)]
+        public static bool DISABLE_QUIT_TIMER { get; set; }
 
         /// <summary>
         /// Log Email Addresses
@@ -452,6 +466,12 @@ namespace DOL.GS.ServerProperties
         public static string MOTD { get; set; }
 
         /// <summary>
+        /// Level at which res sickness starts to apply
+        /// </summary>
+        [ServerProperty("classes", "ress_sickness_level", "What level should ress sickness start to apply?", (byte)6)]
+        public static byte RESS_SICKNESS_LEVEL { get; set; }
+
+        /// <summary>
         /// The message players get when they enter the game past level 1
         /// </summary>
         [ServerProperty("server", "starting_msg", "The Starting Mesage - Edit this to set what is displayed when a level 1 character enters the game for the first time, set to \"\" for nothing", "Welcome for your first time to a Dawn of Light server, please edit this Starter Message")]
@@ -552,6 +572,18 @@ namespace DOL.GS.ServerProperties
         /// </summary>
         [ServerProperty("server", "enable_pve_speed", "Set to true if you wish to enable the extra 25% increase to speed when not in combat or an RvR zone", true)]
         public static bool ENABLE_PVE_SPEED { get; set; }
+
+        /// <summary>
+        /// PvE Experience Loss Start Level
+        /// </summary>
+        [ServerProperty("pve", "pve_exp_loss_level", "Which level should players killed in PvE start losing experience?", (byte)6)]
+        public static byte PVE_EXP_LOSS_LEVEL { get; set; }
+
+        /// <summary>
+        /// PvE Conn Loss Start Level
+        /// </summary>
+        [ServerProperty("pve", "pve_con_loss_level", "Which level should players killed in PvE start losing constitution?", (byte)6)]
+        public static byte PVE_CON_LOSS_LEVEL { get; set; }
 
         /// <summary>
         /// Enable Encumberance Speed loss
@@ -889,6 +921,12 @@ namespace DOL.GS.ServerProperties
         [ServerProperty("rates", "evade_cap", "Evade Rate Cap Modifier - Edit this to change the highest possible evade rate against an enemy (Hard Cap) in game e.g .50 = 50%", 0.50)]
         public static double EVADE_CAP { get; set; }
 
+        /// <summary>
+		/// Property to cause beneficial spells to target the caster if current target isn't valid
+		/// </summary>
+		[ServerProperty("server", "AUTOSELECT_CASTER", "Set to true if you wish beneficial spells to target the caster if the current target isn't valid.  Allows self-healing without changing targets.", false)]
+        public static bool AUTOSELECT_CASTER { get; set; }
+
         ///<summary>
         ///The highest possible Parry Rate against an Enemy (Hard Cap)
         /// </summary>
@@ -1097,6 +1135,20 @@ namespace DOL.GS.ServerProperties
         public static int MOB_DAMAGE_INCREASE_STARTLEVEL { get; set; }
 
         /// <summary>
+        /// Multiplier to use when auto-setting pet INT stat.
+        /// INT is the stat used for spell damage for mobs/pets
+        /// </summary>
+        [ServerProperty("npc", "pet_autoset_int_base", "Multiplier to use when auto-setting Pet INT stat. ", 30)]
+        public static double PET_AUTOSET_INT_BASE { get; set; }
+
+        /// <summary>
+        /// Multiplier to use when auto-setting pet INT stat.
+        /// INT is the stat used for spell damage for mobs/pets
+        /// </summary>
+        [ServerProperty("npc", "pet_autoset_int_multiplier", "Multiplier to use when auto-setting Pet INT stat. ", 1.0)]
+        public static double PET_AUTOSET_INT_MULTIPLIER { get; set; }
+
+        /// <summary>
         /// How much damage to increase per level
         /// </summary>
         [ServerProperty("npc", "mob_damage_increase_perlevel", "How much damage to increase per level", 0.0)]
@@ -1161,6 +1213,18 @@ namespace DOL.GS.ServerProperties
         /// </summary>
         [ServerProperty("npc", "gamenpc_chances_to_cast", "Change the chance to cast a spell for a mob or a pet", 25)]
         public static int GAMENPC_CHANCES_TO_CAST { get; set; }
+
+        /// <summary>
+        /// Base Value to use when auto-setting INT stat.
+        /// </summary>
+        [ServerProperty("npc", "mob_autoset_int_base", "Base Value to use when auto-setting INT stat. ", 30)]
+        public static int MOB_AUTOSET_INT_BASE { get; set; }
+
+        /// <summary>
+        /// Multiplier to use when auto-setting INT stat.
+        /// </summary>
+        [ServerProperty("npc", "mob_autoset_int_multiplier", "Multiplier to use when auto-setting INT stat. ", 1.0)]
+        public static double MOB_AUTOSET_INT_MULTIPLIER { get; set; }
 
         /// <summary>
         /// Grace period in minutes to allow relog near enemy structure after link death

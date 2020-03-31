@@ -27,10 +27,10 @@ namespace DOL.GS.PlayerClass
     {
         public ClassNaturalist()
         {
-            SpecPointsMultiplier = 10;
-            WeaponSkillBase = 360;
-            BaseHP = 720;
-            ManaStat = eStat.EMP;
+            m_specializationMultiplier = 10;
+            m_wsbase = 360;
+            m_baseHP = 720;
+            m_manaStat = eStat.EMP;
         }
 
         public override string GetTitle(GamePlayer player, int level)

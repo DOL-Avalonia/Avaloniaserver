@@ -17,6 +17,8 @@
  *
  */
 
+using static DOL.GS.GlobalConstants;
+
 namespace DOL.GS.Spells
 {
     /// <summary>

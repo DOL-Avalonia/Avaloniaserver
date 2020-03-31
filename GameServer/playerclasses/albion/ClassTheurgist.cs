@@ -27,12 +27,12 @@ namespace DOL.GS.PlayerClass
     {
         public ClassTheurgist()
         {
-            Profession = "PlayerClass.Profession.DefendersofAlbion";
-            SpecPointsMultiplier = 10;
-            PrimaryStat = eStat.INT;
-            SecondaryStat = eStat.DEX;
-            TertiaryStat = eStat.QUI;
-            ManaStat = eStat.INT;
+            m_profession = "PlayerClass.Profession.DefendersofAlbion";
+            m_specializationMultiplier = 10;
+            m_primaryStat = eStat.INT;
+            m_secondaryStat = eStat.DEX;
+            m_tertiaryStat = eStat.QUI;
+            m_manaStat = eStat.INT;
         }
 
         public override bool HasAdvancedFromBaseClass()

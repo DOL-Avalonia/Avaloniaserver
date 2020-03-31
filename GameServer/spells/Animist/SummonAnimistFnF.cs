@@ -85,9 +85,9 @@ namespace DOL.GS.Spells
         {
             base.ApplyEffectOnTarget(target, effectiveness);
 
-            if (Spell.SubSpellId > 0 && SkillBase.GetSpellByID(Spell.SubSpellId) != null)
+            if (Spell.SubSpellID > 0 && SkillBase.GetSpellByID(Spell.SubSpellID) != null)
             {
-                m_pet.Spells.Add(SkillBase.GetSpellByID(Spell.SubSpellId));
+                m_pet.Spells.Add(SkillBase.GetSpellByID(Spell.SubSpellID));
             }
 
             ((TurretBrain) m_pet.Brain).IsMainPet = false;

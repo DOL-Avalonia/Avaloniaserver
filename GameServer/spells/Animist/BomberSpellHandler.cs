@@ -38,7 +38,7 @@ namespace DOL.GS.Spells
 
         public override bool CheckBeginCast(GameLiving selectedTarget)
         {
-            if (Spell.SubSpellId == 0)
+            if (Spell.SubSpellID == 0)
             {
                 MessageToCaster("SPELL NOT IMPLEMENTED: CONTACT GM", eChatType.CT_Important);
                 return false;
@@ -102,7 +102,7 @@ namespace DOL.GS.Spells
             }
 
             // [Ganrod] Nidel: Abort and delete bomber if Spell or Target is NULL
-            Spell subspell = SkillBase.GetSpellByID(Spell.SubSpellId);
+            Spell subspell = SkillBase.GetSpellByID(Spell.SubSpellID);
             GameLiving living = m_pet.TempProperties.getProperty<object>(BOMBERTARGET, null) as GameLiving;
 
             if (subspell == null || living == null)

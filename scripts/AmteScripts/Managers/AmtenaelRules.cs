@@ -106,9 +106,12 @@ namespace DOL.GS.ServerRules
 				(attacker.CurrentRegionID == HousingRegionID || defender.CurrentRegionID == HousingRegionID))
 				return false;
 
+#if DEBUG
+#else
 			//GMs can't be attacked
 			if (playerDefender != null && playerDefender.Client.Account.PrivLevel > 1)
 				return false;
+#endif
 
 			if (!_IsAllowedToAttack_PvpImmunity(attacker, playerAttacker, playerDefender, quiet))
 				return false;

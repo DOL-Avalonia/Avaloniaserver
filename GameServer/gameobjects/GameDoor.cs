@@ -287,7 +287,7 @@ namespace DOL.GS
                 {
                     m_health = maxhealth;
 
-                    lock (m_xpGainers.SyncRoot)
+                    lock (m_xpGainers)
                     {
                         m_xpGainers.Clear();
                     }

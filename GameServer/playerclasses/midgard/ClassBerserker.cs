@@ -27,12 +27,12 @@ namespace DOL.GS.PlayerClass
     {
         public ClassBerserker()
         {
-            Profession = "PlayerClass.Profession.HouseofModi";
-            SpecPointsMultiplier = 20;
-            PrimaryStat = eStat.STR;
-            SecondaryStat = eStat.DEX;
-            TertiaryStat = eStat.CON;
-            WeaponSkillBase = 440;
+            m_profession = "PlayerClass.Profession.HouseofModi";
+            m_specializationMultiplier = 20;
+            m_primaryStat = eStat.STR;
+            m_secondaryStat = eStat.DEX;
+            m_tertiaryStat = eStat.CON;
+            m_wsbase = 440;
         }
 
         public override bool CanUseLefthandedWeapon => true;

@@ -25,6 +25,7 @@ using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 using DOL.Language;
+using static DOL.GS.GlobalConstants;
 
 namespace DOL.GS
 {

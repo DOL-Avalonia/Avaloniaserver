@@ -146,11 +146,11 @@ namespace DOL.GS
 		public override void Die(GameObject killer)
 		{	
 			int count = 0;
-			lock (this.XPGainers.SyncRoot)
+			lock (this.XPGainers)
 			{
-				foreach (System.Collections.DictionaryEntry de in this.XPGainers)
+				foreach (var de in this.XPGainers)
 				{
-					GameObject obj = (GameObject)de.Key;
+					GameObject obj = de.Key;
 					if (obj is GamePlayer)
 					{
 						GamePlayer player = obj as GamePlayer;

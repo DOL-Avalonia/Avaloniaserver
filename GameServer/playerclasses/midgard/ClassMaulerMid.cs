@@ -27,14 +27,14 @@ namespace DOL.GS.PlayerClass
     {
         public ClassMaulerMid()
         {
-            Profession = "PlayerClass.Profession.TempleofIronFist";
-            SpecPointsMultiplier = 15;
-            WeaponSkillBase = 440;
-            BaseHP = 600;
-            PrimaryStat = eStat.STR;
-            SecondaryStat = eStat.CON;
-            TertiaryStat = eStat.QUI;
-            ManaStat = eStat.STR;
+            m_profession = "PlayerClass.Profession.TempleofIronFist";
+            m_specializationMultiplier = 15;
+            m_wsbase = 440;
+            m_baseHP = 600;
+            m_primaryStat = eStat.STR;
+            m_secondaryStat = eStat.CON;
+            m_tertiaryStat = eStat.QUI;
+            m_manaStat = eStat.STR;
         }
 
         public override bool CanUseLefthandedWeapon => true;

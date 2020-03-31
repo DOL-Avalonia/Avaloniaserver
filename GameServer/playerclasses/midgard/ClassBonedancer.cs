@@ -27,15 +27,15 @@ namespace DOL.GS.PlayerClass
     {
         public ClassBonedancer()
         {
-            SpecPointsMultiplier = 10;
-            WeaponSkillBase = 280;
-            BaseHP = 560;
-            ManaStat = eStat.PIE;
+            m_specializationMultiplier = 10;
+            m_wsbase = 280;
+            m_baseHP = 560;
+            m_manaStat = eStat.PIE;
 
-            Profession = "PlayerClass.Profession.HouseofBodgar";
-            PrimaryStat = eStat.PIE;
-            SecondaryStat = eStat.DEX;
-            TertiaryStat = eStat.QUI;
+            m_profession = "PlayerClass.Profession.HouseofBodgar";
+            m_primaryStat = eStat.PIE;
+            m_secondaryStat = eStat.DEX;
+            m_tertiaryStat = eStat.QUI;
         }
 
         public override eClassType ClassType => eClassType.ListCaster;

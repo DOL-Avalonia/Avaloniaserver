@@ -28,12 +28,12 @@ namespace DOL.GS.PlayerClass
 
         public ClassSavage()
         {
-            Profession = "PlayerClass.Profession.HouseofKelgor";
-            SpecPointsMultiplier = 15;
-            PrimaryStat = eStat.DEX;
-            SecondaryStat = eStat.QUI;
-            TertiaryStat = eStat.STR;
-            WeaponSkillBase = 400;
+            m_profession = "PlayerClass.Profession.HouseofKelgor";
+            m_specializationMultiplier = 15;
+            m_primaryStat = eStat.DEX;
+            m_secondaryStat = eStat.QUI;
+            m_tertiaryStat = eStat.STR;
+            m_wsbase = 400;
         }
 
         public override bool CanUseLefthandedWeapon => true;

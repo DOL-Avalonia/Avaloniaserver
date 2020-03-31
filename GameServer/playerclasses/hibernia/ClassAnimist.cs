@@ -27,14 +27,14 @@ namespace DOL.GS.PlayerClass
     {
         public ClassAnimist()
         {
-            SpecPointsMultiplier = 10;
-            WeaponSkillBase = 280;
-            BaseHP = 560;
-            ManaStat = eStat.INT;
-            Profession = "PlayerClass.Profession.PathofAffinity";
-            PrimaryStat = eStat.INT;
-            SecondaryStat = eStat.CON;
-            TertiaryStat = eStat.DEX;
+            m_specializationMultiplier = 10;
+            m_wsbase = 280;
+            m_baseHP = 560;
+            m_manaStat = eStat.INT;
+            m_profession = "PlayerClass.Profession.PathofAffinity";
+            m_primaryStat = eStat.INT;
+            m_secondaryStat = eStat.CON;
+            m_tertiaryStat = eStat.DEX;
         }
 
         public override eClassType ClassType => eClassType.ListCaster;

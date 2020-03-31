@@ -27,9 +27,9 @@ namespace DOL.GS.PlayerClass
     {
         public ClassMidgardRogue()
         {
-            SpecPointsMultiplier = 10;
-            WeaponSkillBase = 360; // higher than alb/hib stealthers
-            BaseHP = 720;
+            m_specializationMultiplier = 10;
+            m_wsbase = 360; // higher than alb/hib stealthers
+            m_baseHP = 720;
         }
 
         public override string GetTitle(GamePlayer player, int level)

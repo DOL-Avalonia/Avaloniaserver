@@ -27,10 +27,10 @@ namespace DOL.GS.PlayerClass
     {
         public ClassSeer()
         {
-            SpecPointsMultiplier = 10;
-            WeaponSkillBase = 360;
-            BaseHP = 720;
-            ManaStat = eStat.PIE;
+            m_specializationMultiplier = 10;
+            m_wsbase = 360;
+            m_baseHP = 720;
+            m_manaStat = eStat.PIE;
         }
 
         public override string GetTitle(GamePlayer player, int level)

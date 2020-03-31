@@ -1298,9 +1298,9 @@ namespace DOL.GS.PacketHandler.Client.v168
                 output.AddRange(spellHandler.DelveInfo);
 
                 // Subspells
-                if (spell.SubSpellId > 0)
+                if (spell.SubSpellID > 0)
                 {
-                    Spell s = SkillBase.GetSpellByID(spell.SubSpellId);
+                    Spell s = SkillBase.GetSpellByID(spell.SubSpellID);
                     output.Add(" ");
 
                     ISpellHandler sh = ScriptMgr.CreateSpellHandler(client.Player, s, SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells));
@@ -2254,12 +2254,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                 list.Add(" ");
                 list.Add(" ");
-                if (spl.SubSpellId > 0)
+                if (spl.SubSpellID > 0)
                 {
                     List<Spell> spells = SkillBase.GetSpellList(line.KeyName);
                     foreach (Spell subSpell in spells)
                     {
-                        if (subSpell.ID == spl.SubSpellId)
+                        if (subSpell.ID == spl.SubSpellID)
                         {
                             WritePotionSpellsInfos(list, client, subSpell, line);
                             break;
@@ -2338,11 +2338,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 			
 			if (spellHandler != null)
 			{
-				spellHandler.TooltipDelve(ref dw, id, clt);
+				spellHandler.TooltipDelve(ref dw, id);
 				// If spell has a subspell, we need to send another call to delve that subspell info
-				if (spell.SubSpellId > 0)
+				if (spell.SubSpellID > 0)
 				{
-					clt.Out.SendDelveInfo(DelveAttachedSpell(clt, spell.SubSpellId));
+					clt.Out.SendDelveInfo(DelveAttachedSpell(clt, spell.SubSpellID));
 				}				
 				return dw.ToString();
 			}
@@ -2366,10 +2366,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 			
 			if (spellHandler != null)
 			{
-				spellHandler.TooltipDelve(ref dw, id, clt);
-                if (spell.SubSpellId > 0)
+				spellHandler.TooltipDelve(ref dw, id);
+                if (spell.SubSpellID > 0)
                 {
-                    clt.Out.SendDelveInfo(DelveStyleSpell(clt, spell.SubSpellId));
+                    clt.Out.SendDelveInfo(DelveStyleSpell(clt, spell.SubSpellID));
                 }
 				return dw.ToString();
 			}
@@ -2580,16 +2580,16 @@ namespace DOL.GS.PacketHandler.Client.v168
 			
 			if (spellHandler != null)
 			{
-				spellHandler.TooltipDelve(ref dw, id, clt);
+				spellHandler.TooltipDelve(ref dw, id);
 				if (!string.IsNullOrEmpty(spell.Description))
 				{
 					string desc = String.Format(spell.Description, spell.Value);
 					var newDesc = desc.Replace(@"\n", "\n");				
 					dw.AddKeyValuePair("delve_string", newDesc);
 				}
-				if (spell.SubSpellId > 0 ) // if sub spells have 3 'links' for delving
+				if (spell.SubSpellID > 0 ) // if sub spells have 3 'links' for delving
 				{
-					clt.Out.SendDelveInfo(DelveStyleSpell(clt, spell.SubSpellId));
+					clt.Out.SendDelveInfo(DelveStyleSpell(clt, spell.SubSpellID));
 				}
 				return dw.ToString();
 			}
@@ -2612,7 +2612,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			
 			if (spellHandler != null)
 			{
-				spellHandler.TooltipDelve(ref dw, id, clt);				
+				spellHandler.TooltipDelve(ref dw, id);				
 				return dw.ToString();
 			}
 

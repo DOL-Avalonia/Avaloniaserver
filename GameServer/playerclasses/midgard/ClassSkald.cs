@@ -28,14 +28,14 @@ namespace DOL.GS.PlayerClass
 
         public ClassSkald()
         {
-            Profession = "PlayerClass.Profession.HouseofBragi";
-            SpecPointsMultiplier = 15;
-            PrimaryStat = eStat.CHR;
-            SecondaryStat = eStat.STR;
-            TertiaryStat = eStat.CON;
-            ManaStat = eStat.CHR;
-            WeaponSkillBase = 380;
-            BaseHP = 760;
+            m_profession = "PlayerClass.Profession.HouseofBragi";
+            m_specializationMultiplier = 15;
+            m_primaryStat = eStat.CHR;
+            m_secondaryStat = eStat.STR;
+            m_tertiaryStat = eStat.CON;
+            m_manaStat = eStat.CHR;
+            m_wsbase = 380;
+            m_baseHP = 760;
         }
 
         public override eClassType ClassType => eClassType.Hybrid;

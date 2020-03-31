@@ -650,7 +650,7 @@ namespace DOL.GS
         public virtual void LoadFromDatabase(Mob[] mobObjs, ref long mobCount, ref long merchantCount, ref long itemCount, ref long bindCount)
         {
 #if DEBUG
-            if (!(ID == 51 || ID == 330))
+            if (!(ID == 51 || ID == 330 || ID == 163))
                 return;
 #endif
 

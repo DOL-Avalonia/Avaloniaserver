@@ -30,13 +30,13 @@ namespace DOL.GS.PlayerClass
 
         public ClassHunter()
         {
-            Profession = "PlayerClass.Profession.HouseofSkadi";
-            SpecPointsMultiplier = 20;
-            PrimaryStat = eStat.DEX;
-            SecondaryStat = eStat.QUI;
-            TertiaryStat = eStat.STR;
-            WeaponSkillBase = 380;
-            ManaStat = eStat.DEX;
+            m_profession = "PlayerClass.Profession.HouseofSkadi";
+            m_specializationMultiplier = 20;
+            m_primaryStat = eStat.DEX;
+            m_secondaryStat = eStat.QUI;
+            m_tertiaryStat = eStat.STR;
+            m_wsbase = 380;
+            m_manaStat = eStat.DEX;
         }
 
         public override IList<string> GetAutotrainableSkills()

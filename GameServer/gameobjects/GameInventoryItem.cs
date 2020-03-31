@@ -1091,12 +1091,12 @@ namespace DOL.GS
 
                 list.Add(" ");
                 list.Add(" ");
-                if (spl.SubSpellId > 0)
+                if (spl.SubSpellID > 0)
                 {
                     List<Spell> spells = SkillBase.GetSpellList(line.KeyName);
                     foreach (Spell subSpell in spells)
                     {
-                        if (subSpell.ID == spl.SubSpellId)
+                        if (subSpell.ID == spl.SubSpellID)
                         {
                             WritePotionSpellsInfos(list, client, subSpell, line);
                             break;

@@ -3,6 +3,7 @@ using DOL.GS.PacketHandler;
 using DOL.GS.Effects;
 using DOL.GS.Spells;
 using DOL.Database;
+using static DOL.GS.GlobalConstants;
 
 namespace DOL.GS.RealmAbilities
 {

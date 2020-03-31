@@ -27,12 +27,12 @@ namespace DOL.GS.PlayerClass
     {
         public ClassRunemaster()
         {
-            Profession = "PlayerClass.Profession.HouseofOdin";
-            SpecPointsMultiplier = 10;
-            PrimaryStat = eStat.PIE;
-            SecondaryStat = eStat.DEX;
-            TertiaryStat = eStat.QUI;
-            ManaStat = eStat.PIE;
+            m_profession = "PlayerClass.Profession.HouseofOdin";
+            m_specializationMultiplier = 10;
+            m_primaryStat = eStat.PIE;
+            m_secondaryStat = eStat.DEX;
+            m_tertiaryStat = eStat.QUI;
+            m_manaStat = eStat.PIE;
         }
 
         public override bool HasAdvancedFromBaseClass()

@@ -27,12 +27,12 @@ namespace DOL.GS.PlayerClass
     {
         public ClassSorcerer()
         {
-            Profession = "PlayerClass.Profession.Academy";
-            SpecPointsMultiplier = 10;
-            PrimaryStat = eStat.INT;
-            SecondaryStat = eStat.DEX;
-            TertiaryStat = eStat.QUI;
-            ManaStat = eStat.INT;
+            m_profession = "PlayerClass.Profession.Academy";
+            m_specializationMultiplier = 10;
+            m_primaryStat = eStat.INT;
+            m_secondaryStat = eStat.DEX;
+            m_tertiaryStat = eStat.QUI;
+            m_manaStat = eStat.INT;
         }
 
         public override bool HasAdvancedFromBaseClass()

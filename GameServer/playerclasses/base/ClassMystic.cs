@@ -27,10 +27,10 @@ namespace DOL.GS.PlayerClass
     {
         public ClassMystic()
         {
-            SpecPointsMultiplier = 10;
-            WeaponSkillBase = 280;
-            BaseHP = 560;
-            ManaStat = eStat.INT;
+            m_specializationMultiplier = 10;
+            m_wsbase = 280;
+            m_baseHP = 560;
+            m_manaStat = eStat.INT;
         }
 
         public override string GetTitle(GamePlayer player, int level)

@@ -19,6 +19,7 @@
 using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.Effects;
+using static DOL.GS.GlobalConstants;
 
 namespace DOL.GS.Spells
 {

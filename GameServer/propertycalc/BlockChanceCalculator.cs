@@ -35,7 +35,7 @@ namespace DOL.GS.PropertyCalc
         {
             if (living is GamePlayer player)
             {
-                int shield = (player.GetModifiedSpecLevel(Specs.Shields) - 1) * (10 / 2);
+                int shield = (player.GetModifiedSpecLevel(Specs.Shield) - 1) * (10 / 2);
                 int ability = player.AbilityBonus[(int)property] * 10;
                 int chance = 50 + shield + ((player.Dexterity * 2 - 100) / 4) + ability;
 

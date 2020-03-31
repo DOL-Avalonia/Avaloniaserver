@@ -27,10 +27,10 @@ namespace DOL.GS.PlayerClass
     {
         public ClassAcolyte()
         {
-            SpecPointsMultiplier = 10;
-            WeaponSkillBase = 320;
-            BaseHP = 720;
-            ManaStat = eStat.PIE;
+            m_specializationMultiplier = 10;
+            m_wsbase = 320;
+            m_baseHP = 720;
+            m_manaStat = eStat.PIE;
         }
 
         public override string GetTitle(GamePlayer player, int level)

@@ -116,10 +116,10 @@ namespace DOL.GS.Spells
             // No power cost, we'll drain power on the caster when
             // the pet actually starts casting it.
             // If there is an ID, create a sub spell for the pet.
-            if (player.ControlledBrain is ControlledNpcBrain petBrain && Spell.SubSpellId > 0)
+            if (player.ControlledBrain is ControlledNpcBrain petBrain && Spell.SubSpellID > 0)
             {
-                Spell spell = SkillBase.GetSpellByID(Spell.SubSpellId);
-                if (spell != null && spell.SubSpellId == 0)
+                Spell spell = SkillBase.GetSpellByID(Spell.SubSpellID);
+                if (spell != null && spell.SubSpellID == 0)
                 {
                     spell.Level = Spell.Level;
                     petBrain.Notify(GameNPCEvent.PetSpell, this,

@@ -30,12 +30,12 @@ namespace DOL.GS.PlayerClass
 
         public ClassWarrior()
         {
-            Profession = "PlayerClass.Profession.HouseofTyr";
-            SpecPointsMultiplier = 20;
-            PrimaryStat = eStat.STR;
-            SecondaryStat = eStat.CON;
-            TertiaryStat = eStat.DEX;
-            WeaponSkillBase = 460;
+            m_profession = "PlayerClass.Profession.HouseofTyr";
+            m_specializationMultiplier = 20;
+            m_primaryStat = eStat.STR;
+            m_secondaryStat = eStat.CON;
+            m_tertiaryStat = eStat.DEX;
+            m_wsbase = 460;
         }
 
         public override IList<string> GetAutotrainableSkills()

@@ -27,12 +27,12 @@ namespace DOL.GS.PlayerClass
     {
         public ClassWarlock()
         {
-            Profession = "PlayerClass.Profession.HouseofHel";
-            SpecPointsMultiplier = 10;
-            PrimaryStat = eStat.PIE;
-            SecondaryStat = eStat.CON;
-            TertiaryStat = eStat.DEX;
-            ManaStat = eStat.PIE;
+            m_profession = "PlayerClass.Profession.HouseofHel";
+            m_specializationMultiplier = 10;
+            m_primaryStat = eStat.PIE;
+            m_secondaryStat = eStat.CON;
+            m_tertiaryStat = eStat.DEX;
+            m_manaStat = eStat.PIE;
         }
 
         public override bool HasAdvancedFromBaseClass()

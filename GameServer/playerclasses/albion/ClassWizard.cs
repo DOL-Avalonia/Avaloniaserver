@@ -27,13 +27,13 @@ namespace DOL.GS.PlayerClass
     {
         public ClassWizard()
         {
-            Profession = "PlayerClass.Profession.Academy";
-            SpecPointsMultiplier = 10;
-            PrimaryStat = eStat.INT;
-            SecondaryStat = eStat.DEX;
-            TertiaryStat = eStat.QUI;
-            ManaStat = eStat.INT;
-            WeaponSkillBase = 240; // yes, lower that for other casters for some reason
+            m_profession = "PlayerClass.Profession.Academy";
+            m_specializationMultiplier = 10;
+            m_primaryStat = eStat.INT;
+            m_secondaryStat = eStat.DEX;
+            m_tertiaryStat = eStat.QUI;
+            m_manaStat = eStat.INT;
+            m_wsbase = 240; // yes, lower that for other casters for some reason
         }
 
         public override bool HasAdvancedFromBaseClass()

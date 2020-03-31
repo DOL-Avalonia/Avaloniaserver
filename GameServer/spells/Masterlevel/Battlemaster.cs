@@ -139,10 +139,10 @@ namespace DOL.GS.Spells
 
         public override void FinishSpellCast(GameLiving target)
         {
-            if (Spell.SubSpellId > 0)
+            if (Spell.SubSpellID > 0)
             {
-                Spell spell = SkillBase.GetSpellByID(Spell.SubSpellId);
-                if (spell != null && spell.SubSpellId == 0)
+                Spell spell = SkillBase.GetSpellByID(Spell.SubSpellID);
+                if (spell != null && spell.SubSpellID == 0)
                 {
                     ISpellHandler spellhandler = ScriptMgr.CreateSpellHandler(Caster, spell, SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells));
                     spellhandler.StartSpell(Caster);
