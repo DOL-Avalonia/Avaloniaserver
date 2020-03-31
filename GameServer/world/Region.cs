@@ -649,6 +649,11 @@ namespace DOL.GS
         /// <param name="bindCount"></param>
         public virtual void LoadFromDatabase(Mob[] mobObjs, ref long mobCount, ref long merchantCount, ref long itemCount, ref long bindCount)
         {
+#if DEBUG
+            if (!(ID == 51 || ID == 330))
+                return;
+#endif
+
             if (!LoadObjects)
             {
                 return;

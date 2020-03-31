@@ -243,7 +243,7 @@ namespace DOL.AI.Brain
 		public override void Think()
 		{
 			if (!Body.IsCasting && Body.Spells != null && Body.Spells.Count > 0)
-				CheckSpells(eCheckSpellType.Defensive);
+				TryCastASpell(eCheckSpellType.Defensive);
 
 			if (AggroLevel > 0)
 			{

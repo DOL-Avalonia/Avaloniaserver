@@ -150,7 +150,7 @@ namespace DOL.AI.Brain
 		/// <summary>
 		/// Checks defensive spells.  Handles buffs, heals, etc.
 		/// </summary>
-		protected override bool CheckDefensiveSpells(Spell spell)
+		protected override bool TryCastDefensiveSpell(Spell spell)
 		{
 			if (spell == null) return false;
 			if (Body.GetSkillDisabledDuration(spell) > 0) return false;

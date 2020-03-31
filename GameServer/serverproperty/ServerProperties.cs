@@ -260,6 +260,12 @@ namespace DOL.GS.ServerProperties
         public static int EMOTE_DELAY { get; set; }
 
         /// <summary>
+        /// NPCs heal when a target is below what percentage of their health?
+        /// </summary>
+        [ServerProperty("npc", "npc_heal_threshold", "NPCs, including pets, heal targets whose health falls below this percentage.", 75)]
+        public static int NPC_HEAL_THRESHOLD { get; set; }
+
+        /// <summary>
         /// Command spam protection delay
         /// </summary>
         [ServerProperty("system", "command_spam_delay", "The spam delay, default 1500ms before the same command can be issued again.", 1500)]

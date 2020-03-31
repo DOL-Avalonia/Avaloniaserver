@@ -1657,7 +1657,7 @@ namespace DOL.GS
                     StandardMobBrain stanBrain = (StandardMobBrain)Brain;
                     if (stanBrain != null)
                     {
-                        ((StandardMobBrain)stanBrain).CheckSpells(StandardMobBrain.eCheckSpellType.Offensive);
+                        ((StandardMobBrain)stanBrain).TryCastASpell(StandardMobBrain.eCheckSpellType.Offensive);
                     }
                 }
             }
@@ -5596,7 +5596,7 @@ namespace DOL.GS
 
                 // If we started casting a spell, stop the timer and wait for
                 // GameNPC.OnAfterSpellSequenceCast to start again
-                if (owner.Brain is StandardMobBrain && ((StandardMobBrain)owner.Brain).CheckSpells(StandardMobBrain.eCheckSpellType.Offensive))
+                if (owner.Brain is StandardMobBrain && ((StandardMobBrain)owner.Brain).TryCastASpell(StandardMobBrain.eCheckSpellType.Offensive))
                 {
                     Stop();
                     return;
