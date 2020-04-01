@@ -397,13 +397,13 @@ namespace DOL.GS.Spells
             // Scale spells that are cast by pets
             if (Caster is GamePet && !(Caster is NecromancerPet) && ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL > 0)
             {
-		double CasterLevel;
+				double CasterLevel;
 
-		// Cap the level we scale BD minions' spell effects to the player's modified spec for the spec line the pet is from
-		if (Caster is BDSubPet subpet && subpet.Owner is CommanderPet commander && commander.Owner is GamePlayer player)
-			CasterLevel = Math.Min(subpet.Level, player.GetModifiedSpecLevel(subpet.PetSpecLine));
-		else
-			CasterLevel = Caster.Level;
+				// Cap the level we scale BD minions' spell effects to the player's modified spec for the spec line the pet is from
+				if (Caster is BDSubPet subpet && subpet.Owner is CommanderPet commander && commander.Owner is GamePlayer player)
+					CasterLevel = Math.Min(subpet.Level, player.GetModifiedSpecLevel(subpet.PetSpecLine));
+				else
+					CasterLevel = Caster.Level;
 					
                 switch (m_spell.SpellType.ToString().ToLower())
                 {

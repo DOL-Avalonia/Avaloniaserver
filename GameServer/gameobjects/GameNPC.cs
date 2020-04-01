@@ -4055,6 +4055,22 @@ namespace DOL.GS
 		}
 
 		/// <summary>
+		/// npcs can always have mana to cast
+		/// </summary>
+		public override int Mana
+		{
+			get { return 5000; }
+		}
+
+		/// <summary>
+		/// The Max Mana for this NPC
+		/// </summary>
+		public override int MaxMana
+		{
+			get { return 1000; }
+		}
+
+		/// <summary>
 		/// Gets the concentration left
 		/// </summary>
 		public override int Concentration

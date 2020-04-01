@@ -1267,6 +1267,10 @@ namespace DOL.GS.Commands
             info.Add(" + Realm: " + GlobalConstants.RealmToName(targetMob.Realm));
             info.Add(" + Level: " + targetMob.Level);
             info.Add(" + Brain: " + (targetMob.Brain == null ? "(null)" : targetMob.Brain.GetType().ToString()));
+            info.Add(" + Speed(current/max): " + targetMob.CurrentSpeed + "/" + targetMob.MaxSpeedBase);
+            info.Add(" + Health: " + targetMob.Health + "/" + targetMob.MaxHealth);
+            info.Add(" + Endurance: " + targetMob.Endurance + "/" + targetMob.MaxEndurance);
+            info.Add(" + Mana: " + targetMob.Mana + "/" + targetMob.MaxMana);
 
             if (targetMob.DamageRvRMemory > 0)
             {
@@ -1360,6 +1364,7 @@ namespace DOL.GS.Commands
             info.Add(" + " + targetMob.Strength + "  /  " + targetMob.Constitution + "  /  " + targetMob.Dexterity + "  /  " + targetMob.Quickness);
             info.Add(" + INT  /  EMP  /  PIE  /  CHR");
             info.Add(" + " + targetMob.Intelligence + "  /  " + targetMob.Empathy + "  /  " + targetMob.Piety + "  /  " + targetMob.Charisma);
+            info.Add(" + DPS/SPD/AF/ABS: " + targetMob.WeaponDps + " / " + targetMob.WeaponSpd + " / " + targetMob.ArmorFactor + " / " + targetMob.ArmorAbsorb);
             info.Add(" + Block / Parry / Evade %:  " + targetMob.BlockChance + " / " + targetMob.ParryChance + " / " + targetMob.EvadeChance);
             info.Add(" + Attack Speed (Melee Speed Increase %):  " + targetMob.AttackSpeed(targetMob.AttackWeapon) + " (" + (100 - targetMob.GetModified(eProperty.MeleeSpeed)) + ")");
             info.Add(" + Casting Speed Increase %:  " + targetMob.GetModified(eProperty.CastingSpeed));

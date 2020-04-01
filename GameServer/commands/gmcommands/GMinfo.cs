@@ -158,7 +158,7 @@ namespace DOL.GS.Commands
 					info.Add(" ");
 					info.Add($" + {target.Strength} STR / {target.Constitution} CON / {target.Dexterity} DEX / {target.Quickness} QUI");
 					info.Add($" + {target.Intelligence} INT / {target.Empathy} EMP / {target.Piety} PIE / {target.Charisma} CHR");
-					//info.Add($" + {target.WeaponDps} DPS / {target.WeaponSpd} SPD / {target.ArmorFactor} AF / {target.ArmorAbsorb} ABS");
+					info.Add($" + {target.WeaponDps} DPS / {target.WeaponSpd} SPD / {target.ArmorFactor} AF / {target.ArmorAbsorb} ABS");
 					info.Add($" + {target.BlockChance}% Block / {target.ParryChance}% Parry / {target.EvadeChance}% Evade");
 
 					info.Add(" + Damage type: " + target.MeleeDamageType);
