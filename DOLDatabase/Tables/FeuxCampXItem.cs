@@ -22,6 +22,7 @@ namespace DOL.Database
         private int m_manaTrapDamagePercent;
         private int m_healthTrapDamagePercent;
         private int m_healthRatePercent;
+        private int m_manaRatePercent;
 
         public FeuxCampXItem()
         {
@@ -95,6 +96,21 @@ namespace DOL.Database
             {
                 Dirty = true;
                 m_healthRatePercent = value;
+            }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public int ManaRatePercent
+        {
+            get
+            {
+                return m_manaRatePercent;
+            }
+
+            set
+            {
+                Dirty = true;
+                m_manaRatePercent = value;
             }
         }
 

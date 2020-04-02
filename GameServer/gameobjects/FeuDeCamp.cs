@@ -64,6 +64,12 @@ namespace DOL.GS
             set;
         }
 
+        public int ManaPercentRate
+        {
+            get;
+            set;
+        }
+
 
         public bool IsHealthType
         {
@@ -172,7 +178,7 @@ namespace DOL.GS
 
                     if (IsEnduranceType)
                     {
-                        Player.Endurance += Endurance * (Player.MaxEndurance / 100);
+                        Player.Endurance += EndurancePercentRate * (Player.MaxEndurance / 100);
 
                         if (Player.Endurance > Player.Endurance)
                         {
@@ -182,7 +188,7 @@ namespace DOL.GS
                     
                     if (IsManaType)
                     {
-                        Player.Mana += ManaPercent * (Player.MaxMana / 100);
+                        Player.Mana += ManaPercentRate * (Player.MaxMana / 100);
 
                         if (Player.Mana > Player.MaxMana)
                         {
@@ -293,6 +299,7 @@ namespace DOL.GS
                     Radius = Feu.Radius,
                     Lifetime = Feu.Lifetime,
                     EndurancePercentRate = Feu.EndurancePercentRate,
+                    ManaPercentRate = Feu.ManaPercentRate,
                     IsHealthType = Feu.IsHealthType,
                     IsManaType = Feu.IsManaType,
                     IsManaTrapType = Feu.IsManaTrapType,

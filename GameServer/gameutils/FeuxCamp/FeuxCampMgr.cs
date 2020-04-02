@@ -40,7 +40,8 @@ namespace GameServerScripts.Utils
                         ManaTrapDamagePercent = firecampItem.ManaTrapDamagePercent,
                         HealthTrapDamagePercent = firecampItem.HealthTrapDamagePercent,
                         IsEnduranceType = firecampItem.IsEnduranceType,
-                        HealthPercentRate = firecampItem.HealthRatePercent
+                        HealthPercentRate = firecampItem.HealthRatePercent,
+                        ManaPercentRate = firecampItem.ManaRatePercent
                     };                    
             
                     if (m_firecamps.ContainsKey(firecampItem.FeuxCampXItem_ID))
