@@ -1,6 +1,5 @@
 using System;
 using System.Text;
-using DOL.AI;
 using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
 
@@ -18,12 +17,7 @@ namespace DOL.GS.Scripts
             SetOwnBrain(new GuardNPCBrain());
         }
 
-        public override ABrain SetOwnBrain(ABrain brain)
-        {
-            return  base.SetOwnBrain(brain);
-        }
-
-        public override bool Interact(GamePlayer player)
+		public override bool Interact(GamePlayer player)
 		{
 			if (!base.Interact(player) || BlacklistMgr.IsBlacklisted((AmtePlayer)player))
 				return false;
@@ -85,9 +79,9 @@ namespace DOL.GS.Scripts
 			return true;
 		}
 
-		public override void WalkToSpawn()
+		public override void WalkToSpawn(short speed)
 		{
-			WalkToSpawn(MaxSpeed);
+			base.WalkToSpawn(MaxSpeed);
 		}
 	}
 

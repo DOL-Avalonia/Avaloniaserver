@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.Effects;
@@ -16,7 +17,6 @@ namespace DOL.GS.Spells
         public override void OnEffectStart(GameSpellEffect effect)
         {
             base.OnEffectStart(effect);
-
             // "Your weapon is blessed by the gods!"
             // "{0}'s weapon glows with the power of the gods!"
             eChatType chatType = eChatType.CT_SpellPulse;
@@ -24,7 +24,6 @@ namespace DOL.GS.Spells
             {
                 chatType = eChatType.CT_Spell;
             }
-
             MessageToLiving(effect.Owner, Spell.Message1, chatType);
             Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, true)), chatType, effect.Owner);
             GameEventMgr.AddHandler(effect.Owner, GameLivingEvent.AttackFinished, new DOLEventHandler(EventHandler));
@@ -37,23 +36,20 @@ namespace DOL.GS.Spells
                 MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
                 Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, true)), eChatType.CT_SpellExpires, effect.Owner);
             }
-
             GameEventMgr.RemoveHandler(effect.Owner, GameLivingEvent.AttackFinished, new DOLEventHandler(EventHandler));
             return 0;
         }
 
         public void EventHandler(DOLEvent e, object sender, EventArgs arguments)
         {
-            if (!(arguments is AttackFinishedEventArgs args) || args.AttackData == null)
+            AttackFinishedEventArgs args = arguments as AttackFinishedEventArgs;
+            if (args == null || args.AttackData == null)
             {
                 return;
             }
-
             AttackData ad = args.AttackData;
             if (ad.AttackResult != GameLiving.eAttackResult.HitUnstyled && ad.AttackResult != GameLiving.eAttackResult.HitStyle)
-            {
                 return;
-            }
 
             int baseChance = 0;
             if (ad.AttackType == AttackData.eAttackType.Ranged)
@@ -62,11 +58,11 @@ namespace DOL.GS.Spells
             }
             else if (ad.IsMeleeAttack)
             {
-                baseChance = Spell.Frequency;
-                if (sender is GamePlayer player)
+                baseChance = ((int)Spell.Frequency);
+                if (sender is GamePlayer)
                 {
+                    GamePlayer player = (GamePlayer)sender;
                     InventoryItem leftWeapon = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-
                     // if we can use left weapon, we have currently a weapon in left hand and we still have endurance,
                     // we can assume that we are using the two weapons.
                     if (player.CanUseLefthandedWeapon && leftWeapon != null && leftWeapon.Object_Type != (int)eObjectType.Shield)
@@ -82,16 +78,13 @@ namespace DOL.GS.Spells
                 ISpellHandler handler = ScriptMgr.CreateSpellHandler((GameLiving)sender, m_procSpell, SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells));
                 if (handler != null)
                 {
-                    if (m_procSpell.Target == "Enemy")
-                    {
+                    if (m_procSpell.Target == "enemy")
                         handler.StartSpell(ad.Target);
-                    }
-                    else if (m_procSpell.Target == "Self")
-                    {
+                    else if (m_procSpell.Target == "self")
                         handler.StartSpell(ad.Attacker);
-                    }
                 }
             }
+
         }
 
         // constructor
