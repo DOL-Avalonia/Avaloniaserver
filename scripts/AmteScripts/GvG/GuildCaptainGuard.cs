@@ -59,11 +59,22 @@ namespace DOL.GS.Scripts
 		}
 
 		public override string GuildName {
-			get => base.GuildName;
+			get
+			{
+				return base.GuildName;
+			}
 			set {
 				base.GuildName = value;
 				_guild = GuildMgr.GetGuildByName(value);
-				ResetArea(_guild?.Emblem ?? NEUTRAL_EMBLEM);
+
+				if (_guild != null)
+				{
+					ResetArea(_guild.Emblem);
+				}
+				else
+				{
+					ResetArea(NEUTRAL_EMBLEM);
+				}				
 			}
 		}
 
@@ -88,21 +99,21 @@ namespace DOL.GS.Scripts
 
 			if (player.Client.Account.PrivLevel == 1 && !player.GuildRank.Claim)
 			{
-				player.Out.SendMessage($"Bonjour {player.Name}, je ne discute pas avec les bleus, circulez.", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage(string.Format("Bonjour {0}, je ne discute pas avec les bleus, circulez.", player.Name), eChatType.CT_System, eChatLoc.CL_PopupWindow);
 				return true;
 			}
 
-			if (player.GuildID != _guild?.GuildID)
+			if (player.GuildID != null && _guild.GuildID != null)
 			{
 				player.Out.SendMessage(
-					$"Bonjour {player.GuildRank?.Title ?? ""} {player.Name} que puis-je faire pour vous ?\n[capturer le territoire] ({Money.GetShortString(CLAIM_COST)})",
+					string.Format("Bonjour {0} {1} que puis-je faire pour vous ?\n[capturer le territoire] ({2})", player.GuildRank?.Title ?? "", player.Name, Money.GetShortString(CLAIM_COST)),
 					eChatType.CT_System,
 					eChatLoc.CL_PopupWindow
 				);
 				return true;
 			}
 
-			player.Out.SendMessage($"Bonjour {player.GuildRank?.Title ?? ""} {player.Name}, que puis-je faire pour vous ?\n\n[modifier les alliances]\n", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+			player.Out.SendMessage(string.Format("Bonjour {0} {1}, que puis-je faire pour vous ?\n\n[modifier les alliances]\n", player.GuildRank?.Title ?? "", player.Name), eChatType.CT_System, eChatLoc.CL_PopupWindow);
 			return true;
 		}
 
@@ -133,14 +144,14 @@ namespace DOL.GS.Scripts
 						.Select(g => {
 							var safe = safeGuildIds.Contains(g.GuildID);
 							if (safe)
-								return $"{g.Name}: [{g.ID}. attaquer à vue]";
-							return $"{g.Name}: [{g.ID}. ne plus attaquer à vue]";
+								return string.Format("{0}: [{1}. attaquer à vue]", g.Name, g.ID);
+							return string.Format("{0}: [{1}. ne plus attaquer à vue]", g.Name, g.ID);
 						})
-						.Aggregate((a, b) => $"{a}\n{b}");
+						.Aggregate((a, b) => string.Format("{0}\n{1}", a, b));
 					var safeNoGuild = safeGuildIds.Contains("NOGUILD");
 					guilds += "\nLes sans guildes: [256. ";
 					guilds += (safeNoGuild ? "" : "ne plus ") + "attaquer à vue]";
-					player.Out.SendMessage($"Voici la liste des guildes et leurs paramètres :\n${guilds}", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+					player.Out.SendMessage(string.Format("Voici la liste des guildes et leurs paramètres :\n{0}", guilds), eChatType.CT_System, eChatLoc.CL_PopupWindow);
 					return true;
 				case "acheter un garde":
 					BuyGuard(player);
@@ -186,7 +197,7 @@ namespace DOL.GS.Scripts
 
 		public void BuyGuard(GamePlayer player)
 		{
-			player.Out.SendMessage($"Vous devez prendre contact avec un Game Master d'Amtenaël.", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+			player.Out.SendMessage("Vous devez prendre contact avec un Game Master d'Avalonia.", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 		}
 
 		public void Claim(GamePlayer player)

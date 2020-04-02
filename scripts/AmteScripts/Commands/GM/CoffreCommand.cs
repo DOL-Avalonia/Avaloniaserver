@@ -28,7 +28,7 @@ namespace DOL.GS.Scripts
          "'/coffre npctemplate <value>' Set le npctemplate associé au pop mob de ce coffre",
          "'/coffre respawn <name>' Respawn un coffre en donnant son name (reset du timer a 0)",
          "'/coffre isteleporter' Alterne l'etat IsTeleporter du coffre",
-         "'/coffre teleporter <X> <Y> <Z> <RegionID>' Définit la destination du Téléporteur de ce coffre",
+         "'/coffre teleporter <X> <Y> <Z> <heading> <RegionID>' Définit la destination du Téléporteur de ce coffre",
          "'/coffre tprequirement <level>' Definit le Level minimum pour pouvoir utiliser le Téléporteur de ce coffre",
          "'/coffre tpeffect <SpellID>' Definit l'effect utilisé par la téléportation de ce coffre basé sur son SpellID",
          "'/coffre tpisrenaissance' Alterne l'état IsRenaissance du coffre",
@@ -469,7 +469,7 @@ namespace DOL.GS.Scripts
                     break;
 
                 case "teleporter":
-                    if (coffre == null || args.Length <= 5)
+                    if (coffre == null || args.Length <= 6)
                     {
                         DisplaySyntax(client);
                         return;
@@ -477,13 +477,15 @@ namespace DOL.GS.Scripts
                     int X;
                     int Y;
                     int Z;
+                    ushort heading;
                     ushort RegionID;
                     try
                     {
                         X = int.Parse(args[2]);
                         Y = int.Parse(args[3]);
                         Z = int.Parse(args[4]);         
-                        RegionID = (ushort)int.Parse(args[5]);      
+                        heading = (ushort)int.Parse(args[5]);
+                        RegionID = (ushort)int.Parse(args[6]);
                     }
                     catch { DisplaySyntax(client); return; }
 
@@ -491,7 +493,7 @@ namespace DOL.GS.Scripts
                     coffre.TpY = Y;
                     coffre.TpZ = Z;
                     coffre.TpRegion = RegionID;
-                    coffre.Heading = client.Player.Heading;
+                    coffre.TPHeading = heading;
                     coffre.SaveIntoDatabase();
                     player.Out.SendMessage("Le Coffre \"" + coffre + "\" a recu une nouvelle destination de téléportation",  PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
                     

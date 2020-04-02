@@ -80,6 +80,12 @@ namespace DOL.GS.Scripts
 			set;		
 		}
 
+		public int TPHeading
+		{
+			get;
+			set;
+		}
+
 		public bool IsTeleporter
 		{
 			get;
@@ -177,12 +183,7 @@ namespace DOL.GS.Scripts
 		{
 			if (!base.Interact (player) || !player.IsAlive) return false;
 
-			////Coffre vide
-			//if ((LastOpen.Ticks / 600000000 + ItemInterval) > DateTime.Now.Ticks / 600000000)
-			//{
-   //             player.Out.SendMessage("Quelqu'un a déjà regardé par ici... Revenez-plus tard.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-			//	return true;
-			//}
+			if (!this.IsWithinRadius(player, WorldMgr.GIVE_ITEM_DISTANCE)) return false;	
 
 			if (LockDifficult > 0 || KeyItem != "")
 			{
@@ -353,7 +354,7 @@ namespace DOL.GS.Scripts
 			if (TpX > 0 && TpY > 0 && TpZ > 0 && TpRegion > 0)
 			{
 				RegionTimer TimerTL = new RegionTimer(this, Teleportation);
-				TimerTL.Properties.setProperty("TP", new GameLocation("Coffre Location", (ushort)TpRegion, TpX, TpY, TpZ, player.Heading));
+				TimerTL.Properties.setProperty("TP", new GameLocation("Coffre Location", (ushort)TpRegion, TpX, TpY, TpZ, (ushort)TPHeading));
 				TimerTL.Properties.setProperty("player", player);
 				TimerTL.Start(3000);
 				
@@ -361,12 +362,7 @@ namespace DOL.GS.Scripts
 				{
 					//handle effect
 					player.Out.SendSpellCastAnimation(player, (ushort)TpEffect, 20);
-				}
-
-				foreach (GamePlayer players in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-				{			
-					players.Out.SendEmoteAnimation(player, eEmote.Bind);
-				}
+				}			
 			}
 		}
 
@@ -614,6 +610,7 @@ namespace DOL.GS.Scripts
 			TpX = coffre.TpX;
 			TpY = coffre.TpY;
 			TpZ = coffre.TpZ;
+			TPHeading = coffre.TPHeading;
 			PunishSpellId = coffre.PunishSpellId;
 			TpLevelRequirement = coffre.TpLevelRequirement;
 			TpIsRenaissance = coffre.TpIsRenaissance;
@@ -669,6 +666,7 @@ namespace DOL.GS.Scripts
 			Coffre.TpX = TpX;
 			Coffre.TpY = TpY;
 			Coffre.TpZ = TpZ;
+			Coffre.TPHeading = TPHeading;
 			Coffre.PunishSpellId = PunishSpellId;
 			Coffre.TpLevelRequirement = TpLevelRequirement;
 			Coffre.TpIsRenaissance = TpIsRenaissance;
@@ -776,9 +774,11 @@ namespace DOL.GS.Scripts
 			text.Add("-- Teleport Info --");
 			text.Add("IsTeleporter: " + this.IsTeleporter);
 			text.Add("TP Level Requirement: " + this.TpLevelRequirement);
+			text.Add("TP Effect: " + this.TpEffect);
 			text.Add("X: " + TpX);
 			text.Add("Y: " + TpY);
 			text.Add("Z: " + TpZ);
+			text.Add("TP Heading: " + this.TPHeading);
 			text.Add("RegionID: " + TpRegion);			
 			
 			text.Add("");

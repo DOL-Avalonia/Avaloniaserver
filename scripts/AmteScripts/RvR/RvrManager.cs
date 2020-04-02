@@ -283,7 +283,13 @@ namespace AmteScripts.Managers
 		}
 
 		private LordRvR[] _lords = new LordRvR[0];
-		public LordRvR[] Lords => _lords.ToArray();
+		public LordRvR[] Lords
+        {
+            get
+            {
+                return _lords.ToArray();
+            }
+        }       
 
         public bool Open(bool force)
 		{

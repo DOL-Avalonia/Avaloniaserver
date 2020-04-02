@@ -106,7 +106,7 @@ namespace Amte
 
 			foreach (var obj in GetPlayersInRadius(ushort.MaxValue - 1))
 				if (obj is GamePlayer pl)
-					pl.Out.SendMessage($"{player.GuildName} commence à prendre le contrôle du fort !", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					pl.Out.SendMessage(string.Format("{0} commence à prendre le contrôle du fort !", player.GuildName), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 
 			return true;
 		}
@@ -117,7 +117,7 @@ namespace Amte
 			GuildName = player.GuildName;
 			foreach (var obj in GetPlayersInRadius(ushort.MaxValue - 1))
 				if (obj is GamePlayer pl)
-					pl.Out.SendMessage($"{player.GuildName} a pris le contrôle du fort !", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+					pl.Out.SendMessage(string.Format("{0} a pris le contrôle du fort !", player.GuildName), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 		}
 
 		public virtual void StartRvR()

@@ -68,6 +68,7 @@ namespace DOL.Database
 		private int m_tpRegion;
 		private bool m_isOpeningRenaissanceType;
 		private int m_punishSpellId;
+		private int m_tpHeading;
 
 		[DataElement(AllowDbNull=false)]
 		public string Name
@@ -122,6 +123,20 @@ namespace DOL.Database
 			{   
 				Dirty = true;
 				m_z = value;
+			}
+		}
+
+		[DataElement(AllowDbNull = false)]
+		public int TPHeading
+		{
+			get
+			{
+				return m_tpHeading;
+			}
+			set
+			{
+				Dirty = true;
+				m_tpHeading = value;
 			}
 		}
 

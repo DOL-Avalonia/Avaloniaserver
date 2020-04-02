@@ -27,7 +27,10 @@ namespace DOL.GS.Scripts
 
 		public override string GuildName
 		{
-			get => base.GuildName;
+			get 
+			{
+				return base.GuildName;
+			}
 			set
 			{
 				var old = base.GuildName;
@@ -61,14 +64,14 @@ namespace DOL.GS.Scripts
 				return false;
 			if (!player.GuildRank.Claim)
 			{
-				player.Out.SendMessage($"Bonjour {player.Name}, je ne discute pas avec les bleus, circulez.", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage(string.Format("Bonjour {0}, je ne discute pas avec les bleus, circulez.", player.Name), eChatType.CT_System, eChatLoc.CL_PopupWindow);
 				return true;
 			}
 
 			var cloaks = GameServer.Database.SelectObjects<NPCEquipment>("TemplateID like 'gvg_guard_%' AND Slot = 26");
 			player.Out.SendMessage(
-				$"Bonjour {player.Name}, vous pouvez modifier l'équippement que je porte, sélectionner l'ensemble que vous souhaitez :\n" +
-				string.Join("\n", cloaks.Select(c => $"[{c.TemplateID.Substring(10)}]")),
+				string.Format("Bonjour {0}, vous pouvez modifier l'équippement que je porte, sélectionner l'ensemble que vous souhaitez :\n", player.Name) +
+				string.Join("\n", cloaks.Select(c => string.Format("[{0}]", c.TemplateID.Substring(10)))),
 				eChatType.CT_System,
 				eChatLoc.CL_PopupWindow
 			);
@@ -84,12 +87,12 @@ namespace DOL.GS.Scripts
 				return false;
 			if (!player.GuildRank.Claim)
 			{
-				player.Out.SendMessage($"Bonjour {player.Name}, je ne discute pas avec les bleus, circulez.", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+				player.Out.SendMessage(string.Format("Bonjour {0}, je ne discute pas avec les bleus, circulez.", player.Name), eChatType.CT_System, eChatLoc.CL_PopupWindow);
 				return true;
 			}
 
 			var cloaks = GameServer.Database.SelectObjects<NPCEquipment>("TemplateID like 'gvg_guard_%' AND Slot = 26");
-			text = $"gvg_guard_{text}";
+			text = string.Format("gvg_guard_{0}", text);
 			if (cloaks.Any(c => c.TemplateID == text))
 				LoadEquipmentTemplateFromDatabase(text);
 			RefreshEmblem();
@@ -110,9 +113,9 @@ namespace DOL.GS.Scripts
 					return;
 				var name = "un inconnu";
 				if (!string.IsNullOrEmpty(plKiller.GuildName))
-					name = $"un membre de la guilde {plKiller.GuildName}";
+					name = string.Format("un membre de la guilde {0}", plKiller.GuildName);
 				guild.SendMessageToGuildMembers(
-					$"{Captain?.Name ?? "Capitaine"}: un garde vient d'être tué par {name}.",
+					string.Format("{0}: un garde vient d'être tué par {1}.", Captain?.Name ?? "Capitaine", name),
 					eChatType.CT_Guild,
 					eChatLoc.CL_ChatWindow
 				);

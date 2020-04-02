@@ -64,7 +64,13 @@ namespace AmteScripts.Managers
 			FindPvPMaps();
 		}
 
-		public IEnumerable<ushort> Maps => _maps.Keys;
+		public IEnumerable<ushort> Maps
+		{
+			get
+			{
+				return _maps.Keys;
+			} 
+		}
 
 		public IEnumerable<ushort> FindPvPMaps()
 		{

@@ -23,19 +23,13 @@ namespace DOL.GS
                 return;
             }
             base.StartAttack(attackTarget);
-            bool yell = false;
             foreach (GameNPC npc in GetNPCsInRadius(LINK_DISTANCE))
             {
                 var match = Regex.Match(this.Name, @"\s("+ npc.GuildName +")$");
                 if (npc is GameNPC && match != null && match.Length > 1 && !npc.InCombat)
                 {
                     npc.StartAttack(attackTarget);
-                    yell = true;
                 }
-            }
-            if (yell)
-            {
-                Yell("Venez à moi, mes serviteurs.");
             }
         }
     }
