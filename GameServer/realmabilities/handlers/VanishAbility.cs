@@ -40,19 +40,19 @@ namespace DOL.GS.RealmAbilities
                         break;
                     case 2:
                         duration = 3000;
-                        speedBonus = MaxSpeedCalculator.Speed1;
+                        speedBonus = MaxSpeedCalculator.SPEED1;
                         break;
                     case 3:
                         duration = 4000;
-                        speedBonus = MaxSpeedCalculator.Speed3;
+                        speedBonus = MaxSpeedCalculator.SPEED3;
                         break;
                     case 4:
                         duration = 5000;
-                        speedBonus = MaxSpeedCalculator.Speed4;
+                        speedBonus = MaxSpeedCalculator.SPEED4;
                         break;
                     case 5:
                         duration = 6000;
-                        speedBonus = MaxSpeedCalculator.Speed5;
+                        speedBonus = MaxSpeedCalculator.SPEED5;
                         break;
                 }
             }
@@ -66,11 +66,11 @@ namespace DOL.GS.RealmAbilities
                         break;
                     case 2:
                         duration = 2000;
-                        speedBonus = MaxSpeedCalculator.Speed1;
+                        speedBonus = MaxSpeedCalculator.SPEED1;
                         break;
                     case 3:
                         duration = 5000;
-                        speedBonus = MaxSpeedCalculator.Speed5;
+                        speedBonus = MaxSpeedCalculator.SPEED5;
                         break;
                 }
             }

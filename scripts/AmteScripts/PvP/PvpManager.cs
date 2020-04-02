@@ -64,6 +64,8 @@ namespace AmteScripts.Managers
 			FindPvPMaps();
 		}
 
+		public IEnumerable<ushort> Maps => _maps.Keys;
+
 		public IEnumerable<ushort> FindPvPMaps()
 		{
 			var npcs = WorldMgr.GetNPCsByGuild("PVP", eRealm.None);

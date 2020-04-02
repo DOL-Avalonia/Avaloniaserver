@@ -29,6 +29,7 @@ using DOL.GS.Keeps;
 using DOL.GS.Utils;
 using DOL.GS.ServerProperties;
 using log4net;
+using System.Linq;
 
 namespace DOL.GS
 {
@@ -650,7 +651,8 @@ namespace DOL.GS
         public virtual void LoadFromDatabase(Mob[] mobObjs, ref long mobCount, ref long merchantCount, ref long itemCount, ref long bindCount)
         {
 #if DEBUG
-            if (!(ID == 51 || ID == 330 || ID == 163))
+            var regiontoLoad = new ushort[] { 51, 330, 163, 234, 235, 236, 238, 239, 240, 241, 242};
+            if (!regiontoLoad.Contains(ID))
                 return;
 #endif
 

@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Amte;
+using AmteScripts.Utils;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS;
@@ -10,8 +12,8 @@ using log4net;
 
 namespace AmteScripts.Managers
 {
-    public class RvrManager
-    {
+	public class RvrManager
+	{
         const string ALBION = "Albion";
         const string HIBERNIA = "Hibernia";
         const string MIDGARD = "Midgard";
@@ -42,40 +44,40 @@ namespace AmteScripts.Managers
 
         private static readonly TimeSpan _startTime = new TimeSpan(20, 0, 0); //20H
         private static readonly TimeSpan _endTime = new TimeSpan(2, 0, 0).Add(TimeSpan.FromDays(1)); //2h du mat
-        private const int _checkInterval = 30 * 1000; // 30 seconds
-        private static readonly GameLocation _stuckSpawn = new GameLocation("", 51, 434303, 493165, 3088, 1069);
+		private const int _checkInterval = 30 * 1000; // 30 seconds
+		private static readonly GameLocation _stuckSpawn = new GameLocation("", 51, 434303, 493165, 3088, 1069);
         private Dictionary<ushort, IList<string>> RvrStats = new Dictionary<ushort, IList<string>>();
 
-        #region Static part
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		#region Static part
+		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private static RvrManager _instance;
-        private static RegionTimer _timer;
+		private static RvrManager _instance;
+		private static RegionTimer _timer;
 
-        public static RvrManager Instance { get { return _instance; } }
+		public static RvrManager Instance { get { return _instance; } }
 
-        [ScriptLoadedEvent]
-        public static void OnServerStarted(DOLEvent e, object sender, EventArgs args)
-        {
-            log.Info("RvRManger: Started");
-            _instance = new RvrManager();
-            _timer = new RegionTimer(WorldMgr.GetRegion(1).TimeManager)
-            {
-                Callback = _instance._CheckRvr
-            };
-            _timer.Start(1);
-        }
+		[ScriptLoadedEvent]
+		public static void OnServerStarted(DOLEvent e, object sender, EventArgs args)
+		{
+			log.Info("RvRManger: Started");
+			_instance = new RvrManager();
+			_timer = new RegionTimer(WorldMgr.GetRegion(1).TimeManager)
+			{
+				Callback = _instance._CheckRvr
+			};
+			_timer.Start(10000);
+		}
 
-        [ScriptUnloadedEvent]
-        public static void OnServerStopped(DOLEvent e, object sender, EventArgs args)
-        {
-            log.Info("RvRManger: Stopped");
-            _timer.Stop();
-        }
-        #endregion
+		[ScriptUnloadedEvent]
+		public static void OnServerStopped(DOLEvent e, object sender, EventArgs args)
+		{
+			log.Info("RvRManger: Stopped");
+			_timer.Stop();
+		}
+		#endregion
 
-        private bool _isOpen;
-        private bool _isForcedOpen;
+		private bool _isOpen;
+		private bool _isForcedOpen;
         private IEnumerable<ushort> _regions;
 
         private readonly Guild Albion;
@@ -83,17 +85,17 @@ namespace AmteScripts.Managers
         private readonly Guild Midgard;
 
 
-        public bool IsOpen { get { return _isOpen; } }
+		public bool IsOpen { get { return _isOpen; } }
         public IEnumerable<ushort> Regions { get { return _regions; } }
 
-        /// <summary>
-        /// &lt;regionID, Tuple&lt;TPs, spawnAlb, spawnMid, spawnHib&gt;&gt;
-        /// </summary>
+		/// <summary>
+		/// &lt;regionID, Tuple&lt;TPs, spawnAlb, spawnMid, spawnHib&gt;&gt;
+		/// </summary>
         private readonly Dictionary<string, Tuple<GameNPC, GameLocation>> _maps =
             new Dictionary<string, Tuple<GameNPC, GameLocation>>();
 
-        private RvrManager()
-        {
+		private RvrManager()
+		{
             Albion = GuildMgr.GetGuildByName(ALBION);
             if (Albion == null)
                 Albion = GuildMgr.CreateGuild(eRealm.Albion, ALBION);
@@ -110,13 +112,13 @@ namespace AmteScripts.Managers
             Albion.SaveIntoDatabase();
             Hibernia.SaveIntoDatabase();
             Midgard.SaveIntoDatabase();         
-            FindRvRMaps();
-        }
+			FindRvRMaps();
+		}
 
-        public IEnumerable<ushort> FindRvRMaps()
-        {
+		public IEnumerable<ushort> FindRvRMaps()
+		{
             var npcs = WorldMgr.GetNPCsByGuild("RVR", eRealm.None).Where(n => n.Name.StartsWith("RvR-"));
-            _maps.Clear();
+			_maps.Clear();
            
             var RvRNovices = npcs.Where(n => n.Name.StartsWith("RvR-Novice"));
             var RvRDebutants = npcs.Where(n => n.Name.StartsWith("RvR-Debutant"));
@@ -259,69 +261,82 @@ namespace AmteScripts.Managers
             return (from m in _maps select m.Value.Item2.RegionID);
         }
 
-        private int _CheckRvr(RegionTimer callingtimer)
-        {
-            Console.WriteLine("Check RVR");
-            if (!_isOpen)
-            {
+		private int _CheckRvr(RegionTimer callingtimer)
+		{
+			Console.WriteLine("Check RVR");
+			if (!_isOpen)
+			{
             	_regions.ForEach(id => WorldMgr.GetClientsOfRegion(id).Foreach(RemovePlayer));
-            	if (DateTime.Now.TimeOfDay >= _startTime && DateTime.Now.TimeOfDay < _endTime)
+				if (DateTime.Now.TimeOfDay >= _startTime && DateTime.Now.TimeOfDay < _endTime)
             		Open(false);
-            }
-            else
-            {
+			}
+			else
+			{
                 _regions.ForEach(id => WorldMgr.GetClientsOfRegion(id).Where(cl => cl.Player.Guild == null).Foreach(cl => RemovePlayer(cl.Player)));
                 if (!_isForcedOpen)
-                {
-                    if ((DateTime.Now.TimeOfDay < _startTime || DateTime.Now.TimeOfDay > _endTime) && !Close())
+				{
+					if ((DateTime.Now.TimeOfDay < _startTime || DateTime.Now.TimeOfDay > _endTime) && !Close())
                         _regions.ForEach(id => WorldMgr.GetClientsOfRegion(id).Foreach(RemovePlayer));
-                }
-            }
-            return _checkInterval;
-        }
+				}
+			}
+			return _checkInterval;
+		}
+
+		private LordRvR[] _lords = new LordRvR[0];
+		public LordRvR[] Lords => _lords.ToArray();
 
         public bool Open(bool force)
-        {
-            _isForcedOpen = force;
-            if (_isOpen)
-                return true;
-            _isOpen = true;           
+		{
+			_isForcedOpen = force;
+			if (_isOpen)
+				return true;
+			_isOpen = true;
 
             Hibernia.RealmPoints = 0;
             Albion.RealmPoints = 0;
-            Midgard.RealmPoints = 0;          
-            return true;
-        }
+            Midgard.RealmPoints = 0;
+            this._maps.Values.GroupBy(v => v.Item2.RegionID).ForEach(region =>
+            {
+                var reg = WorldMgr.GetRegion(region.Key);
+                _lords = reg.Objects.Where(o => o != null && o is LordRvR).Select(o => (LordRvR)o).ToArray();
+                foreach (var lord in _lords)
+                    lord.StartRvR();
+            });           
 
-        public bool Close()
-        {
-            if (!_isOpen)
-                return false;
-            _isOpen = false;
-            _isForcedOpen = false;
+			return true;
+		}
 
+		public bool Close()
+		{
+			if (!_isOpen)
+				return false;
+			_isOpen = false;
+			_isForcedOpen = false;
+
+			foreach (var lord in _lords)
+				lord.StopRvR();
             this._maps.Values.GroupBy(v => v.Item2.RegionID).ForEach(region => {
                 WorldMgr.GetClientsOfRegion(region.Key).Where(player => player.Player != null).Foreach(RemovePlayer);
                 GameServer.Database.SelectObjects<DOLCharacters>("Region = " + region.Key).Foreach(RemovePlayer);
             }); 
-          
-            return true;
-        }
 
-        public bool AddPlayer(GamePlayer player)
-        {
-            if (!_isOpen || player.Level < 20)
-                return false;
-			if (player.Client.Account.PrivLevel >= (uint)ePrivLevel.GM)
+			return true;
+		}
+
+		public bool AddPlayer(GamePlayer player)
+		{
+			if (!_isOpen || player.Level < 20)
+				return false;
+			if (player.Client.Account.PrivLevel == (uint)ePrivLevel.GM)
 			{
 				player.Out.SendMessage("Casse-toi connard de GM !", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 				return false;
 			}
-        	RvrPlayer rvr = new RvrPlayer(player);
-            GameServer.Database.AddObject(rvr);
+			RvrPlayer rvr = new RvrPlayer(player);
+			GameServer.Database.AddObject(rvr);
 
-        	if (player.Guild != null)
-        		player.Guild.RemovePlayer("RVR", player);
+			if (player.Guild != null)
+				player.Guild.RemovePlayer("RVR", player);
 
             bool isAdded = false;
 
@@ -332,27 +347,27 @@ namespace AmteScripts.Managers
             }
             else
             {     
-                switch (player.Realm)
-                {
-                    case eRealm.Albion:
+			switch (player.Realm)
+			{
+				case eRealm.Albion:
                         Albion.AddPlayer(player);
                         isAdded = this.AddPlayerToCorrectZone(player, "ALB");
-                        break;
+					break;
 
-                    case eRealm.Midgard:
+				case eRealm.Midgard:
                         Midgard.AddPlayer(player);
                         isAdded = this.AddPlayerToCorrectZone(player, "MID");
-                        break;
+					break;
 
-                    case eRealm.Hibernia:
+				case eRealm.Hibernia:
                         Hibernia.AddPlayer(player);
                         isAdded = this.AddPlayerToCorrectZone(player, "HIB");
-                        break;
-                }
+					break;
+			}
 
-                if (player.Guild != null)
-                    foreach (var i in player.Inventory.AllItems.Where(i => i.Emblem != 0))
-                        i.Emblem = player.Guild.Emblem;
+			if (player.Guild != null)
+				foreach (var i in player.Inventory.AllItems.Where(i => i.Emblem != 0))
+					i.Emblem = player.Guild.Emblem;
 
             }
             return isAdded;
@@ -415,8 +430,8 @@ namespace AmteScripts.Managers
 
                 player.MoveTo(_maps[key].Item2);
                 player.Bind(true);
-                return true;
-            }
+			return true;
+		}
             catch(KeyNotFoundException e)
             {
                 log.Error(e.Message, e);
@@ -425,33 +440,33 @@ namespace AmteScripts.Managers
         }
 
 
-        public void RemovePlayer(GameClient client)
+		public void RemovePlayer(GameClient client)
 		{
 			if (client.Player != null)
 				RemovePlayer(client.Player);
 		}
 
-        public void RemovePlayer(GamePlayer player)
-        {
-			if (player.Client.Account.PrivLevel >= (uint)ePrivLevel.GM)
+		public void RemovePlayer(GamePlayer player)
+		{
+			if (player.Client.Account.PrivLevel == (uint)ePrivLevel.GM)
 				return;
-            var rvr = GameServer.Database.SelectObject<RvrPlayer>("PlayerID = '" + GameServer.Database.Escape(player.InternalID) + "'");
-            if (rvr == null)
-            {
+			var rvr = GameServer.Database.SelectObject<RvrPlayer>("PlayerID = '" + GameServer.Database.Escape(player.InternalID) + "'");
+			if (rvr == null)
+			{
 				player.MoveTo(_stuckSpawn);
 				if (player.Guild != null && (player.Guild.Name.Equals("RVR")))
 					player.Guild.RemovePlayer("RVR", player);
 				player.SaveIntoDatabase();
-            }
-            else
-            {
-                rvr.ResetCharacter(player);
-                player.MoveTo((ushort)rvr.OldRegion, rvr.OldX, rvr.OldY, rvr.OldZ, (ushort)rvr.OldHeading);
-                if (player.Guild != null)
-                    player.Guild.RemovePlayer("RVR", player);
-                if (!string.IsNullOrWhiteSpace(rvr.GuildID))
-                {
-                    var guild = GuildMgr.GetGuildByGuildID(rvr.GuildID);
+			}
+			else
+			{
+				rvr.ResetCharacter(player);
+				player.MoveTo((ushort)rvr.OldRegion, rvr.OldX, rvr.OldY, rvr.OldZ, (ushort)rvr.OldHeading);
+				if (player.Guild != null)
+					player.Guild.RemovePlayer("RVR", player);
+				if (!string.IsNullOrWhiteSpace(rvr.GuildID))
+				{
+					var guild = GuildMgr.GetGuildByGuildID(rvr.GuildID);
 					if (guild != null)
 					{
 						guild.AddPlayer(player, guild.GetRankByID(rvr.GuildRank));
@@ -459,45 +474,45 @@ namespace AmteScripts.Managers
 						foreach (var i in player.Inventory.AllItems.Where(i => i.Emblem != 0))
 							i.Emblem = guild.Emblem;
 					}
-                }
-                player.SaveIntoDatabase();
-                GameServer.Database.DeleteObject(rvr);
-            }
-        }
+				}
+				player.SaveIntoDatabase();
+				GameServer.Database.DeleteObject(rvr);
+			}
+		}
 
-        public void RemovePlayer(DOLCharacters ch)
-        {
-            var rvr = GameServer.Database.SelectObject<RvrPlayer>("PlayerID = '" + GameServer.Database.Escape(ch.ObjectId) + "'");
-            if (rvr == null)
-            {
-                // AHHHHHHHHHHH
-            }
-            else
-            {
-                rvr.ResetCharacter(ch);
-                GameServer.Database.SaveObject(ch);
-                GameServer.Database.DeleteObject(rvr);
-            }
-        }
+		public void RemovePlayer(DOLCharacters ch)
+		{
+			var rvr = GameServer.Database.SelectObject<RvrPlayer>("PlayerID = '" + GameServer.Database.Escape(ch.ObjectId) + "'");
+			if (rvr == null)
+			{
+				// AHHHHHHHHHHH
+			}
+			else
+			{
+				rvr.ResetCharacter(ch);
+				GameServer.Database.SaveObject(ch);
+				GameServer.Database.DeleteObject(rvr);
+			}
+		}
 
 
-        private IList<string> _statCache = new List<string>();
-        private DateTime _statLastCacheUpdate = DateTime.Now;
+		private IList<string> _statCache = new List<string>();
+		private DateTime _statLastCacheUpdate = DateTime.Now;
 
         public IList<string> GetStatistics(GamePlayer player)
-        {
+		{
             if (!IsInRvr(player))
-            {
+			{
                 return new string[] { "Vous n'etes pas dans un RvR actuellement." };
             }
 
             if (DateTime.Now.Subtract(_statLastCacheUpdate) >= new TimeSpan(0, 0, 30))
             {             
-                _statLastCacheUpdate = DateTime.Now;
+				_statLastCacheUpdate = DateTime.Now;
                 var clients = WorldMgr.GetClientsOfRegion(player.CurrentRegionID);
-                var albCount = clients.Where(c => c.Player.Realm == eRealm.Albion).Count();
-                var midCount = clients.Where(c => c.Player.Realm == eRealm.Midgard).Count();
-                var hibCount = clients.Where(c => c.Player.Realm == eRealm.Hibernia).Count();
+				var albCount = clients.Where(c => c.Player.Realm == eRealm.Albion).Count();
+				var midCount = clients.Where(c => c.Player.Realm == eRealm.Midgard).Count();
+				var hibCount = clients.Where(c => c.Player.Realm == eRealm.Hibernia).Count();
 
                 long prAlb = clients.Where(c => c.Player.Realm == eRealm.Albion).Sum(c => c.Player.Guild.RealmPoints);
                 long prHib = clients.Where(c => c.Player.Realm == eRealm.Hibernia).Sum(c => c.Player.Guild.RealmPoints);
@@ -505,54 +520,56 @@ namespace AmteScripts.Managers
 
 
                 this.RvrStats[player.CurrentRegionID] = new List<string>
-                    {
-                        "Statistiques du RvR:",
-                        " - Albion: ",
+					{
+						"Statistiques du RvR:",
+						" - Albion: ",
                         (_isOpen ? albCount : 0) + " joueurs",
                         (_isOpen ? prAlb : 0) + " PR",
-                        " - Midgard: ",
+						" - Midgard: ",
                          (_isOpen ? midCount : 0) + " joueurs",
                           (_isOpen ? prMid : 0) + " PR",
-                        " - Hibernia: ",
+						" - Hibernia: ",
                          (_isOpen ? hibCount : 0) + " joueurs",
                           (_isOpen ? prHib : 0) + " PR",
-                        "",
-                        " - Total: ",
+						"",
+						" - Total: ",
                         (IsOpen ? clients.Count : 0) + " joueurs",
                         (IsOpen ? prAlb + prMid + prHib : 0) + " PR",
-                "",
-                        "Le rvr est " + (_isOpen ? "ouvert" : "fermé") + ".",
+						"",
+						string.Join("\n", _lords.Select(l => l.GetScores())),
+						"",
+						"Le rvr est " + (_isOpen ? "ouvert" : "fermé") + ".",
                         "(Mise à jour toutes les 30 secondes)"
-                    };
-            }
+					};
+			}
             return this.RvrStats[player.CurrentRegionID];
-        }
+		}
 
-        public bool IsInRvr(GameLiving obj)
-        {
+		public bool IsInRvr(GameLiving obj)
+		{
             return obj != null && _regions.Any(id => id == obj.CurrentRegionID);
-        }
+		}
 
-        public bool IsAllowedToAttack(GameLiving attacker, GameLiving defender, bool quiet)
-        {
-            if (attacker.Realm == defender.Realm)
-            {
-                if (!quiet)
-                    _MessageToLiving(attacker, "Vous ne pouvez pas attaquer un membre de votre royaume !");
-                return false;
-            }
-            return true;
-        }
+		public bool IsAllowedToAttack(GameLiving attacker, GameLiving defender, bool quiet)
+		{
+			if (attacker.Realm == defender.Realm)
+			{
+				if (!quiet)
+					_MessageToLiving(attacker, "Vous ne pouvez pas attaquer un membre de votre royaume !");
+				return false;
+			}
+			return true;
+		}
 
-        public bool IsRvRRegion(ushort id)
-        {
+		public bool IsRvRRegion(ushort id)
+		{
             return _maps.Values.Select(v => v.Item2).FirstOrDefault(l => l.RegionID == id) != null;
-        }
+		}
 
-        private static void _MessageToLiving(GameLiving living, string message)
-        {
-            if (living is GamePlayer)
-                ((GamePlayer)living).Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-        }
-    }
+		private static void _MessageToLiving(GameLiving living, string message)
+		{
+			if (living is GamePlayer)
+				((GamePlayer)living).Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+		}
+	}
 }
