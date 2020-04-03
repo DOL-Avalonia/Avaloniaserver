@@ -102,18 +102,24 @@ namespace DOL.GS.Scripts
 				player.Out.SendMessage(string.Format("Bonjour {0}, je ne discute pas avec les bleus, circulez.", player.Name), eChatType.CT_System, eChatLoc.CL_PopupWindow);
 				return true;
 			}
+			string title = string.Empty;
 
 			if (player.GuildID != null && _guild.GuildID != null)
-			{
+			{				
+				if (player.GuildRank != null)
+				{
+					title = player.GuildRank.Title;
+				}
+
 				player.Out.SendMessage(
-					string.Format("Bonjour {0} {1} que puis-je faire pour vous ?\n[capturer le territoire] ({2})", player.GuildRank?.Title ?? "", player.Name, Money.GetShortString(CLAIM_COST)),
+					string.Format("Bonjour {0} {1} que puis-je faire pour vous ?\n[capturer le territoire] ({2})", title , player.Name, Money.GetShortString(CLAIM_COST)),
 					eChatType.CT_System,
 					eChatLoc.CL_PopupWindow
 				);
 				return true;
 			}
 
-			player.Out.SendMessage(string.Format("Bonjour {0} {1}, que puis-je faire pour vous ?\n\n[modifier les alliances]\n", player.GuildRank?.Title ?? "", player.Name), eChatType.CT_System, eChatLoc.CL_PopupWindow);
+			player.Out.SendMessage(string.Format("Bonjour {0} {1}, que puis-je faire pour vous ?\n\n[modifier les alliances]\n", title, player.Name), eChatType.CT_System, eChatLoc.CL_PopupWindow);
 			return true;
 		}
 
@@ -121,7 +127,8 @@ namespace DOL.GS.Scripts
 		{
 			if (!base.WhisperReceive(source, text) || _guild == null)
 				return false;
-			if (!(source is GamePlayer player))
+			var player = source as GamePlayer;
+			if (player == null)
 				return false;
 			if (player.GuildID != _guild.GuildID)
 			{
@@ -191,8 +198,11 @@ namespace DOL.GS.Scripts
 			foreach (var guard in GetGuardsInRadius())
 				guard.Captain = this;
 			foreach (var obj in GetItemsInRadius(AREA_RADIUS))
-				if (obj is GameStaticItem item && item.Emblem == oldemblem)
+			{
+				var item = obj as GameStaticItem;
+				if (item != null && item.Emblem == oldemblem)
 					item.Emblem = newemblem;
+			}				
 		}
 
 		public void BuyGuard(GamePlayer player)
@@ -246,7 +256,16 @@ namespace DOL.GS.Scripts
 			var oldguild = GuildMgr.GetGuildByName(GuildName);
 			GuildName = player.GuildName;
 			SaveIntoDatabase();
-			ResetArea(player.Guild?.Emblem ?? NEUTRAL_EMBLEM, oldguild?.Emblem ?? NEUTRAL_EMBLEM);
+			ushort oldEmblem = oldguild != null ? (ushort)oldguild.Emblem : NEUTRAL_EMBLEM;
+			if (player.Guild != null)
+			{
+				ResetArea(player.Guild.Emblem, oldEmblem);
+			}
+			else
+			{
+				ResetArea(NEUTRAL_EMBLEM, oldEmblem);
+			}
+			
 			player.Out.SendMessage(
 				"Le territoire appartient maintenant à votre guilde, que voulez-vous faire ?\n\n[modifier les alliances]\n",
 				eChatType.CT_System,

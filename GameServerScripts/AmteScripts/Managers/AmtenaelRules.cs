@@ -102,7 +102,8 @@ namespace DOL.GS.ServerRules
 			if (attackerNpc  != null)
 			{
 				var contBrain = attackerNpc.Brain as IControlledBrain;
-				playerAttacker = contBrain.GetPlayerOwner();
+				if (contBrain != null)
+					playerAttacker = contBrain.GetPlayerOwner();
 				quiet = false;
 			}
 
@@ -270,7 +271,7 @@ namespace DOL.GS.ServerRules
 			if (RvrManager.Instance.IsInRvr(source) || RvrManager.Instance.IsInRvr(target))
 				return source.Realm == target.Realm;
 
-			if (source.Attackers.Contains(target))
+			if (source.Attackers != null && source.Attackers.Contains(target))
 				return false;
 
 			return base.IsSameRealm(source, target, quiet);

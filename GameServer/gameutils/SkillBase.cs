@@ -3037,6 +3037,10 @@ namespace DOL.GS
                 {
                     spec = GetNewSpecializationInstance(keyname, m_specsByName[keyname]);
                 }
+                else if (!create)
+                {
+                    log.Error("Missing Spec: " + keyname);
+                }
             }
             finally
             {

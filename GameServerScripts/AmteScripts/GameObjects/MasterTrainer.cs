@@ -38,13 +38,7 @@ namespace DOL.GS.Trainer
             if (!base.Interact(player))
                 return false;
 
-                TurnTo(player, 50);
-
-                player.Out.SendMessage("I can give you free [Realmranks].", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
-				
-				player.Out.SendMessage("I also happen to give out free [Respecs].", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
-				
-				player.Out.SendMessage("I also can delete ur [Realmrank].", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+                TurnTo(player, 50);              
             player.Out.SendTrainerWindow();
             return true;
         }

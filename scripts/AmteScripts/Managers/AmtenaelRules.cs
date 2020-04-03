@@ -82,20 +82,28 @@ namespace DOL.GS.ServerRules
 			}
 
 			// PEACE NPCs can't be attacked/attack
-			if ((attacker is GameNPC && (((GameNPC)attacker).Flags & GameNPC.eFlags.PEACE) != 0) ||
-				(defender is GameNPC && (((GameNPC)defender).Flags & GameNPC.eFlags.PEACE) != 0))
+			var attackerNpc = attacker as GameNPC;
+			var defenderNpc = defender as GameNPC;
+			if (attackerNpc != null && ((attackerNpc.Flags & GameNPC.eFlags.PEACE) != 0) ||
+				(defenderNpc != null && ((defenderNpc.Flags & GameNPC.eFlags.PEACE) != 0)))
 				return false;
 
 			var playerAttacker = attacker as GamePlayer;
 			var playerDefender = defender as GamePlayer;
 
 			// if Pet, let's define the controller once
-			if (defender is GameNPC && (defender as GameNPC).Brain is IControlledBrain)
-				playerDefender = ((defender as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
-
-			if (attacker is GameNPC && (attacker as GameNPC).Brain is IControlledBrain)
+			if (defenderNpc != null)
 			{
-				playerAttacker = ((attacker as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
+				var contBrain = defenderNpc.Brain as IControlledBrain;
+				if (contBrain != null)
+					playerDefender = contBrain.GetPlayerOwner();
+			}				
+
+			if (attackerNpc  != null)
+			{
+				var contBrain = attackerNpc.Brain as IControlledBrain;
+				if (contBrain != null)
+					playerAttacker = contBrain.GetPlayerOwner();
 				quiet = false;
 			}
 
@@ -120,11 +128,13 @@ namespace DOL.GS.ServerRules
 				return false;
 
 			// Your pet can only attack stealthed players you have selected
-			if (defender.IsStealthed && attacker is GameNPC)
-				if (((attacker as GameNPC).Brain is IControlledBrain) &&
-					defender is GamePlayer &&
-					attacker.TargetObject != defender)
+			if (defender.IsStealthed && attackerNpc != null)
+			{
+				var contBrain = attackerNpc.Brain as IControlledBrain;
+				if (contBrain != null && playerDefender != null &&
+				attacker.TargetObject != defender)
 					return false;
+			}			
 
 			//Checking for shadowed necromancer, can't be attacked.
 			if (defender.ControlledBrain != null && defender.ControlledBrain.Body != null && defender.ControlledBrain.Body is NecromancerPet)
@@ -134,12 +144,16 @@ namespace DOL.GS.ServerRules
 			}
 
 			// Pets
-			if (attacker is GameNPC)
+			if (attackerNpc != null)
 			{
-				var controlled = ((GameNPC)attacker).Brain as IControlledBrain;
+				var controlled = attackerNpc.Brain as IControlledBrain;
 				if (controlled != null)
 				{
-					attacker = controlled.GetLivingOwner() ?? attacker;
+					var newAttacker = controlled.GetLivingOwner();
+					if (newAttacker != null)
+					{
+						attacker = newAttacker;
+					}
 					quiet = true; // silence all attacks by controlled npc
 				}
 			}
@@ -388,7 +402,9 @@ namespace DOL.GS.ServerRules
 
 		public override bool IsAllowedToCastSpell(GameLiving caster, GameLiving target, Spell spell, SpellLine spellLine)
 		{
-			if ((caster is GamePlayer plc && JailMgr.IsPrisoner(plc)) || (target is GamePlayer plt && JailMgr.IsPrisoner(plt)))
+			var plc = caster as GamePlayer;
+			var plt = target as GamePlayer;
+			if ((plc != null && JailMgr.IsPrisoner(plc)) || (plt != null && JailMgr.IsPrisoner(plt)))
 				return false;
 			return base.IsAllowedToCastSpell(caster, target, spell, spellLine);
 		}
@@ -411,9 +427,11 @@ namespace DOL.GS.ServerRules
 
 		public override bool IsAllowedToTrade(GameLiving source, GameLiving target, bool quiet)
 		{
+			var pls = source as GamePlayer;
+			var plt = target as GamePlayer;
 			if (RvrManager.Instance.IsInRvr(source) || RvrManager.Instance.IsInRvr(target))
 				return source.Realm == target.Realm;
-			if ((source is GamePlayer pls && JailMgr.IsPrisoner(pls)) || (target is GamePlayer plt && JailMgr.IsPrisoner(plt)))
+			if ((source != null && JailMgr.IsPrisoner(pls)) || (plt != null && JailMgr.IsPrisoner(plt)))
 				return false;
 			return true;
 		}
@@ -463,7 +481,7 @@ namespace DOL.GS.ServerRules
 
 		public override void OnPlayerKilled(GamePlayer killedPlayer, GameObject killer)
 		{
-			if (Properties.ENABLE_WARMAPMGR && killer is GamePlayer && killer.CurrentRegion.ID == 163)
+			if (Properties.ENABLE_WARMAPMGR && killer as GamePlayer != null && killer.CurrentRegion.ID == 163)
 				WarMapMgr.AddFight((byte)killer.CurrentZone.ID, killer.X, killer.Y, (byte)killer.Realm, (byte)killedPlayer.Realm);
 
 			killedPlayer.LastDeathRealmPoints = 0;
@@ -475,7 +493,7 @@ namespace DOL.GS.ServerRules
 				{
 					foreach (var de in killedPlayer.XPGainers)
 					{
-						if (de.Key is GamePlayer)
+						if (de.Key as GamePlayer != null)
 						{
 							((GamePlayer)de.Key).Out.SendMessage(killedPlayer.Name + " has been killed recently and is worth no realm points!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 							((GamePlayer)de.Key).Out.SendMessage(killedPlayer.Name + " has been killed recently and is worth no experience!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
@@ -492,12 +510,12 @@ namespace DOL.GS.ServerRules
 				//Collect the total damage
 				foreach (var de in killedPlayer.XPGainers)
 				{
-					GameObject obj = (GameObject)de.Key;
-					if (obj is GamePlayer)
+					var player = de.Key as GamePlayer;
+					if (player != null)
 					{
 						//If a gameplayer with privlevel > 1 attacked the
 						//mob, then the players won't gain xp ...
-						if (((GamePlayer)obj).Client.Account.PrivLevel > 1)
+						if (player.Client.Account.PrivLevel > 1)
 						{
 							dealNoXP = true;
 							break;
@@ -569,7 +587,8 @@ namespace DOL.GS.ServerRules
 					//rp bonuses from RR and Group
 					//20% if R1L0 char kills RR10,if RR10 char kills R1L0 he will get -20% bonus
 					//100% if full group,scales down according to player count in group and their range to target
-					if (living is GamePlayer killerPlayer)
+					var killerPlayer = living as GamePlayer;
+					if (killerPlayer != null)
 					{
 						//only gain rps in a battleground if you are under the cap
 						Battleground bg = GameServer.KeepManager.GetBattleground(killerPlayer.CurrentRegionID);
@@ -581,9 +600,9 @@ namespace DOL.GS.ServerRules
 								lock (killerPlayer.Group)
 								{
 									int count = 0;
-									foreach (GamePlayer player in killerPlayer.Group.GetPlayersInTheGroup())
+									foreach (GamePlayer pl in killerPlayer.Group.GetPlayersInTheGroup())
 									{
-										if (!player.IsWithinRadius(killedPlayer, WorldMgr.MAX_EXPFORKILL_DISTANCE)) continue;
+										if (!pl.IsWithinRadius(killedPlayer, WorldMgr.MAX_EXPFORKILL_DISTANCE)) continue;
 										count++;
 									}
 									realmPoints = (int)(realmPoints * (1.0 + count * 0.125));
@@ -607,13 +626,10 @@ namespace DOL.GS.ServerRules
 						if (realmPoints > rpCap)
 							realmPoints = rpCap;
 						if (realmPoints > 0)
-						{
-							if (living is GamePlayer)
-							{
-								killedPlayer.LastDeathRealmPoints += realmPoints;
-								playerKillers.Add(new KeyValuePair<GamePlayer, int>(living as GamePlayer, realmPoints));
-							}
-
+						{							
+							
+							killedPlayer.LastDeathRealmPoints += realmPoints;
+							playerKillers.Add(new KeyValuePair<GamePlayer, int>(killerPlayer, realmPoints));	
 							living.GainRealmPoints(realmPoints);
 						}
 					}
@@ -676,10 +692,10 @@ namespace DOL.GS.ServerRules
 					living.GainExperience(GameLiving.eXPSource.Player, xpReward);
 
 					// gold
-					if (living is GamePlayer)
+					GamePlayer player = living as GamePlayer;
+					if (player != null)
 					{
-						long money = (long)(playerMoneyValue * damagePercent);
-						GamePlayer player = living as GamePlayer;
+						long money = (long)(playerMoneyValue * damagePercent);						
 						if (player.GetSpellLine("Spymaster") != null)
 						{
 							money += 20 * money / 100;

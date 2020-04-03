@@ -69,6 +69,7 @@ namespace DOL.Database
 		private bool m_isOpeningRenaissanceType;
 		private int m_punishSpellId;
 		private int m_tpHeading;
+		private bool m_hasPickableAnim;
 
 		[DataElement(AllowDbNull=false)]
 		public string Name
@@ -398,6 +399,22 @@ namespace DOL.Database
 				m_tpIsRenaissance = value;
 			}
 		}
+
+		[DataElement(AllowDbNull = false)]
+		public bool HasPickableAnim
+		{
+			get
+			{
+				return m_hasPickableAnim;
+			}
+
+			set
+			{
+				Dirty = true;
+				m_hasPickableAnim = value;
+			}
+		}
+
 
 		[DataElement(AllowDbNull = true)]
 		public int PunishSpellId

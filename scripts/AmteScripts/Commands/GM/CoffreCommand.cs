@@ -33,7 +33,8 @@ namespace DOL.GS.Scripts
          "'/coffre tpeffect <SpellID>' Definit l'effect utilisé par la téléportation de ce coffre basé sur son SpellID",
          "'/coffre tpisrenaissance' Alterne l'état IsRenaissance du coffre",
          "'/coffre isOpeningRenaissance' Alterne l'état isOpeningRenaissanceType du coffre",
-         "'/coffre punishSpellId <SpellId>' Définit le SpellID pour punir le joueur si il n'est pas Isrenaissance")]
+         "'/coffre punishSpellId <SpellId>' Définit le SpellID pour punir le joueur si il n'est pas Isrenaissance",
+         "'/coffre pickableAnim' Alterne l'état de HasPickableAnim ou Activer ou désactiver l'emote pickup")]
     public class CoffreCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
@@ -407,6 +408,26 @@ namespace DOL.GS.Scripts
                         break;
                     }
                     ChatUtil.SendSystemMessage(client, "Le statut IsTeleporter du coffre \"" + coffre.Name + "\" est maitenant: " + coffre.IsTeleporter);
+                    break;
+
+
+                case "pickableanim":
+                    if (coffre == null || args.Length != 2)
+                    {
+                        DisplaySyntax(client);
+                        break;
+                    }
+                    try
+                    {
+                        coffre.HasPickableAnim = !coffre.HasPickableAnim;
+                        coffre.SaveIntoDatabase();
+                    }
+                    catch
+                    {
+                        DisplaySyntax(client);
+                        break;
+                    }
+                    ChatUtil.SendSystemMessage(client, "Le statut HasPickbleAnim du coffre \"" + coffre.Name + "\" est maitenant: " + coffre.HasPickableAnim);
                     break;
 
                 case "isopeningrenaissance":

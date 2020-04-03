@@ -16,11 +16,16 @@ namespace DOL.GS.Scripts
 		{
 			get
 			{
-				return (Brain as SimpleGvGGuardBrain)?.Captain;
+				var brain = Brain as SimpleGvGGuardBrain;
+				if (brain == null)
+					return null;
+
+				return brain.Captain;
 			}
 			set
 			{
-				if (Brain is SimpleGvGGuardBrain guard)
+				var guard = Brain as SimpleGvGGuardBrain;
+				if (guard != null)
 					guard.Captain = value;
 			}
 		}
@@ -81,7 +86,8 @@ namespace DOL.GS.Scripts
 		{
 			if (!base.WhisperReceive(source, text) || string.IsNullOrWhiteSpace(GuildName))
 				return false;
-			if (!(source is GamePlayer player) || player.Guild == null)
+			var player = source as GamePlayer;
+			if (player == null || player.Guild == null)
 				return false;
 			if (player.Client.Account.PrivLevel == 1 && player.GuildName != GuildName)
 				return false;
@@ -104,8 +110,9 @@ namespace DOL.GS.Scripts
 			base.Die(killer);
 
 			var plKiller = killer as GamePlayer;
-			if (plKiller == null && killer is GameNPC npc)
-				plKiller = npc.ControlledBrain?.GetPlayerOwner();
+			var npc = killer as GameNPC;
+			if (plKiller == null && npc != null && npc.ControlledBrain != null)
+				plKiller = npc.ControlledBrain.GetPlayerOwner();
 			if (plKiller != null && !string.IsNullOrEmpty(GuildName))
 			{
 				var guild = GuildMgr.GetGuildByName(GuildName);
@@ -114,8 +121,18 @@ namespace DOL.GS.Scripts
 				var name = "un inconnu";
 				if (!string.IsNullOrEmpty(plKiller.GuildName))
 					name = string.Format("un membre de la guilde {0}", plKiller.GuildName);
+				string captainName;
+				if (Captain == null || Captain.Name == null)
+				{
+					captainName = "Capitaine";
+				}
+				else
+				{
+					captainName = Captain.Name;
+				}	
+				
 				guild.SendMessageToGuildMembers(
-					string.Format("{0}: un garde vient d'être tué par {1}.", Captain?.Name ?? "Capitaine", name),
+					string.Format("{0}: un garde vient d'être tué par {1}.", captainName , name),
 					eChatType.CT_Guild,
 					eChatLoc.CL_ChatWindow
 				);
@@ -133,7 +150,7 @@ namespace DOL.GS.Scripts
 
 		public void RefreshEmblem()
 		{
-			if (string.IsNullOrWhiteSpace(GuildName) || ObjectState != eObjectState.Active || CurrentRegion == null || Inventory?.VisibleItems == null)
+			if (string.IsNullOrWhiteSpace(GuildName) || ObjectState != eObjectState.Active || CurrentRegion == null || Inventory == null || Inventory.VisibleItems == null)
 				return;
 			var guild = GuildMgr.GetGuildByName(GuildName);
 			if (guild == null)
@@ -160,7 +177,7 @@ namespace DOL.AI.Brain
 				if (_lastCaptainUpdate > DateTime.Now.Ticks)
 					return _captain;
 				_captain = GuildCaptainGuard.allCaptains.OrderBy(c => Body.GetDistanceTo(c)).FirstOrDefault();
-				var name = _captain?.GuildName ?? "";
+				var name = _captain != null ? _captain.GuildName : string.Empty;
 				if (name != Body.GuildName)
 					Body.GuildName = name;
 				_lastCaptainUpdate = DateTime.Now.Ticks + 60 * 1000 * 10000;
@@ -170,7 +187,7 @@ namespace DOL.AI.Brain
 			{
 				_captain = value;
 				_lastCaptainUpdate = DateTime.Now.Ticks + 60 * 1000 * 10000;
-				var name = _captain?.GuildName ?? "";
+				var name = _captain == null || _captain.GuildName == null ?  string.Empty : _captain.GuildName;
 				if (name != Body.GuildName)
 					Body.GuildName = name;
 			}
@@ -206,9 +223,10 @@ namespace DOL.AI.Brain
 				return;
 			foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange, Body.CurrentRegion.IsDungeon ? false : true))
 			{
+				bool isTaxi = npc as GameTaxi != null;
 				if (npc.Realm != 0 || (npc.Flags & GameNPC.eFlags.PEACE) != 0 ||
 					!npc.IsAlive || npc.ObjectState != GameObject.eObjectState.Active ||
-					npc is GameTaxi ||
+					isTaxi ||
 					m_aggroTable.ContainsKey(npc) ||
 					!GameServer.ServerRules.IsAllowedToAttack(Body, npc, true))
 					continue;
@@ -229,9 +247,9 @@ namespace DOL.AI.Brain
 			{
 				if (count <= 0)
 					return;
-				if (npc.Brain is SimpleGvGGuardBrain == false)
-					continue;
 				var brain = npc.Brain as SimpleGvGGuardBrain;
+				if (brain == null)
+					continue;				
 				brain.AddToAggroList(target, 1);
 				brain.AttackMostWanted();
 			}
@@ -239,7 +257,8 @@ namespace DOL.AI.Brain
 
 		public override int CalculateAggroLevelToTarget(GameLiving target)
 		{
-			if (target is AmtePlayer player)
+			var player = target as AmtePlayer;
+			if (player != null)
 			{
 				if (Captain != null)
 				{

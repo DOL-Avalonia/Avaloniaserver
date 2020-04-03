@@ -91,6 +91,12 @@ namespace DOL.GS.Scripts
 			get;
 			set;
 		}
+
+		public bool HasPickableAnim
+		{
+			get;
+			set;
+		}
 		
 		public int TpLevelRequirement
 		{
@@ -147,12 +153,14 @@ namespace DOL.GS.Scripts
 		public GameCoffre()
 		{
 			LastOpen = DateTime.MinValue;
+			HasPickableAnim = true;
 			ItemInterval = 5;
 			m_Items = new List<CoffreItem>();
 		}
 
 		public GameCoffre(IList<CoffreItem> Items)
 		{
+			HasPickableAnim = true;
 			LastOpen = DateTime.MinValue;
 			ItemInterval = 5;
 			m_Items = Items;
@@ -183,7 +191,16 @@ namespace DOL.GS.Scripts
 		{
 			if (!base.Interact (player) || !player.IsAlive) return false;
 
-			if (!this.IsWithinRadius(player, WorldMgr.GIVE_ITEM_DISTANCE)) return false;	
+			if (!this.IsWithinRadius(player, WorldMgr.GIVE_ITEM_DISTANCE + 60)) return false;	
+
+			if (HasPickableAnim)
+			{
+				foreach(GamePlayer otherPlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				{
+					if (otherPlayer != null)
+						otherPlayer.Out.SendEmoteAnimation(player, eEmote.PlayerPickup);
+				}
+			}
 
 			if (LockDifficult > 0 || KeyItem != "")
 			{
@@ -595,6 +612,7 @@ namespace DOL.GS.Scripts
 			X = coffre.X;
 			Y = coffre.Y;
 			Z = coffre.Z;
+			HasPickableAnim = coffre.HasPickableAnim;
 			Heading = (ushort)(coffre.Heading & 0xFFF);
 			CurrentRegionID = coffre.Region;
 			Model = coffre.Model;
@@ -663,6 +681,7 @@ namespace DOL.GS.Scripts
 			Coffre.LockDifficult = LockDifficult;
 			Coffre.TrapRate = TrapRate;
 			Coffre.NpctemplateId = NpctemplateId;
+			Coffre.HasPickableAnim = HasPickableAnim;
 			Coffre.TpX = TpX;
 			Coffre.TpY = TpY;
 			Coffre.TpZ = TpZ;
@@ -757,6 +776,8 @@ namespace DOL.GS.Scripts
 				text.Add(" + Id_nb de la clef: " + KeyItem);
 			else
 				text.Add(" + Le coffre n'a pas besoin de clef");
+
+			text.Add("PickableAnim: " + HasPickableAnim);
 
 			text.Add("");
 			text.Add(" + Listes des items (" + Items.Count + " items):");

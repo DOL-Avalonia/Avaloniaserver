@@ -2605,6 +2605,18 @@ namespace DOL.GS
 				}
 			}
 
+			// Data driven reward quests // patch 0026
+			lock (m_dqRewardQs)
+			{
+				foreach (DQRewardQ quest in DQRewardQList)
+				{
+					if (quest.CheckQuestQualification(player))
+					{
+						return true;
+					}
+				}
+			}
+
 			return false;
 		}
 
