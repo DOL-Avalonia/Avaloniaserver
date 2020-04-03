@@ -1136,7 +1136,7 @@ namespace DOL.GS
             m_objectTypeToSpec.Add(eObjectType.LargeWeapons, Specs.Large_Weapons);
             m_objectTypeToSpec.Add(eObjectType.CelticSpear, Specs.Celtic_Spear);
             m_objectTypeToSpec.Add(eObjectType.Scythe, Specs.Scythe);
-            m_objectTypeToSpec.Add(eObjectType.Shield, Specs.Shield);
+            m_objectTypeToSpec.Add(eObjectType.Shield, Specs.Shields);
             m_objectTypeToSpec.Add(eObjectType.Poison, Specs.Envenom);
 
             // bow skills            
@@ -1260,7 +1260,7 @@ namespace DOL.GS
             // Other
             m_specToSkill.Add(Specs.Critical_Strike, eProperty.Skill_Critical_Strike);
             m_specToSkill.Add(Specs.Stealth, eProperty.Skill_Stealth);
-            m_specToSkill.Add(Specs.Shield, eProperty.Skill_Shields);
+            m_specToSkill.Add(Specs.Shields, eProperty.Skill_Shield);
             m_specToSkill.Add(Specs.Envenom, eProperty.Skill_Envenom);
             m_specToSkill.Add(Specs.Parry, eProperty.Skill_Parry);
             m_specToSkill.Add(Specs.ShortBow, eProperty.Skill_ShortBow);
@@ -1471,7 +1471,7 @@ namespace DOL.GS
             m_propertyTypes[(int)eProperty.Skill_RecurvedBow] = ePropertyType.Skill | ePropertyType.SkillArchery;
 
             m_propertyTypes[(int)eProperty.Skill_Parry] = ePropertyType.Skill;
-            m_propertyTypes[(int)eProperty.Skill_Shields] = ePropertyType.Skill;
+            m_propertyTypes[(int)eProperty.Skill_Shield] = ePropertyType.Skill;
 
             m_propertyTypes[(int)eProperty.Skill_Stealth] = ePropertyType.Skill;
             m_propertyTypes[(int)eProperty.Skill_Cross_Bows] = ePropertyType.Skill;
@@ -1690,7 +1690,7 @@ namespace DOL.GS
             m_propertyNames.Add(eProperty.Skill_Rejuvenation, LanguageMgr.GetTranslation(
                 ServerProperties.Properties.DB_LANGUAGE,
                                                                                          "SkillBase.RegisterPropertyNames.Rejuvenation"));
-            m_propertyNames.Add(eProperty.Skill_Shields, LanguageMgr.GetTranslation(
+            m_propertyNames.Add(eProperty.Skill_Shield, LanguageMgr.GetTranslation(
                 ServerProperties.Properties.DB_LANGUAGE,
                                                                                     "SkillBase.RegisterPropertyNames.Shields"));
             m_propertyNames.Add(eProperty.Skill_Slashing, LanguageMgr.GetTranslation(

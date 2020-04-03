@@ -614,7 +614,7 @@ namespace DOL.GS.Quests.Hibernia
                 HeroEpicGloves.Durability = 50000;
 
                 HeroEpicGloves.Bonus1 = 2;
-                HeroEpicGloves.Bonus1Type = (int)eProperty.Skill_Shields;
+                HeroEpicGloves.Bonus1Type = (int)eProperty.Skill_Shield;
 
                 HeroEpicGloves.Bonus2 = 2;
                 HeroEpicGloves.Bonus2Type = (int)eProperty.Skill_Parry;

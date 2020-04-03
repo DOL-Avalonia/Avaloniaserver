@@ -2338,7 +2338,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			
 			if (spellHandler != null)
 			{
-				spellHandler.TooltipDelve(ref dw, id);
+				spellHandler.TooltipDelve(ref dw, id, clt);
 				// If spell has a subspell, we need to send another call to delve that subspell info
 				if (spell.SubSpellID > 0)
 				{
@@ -2366,7 +2366,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			
 			if (spellHandler != null)
 			{
-				spellHandler.TooltipDelve(ref dw, id);
+				spellHandler.TooltipDelve(ref dw, id, clt);
                 if (spell.SubSpellID > 0)
                 {
                     clt.Out.SendDelveInfo(DelveStyleSpell(clt, spell.SubSpellID));
@@ -2580,7 +2580,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			
 			if (spellHandler != null)
 			{
-				spellHandler.TooltipDelve(ref dw, id);
+				spellHandler.TooltipDelve(ref dw, id, clt);
 				if (!string.IsNullOrEmpty(spell.Description))
 				{
 					string desc = String.Format(spell.Description, spell.Value);
@@ -2612,7 +2612,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			
 			if (spellHandler != null)
 			{
-				spellHandler.TooltipDelve(ref dw, id);				
+				spellHandler.TooltipDelve(ref dw, id, clt);				
 				return dw.ToString();
 			}
 

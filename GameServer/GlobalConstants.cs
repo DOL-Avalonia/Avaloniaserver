@@ -579,7 +579,7 @@ namespace DOL.GS
 		Skill_Parry = 40,
 		Skill_Polearms = 41,
 		Skill_Rejuvenation = 42,
-		Skill_Shields = 43,
+		Skill_Shield = 43,
 		Skill_Slashing = 44,
 		Skill_Smiting = 45,
 		Skill_SoulRending = 46,
@@ -1754,7 +1754,7 @@ namespace DOL.GS
 				case Specs.Darkness: return 0x26;
 				case Specs.Suppression: return 0x27;
 				case Specs.Runecarving: return 0x2A;
-				case Specs.Shield: return 0x2B;
+				case Specs.Shields: return 0x2B;
 				case Specs.Flexible: return 0x2E;
 				case Specs.Staff: return 0x2F;
 				case Specs.Summoning: return 0x30;

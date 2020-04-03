@@ -412,7 +412,7 @@ namespace DOL.GS.Quests.Midgard
                 WarriorEpicGloves.Durability = 50000;
 
                 WarriorEpicGloves.Bonus1 = 3;
-                WarriorEpicGloves.Bonus1Type = (int)eProperty.Skill_Shields;
+                WarriorEpicGloves.Bonus1Type = (int)eProperty.Skill_Shield;
 
                 WarriorEpicGloves.Bonus2 = 3;
                 WarriorEpicGloves.Bonus2Type = (int)eProperty.Skill_Parry;

@@ -49,9 +49,9 @@ namespace DOL.GS
 		/// </summary>
 		public const string MidArmor = "MidArmor";
 
-		// shields
+		// shield
 		/// <summary>
-		/// All Shields
+		/// All Shield
 		/// </summary>
 		public const string Shield = "Shield";
 
@@ -516,9 +516,9 @@ namespace DOL.GS
 		/// </summary>
 		public const string Hammer = "Hammer";
 		/// <summary>
-		/// Shield Spec
+        /// Shields Spec
 		/// </summary>
-		public const string Shield = "Shield";
+        public const string Shields = "Shields";
 		/// <summary>
 		/// Left Axe Weapon Spec
 		/// </summary>

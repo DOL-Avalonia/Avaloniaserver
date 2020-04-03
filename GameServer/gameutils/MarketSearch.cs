@@ -380,7 +380,7 @@ namespace DOL.GS
                     case 38: return CheckForProperty(item, (int)eProperty.Skill_Darkness);
                     case 39: return CheckForProperty(item, (int)eProperty.Skill_Suppression);
                     case 42: return CheckForProperty(item, (int)eProperty.Skill_Runecarving);
-                    case 43: return CheckForProperty(item, (int)eProperty.Skill_Shields);
+                    case 43: return CheckForProperty(item, (int)eProperty.Skill_Shield);
                     case 46: return CheckForProperty(item, (int)eProperty.Skill_Flexible_Weapon);
                     case 47: return CheckForProperty(item, (int)eProperty.Skill_Staff);
                     case 48: return CheckForProperty(item, (int)eProperty.Skill_Summoning);
@@ -456,7 +456,7 @@ namespace DOL.GS
                     case 300: return CheckForProperty(item, (int)eProperty.Skill_Slashing) ||
                                         CheckForProperty(item, (int)eProperty.Skill_Thrusting) ||
                                         CheckForProperty(item, (int)eProperty.Skill_Crushing) ||
-                                        CheckForProperty(item, (int)eProperty.Skill_Shields) ||
+                                        CheckForProperty(item, (int)eProperty.Skill_Shield) ||
                                         CheckForProperty(item, (int)eProperty.Skill_Flexible_Weapon) ||
                                         CheckForProperty(item, (int)eProperty.Skill_Staff) ||
                                         CheckForProperty(item, (int)eProperty.Skill_Polearms) ||
