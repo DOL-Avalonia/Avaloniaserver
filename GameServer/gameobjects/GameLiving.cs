@@ -4006,7 +4006,7 @@ namespace DOL.GS
 				{
 					List<GameLiving> xpGainers = new List<GameLiving>(8);
 					// collect "helping" group players in range
-					foreach (GameLiving living in attackerGroup.GetMembersInTheGroup())
+					foreach (GameLiving living in attackerGroup.GetMembersInTheGroup().GetElligibleXPGainers())
 					{
 						if (this.IsWithinRadius(living, WorldMgr.MAX_EXPFORKILL_DISTANCE) && living.IsAlive && living.ObjectState == eObjectState.Active)
 							xpGainers.Add(living);

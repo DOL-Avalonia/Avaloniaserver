@@ -203,6 +203,12 @@ namespace DOL.GS.ServerProperties
         public static int STATSAVE_INTERVAL { get; set; }
 
         /// <summary>
+        /// max level interval in group between highest player
+        /// </summary>
+        [ServerProperty("system", "group_xp_max_level_interval", "max level interval in group between highest player", 9)]
+        public static int GROUP_XP_MAX_LEVEL_INTERVAL { get; set; }
+
+        /// <summary>
         /// Bug Report Email Addresses
         /// </summary>
         [ServerProperty("system", "bug_report_email_addresses", "set to the email addresses you want bug reports sent to (bug reports will only send if the user has set an email address for his account, multiple addresses seperate with ;", "")]

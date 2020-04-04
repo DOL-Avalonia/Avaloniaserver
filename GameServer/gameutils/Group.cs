@@ -163,7 +163,8 @@ namespace DOL.GS
         public ICollection<GameLiving> GetMembersInTheGroup()
         {
             return m_groupMembers.ToArray();
-        }
+        }    
+
 
         /// <summary>
         /// Gets all players of the group

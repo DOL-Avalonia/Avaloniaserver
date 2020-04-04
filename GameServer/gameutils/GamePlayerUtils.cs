@@ -23,6 +23,7 @@ using System.Linq;
 
 using DOL.Language;
 using DOL.Database;
+using DOL.GS.ServerProperties;
 
 namespace DOL.GS
 {
@@ -426,6 +427,36 @@ namespace DOL.GS
             }
 
             return string.Format("+{0}{1}{2}", iBonus, str, SkillBase.GetPropertyName((eProperty)iBonusType));
+        }
+
+        public static IEnumerable<GameLiving> GetElligibleXPGainers(this ICollection<GameLiving> players)
+        {
+            if (players == null || !players.Any())
+            {
+                return null;
+            }
+
+            GamePlayer senior = (GamePlayer)players.First();
+
+            foreach(GamePlayer player in players)
+            { 
+                if (player.Level > senior.Level)
+                {
+                    senior = player;
+                } 
+            }
+
+            List<GameLiving> group = new List<GameLiving>();
+
+            foreach (GamePlayer player in players)
+            {
+                if ((senior.Level - player.Level) <= Properties.GROUP_XP_MAX_LEVEL_INTERVAL)
+                {
+                    group.Add(player);
+                }
+            }
+
+            return group;
         }
     }
 }
