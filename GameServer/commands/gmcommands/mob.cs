@@ -1382,6 +1382,11 @@ namespace DOL.GS.Commands
             if (targetMob.Spells != null && targetMob.Spells.Count > 0)
             {
                 info.Add(" + Spells: " + targetMob.Spells.Count);
+
+                foreach(var spell in targetMob.Spells)
+                {
+                    info.Add(" ---- SpellId: " + spell.ID + " | Name: " + spell.Name);
+                }
             }
 
             if (targetMob.Styles != null && targetMob.Styles.Count > 0)

@@ -299,7 +299,7 @@ namespace DOL.GS.Quests
             _questPlayer.QuestList.Remove(this);
             DeleteFromDatabase();
             _questPlayer.Out.SendQuestListUpdate();
-            _questPlayer.Out.SendMessage(LanguageMgr.GetTranslation(_questPlayer.Client, "AbstractQuest.AbortQuest"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            _questPlayer.Out.SendMessage(LanguageMgr.GetTranslation(_questPlayer.Client, "AbstractQuest.AbortQuest", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
             // Todo: quest giver should again "SendNPCsQuestEffect"
         }

@@ -12,6 +12,7 @@ Commands.Players.Who.List.In:			in {0}
 Commands.Players.Who.List.Language:		<{0}>
 Commands.Players.Who.List.Level:		niveau {0}
 Commands.Players.Who.List.Truncated:	(Trop de résultats ({0}). La liste a été tronqué.)
+Commands.Players.Guild.TotalMemberOnline:   Nombre de joueurs online dans la guilde
 Commands.Players.Who.NoMatch:			Pas de résultats.
 Commands.Players.Who.Player.Online:		{0} joueur actuellement connecté.
 Commands.Players.Who.Players.Online:	{0} joueurs actuellement connectés.
