@@ -176,6 +176,7 @@ GameObjects.GamePlayer.OnLevelUp.StatRaise:				Vos statistiques augmentent !
 GameObjects.GamePlayer.OnLevelUp.YouAchieved:			Vous avez achevé le niveau {0} !
 GameObjects.GamePlayer.OnLevelUp.YouGetSpec:			Vous obtenez {0} points de spécialisation à dépenser pour ce niveau !
 GameObjects.GamePlayer.OnLevelUp.YouRaise:				Vous avez atteint le niveau {0} !
+GameObjects.GamePlayer.OnRenaissance:				    Vous venez d'accomplir votre renaissance ! 
 
 GameObjects.GamePlayer.OnLinkdeath.Linkdead:			{0} a été deconnecté·e par le serveur !
 
