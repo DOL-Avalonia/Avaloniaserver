@@ -57,6 +57,7 @@ namespace DOL.GS.PropertyCalc
 			//    whatever your casting stat happens to be. If you're a druid, you should get an increase to empathy, 
 			//    while a bard should get an increase to charisma.  http://support.darkageofcamelot.com/kb/article.php?id=540
 			// 3) Constitution lost at death, only affects players.
+			bool needRenaissanceBonus = false;
 
 			if (living is GamePlayer)
 			{
@@ -66,6 +67,26 @@ namespace DOL.GS.PropertyCalc
 					abilityBonus += player.AbilityBonus[(int)eProperty.Acuity];
 
 				deathConDebuff = player.TotalConstitutionLostAtDeath;
+
+				if (player.IsRenaissance)
+				{
+					switch (property)
+					{
+						case eProperty.Strength:
+						case eProperty.Intelligence:
+						case eProperty.Dexterity:
+						case eProperty.Empathy:
+						case eProperty.Piety:
+						case eProperty.Constitution:
+						case eProperty.Quickness:
+						case eProperty.Charisma:
+							needRenaissanceBonus = true;
+							break;
+
+						default:
+							break;
+					}
+				}
 			}
 			else if (property == eProperty.Intelligence || property == eProperty.Piety || property == eProperty.Empathy || property == eProperty.Charisma)
 				abilityBonus += living.AbilityBonus[(int)eProperty.Acuity];
@@ -89,9 +110,15 @@ namespace DOL.GS.PropertyCalc
 			int stat = unbuffedBonus + buffBonus + abilityBonus;
 			stat = (int)(stat * living.BuffBonusMultCategory1.Get((int)property));
 
+			if (needRenaissanceBonus)
+			{
+				stat += (int)Math.Round(500D / stat);
+			}
+
 			// Possibly apply constitution loss at death.
 
 			stat -= (property == eProperty.Constitution) ? deathConDebuff : 0;
+
 
 			return Math.Max(1, stat);
 		}

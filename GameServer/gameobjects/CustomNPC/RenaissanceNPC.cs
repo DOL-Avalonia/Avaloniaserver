@@ -1,12 +1,6 @@
 ﻿using DOL.Database;
-using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.Language;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DOL.GS
 {
@@ -52,7 +46,8 @@ namespace DOL.GS
             {
                 player.ApplyRenaissance();
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "RenaissanceNPC.RenaissanceDone"), eChatType.CT_System, eChatLoc.CL_PopupWindow);
-                
+                player.Inventory.RemoveItem(item);
+                player.Out.SendNPCsQuestEffect(this, this.GetQuestIndicator(player));
                 return true;
             }
 

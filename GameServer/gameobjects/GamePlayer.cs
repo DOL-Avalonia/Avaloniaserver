@@ -5298,6 +5298,143 @@ namespace DOL.GS
 			SaveIntoDatabase();
 		}
 
+
+
+		public void ApplyRenaissance()
+		{
+			IsLevelSecondStage = false;
+
+			IsRenaissance = true;
+			Experience = 0;
+
+			Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.OnRenaissance"), eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+			//Out.SendPlayerFreeLevelUpdate();	
+
+			// stat increases start at level 6
+			byte previouslevel = Level;
+			this.RealmPoints = 0;
+			Level = 1;
+			this.TotalConstitutionLostAtDeath = 0;
+
+			for (int i = previouslevel; i > 5; i--)
+			{
+				if (CharacterClass.PrimaryStat != eStat.UNDEFINED)
+				{
+					ChangeBaseStat(CharacterClass.PrimaryStat, -1);
+				}
+				if (CharacterClass.SecondaryStat != eStat.UNDEFINED && ((i - 6) % 2 == 0))
+				{ // base level to start adding stats is 6
+					ChangeBaseStat(CharacterClass.SecondaryStat, -1);
+				}
+				if (CharacterClass.TertiaryStat != eStat.UNDEFINED && ((i - 6) % 3 == 0))
+				{ // base level to start adding stats is 6
+					ChangeBaseStat(CharacterClass.TertiaryStat, -1);
+				}
+			}
+
+			RemoveAllStyles();
+			RemoveAllSpecs();
+			RemoveAllSpellLines();
+
+
+			this.GetModified(eProperty.Strength);
+
+			//CharacterClass.OnLevelUp(this, previouslevel);
+			//GameServer.ServerRules.OnPlayerLevelUp(this, previouslevel);
+			RefreshSpecDependantSkills(true);
+
+			// Echostorm - Code for display of new title on level up
+			// Get old and current rank titles
+			string currenttitle = CharacterClass.GetTitle(this, Level);
+
+			// check for difference
+			if (CharacterClass.GetTitle(this, previouslevel) != currenttitle)
+			{
+				// Inform player of new title.
+				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.OnLevelUp.AttainedRank", currenttitle), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			}
+
+			// spec points
+			int specpoints = 0;
+			for (int i = Level; i < previouslevel; i++)
+			{
+				if (i <= 5) specpoints += i; //start levels
+				else specpoints += CharacterClass.SpecPointsMultiplier * i / 10; //spec levels
+			}
+
+			if (IsAlive)
+			{
+				// workaround for starting regeneration
+				StartHealthRegeneration();
+				StartPowerRegeneration();
+			}
+
+			AddRenaissanceResistBonus();
+
+			this.RealmLevel = 0;
+
+			DeathCount = 0;
+
+			if (Group != null)
+			{
+				Group.UpdateGroupWindow();
+			}
+			Out.SendUpdatePlayer(); // Update player level
+			Out.SendCharStatsUpdate(); // Update Stats and MaxHitpoints
+			Out.SendCharResistsUpdate();
+			Out.SendUpdatePlayerSkills();
+			Out.SendUpdatePoints();
+			UpdatePlayerStatus();
+			Out.SendUpdateWeaponAndArmorStats();
+			Out.SendStatusUpdate();
+
+			// not sure what package this is, but it triggers the mob color update
+			Out.SendLevelUpSound();
+
+			// update color on levelup
+			if (ObjectState == eObjectState.Active)
+			{
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				{
+					if (player == null) continue;
+					player.Out.SendEmoteAnimation(this, eEmote.LvlUp);
+				}
+			}
+
+			// Expire Running Task
+			if (Task != null)
+			{
+				Task.ExpireTask();
+				Task.DeleteFromDatabase();
+			}
+
+			//Expire running Mission
+			if (Mission != null)
+			{
+				Mission.ExpireMission();
+			}
+
+			//Abort all Quests
+			this.QuestList.ForEach(q => q.AbortQuest());
+
+			// save player to database
+			SaveIntoDatabase();
+		}
+
+		private void AddRenaissanceResistBonus()
+		{
+			this.AbilityBonus[eProperty.Resist_Crush] += 3;
+			this.AbilityBonus[eProperty.Resist_Slash] += 3;
+			this.AbilityBonus[eProperty.Resist_Thrust] += 3;
+			this.AbilityBonus[eProperty.Resist_Heat] += 3;
+			this.AbilityBonus[eProperty.Resist_Cold] += 3;
+			this.AbilityBonus[eProperty.Resist_Matter] += 3;
+			this.AbilityBonus[eProperty.Resist_Body] += 3;
+			this.AbilityBonus[eProperty.Resist_Spirit] += 3;
+			this.AbilityBonus[eProperty.Resist_Energy] += 3;
+			this.AbilityBonus[eProperty.Resist_Natural] += 3;
+		}
+
 		/// <summary>
 		/// Called when this player reaches second stage of the current level
 		/// </summary>
@@ -12820,6 +12957,7 @@ namespace DOL.GS
 			m_Mithril = DBCharacter.Mithril;
 			
 			Model = (ushort)DBCharacter.CurrentModel;
+			IsRenaissance = DBCharacter.IsRenaissance;		
 
 			m_customFaceAttributes[(int)eCharFacePart.EyeSize] = DBCharacter.EyeSize;
 			m_customFaceAttributes[(int)eCharFacePart.LipSize] = DBCharacter.LipSize;
@@ -12859,8 +12997,6 @@ namespace DOL.GS
 			m_y = DBCharacter.Ypos;
 			m_z = DBCharacter.Zpos;
 			m_Heading = (ushort)DBCharacter.Direction;
-
-            IsRenaissance = DBCharacter.IsRenaissance;
 
 			//important, use CurrentRegion property
 			//instead because it sets the Region too
@@ -12925,6 +13061,11 @@ namespace DOL.GS
 
 			if (RealmLevel == 0)
 				RealmLevel = CalculateRealmLevelFromRPs(RealmPoints);
+
+			if (this.IsRenaissance)
+			{
+				this.AddRenaissanceResistBonus();
+			}
 
 			//Need to load the skills at the end, so the stored values modify the
 			//existing skill levels for this player
