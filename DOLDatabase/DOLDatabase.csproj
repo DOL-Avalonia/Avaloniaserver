@@ -24,7 +24,7 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkVersion Condition=" '$(OS)' != 'Unix' ">v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition=" '$(OS)' != 'Unix' ">v4.6.1</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition=" '$(OS)' == 'Unix' ">v4.5</TargetFrameworkVersion>
     <SourceAnalysisOverrideSettingsFile>C:\Documents and Settings\RedFish\Application Data\ICSharpCode/SharpDevelop3.0\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
@@ -124,6 +124,8 @@
     <Compile Include="Tables\ClassXSpecialization.cs" />
     <Compile Include="Tables\CharacterXDQRewardQ.cs" />
     <Compile Include="Tables\DataQuestRewardQuest.cs" />
+    <Compile Include="Tables\EventDB.cs" />
+    <Compile Include="Tables\EventsXObjects.cs" />
     <Compile Include="Tables\FeuxCampXItem.cs" />
     <Compile Include="Tables\Gravestones.cs" />
     <Compile Include="Tables\HousingConsignmentMerchant.cs" />
