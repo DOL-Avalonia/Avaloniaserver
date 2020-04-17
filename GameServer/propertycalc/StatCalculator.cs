@@ -112,7 +112,7 @@ namespace DOL.GS.PropertyCalc
 
 			if (needRenaissanceBonus)
 			{
-				stat += (int)Math.Round(500D / stat);
+				stat += (int)Math.Ceiling(stat * 5D / 100D);
 			}
 
 			// Possibly apply constitution loss at death.

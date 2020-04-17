@@ -17,6 +17,11 @@
  *
  */
 
+using log4net;
+using System;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+
 namespace DOL.GS.PropertyCalc
 {
     /// <summary>
@@ -25,6 +30,7 @@ namespace DOL.GS.PropertyCalc
     /// </summary>
     public sealed class PropertyIndexer : IPropertyIndexer
     {
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly ReaderWriterDictionary<int, int> m_propDict;
 
         public PropertyIndexer()
@@ -43,7 +49,7 @@ namespace DOL.GS.PropertyCalc
             {
                 if (m_propDict.TryGetValue(index, out var val))
                 {
-                    return val;
+                   return val;
                 }
 
                 return 0;

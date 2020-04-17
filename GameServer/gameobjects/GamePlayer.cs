@@ -4759,6 +4759,12 @@ namespace DOL.GS
 			get { return 50; }
 		}
 
+		public byte SpellMaxLevel
+		{
+			get { return 55; }
+		}
+
+
 		/// <summary>
 		/// How much experience is needed for a given level?
 		/// </summary>
@@ -4996,6 +5002,22 @@ namespace DOL.GS
 
 			}
 
+			int bonusRenaissance = 0;
+
+			if (this.IsRenaissance)
+			{
+				if (this.Level < 40)
+				{
+					bonusRenaissance = (int)Math.Round(expTotal * 1.5D);
+				}
+				else
+				{
+					bonusRenaissance = (int)Math.Round(expTotal / 2D);
+				}
+
+				expTotal += bonusRenaissance; 
+			}
+
 			// Get Champion Experience too
 			GainChampionExperience(expTotal);
 
@@ -5057,6 +5079,11 @@ namespace DOL.GS
 				}
 
 				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.GainExperience.YouGet", totalExpStr) + expCampBonusStr + expGroupBonusStr, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+
+				if (bonusRenaissance > 0)
+				{
+					Out.SendMessage(string.Format("dont {0} points bonus de Renaissance", bonusRenaissance), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				}				
 			}
 
 			Experience += expTotal;
@@ -5336,6 +5363,10 @@ namespace DOL.GS
 			RemoveAllSpecs();
 			RemoveAllSpellLines();
 
+			foreach(byte resist in Enum.GetValues(typeof(eResist)))
+			{
+				this.AbilityBonus[resist] = 0;
+			}
 
 			this.GetModified(eProperty.Strength);
 
@@ -5368,8 +5399,6 @@ namespace DOL.GS
 				StartHealthRegeneration();
 				StartPowerRegeneration();
 			}
-
-			AddRenaissanceResistBonus();
 
 			this.RealmLevel = 0;
 
@@ -5419,20 +5448,6 @@ namespace DOL.GS
 
 			// save player to database
 			SaveIntoDatabase();
-		}
-
-		private void AddRenaissanceResistBonus()
-		{
-			this.AbilityBonus[eProperty.Resist_Crush] += 3;
-			this.AbilityBonus[eProperty.Resist_Slash] += 3;
-			this.AbilityBonus[eProperty.Resist_Thrust] += 3;
-			this.AbilityBonus[eProperty.Resist_Heat] += 3;
-			this.AbilityBonus[eProperty.Resist_Cold] += 3;
-			this.AbilityBonus[eProperty.Resist_Matter] += 3;
-			this.AbilityBonus[eProperty.Resist_Body] += 3;
-			this.AbilityBonus[eProperty.Resist_Spirit] += 3;
-			this.AbilityBonus[eProperty.Resist_Energy] += 3;
-			this.AbilityBonus[eProperty.Resist_Natural] += 3;
 		}
 
 		/// <summary>
@@ -13061,11 +13076,6 @@ namespace DOL.GS
 
 			if (RealmLevel == 0)
 				RealmLevel = CalculateRealmLevelFromRPs(RealmPoints);
-
-			if (this.IsRenaissance)
-			{
-				this.AddRenaissanceResistBonus();
-			}
 
 			//Need to load the skills at the end, so the stored values modify the
 			//existing skill levels for this player

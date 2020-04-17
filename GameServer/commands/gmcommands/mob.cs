@@ -1271,6 +1271,7 @@ namespace DOL.GS.Commands
             info.Add(" + Health: " + targetMob.Health + "/" + targetMob.MaxHealth);
             info.Add(" + Endurance: " + targetMob.Endurance + "/" + targetMob.MaxEndurance);
             info.Add(" + Mana: " + targetMob.Mana + "/" + targetMob.MaxMana);
+            info.Add(" + IsRenaissance: " + targetMob.IsRenaissance);
 
             if (targetMob.DamageRvRMemory > 0)
             {

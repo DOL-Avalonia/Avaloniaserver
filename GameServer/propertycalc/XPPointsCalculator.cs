@@ -29,7 +29,7 @@ namespace DOL.GS.PropertyCalc
     {
         public override int CalcValue(GameLiving living, eProperty property)
         {
-            if (living is GamePlayer)
+            if (living is GamePlayer player)
             {
                 return Math.Min(10, living.ItemBonus[(int)property]);
             }

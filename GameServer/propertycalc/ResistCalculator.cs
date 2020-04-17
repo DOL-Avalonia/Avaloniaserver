@@ -51,7 +51,7 @@ namespace DOL.GS.PropertyCalc
 
             int debuff = living.DebuffCategory[propertyIndex];
 			int abilityBonus = living.AbilityBonus[propertyIndex];
-			int racialBonus = SkillBase.GetRaceResist( living.Race, (eResist)property );
+			int racialBonus = SkillBase.GetRaceResist( living.Race, (eResist)property, living as GamePlayer);
 
             // Items and buffs.
 
@@ -80,7 +80,7 @@ namespace DOL.GS.PropertyCalc
         {
             int propertyIndex = (int)property;
             int debuff = living.DebuffCategory[propertyIndex];
-            int racialBonus = SkillBase.GetRaceResist(living.Race, (eResist)property);
+            int racialBonus = SkillBase.GetRaceResist(living.Race, (eResist)property, living as GamePlayer);
             int itemBonus = CalcValueFromItems(living, property);
             int buffBonus = CalcValueFromBuffs(living, property);
             buffBonus -= Math.Abs(debuff);
@@ -173,6 +173,12 @@ namespace DOL.GS.PropertyCalc
                 if (itemBonus < 0)
                     itemBonus = 0;
             }
+
+            if (living is GamePlayer player && player.IsRenaissance)
+            {
+                abilityBonus += 3;
+            }
+
 			return (itemBonus + buffBonus + abilityBonus);
         }
         public override int CalcValueFromBuffs(GameLiving living, eProperty property)

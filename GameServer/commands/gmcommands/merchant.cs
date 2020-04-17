@@ -72,9 +72,22 @@ namespace DOL.GS.Commands
 				#region Create
 				case "create":
 					{
+						bool isRenaissance = false;
 						string theType = "DOL.GS.GameMerchant";
+
 						if (args.Length > 2)
-							theType = args[2];
+						{
+							if (!bool.TryParse(args[2], out isRenaissance))
+							{
+								theType = args[2];
+							}
+
+							if (args.Length > 3)
+							{
+								bool.TryParse(args[3], out isRenaissance);
+								theType = args[2];
+							}
+						}
 
 						//Create a new merchant
 						GameMerchant merchant = null;
@@ -112,6 +125,7 @@ namespace DOL.GS.Commands
 						merchant.MaxSpeedBase = 200;
 						merchant.GuildName = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "Commands.GM.Merchant.NewGuildName");
 						merchant.Size = 50;
+						merchant.IsRenaissance = isRenaissance;
 						merchant.AddToWorld();
 						merchant.SaveIntoDatabase();
 						DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Commands.GM.Merchant.Create.Created", merchant.ObjectID));

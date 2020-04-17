@@ -3705,15 +3705,15 @@ namespace DOL.GS.Spells
 
 			GamePlayer playerCaster = caster as GamePlayer;
 
-			if (playerCaster != null && spellLevel > playerCaster.MaxLevel)
-				spellLevel = playerCaster.MaxLevel;
+			if (playerCaster != null && spellLevel > playerCaster.SpellMaxLevel)
+				spellLevel = playerCaster.SpellMaxLevel;
 
 			GameSpellEffect effect = FindEffectOnTarget(m_caster, "HereticPiercingMagic");
 			if (effect != null)
 				spellLevel += (int)effect.Spell.Value;
 
 			if (playerCaster != null && (m_spellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect || m_spellLine.KeyName.StartsWith(GlobalSpellsLines.Champion_Lines_StartWith)))
-				spellLevel = Math.Min(playerCaster.MaxLevel, target.Level);
+				spellLevel = Math.Min(playerCaster.SpellMaxLevel, target.Level);
 
 			int bonustohit = m_caster.GetModified(eProperty.ToHitBonus);
 			//Piercing Magic affects to-hit bonus too

@@ -4953,7 +4953,7 @@ namespace DOL.GS
 		/// <returns>the resist value</returns>
 		public virtual int GetDamageResist(eProperty property)
 		{
-			return SkillBase.GetRaceResist( m_race, (eResist)property );
+			return SkillBase.GetRaceResist( m_race, (eResist)property, this as GamePlayer);
 		}
 
 		/// <summary>
