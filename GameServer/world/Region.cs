@@ -30,6 +30,7 @@ using DOL.GS.Utils;
 using DOL.GS.ServerProperties;
 using log4net;
 using System.Linq;
+using DOL.GameEvents;
 
 namespace DOL.GS
 {
@@ -53,7 +54,7 @@ namespace DOL.GS
         /// <summary>
         /// This holds all objects inside this region. Their index = their id!
         /// </summary>
-        protected GameObject[] m_objects;
+        protected GameObject[] m_objects;        
 
         /// <summary>
         /// Object to lock when changing objects in the array
@@ -791,7 +792,15 @@ namespace DOL.GS
                             throw;
                         }
 
-                        myMob.AddToWorld();
+                        //Add mob to world only if not part in any game event
+                        if (mob.EventID == null)
+                        {
+                            myMob.AddToWorld();
+                        }
+                        else
+                        {
+                            GameEventManager.Instance.PreloadedMobs.Add(myMob);
+                        }
                     }
                 }
             }

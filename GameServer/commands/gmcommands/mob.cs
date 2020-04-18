@@ -124,7 +124,8 @@ namespace DOL.GS.Commands
          "'/mob trigger <type> <chance> <emote> <text>' adds a trigger to targeted mob class.  Use '/mob trigger help' for more info.",
          "'/mob trigger info' Give trigger informations.",
          "'/mob trigger remove <id>' Remove a trigger.",
-         "'/mob ownerid <id>' Sets and saves the OwnerID for this mob.")]
+         "'/mob ownerid <id>' Sets and saves the OwnerID for this mob.",
+         "/mob isRenaissance <true|false> - set Mob isRenaissance")]
     public class MobCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -266,6 +267,8 @@ namespace DOL.GS.Commands
                         case "reload": reload(client, targetMob, args); break;
                         case "findname": findname(client, args); break;
                         case "trigger": trigger(client, targetMob, args); break;
+                        case "isrenaissance":
+                        case "isRenaissance": Renaissance(client, targetMob, args); break;
                     default:
                         DisplaySyntax(client);
                         return;
@@ -275,6 +278,33 @@ namespace DOL.GS.Commands
             {
                 client.Out.SendMessage(ex.ToString(), eChatType.CT_System, eChatLoc.CL_PopupWindow);
                 DisplaySyntax(client);
+            }
+        }
+
+        private void Renaissance(GameClient client, GameNPC targetMob, string[] args)
+        {                       
+            if (args.Length < 3)
+            {
+                DisplaySyntax(client);
+            }
+            else
+            {
+                if (targetMob == null)
+                {
+                    client.Out.SendMessage("Vous devez selectionner un mob pour set IsRenaissance", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+                    return;
+                }
+
+                if (!bool.TryParse(args[2], out bool isRenaissance))
+                {
+                    DisplaySyntax(client);
+                }
+                else
+                {                   
+                    targetMob.IsRenaissance = isRenaissance;
+                    targetMob.SaveIntoDatabase();
+                    client.Out.SendMessage(targetMob.Name + " isRenaissance est maintenant: " + isRenaissance, eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+                }
             }
         }
 

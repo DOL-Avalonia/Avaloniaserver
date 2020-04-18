@@ -73,6 +73,8 @@ namespace DOL.Database
         private string m_packageID;
         private byte m_visibleWeaponSlots;
         private bool m_isRenaissance;
+        private byte m_gender = 0;
+        private string m_eventID;
 
         public static readonly string DEFAULT_NPC_CLASSTYPE = "DOL.GS.GameNPC";
 
@@ -836,9 +838,6 @@ namespace DOL.Database
             }
         }
 
-        private byte m_gender = 0;
-
-
         /// <summary>
         /// Gender of this mob.
         /// </summary>
@@ -884,6 +883,22 @@ namespace DOL.Database
             {
                 m_visibleWeaponSlots = value;
                 Dirty = true;
+            }
+        }
+
+
+        [DataElement(AllowDbNull = true)]
+        public string EventID
+        {
+            get
+            {
+                return m_eventID;
+            }
+
+            set
+            {
+                Dirty = true;
+                m_eventID = value;
             }
         }
     }

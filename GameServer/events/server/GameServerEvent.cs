@@ -44,5 +44,9 @@ namespace DOL.Events
         /// The WorldSave event is fired whenever the GameServer saves the world
         /// </summary>
         public static readonly GameServerEvent WorldSave = new GameServerEvent("Server.WorldSave");
+        /// <summary>
+        /// The CoffreLoaded event is fired whenever the GameServer has loaded all Coffre items
+        /// </summary>
+        public static readonly GameServerEvent CoffreLoaded = new GameServerEvent("Server.CoffreLoaded");
     }
 }

@@ -112,6 +112,12 @@ namespace DOL.GS
             set { m_translationId = value == null ? string.Empty : value; }
         }
 
+        public string EventID
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         /// Gets or sets the name of this item
         /// </summary>

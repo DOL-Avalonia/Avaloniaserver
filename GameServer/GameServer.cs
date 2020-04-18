@@ -45,6 +45,8 @@ using log4net;
 using log4net.Config;
 using log4net.Core;
 using GameServerScripts.Utils;
+using DOL.GameEvents;
+using DOL.events.server;
 
 namespace DOL.GS
 {
@@ -886,6 +888,14 @@ namespace DOL.GS
                 }
 
                 //---------------------------------------------------------------
+                // Try to initialize the Game Events
+                if (!InitComponent(GameEventManager.Instance.Init(), "Game Events"))
+                {
+                    return false;
+                }
+
+
+                //---------------------------------------------------------------
                 // Notify our scripts that everything went fine!
                 GameEventMgr.Notify(ScriptEvent.Loaded);
 
@@ -1059,6 +1069,9 @@ namespace DOL.GS
                 {
                     log.Info("Loading skills: true");
                 }
+
+
+                GameEventMgr.RegisterGlobalEvents(Assembly.GetExecutingAssembly(), typeof(GameServerCoffreLoadedAttribute), GameServerEvent.CoffreLoaded);
 
                 //---------------------------------------------------------------
                 // Register all event handlers

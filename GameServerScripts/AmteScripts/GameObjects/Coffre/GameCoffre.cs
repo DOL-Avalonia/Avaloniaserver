@@ -636,6 +636,7 @@ namespace DOL.GS.Scripts
 			IsTeleporter = coffre.IsTeleporter;
 			TpEffect = coffre.TpEffect;
 			TpRegion = coffre.TpRegion;
+			EventID = coffre.EventID;
 
 			InitTimer();
 
@@ -693,6 +694,7 @@ namespace DOL.GS.Scripts
 			Coffre.TpEffect = TpEffect;
 			Coffre.TpRegion = TpRegion;
 			Coffre.IsOpeningRenaissanceType = IsOpeningRenaissanceType;
+			Coffre.EventID = EventID;
 
 			if (Items != null)
 			{

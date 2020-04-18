@@ -10,6 +10,7 @@ using DOL.Events;
 using DOL.Database.Attributes;
 using System.Reflection;
 using log4net;
+using DOL.GameEvents;
 
 namespace DOL.Database
 {
@@ -37,9 +38,18 @@ namespace DOL.Database
 				i++;
 				GameCoffre coffre = new GameCoffre();
 				coffre.LoadFromDatabase(obj);
-				coffre.AddToWorld();
+
+				if (obj.EventID == null)
+				{
+					coffre.AddToWorld();
+				}
+				else
+				{
+					GameEventManager.Instance.PreloadedCoffres.Add(coffre);
+				}
 			}
 			log.Info(i + " GameCoffre loaded in world.");
+			GameEventMgr.Notify(GameServerEvent.CoffreLoaded);
 		}
 
 
@@ -70,6 +80,7 @@ namespace DOL.Database
 		private int m_punishSpellId;
 		private int m_tpHeading;
 		private bool m_hasPickableAnim;
+		private string m_eventID;
 
 		[DataElement(AllowDbNull=false)]
 		public string Name
@@ -475,5 +486,21 @@ namespace DOL.Database
 				m_tpRegion = value;
 			}
 		}
+
+		[DataElement(AllowDbNull = true)]
+		public string EventID
+		{
+			get
+			{
+				return m_eventID;
+			}
+
+			set
+			{
+				Dirty = true;
+				m_eventID = value;
+			}
+		}
+
 	}
 }

@@ -26,8 +26,8 @@ Commands.GM.Merchant.Type.Changed:							Le type du marchand a changé pour {0}.
 Commands.GM.Merchant.Usage.Articles.Add:					'/merchant articles add <itemTemplateID> <pageNumber> [slot]' # Ajoute un objet au modèle de liste d'article du marchand.
 Commands.GM.Merchant.Usage.Articles.Delete:					'/merchant articles delete' # Supprime le modèle de liste d'objet du marchand.
 Commands.GM.Merchant.Usage.Articles.Remove:					'/merchant articles remove <pageNumber> <slot>' # Supprime un objet du modèle de la liste d'objet du marchand.
-Commands.GM.Merchant.Usage.Create:							'/merchant create' # Créer un nouveau marchand.
-Commands.GM.Merchant.Usage.CreateType:						'/merchant create <type>' # Créer un nouveau marchand avec un type prédéfinit;
+Commands.GM.Merchant.Usage.Create:							'/merchant create [isRenaissance]' # Créer un nouveau marchand [isRenaissance] définit si ce marchand requis la renaissance du joueur pour intérragir.
+Commands.GM.Merchant.Usage.CreateType:						'/merchant create <type> [isRenaissance]' # Créer un nouveau marchand avec un type prédéfinit, [isRenaissance] définit si ce marchand requis la renaissance du joueur pour intérragir;
 Commands.GM.Merchant.Usage.Info:							'/merchant info' # Affiche les informations à propos de ce marchand.
 Commands.GM.Merchant.Usage.Remove:							'/merchant remove' # Supprime ce marchand de la base de données.
 Commands.GM.Merchant.Usage.Save:							'/merchant save' # Sauvegarde ce marchand en tant que nouvel objet dans la base de données.

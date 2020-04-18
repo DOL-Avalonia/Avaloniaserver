@@ -155,6 +155,12 @@ namespace DOL.GS
 			set { m_translationId = (value == null ? "" : value); }
 		}
 
+		public string EventID
+		{
+			get;
+			set;
+		}
+
 		/// <summary>
 		/// Gets or sets the model of this npc
 		/// </summary>
@@ -1992,6 +1998,7 @@ namespace DOL.GS
 			Flags = (eFlags)dbMob.Flags;
 			m_packageID = dbMob.PackageID;
 			IsRenaissance = dbMob.IsRenaissance;
+			EventID = dbMob.EventID;
 
 			NPCTemplate = NpcTemplateMgr.GetTemplate(dbMob.NPCTemplateID);
 			// Since AutoSetStats now checks original stats via NPCTemplate, make sure there is one.
@@ -2178,6 +2185,7 @@ namespace DOL.GS
 			mob.Size = Size;
 			mob.Level = Level;
 			mob.IsRenaissance = IsRenaissance;
+			mob.EventID = EventID;
 
 			// Stats
 			mob.Constitution = Constitution;
