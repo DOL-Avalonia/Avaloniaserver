@@ -43,7 +43,7 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <OutputPath>..\Debug\</OutputPath>
+    <OutputPath>..\Debug\Tests\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net">

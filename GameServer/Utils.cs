@@ -20,4 +20,21 @@ static class AmteUtils
 			val = max;
 		return val;
 	}
+
+	/// <summary>
+	/// In Minutes
+	/// </summary>
+	/// <param name="time"></param>
+	/// <returns></returns>
+	public static long ToTimerMilliseconds(this long time)
+	{	
+		long val = time * 60 * 1000;
+
+		if (val > 0 && val < long.MaxValue)
+		{
+			return val;
+		}
+
+		return 0;
+	}
 }

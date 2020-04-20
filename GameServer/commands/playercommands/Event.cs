@@ -23,7 +23,7 @@ namespace DOL.GS.Commands
 
 		private void ShowEvents(GameClient client)
 		{
-			client.Out.SendCustomTextWindow("[ EVENTS ]",  GameEventManager.Instance.GetPublicEventsInfos());
+			client.Out.SendCustomTextWindow("[ EVENTS ]",  GameEventManager.Instance.GetEventsInfos(true, false));
 		}
 	}
 }

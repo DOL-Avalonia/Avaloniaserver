@@ -139,6 +139,12 @@ namespace DOL.GS
             }
         }
 
+        public bool CanRespawnWithinEvent
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         /// Get's or sets the current Region by the ID
         /// </summary>

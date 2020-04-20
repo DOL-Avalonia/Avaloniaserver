@@ -196,7 +196,7 @@ namespace DOL.AI.Brain
 							Body.TargetObject = Body;
 							break;
 						}
-						if (!Body.InCombat && spell.Target == "Realm")
+						if (!Body.InCombat && spell.Target == "realm")
 						{
 							foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)Math.Max(spell.Radius, spell.Range)))
 								if (Body.IsFriend(npc) && !LivingHasEffect(npc, spell))
@@ -216,7 +216,7 @@ namespace DOL.AI.Brain
 						Body.TargetObject = Body;
 						break;
 					}
-					if (!Body.InCombat && spell.Target == "Realm")
+					if (!Body.InCombat && spell.Target == "realm")
 					{
 						foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)Math.Max(spell.Radius, spell.Range)))
 							if (Body.IsFriend(npc) && npc.IsDiseased && Util.Chance(60))
@@ -232,7 +232,7 @@ namespace DOL.AI.Brain
 						Body.TargetObject = Body;
 						break;
 					}
-					if (!Body.InCombat && spell.Target == "Realm")
+					if (!Body.InCombat && spell.Target == "realm")
 					{
 						foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)Math.Max(spell.Radius, spell.Range)))
 							if (Body.IsFriend(npc) && LivingIsPoisoned(npc) && Util.Chance(60))
@@ -291,7 +291,7 @@ namespace DOL.AI.Brain
 						break;
 					}
 
-					if (!Body.InCombat && spell.Target == "Realm")
+					if (!Body.InCombat && spell.Target == "realm")
 					{
 						foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)Math.Max(spell.Radius, spell.Range)))
 							if (Body.IsFriend(npc) && npc.HealthPercent < 70)

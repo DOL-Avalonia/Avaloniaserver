@@ -36,6 +36,8 @@ using DOL.GS.Styles;
 using DOL.GS.Utils;
 using DOL.Language;
 using DOL.GS.ServerProperties;
+using DOL.GameEvents;
+using System.Threading.Tasks;
 
 namespace DOL.GS
 {
@@ -4231,12 +4233,28 @@ namespace DOL.GS
 				base.Die(killer);
 			}
 
+			if (this.EventID != null)
+			{
+				var ev = GameEventManager.Instance.Events.FirstOrDefault(e => e.IsKillingEvent && e.Mobs.Contains(this));
+
+				if (ev != null)
+				{
+					ev.WantedMobsCount--;
+
+					if (ev.WantedMobsCount == 0)
+					{
+						Task.Run(async () => await GameEventManager.Instance.StopEvent(ev, EndingConditionType.Kill));
+					}
+				}
+			}
+
+
 			Delete();
 
 			// remove temp properties
 			TempProperties.removeAllProperties();
 
-			if (!(this is GamePet))
+			if (!(this is GamePet) && (this.EventID == null || CanRespawnWithinEvent))
 				StartRespawn();
 		}
 

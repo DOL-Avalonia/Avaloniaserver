@@ -15,8 +15,9 @@ namespace DOLDatabase.Tables
         private bool m_isMob;
         private string m_eventID;
         private ushort m_region;
+        private string m_name;
 
-        [DataElement(AllowDbNull = false, Varchar = 255)]
+        [DataElement(AllowDbNull = false, Varchar = 255, Index = true)]
         public string EventID
         {
             get
@@ -42,6 +43,22 @@ namespace DOLDatabase.Tables
             set
             {
                 m_itemID = value;
+                Dirty = true;
+            }
+        }
+
+
+        [DataElement(AllowDbNull = false, Varchar = 255)]
+        public string Name
+        {
+            get
+            {
+                return m_name;
+            }
+
+            set
+            {
+                m_name = value;
                 Dirty = true;
             }
         }

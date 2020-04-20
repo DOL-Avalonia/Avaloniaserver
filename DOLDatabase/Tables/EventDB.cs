@@ -8,23 +8,26 @@ namespace DOLDatabase.Tables
     public class EventDB : DataObject
     {
         private string m_eventName;
-        private string m_eventArea;
-        private string m_eventZone;
+        private string m_eventAreas;
+        private string m_eventZones;
         private bool m_showEvent;
         private int m_startConditionType;
         private int m_eventChance;
         private string m_DebutText;
         private string m_RandomText;
-        private int m_RandTextInterval;
+        private long m_RandTextInterval;
         private string m_remainingTimeText;
-        private double m_remainingTimeInterval;
+        private long m_remainingTimeInterval;
         private string m_endText;
-        private int m_endingStatus;
+        private int m_status;
         private int m_endingActionB;
         private int m_endingActionA;
         private long m_endTime;
         private long m_startedTime;
-        private double m_eventChanceInterval;
+        private long m_eventChanceInterval;
+        private string m_endingConditionTypes;
+        private string m_mobNamesToKill;
+        private string m_endingActionEventID;
 
         [DataElement(AllowDbNull = false, Varchar = 255)]
         public string EventName
@@ -42,31 +45,31 @@ namespace DOLDatabase.Tables
         }    
 
         [DataElement(AllowDbNull = true, Varchar = 255)]
-        public string EventArea
+        public string EventAreas
         {
             get
             {
-                return m_eventArea;
+                return m_eventAreas;
             }
 
             set
             {
-                m_eventArea = value;
+                m_eventAreas = value;
                 Dirty = true;
             }
         }
 
         [DataElement(AllowDbNull = true, Varchar = 255)]
-        public string EventZone
+        public string EventZones
         {
             get
             {
-                return m_eventZone;
+                return m_eventZones;
             }
 
             set
             {
-                m_eventZone = value;
+                m_eventZones = value;
                 Dirty = true;
             }
         }
@@ -101,6 +104,39 @@ namespace DOLDatabase.Tables
             }
         }
 
+
+        [DataElement(AllowDbNull = true, Varchar = 255)]
+        public string MobNamesToKill
+        {
+            get
+            {
+                return m_mobNamesToKill;
+            }
+
+            set
+            {
+                m_mobNamesToKill = value;
+                Dirty = true;
+            }
+        }
+
+
+
+        [DataElement(AllowDbNull = false, Varchar = 10)]
+        public string EndingConditionTypes
+        {
+            get
+            {
+                return m_endingConditionTypes;
+            }
+
+            set
+            {
+                m_endingConditionTypes = value;
+                Dirty = true;
+            }
+        }
+
         [DataElement(AllowDbNull = true)]
         public int EventChance
         {
@@ -117,7 +153,7 @@ namespace DOLDatabase.Tables
         }
 
         [DataElement(AllowDbNull = false)]
-        public double EventChanceInterval
+        public long EventChanceInterval
         {
             get
             {
@@ -163,7 +199,7 @@ namespace DOLDatabase.Tables
         }
 
         [DataElement(AllowDbNull = false)]
-        public int RandTextInterval
+        public long RandTextInterval
         {
             get
             {
@@ -193,7 +229,7 @@ namespace DOLDatabase.Tables
         }
 
         [DataElement(AllowDbNull = false)]
-        public double RemainingTimeInterval
+        public long RemainingTimeInterval
         {
             get
             {
@@ -226,16 +262,16 @@ namespace DOLDatabase.Tables
 
 
         [DataElement(AllowDbNull = false)]
-        public int EndingStatus
+        public int Status
         {
             get
             {
-                return m_endingStatus;
+                return m_status;
             }
 
             set
             {
-                m_endingStatus = value;
+                m_status = value;
                 Dirty = true;
             }
         }
@@ -285,8 +321,23 @@ namespace DOLDatabase.Tables
             }
         }
 
-
         [DataElement(AllowDbNull = true)]
+        public string EndingActionEventID
+        {
+            get
+            {
+                return m_endingActionEventID;
+            }
+
+            set
+            {
+                m_endingActionEventID = value;
+                Dirty = true;
+            }
+        }
+
+
+        [DataElement(AllowDbNull = false)]
         public long StartedTime
         {
             get

@@ -181,6 +181,12 @@ namespace DOL.GS.Scripts
 			return true;
 		}
 
+		public override bool RemoveFromWorld()
+		{
+			Coffres.Remove(this);
+			return base.RemoveFromWorld();
+		}
+
 		public void RespawnCoffre()
 		{
 			base.AddToWorld();
@@ -343,7 +349,10 @@ namespace DOL.GS.Scripts
 				m_lastInteract = DateTime.MinValue;
 				LastOpen = DateTime.Now;
 				RemoveFromWorld(ItemInterval * 60);
-				RespawnTimer.Start();
+				if (this.EventID == null || (CanRespawnWithinEvent))
+				{
+					RespawnTimer.Start();
+				}
 				SaveIntoDatabase();
 			}
 		

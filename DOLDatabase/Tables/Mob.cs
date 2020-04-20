@@ -326,7 +326,7 @@ namespace DOL.Database
         /// <summary>
         /// The Mob's Region ID
         /// </summary>
-        [DataElement(AllowDbNull = false)]
+        [DataElement(AllowDbNull = false, Index = true)]
         public ushort Region
         {
             get
@@ -887,7 +887,7 @@ namespace DOL.Database
         }
 
 
-        [DataElement(AllowDbNull = true)]
+        [DataElement(AllowDbNull = true, Index = true)]
         public string EventID
         {
             get

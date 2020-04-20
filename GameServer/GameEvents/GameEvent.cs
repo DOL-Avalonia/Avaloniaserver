@@ -1,11 +1,11 @@
 ﻿using DOL.Database;
 using DOL.GS;
+using DOL.GS.PacketHandler;
 using DOLDatabase.Tables;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Timers;
 
 namespace DOL.GameEvents
 {
@@ -13,32 +13,86 @@ namespace DOL.GameEvents
     {
         private object _db;
 
+        public Timer RandomTextTimer { get; }
+        public Timer RemainingTimeTimer { get; }
+
+
         public GameEvent(EventDB db)
         {
             _db = db.Clone();
             ID = db.ObjectId;
-            EventArea = db.EventArea;
-            EventChance = db.EventChance;
-            EventName = db.EventName;
-            EventZone = db.EventZone;
-            ShowEvent = db.ShowEvent;
-            StartConditionType = (ConditionType)db.StartConditionType;
-            EventChanceInterval = TimeSpan.FromMinutes(db.EventChanceInterval);
-            DebutText = db.DebutText;
-            EndText = db.EndText;
-            StartedTime = DateTimeOffset.FromUnixTimeSeconds(db.StartedTime);
-            EndTime = db.EndTime != 0 ? DateTimeOffset.FromUnixTimeSeconds(db.EndTime) : DateTimeOffset.MinValue;
-            RandomText = db.RandomText;
-            RandTextInterval = TimeSpan.FromHours(db.RandTextInterval);
-            RemainingTimeInterval = TimeSpan.FromMinutes(db.RemainingTimeInterval);
-            RemainingTimeText = db.RemainingTimeText;
-            EndingActionA = (EndingAction)db.EndingActionA;
-            EndingActionB = (EndingAction)db.EndingActionB;
+            this.RandomTextTimer = new Timer();
+            this.RemainingTimeTimer = new Timer();
+
+            ParseValuesFromDb(db);
+
             this.Coffres = new List<GameStaticItem>();
             this.Mobs = new List<GameNPC>();
         }
 
+        public void ParseValuesFromDb(EventDB db)
+        {
+            EventAreas = db.EventAreas != null ? db.EventAreas.Split(new char[] { '|' }) : null;
+            EventChance = db.EventChance;
+            EventName = db.EventName;
+            EventZones = db.EventZones != null ? db.EventZones.Split(new char[] { '|' }) : null;
+            ShowEvent = db.ShowEvent;
+            StartConditionType = (StartingConditionType)db.StartConditionType;
+            EventChanceInterval = db.EventChanceInterval > 0 && db.EventChanceInterval < long.MaxValue ? TimeSpan.FromMinutes(db.EventChanceInterval) : (TimeSpan?)null;
+            DebutText = db.DebutText;
+            EndText = db.EndText;
+            StartedTime = db.StartedTime > 0 && db.StartedTime < long.MaxValue ? DateTimeOffset.FromUnixTimeSeconds(db.StartedTime) : (DateTimeOffset?)null;
+            EndTime = db.EndTime > 0 && db.EndTime < long.MaxValue ? DateTimeOffset.FromUnixTimeSeconds(db.EndTime) : (DateTimeOffset?)null;
+            EndingConditionTypes = db.EndingConditionTypes.Split(new char[] { '|' }).Select(c => Enum.TryParse(c, out EndingConditionType end) ? end : GameEvents.EndingConditionType.Timer);
+            RandomText = db.RandomText != null ? db.RandomText.Split(new char[] { '|' }) : null;
+            RandTextInterval = db.RandTextInterval > 0 && db.RandTextInterval < long.MaxValue ? TimeSpan.FromMinutes(db.RandTextInterval) : (TimeSpan?)null;
+            RemainingTimeInterval = db.RemainingTimeInterval > 0 && db.RemainingTimeInterval < long.MaxValue ? TimeSpan.FromMinutes(db.RemainingTimeInterval) : (TimeSpan?)null;
+            RemainingTimeText = db.RemainingTimeText;
+            EndingActionA = (EndingAction)db.EndingActionA;
+            EndingActionB = (EndingAction)db.EndingActionB;
+            MobNamesToKill = db.MobNamesToKill != null ? db.MobNamesToKill.Split(new char[] { '|' }) : null;
+            EndingActionEventID = db.EndingActionEventID;
 
+            if (RandTextInterval.HasValue && RandomText != null && this.EventZones?.Any() == true)
+            {
+                this.RandomTextTimer.Interval = ((long)RandTextInterval.Value.TotalMinutes).ToTimerMilliseconds();
+                this.RandomTextTimer.Elapsed += RandomTextTimer_Elapsed;
+                this.RandomTextTimer.AutoReset = true;
+                this.HasHandomText = true;
+            }
+
+            if (RemainingTimeText != null && RemainingTimeInterval.HasValue && this.EventZones?.Any() == true)
+            {
+                this.HasRemainingTimeText = true;
+                this.RemainingTimeTimer.Interval = ((long)RemainingTimeInterval.Value.TotalMinutes).ToTimerMilliseconds();
+                this.RemainingTimeTimer.AutoReset = true;
+                this.RemainingTimeTimer.Elapsed += RemainingTimeTimer_Elapsed;
+            }
+
+            if (MobNamesToKill?.Any() == true && EndingConditionTypes.Contains(EndingConditionType.Kill))
+            {
+                IsKillingEvent = true;
+            }
+
+            if (EndTime.HasValue && EndingConditionTypes.Contains(EndingConditionType.Timer))
+            {
+                IsTimingEvent = true;
+            }
+        }
+
+        private void RemainingTimeTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            GameEventManager.NotifyPlayersInEventZones(this.RemainingTimeText, this.EventZones);
+        }
+
+        private void RandomTextTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            var rand = new Random(DateTime.Now.Millisecond);
+            int index = rand.Next(0, this.RandomText.Count());
+
+            GameEventManager.NotifyPlayersInEventZones(RandomText.ElementAt(index), this.EventZones);
+        }
+     
         public string ID
         {
             get;
@@ -50,80 +104,129 @@ namespace DOL.GameEvents
             get;
             set;
         }
-        
-        public string EventArea
+
+        public IEnumerable<string> EventAreas
         {
             get;
             set;
         }
 
-        public string EventZone
+        public IEnumerable<string> EventZones
         {
             get;
             set;
         }
-        
+
+        public IEnumerable<string> MobNamesToKill
+        {
+            get;
+            set;
+        }
+
+        public bool HasHandomText
+        {
+            get;
+            set;
+        }
+
+        public bool HasRemainingTimeText
+        {
+            get;
+            set;
+        }
+
+        public bool IsKillingEvent
+        {
+            get;
+            set;
+        }
+
+        public bool IsTimingEvent
+        {
+            get;
+            set;
+        }
+
         public bool ShowEvent
         {
             get;
             set;
         }
-        
-        public ConditionType StartConditionType
+
+        public StartingConditionType StartConditionType
         {
             get;
             set;
         }
-        
+
+
+        public IEnumerable<EndingConditionType> EndingConditionTypes
+        {
+            get;
+            set;
+        }
+
         public int EventChance
         {
             get;
             set;
         }
-        
-        public TimeSpan EventChanceInterval
+
+        public TimeSpan? EventChanceInterval
         {
             get;
             set;
         }
-        
+
+        public int WantedMobsCount 
+        {
+            get;
+            set;
+        }
+
         public string DebutText
         {
             get;
             set;
         }
-      
-        public string RandomText
+
+        public string EndingActionEventID
         {
             get;
             set;
         }
-       
-        public TimeSpan RandTextInterval
+
+        public IEnumerable<string> RandomText
         {
             get;
             set;
         }
-     
+
+        public TimeSpan? RandTextInterval
+        {
+            get;
+            set;
+        }
+
         public string RemainingTimeText
         {
             get;
             set;
         }
-              
-        public TimeSpan RemainingTimeInterval
+
+        public TimeSpan? RemainingTimeInterval
         {
             get;
             set;
         }
-        
+
         public string EndText
         {
             get;
             set;
         }
-     
-        public EndingType EndingStatus
+
+        public EventStatus Status
         {
             get;
             set;
@@ -135,20 +238,20 @@ namespace DOL.GameEvents
             set;
         }
 
-     
+
         public EndingAction EndingActionB
         {
             get;
             set;
         }
-     
-        public DateTimeOffset EndTime
+
+        public DateTimeOffset? EndTime
         {
             get;
             set;
         }
-      
-        public DateTimeOffset StartedTime
+
+        public DateTimeOffset? StartedTime
         {
             get;
             set;
@@ -163,38 +266,58 @@ namespace DOL.GameEvents
         {
             get;
         }
-        
 
+        public void Clean()
+        {
+            if (this.RandomTextTimer != null)
+            {
+                this.RandomTextTimer.Stop();
+                this.RandomTextTimer.Elapsed -= this.RandomTextTimer_Elapsed;
+            }
 
+            if (this.RemainingTimeTimer != null)
+            {
+                this.RemainingTimeTimer.Stop();
+                this.RemainingTimeTimer.Elapsed -= RemainingTimeTimer_Elapsed;
+            }
+
+            this.Mobs.Clear();
+            this.Coffres.Clear();
+
+        }
 
         public void SaveToDatabase()
         {
             var db = _db as EventDB;
             bool needClone = false;
-            
+
             if (db == null)
             {
                 db = new EventDB();
                 needClone = true;
             }
 
-            db.EventArea = EventArea;
+            db.EventAreas = EventAreas != null ? string.Join("|", EventAreas) : null;
             db.EventChance = EventChance;
             db.EventName = EventName;
-            db.EventZone = EventZone;
+            db.EventZones = EventZones != null ? string.Join("|", EventZones) : null;
             db.ShowEvent = ShowEvent;
             db.StartConditionType = (int)StartConditionType;
-            db.EventChanceInterval = EventChanceInterval.TotalMinutes;
+            db.EndingConditionTypes = string.Join("|", EndingConditionTypes.Select(t => ((int)t).ToString()));
+            db.EventChanceInterval = EventChanceInterval.HasValue ? (long)EventChanceInterval.Value.TotalMinutes : 0;
             db.DebutText = DebutText;
             db.EndText = EndText;
-            db.StartedTime = StartedTime.ToUnixTimeSeconds();
-            db.EndTime = EndingStatus == EndingType.NotOver ? 0 : EndTime.ToUnixTimeSeconds();
-            db.RandomText = RandomText;
-            db.RandTextInterval = RandTextInterval.Hours;
-            db.RemainingTimeInterval = RemainingTimeInterval.TotalMinutes;
+            db.StartedTime = StartedTime?.ToUnixTimeSeconds() ?? 0;
+            db.EndTime = Status != EventStatus.NotOver && EndTime.HasValue ? EndTime.Value.ToUnixTimeSeconds() : 0;
+            db.RandomText = RandomText != null ? string.Join("|", RandomText) : null;
+            db.RandTextInterval = RandTextInterval.HasValue ? (long)RandTextInterval.Value.TotalMinutes : 0;
+            db.RemainingTimeInterval = RemainingTimeInterval.HasValue ? (long)RemainingTimeInterval.Value.TotalMinutes : 0;
             db.RemainingTimeText = RemainingTimeText;
             db.EndingActionA = (int)EndingActionA;
             db.EndingActionB = (int)EndingActionB;
+            db.EndingActionEventID = EndingActionEventID;
+            db.MobNamesToKill = MobNamesToKill != null ? string.Join("|", MobNamesToKill) : null;
+            db.Status = (int)Status;
 
             if (ID == null)
             {
@@ -203,6 +326,7 @@ namespace DOL.GameEvents
             }
             else
             {
+                db.ObjectId = ID;
                 GameServer.Database.SaveObject(db);
             }
 

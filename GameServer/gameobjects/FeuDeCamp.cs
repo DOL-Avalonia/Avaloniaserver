@@ -23,12 +23,8 @@ namespace DOL.GS
             LoadedFromScript = true;
         }
 
-
-        private ushort m_Range;
         // 4 secondes entre chaque tests
         private const double PROXIMITY_CHECK_INTERVAL = 4 * 1000;
-        private const double REGENERATION_BOOST_FACTOR = 1.2;
-
         private Timer m_ProximityCheckTimer;
         private Timer m_LifeTimer;
 

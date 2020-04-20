@@ -8,8 +8,8 @@ namespace DOL.GS.Scripts
          "&teleportnpc",
          ePrivLevel.GM,
          "Gestions des TeleportNPC",
-         "'/teleportnpc create [isRenaissance]' créé un nouveau TeleportNPC [isRenaissance] définit si ce npc requis la renaissance du joueur",
-         "'/teleportnpc create douanier <gold> [isRenaissance]' gold étant le montant du cout du jump, [isRenaissance] définit si ce npc requis la renaissance du joueur",
+         "'/teleportnpc create [isRenaissance]' créé un nouveau TeleportNPC [isRenaissance] définit si ce npc a besoin de la renaissance du joueur pour intérragir",
+         "'/teleportnpc create douanier <gold> [isRenaissance]' gold étant le montant du cout du jump, [isRenaissance] définit si ce npc  a besoin de la renaissance du joueur pour intérragir",
          "'/teleportnpc text <texte>' texte affiché lorsque le joueur peut se téléporter, le texte doit contenir {5}",
          "'/teleportnpc refuse <texte>' texte affiché lorsque le joueur ne peut pas être téléporté",
          "'/teleportnpc radius <0 - 500>' rayon dans lequel les joueurs seront téléportés (pas de texte)",
@@ -44,7 +44,7 @@ namespace DOL.GS.Scripts
                     bool isRenaissance = false;
                     if (args.Length > 2 && args[2] == "douanier")
                     {
-                        if (args.Length != 4)
+                        if (args.Length < 4)
                         {
                             DisplaySyntax(client);
                             break;
