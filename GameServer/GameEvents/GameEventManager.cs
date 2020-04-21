@@ -11,6 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using static DOL.GS.GameTimer;
 
 namespace DOL.GameEvents
 {
@@ -18,6 +19,7 @@ namespace DOL.GameEvents
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private static GameEventManager instance;
+        private System.Threading.Timer timer;
 
         public static GameEventManager Instance => instance ?? (instance = new GameEventManager());
 
@@ -29,7 +31,7 @@ namespace DOL.GameEvents
         {
             Events = new List<GameEvent>();
             PreloadedCoffres = new List<GameStaticItem>();
-            PreloadedMobs = new List<GameNPC>();
+            PreloadedMobs = new List<GameNPC>();            
         }
 
         public List<GameEvent> Events { get; set; }
@@ -37,6 +39,44 @@ namespace DOL.GameEvents
         public bool Init()
         {
             return true;
+        }
+
+        private async void TimeCheck(object o)
+        {
+
+
+            foreach(var ev in this.Events)
+            {
+                //End events with timer over
+                if (ev.Status == EventStatus.NotOver && ev.EndTime.HasValue && ev.EndingConditionTypes.Contains(EndingConditionType.Timer) && DateTime.UtcNow > ev.EndTime.Value.DateTime)
+                {
+                    await this.StopEvent(ev, EndingConditionType.Timer);
+                }
+            }
+
+            var chanceEvents = this.Events.Where(e => e.Status == EventStatus.NotOver && e.EventChanceInterval.HasValue && e.EventChance > 0);
+            var rand = new Random(DateTime.Now.Millisecond);
+
+
+            //Start Event if chance proc
+            foreach(var ev in chanceEvents)
+            {
+                if (!ev.ChanceLastTimeChecked.HasValue)
+                {
+                    ev.ChanceLastTimeChecked = DateTime.UtcNow;
+                }
+                else
+                {
+                    if (DateTime.UtcNow - ev.ChanceLastTimeChecked.Value >= ev.EventChanceInterval.Value)
+                    {
+                        ev.ChanceLastTimeChecked = DateTime.UtcNow;
+                        if (rand.Next(0, 101) >= ev.EventChance)
+                        {
+                            this.StartEvent(ev);
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -100,15 +140,16 @@ namespace DOL.GameEvents
             log.Info(string.Format("{0} Coffre Loaded Into Events", coffreCount));
             log.Info(string.Format("{0} Events Loaded", Instance.Events.Count()));
 
-            CreateMissingRelationObjects();
+            CreateMissingRelationObjects(Instance.Events.Select(ev => ev.ID));
+            Instance.timer = new System.Threading.Timer(Instance.TimeCheck, Instance, 5000, 10000);
         }
 
         /// <summary>
         /// Add Tagged Mob or Coffre with EventID in Database
         /// </summary>
-        private static void CreateMissingRelationObjects()
+        private static void CreateMissingRelationObjects(IEnumerable<string> eventIds)
         {
-            foreach(var obj in Instance.PreloadedCoffres)
+            foreach(var obj in Instance.PreloadedCoffres.Where(pc => eventIds.Contains(pc.EventID)))
             {
                 var newCoffre = new EventsXObjects()
                 {
@@ -120,14 +161,33 @@ namespace DOL.GameEvents
                     CanRespawn = true
                 };
 
+                //Try to Add Coffre from Region in case of update and remove it from world
+                var ev = Instance.Events.FirstOrDefault(e => e.ID.Equals(obj.EventID));
+
+                if (ev != null)
+                {
+                    var region = WorldMgr.GetRegion(obj.CurrentRegionID);
+
+                    if (region != null)
+                    {
+                        var coffreObj = region.Objects.FirstOrDefault(o => o?.InternalID?.Equals(obj.InternalID) == true);
+
+                        if (coffreObj != null && coffreObj is GameStaticItem coffre)
+                        {
+                            ev.Coffres.Add(coffre);
+                            coffre.RemoveFromWorld();
+                        }
+                    }
+                }
+
                 GameServer.Database.AddObject(newCoffre);
             }
 
             Instance.PreloadedCoffres.Clear();
 
-            foreach (var obj in Instance.PreloadedMobs)
+            foreach (var obj in Instance.PreloadedMobs.Where(pb => eventIds.Contains(pb.EventID)))
             {
-                var newCoffre = new EventsXObjects()
+                var newMob = new EventsXObjects()
                 {
                     EventID = obj.EventID,
                     ItemID = obj.InternalID,
@@ -137,7 +197,26 @@ namespace DOL.GameEvents
                     CanRespawn = true
                 };
 
-                GameServer.Database.AddObject(newCoffre);
+                var ev = Instance.Events.FirstOrDefault(e => e.ID.Equals(obj.EventID));
+
+                //Try to Add Mob from Region in case of update and remove it from world
+                if (ev != null)
+                {
+                    var region = WorldMgr.GetRegion(obj.CurrentRegionID);
+
+                    if (region != null)
+                    {
+                        var mobObj = region.Objects.FirstOrDefault(o => o?.InternalID?.Equals(obj.InternalID) == true);
+
+                        if (mobObj != null && mobObj is GameNPC npc)
+                        {
+                            ev.Mobs.Add(npc);
+                            npc.RemoveFromWorld();
+                        }
+                    }
+                }
+
+                GameServer.Database.AddObject(newMob);
             }
 
             Instance.PreloadedMobs.Clear();

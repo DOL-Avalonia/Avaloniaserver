@@ -129,6 +129,12 @@ namespace DOL.GameEvents
             set;
         }
 
+        public DateTime? ChanceLastTimeChecked
+        {
+            get;
+            set;
+        }
+
         public bool HasRemainingTimeText
         {
             get;
@@ -308,7 +314,7 @@ namespace DOL.GameEvents
             db.DebutText = DebutText;
             db.EndText = EndText;
             db.StartedTime = StartedTime?.ToUnixTimeSeconds() ?? 0;
-            db.EndTime = Status != EventStatus.NotOver && EndTime.HasValue ? EndTime.Value.ToUnixTimeSeconds() : 0;
+            db.EndTime = EndTime.HasValue ? EndTime.Value.ToUnixTimeSeconds() : 0;
             db.RandomText = RandomText != null ? string.Join("|", RandomText) : null;
             db.RandTextInterval = RandTextInterval.HasValue ? (long)RandTextInterval.Value.TotalMinutes : 0;
             db.RemainingTimeInterval = RemainingTimeInterval.HasValue ? (long)RemainingTimeInterval.Value.TotalMinutes : 0;
