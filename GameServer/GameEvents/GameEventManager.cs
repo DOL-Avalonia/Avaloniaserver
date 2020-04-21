@@ -43,18 +43,28 @@ namespace DOL.GameEvents
 
         private async void TimeCheck(object o)
         {
+            Console.WriteLine("GameEvent: " + DateTime.Now.ToString());
 
 
-            foreach(var ev in this.Events)
+            foreach(var ev in this.Events.Where(ev => ev.Status == EventStatus.NotOver))
             {
                 //End events with timer over
-                if (ev.Status == EventStatus.NotOver && ev.EndTime.HasValue && ev.EndingConditionTypes.Contains(EndingConditionType.Timer) && DateTime.UtcNow > ev.EndTime.Value.DateTime)
+                if (ev.EndTime.HasValue && ev.EndingConditionTypes.Contains(EndingConditionType.Timer) && DateTime.UtcNow > ev.EndTime.Value.DateTime)
                 {
                     await this.StopEvent(ev, EndingConditionType.Timer);
                 }
+
+                //Start Events Timer
+                if (!ev.StartedTime.HasValue && ev.StartTriggerTime.HasValue && ev.StartConditionType == StartingConditionType.Timer)
+                {
+                    if (DateTime.UtcNow >= ev.StartTriggerTime.Value.DateTime)
+                    {
+                        this.StartEvent(ev);
+                    }
+                }
             }
 
-            var chanceEvents = this.Events.Where(e => e.Status == EventStatus.NotOver && e.EventChanceInterval.HasValue && e.EventChance > 0);
+            var chanceEvents = this.Events.Where(e => e.Status == EventStatus.NotOver && e.EventChanceInterval.HasValue && e.EventChance > 0 && !e.StartedTime.HasValue);
             var rand = new Random(DateTime.Now.Millisecond);
 
 
@@ -116,21 +126,44 @@ namespace DOL.GameEvents
                                 newEvent.Coffres.Add(coffre);
                                 Instance.PreloadedCoffres.Remove(coffre);
                                 coffreCount++;
+
+                                if (coffreInfo.StartEffect > 0)
+                                {
+                                    newEvent.StartEffects.Add(coffreInfo.ItemID, (ushort)coffreInfo.StartEffect);
+                                }
+
+                                if (coffreInfo.EndEffect > 0)
+                                {
+                                    newEvent.StartEffects.Add(coffreInfo.ItemID, (ushort)coffreInfo.EndEffect);
+                                }
                             }
                         }
                     }
 
                     foreach(var mobInfo in objects.Where(o => o.IsMob))
                     {
-                        var mob = Instance.PreloadedMobs.FirstOrDefault(c => c.InternalID.Equals(mobInfo.ItemID));
-
-                        if (mob != null)
+                        if (mobInfo.ItemID != null)
                         {
-                            mob.CanRespawnWithinEvent = mobInfo.CanRespawn;
-                            newEvent.Mobs.Add(mob);
-                            Instance.PreloadedMobs.Remove(mob);
-                            mobCount++;
-                        }
+                            var mob = Instance.PreloadedMobs.FirstOrDefault(c => c.InternalID.Equals(mobInfo.ItemID));
+
+                            if (mob != null)
+                            {
+                                mob.CanRespawnWithinEvent = mobInfo.CanRespawn;
+                                newEvent.Mobs.Add(mob);
+                                Instance.PreloadedMobs.Remove(mob);
+                                mobCount++;
+
+                                if (mobInfo.StartEffect > 0)
+                                {
+                                    newEvent.StartEffects.Add(mobInfo.ItemID, (ushort)mobInfo.StartEffect);
+                                }
+
+                                if (mobInfo.EndEffect > 0)
+                                {
+                                    newEvent.StartEffects.Add(mobInfo.ItemID, (ushort)mobInfo.EndEffect);
+                                }
+                            }
+                        }                      
                     }
                 }
 
@@ -298,6 +331,7 @@ namespace DOL.GameEvents
             infos.Add(" -- EventChance: " + e.EventChance);
             infos.Add(" -- EventChanceInterval: " + (e.EventChanceInterval.HasValue ? (e.EventChanceInterval.Value.TotalMinutes + " mins") : string.Empty));
             infos.Add(" -- RemainingTimeText: " + e.RemainingTimeText ?? string.Empty);
+            infos.Add(" -- RemainingTimeInterval: " + (e.RemainingTimeInterval.HasValue ? (e.RemainingTimeInterval.Value.TotalMinutes.ToString() + " mins") : string.Empty));
             infos.Add(" -- ShowEvent: " + e.ShowEvent);
             infos.Add(" -- StartConditionType: " + e.StartConditionType.ToString());
             infos.Add("");
@@ -355,6 +389,11 @@ namespace DOL.GameEvents
                 {
                     e.WantedMobsCount++;
                 }
+
+                if (e.StartEffects.ContainsKey(mob.InternalID))
+                {
+                    this.ApplyEffect(mob, e.StartEffects);
+                }
             }
 
             if (e.IsKillingEvent)
@@ -376,6 +415,11 @@ namespace DOL.GameEvents
             foreach (var coffre in e.Coffres)
             {
                 coffre.AddToWorld();
+
+                if (e.StartEffects.ContainsKey(coffre.InternalID))
+                {
+                    ApplyEffect(coffre, e.StartEffects);
+                }
             }
 
             log.Info(string.Format("Event ID: {0}, Name: {1} was Launched At: {2}", e.ID, e.EventName, DateTime.Now.ToLocalTime()));
@@ -385,9 +429,34 @@ namespace DOL.GameEvents
             return true;
         }
 
+        private void ApplyEffect(GameObject item, Dictionary<string, ushort> dic)
+        {
+            foreach (GamePlayer pl in item.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            {
+                pl.Out.SendSpellEffectAnimation(item, item, dic[item.InternalID], 0, false, 5);
+            }
+        }
+
         public async Task StopEvent(GameEvent e, EndingConditionType end)
         {
             e.EndTime = DateTimeOffset.Now;
+
+
+            foreach(var mob in e.Mobs)
+            {
+                if (e.EndEffects.ContainsKey(mob.InternalID))
+                {
+                    this.ApplyEffect(mob, e.EndEffects);
+                }
+            }
+
+            foreach(var coffre in e.Coffres)
+            {
+                if (e.EndEffects.ContainsKey(coffre.InternalID))
+                {
+                    this.ApplyEffect(coffre, e.EndEffects);
+                }
+            }
 
             if (end == EndingConditionType.Kill && e.IsKillingEvent)
             {
@@ -450,7 +519,14 @@ namespace DOL.GameEvents
                     log.Error(string.Format("Ending Consequence Event: Impossible to start Event ID: {0}. Event not found.", eventId));
                 }
 
-                Instance.StartEvent(ev);                             
+                if (ev.StartConditionType != StartingConditionType.Event)
+                {
+                    log.Error(string.Format("Ending Consequence Event: Impossible to start Event ID: {0}. Event is not Event Start type", eventId));
+                }
+                else
+                {
+                    Instance.StartEvent(ev);                   
+                }   
             }
         }
 

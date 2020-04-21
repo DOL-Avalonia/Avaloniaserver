@@ -28,6 +28,7 @@ namespace DOLDatabase.Tables
         private string m_endingConditionTypes;
         private string m_mobNamesToKill;
         private string m_endingActionEventID;
+        private long m_startTriggerTime;
 
         [DataElement(AllowDbNull = false, Varchar = 255)]
         public string EventName
@@ -348,6 +349,21 @@ namespace DOLDatabase.Tables
             set
             {
                 m_startedTime = value;
+                Dirty = true;
+            }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public long StartTriggerTime
+        {
+            get
+            {
+                return m_startTriggerTime;
+            }
+
+            set
+            {
+                m_startTriggerTime = value;
                 Dirty = true;
             }
         }

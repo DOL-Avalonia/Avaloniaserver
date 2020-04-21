@@ -16,6 +16,8 @@ namespace DOL.GameEvents
         public Timer RandomTextTimer { get; }
         public Timer RemainingTimeTimer { get; }
 
+        public Dictionary<string, ushort> StartEffects;
+        public Dictionary<string, ushort> EndEffects;
 
         public GameEvent(EventDB db)
         {
@@ -28,14 +30,16 @@ namespace DOL.GameEvents
 
             this.Coffres = new List<GameStaticItem>();
             this.Mobs = new List<GameNPC>();
+            this.StartEffects = new Dictionary<string, ushort>();
+            this.EndEffects = new Dictionary<string, ushort>();
         }
 
         public void ParseValuesFromDb(EventDB db)
         {
-            EventAreas = db.EventAreas != null ? db.EventAreas.Split(new char[] { '|' }) : null;
+            EventAreas = !string.IsNullOrEmpty(db.EventAreas) ? db.EventAreas.Split(new char[] { '|' }) : null;
             EventChance = db.EventChance;
             EventName = db.EventName;
-            EventZones = db.EventZones != null ? db.EventZones.Split(new char[] { '|' }) : null;
+            EventZones = !string.IsNullOrEmpty(db.EventZones) ? db.EventZones.Split(new char[] { '|' }) : null;
             ShowEvent = db.ShowEvent;
             StartConditionType = (StartingConditionType)db.StartConditionType;
             EventChanceInterval = db.EventChanceInterval > 0 && db.EventChanceInterval < long.MaxValue ? TimeSpan.FromMinutes(db.EventChanceInterval) : (TimeSpan?)null;
@@ -44,14 +48,15 @@ namespace DOL.GameEvents
             StartedTime = db.StartedTime > 0 && db.StartedTime < long.MaxValue ? DateTimeOffset.FromUnixTimeSeconds(db.StartedTime) : (DateTimeOffset?)null;
             EndTime = db.EndTime > 0 && db.EndTime < long.MaxValue ? DateTimeOffset.FromUnixTimeSeconds(db.EndTime) : (DateTimeOffset?)null;
             EndingConditionTypes = db.EndingConditionTypes.Split(new char[] { '|' }).Select(c => Enum.TryParse(c, out EndingConditionType end) ? end : GameEvents.EndingConditionType.Timer);
-            RandomText = db.RandomText != null ? db.RandomText.Split(new char[] { '|' }) : null;
+            RandomText = !string.IsNullOrEmpty(db.RandomText) ? db.RandomText.Split(new char[] { '|' }) : null;
             RandTextInterval = db.RandTextInterval > 0 && db.RandTextInterval < long.MaxValue ? TimeSpan.FromMinutes(db.RandTextInterval) : (TimeSpan?)null;
             RemainingTimeInterval = db.RemainingTimeInterval > 0 && db.RemainingTimeInterval < long.MaxValue ? TimeSpan.FromMinutes(db.RemainingTimeInterval) : (TimeSpan?)null;
-            RemainingTimeText = db.RemainingTimeText;
+            RemainingTimeText = !string.IsNullOrEmpty(db.RemainingTimeText) ? db.RemainingTimeText : null;
             EndingActionA = (EndingAction)db.EndingActionA;
             EndingActionB = (EndingAction)db.EndingActionB;
-            MobNamesToKill = db.MobNamesToKill != null ? db.MobNamesToKill.Split(new char[] { '|' }) : null;
-            EndingActionEventID = db.EndingActionEventID;
+            MobNamesToKill = !string.IsNullOrEmpty(db.MobNamesToKill) ? db.MobNamesToKill.Split(new char[] { '|' }) : null;
+            EndingActionEventID = !string.IsNullOrEmpty(db.EndingActionEventID) ? db.EndingActionEventID : null;
+            StartTriggerTime = db.StartTriggerTime > 0 && db.StartTriggerTime < long.MaxValue ? DateTimeOffset.FromUnixTimeSeconds(db.StartTriggerTime) : (DateTimeOffset?)null;
 
             if (RandTextInterval.HasValue && RandomText != null && this.EventZones?.Any() == true)
             {
@@ -263,6 +268,13 @@ namespace DOL.GameEvents
             set;
         }
 
+
+        public DateTimeOffset? StartTriggerTime
+        {
+            get;
+            set;
+        }
+
         public List<GameNPC> Mobs
         {
             get;
@@ -324,6 +336,7 @@ namespace DOL.GameEvents
             db.EndingActionEventID = EndingActionEventID;
             db.MobNamesToKill = MobNamesToKill != null ? string.Join("|", MobNamesToKill) : null;
             db.Status = (int)Status;
+            db.StartTriggerTime = StartTriggerTime.HasValue ? StartTriggerTime.Value.ToUnixTimeSeconds() : 0;
 
             if (ID == null)
             {
