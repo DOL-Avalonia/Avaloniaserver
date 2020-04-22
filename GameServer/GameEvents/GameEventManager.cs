@@ -133,12 +133,26 @@ namespace DOL.GameEvents
 
                                 if (coffreInfo.StartEffect > 0)
                                 {
-                                    newEvent.StartEffects.Add(coffreInfo.ItemID, (ushort)coffreInfo.StartEffect);
+                                    if (newEvent.StartEffects.ContainsKey(coffreInfo.ItemID))
+                                    {
+                                        newEvent.StartEffects[coffreInfo.ItemID] = (ushort)coffreInfo.StartEffect;
+                                    }
+                                    else
+                                    {
+                                        newEvent.StartEffects.Add(coffreInfo.ItemID, (ushort)coffreInfo.StartEffect);
+                                    }
                                 }
 
                                 if (coffreInfo.EndEffect > 0)
                                 {
-                                    newEvent.StartEffects.Add(coffreInfo.ItemID, (ushort)coffreInfo.EndEffect);
+                                    if (newEvent.EndEffects.ContainsKey(coffreInfo.ItemID))
+                                    {
+                                        newEvent.EndEffects[coffreInfo.ItemID] = (ushort)coffreInfo.EndEffect;
+                                    }
+                                    else
+                                    {
+                                        newEvent.EndEffects.Add(coffreInfo.ItemID, (ushort)coffreInfo.EndEffect);
+                                    }
                                 }
                             }
                         }
@@ -159,12 +173,26 @@ namespace DOL.GameEvents
 
                                 if (mobInfo.StartEffect > 0)
                                 {
-                                    newEvent.StartEffects.Add(mobInfo.ItemID, (ushort)mobInfo.StartEffect);
+                                    if (newEvent.StartEffects.ContainsKey(mobInfo.ItemID))
+                                    {
+                                        newEvent.StartEffects[mobInfo.ItemID] = (ushort)mobInfo.StartEffect;
+                                    }
+                                    else
+                                    {
+                                        newEvent.StartEffects.Add(mobInfo.ItemID, (ushort)mobInfo.StartEffect);
+                                    }
                                 }
 
                                 if (mobInfo.EndEffect > 0)
                                 {
-                                    newEvent.StartEffects.Add(mobInfo.ItemID, (ushort)mobInfo.EndEffect);
+                                    if (newEvent.EndEffects.ContainsKey(mobInfo.ItemID))
+                                    {
+                                        newEvent.EndEffects[mobInfo.ItemID] = (ushort)mobInfo.EndEffect;
+                                    }
+                                    else
+                                    {
+                                        newEvent.EndEffects.Add(mobInfo.ItemID, (ushort)mobInfo.EndEffect);
+                                    }
                                 }
                             }
                         }                      
@@ -181,10 +209,27 @@ namespace DOL.GameEvents
             Instance.timer = new System.Threading.Timer(Instance.TimeCheck, Instance, Instance.dueTime, Instance.period);
         }
 
+
+        internal IList<string> GetEventInfo(string id)
+        {
+            List<string> infos = new List<string>();
+            var ev = Instance.Events.FirstOrDefault(e => e.ID.Equals(id));
+
+            if (ev == null)
+            {
+                return null;
+            }
+
+            this.GetMainInformations(ev, infos);
+            this.GetGMInformations(ev, infos, false);
+
+            return infos;
+        }
+
         /// <summary>
         /// Add Tagged Mob or Coffre with EventID in Database
         /// </summary>
-        private static void CreateMissingRelationObjects(IEnumerable<string> eventIds)
+        public static void CreateMissingRelationObjects(IEnumerable<string> eventIds)
         {
             foreach(var obj in Instance.PreloadedCoffres.Where(pc => eventIds.Contains(pc.EventID)))
             {
@@ -213,6 +258,10 @@ namespace DOL.GameEvents
                         {
                             ev.Coffres.Add(coffre);
                             coffre.RemoveFromWorld();
+                        }
+                        else
+                        {
+                            ev.Coffres.Add(obj);
                         }
                     }
                 }
@@ -250,6 +299,10 @@ namespace DOL.GameEvents
                             ev.Mobs.Add(npc);
                             npc.RemoveFromWorld();
                         }
+                        else
+                        {
+                            ev.Mobs.Add(obj);
+                        }
                     }
                 }
 
@@ -257,6 +310,24 @@ namespace DOL.GameEvents
             }
 
             Instance.PreloadedMobs.Clear();
+        }
+
+        internal IList<string> GetEventsLightInfos()
+        {
+            List<string> infos = new List<string>();
+
+            foreach(var e in this.Events)
+            {
+                GetMainInformations(e, infos);
+
+                GetGMInformations(e, infos, true);
+
+                infos.Add("");
+                infos.Add("--------------------");
+            }
+
+
+            return infos;
         }
 
         /// <summary>
@@ -298,7 +369,7 @@ namespace DOL.GameEvents
 
                 if (!isPlayer)
                 {
-                    this.GetGMInformations(e, infos);
+                    this.GetGMInformations(e, infos, false);
                 }
 
                 infos.Add("");
@@ -323,7 +394,7 @@ namespace DOL.GameEvents
             }
         }
 
-        private void GetGMInformations(GameEvent e, List<string> infos)
+        private void GetGMInformations(GameEvent e, List<string> infos, bool isLight)
         {
             infos.Add(" -- Status: " + e.Status.ToString());
             infos.Add(" -- StartConditionType: " + e.StartConditionType.ToString());
@@ -348,32 +419,42 @@ namespace DOL.GameEvents
             infos.Add(" -- RemainingTimeText: " + e.RemainingTimeText ?? string.Empty);
             infos.Add(" -- RemainingTimeInterval: " + (e.RemainingTimeInterval.HasValue ? (e.RemainingTimeInterval.Value.TotalMinutes.ToString() + " mins") : string.Empty));
             infos.Add(" -- ShowEvent: " + e.ShowEvent);        
-            infos.Add("");
-            infos.Add(" ------- MOBS ---------- Total ( " +  e.Mobs.Count() + " )");
-            infos.Add("");
-            foreach (var mob in e.Mobs)
+            infos.Add("");        
+
+            if (!isLight)
             {
-                infos.Add(" * id: " + mob.InternalID);
-                infos.Add(" * Name: " + mob.Name);
-                infos.Add(" * Brain: " + mob.Brain?.GetType()?.FullName ?? string.Empty);
-                infos.Add(string.Format(" * X: {0}, Y: {1}, Z: {2}", mob.X, mob.Y, mob.Z));
-                infos.Add(" * Region: " + mob.CurrentRegionID);
-                infos.Add(" * Zone: " + mob.CurrentZone.ID);
-                infos.Add(" * Area: " + (mob.CurrentAreas != null ? string.Join(",", mob.CurrentAreas) : string.Empty));
+                infos.Add(" ------- MOBS ---------- Total ( " + e.Mobs.Count() + " )");
                 infos.Add("");
+                foreach (var mob in e.Mobs)
+                {
+                    infos.Add(" * id: " + mob.InternalID);
+                    infos.Add(" * Name: " + mob.Name);
+                    infos.Add(" * Brain: " + mob.Brain?.GetType()?.FullName ?? string.Empty);
+                    infos.Add(string.Format(" * X: {0}, Y: {1}, Z: {2}", mob.X, mob.Y, mob.Z));
+                    infos.Add(" * Region: " + mob.CurrentRegionID);
+                    infos.Add(" * Zone: " + mob.CurrentZone.ID);
+                    infos.Add(" * Area: " + (mob.CurrentAreas != null ? string.Join(",", mob.CurrentAreas) : string.Empty));
+                    infos.Add("");
+                }
+                infos.Add(" ------- COFFRES ---------- Total ( " + e.Coffres.Count() + " )");
+                infos.Add("");
+                foreach (var coffre in e.Coffres)
+                {
+                    infos.Add(" * id: " + coffre.InternalID);
+                    infos.Add(" * Name: " + coffre.Name);
+                    infos.Add(string.Format(" * X: {0}, Y: {1}, Z: {2}", coffre.X, coffre.Y, coffre.Z));
+                    infos.Add(" * Region: " + coffre.CurrentRegionID);
+                    infos.Add(" * Zone: " + coffre.CurrentZone.ID);
+                    infos.Add(" * Area: " + (coffre.CurrentAreas != null ? string.Join(",", coffre.CurrentAreas) : string.Empty));
+                    infos.Add("");
+                }
             }
-            infos.Add(" ------- COFFRES ---------- Total ( " + e.Coffres.Count() + " )");
-            infos.Add("");
-            foreach (var coffre in e.Coffres)
+            else
             {
-                infos.Add(" * id: " + coffre.InternalID);
-                infos.Add(" * Name: " + coffre.Name);
-                infos.Add(string.Format(" * X: {0}, Y: {1}, Z: {2}", coffre.X, coffre.Y, coffre.Z));
-                infos.Add(" * Region: " + coffre.CurrentRegionID);
-                infos.Add(" * Zone: " + coffre.CurrentZone.ID);
-                infos.Add(" * Area: " + (coffre.CurrentAreas != null ? string.Join(",", coffre.CurrentAreas) : string.Empty));
+                infos.Add(" ------- MOBS ---------- Total ( " + e.Mobs.Count() + " )");
+                infos.Add(" ------- COFFRES ---------- Total ( " + e.Coffres.Count() + " )");
                 infos.Add("");
-            }
+            }         
         }
 
 
@@ -491,6 +572,8 @@ namespace DOL.GameEvents
             foreach (GamePlayer pl in item.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 pl.Out.SendSpellEffectAnimation(item, item, dic[item.InternalID], 0, false, 5);
+
+
             }
         }
 

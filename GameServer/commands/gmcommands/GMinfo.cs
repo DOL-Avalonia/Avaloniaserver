@@ -106,6 +106,7 @@ namespace DOL.GS.Commands
 					info.Add(" + Realm: " + GlobalConstants.RealmToName(target.Realm));
 					info.Add(" + Model:  " + target.Model);
 					info.Add(" + Size " + target.Size);
+					info.Add(" + EventId: " + target.EventID);
 					info.Add(string.Format(" + Flags: {0} (0x{1})", ((GameNPC.eFlags)target.Flags).ToString("G"), target.Flags.ToString("X")));
 					info.Add(" ");
 					

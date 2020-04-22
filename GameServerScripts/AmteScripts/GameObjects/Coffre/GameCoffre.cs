@@ -50,6 +50,14 @@ namespace DOL.GS.Scripts
 			}
 		}
 
+		public override bool IsCoffre
+		{
+			get
+			{
+				return true;
+			}
+		}
+
 		public int TrapRate
 		{
 			get;
@@ -773,6 +781,7 @@ namespace DOL.GS.Scripts
 					" + Position: X=" + X + " Y=" + Y + " Z=" + Z + " Heading=" + Heading,
 					" + Realm: " + Realm,
 					" + Model: " + Model,
+					" + EventID: " + EventID,
 					"",
 					"-- Coffre --",
 					" + Chance d'apparition d'un item: " + ItemChance + "%",

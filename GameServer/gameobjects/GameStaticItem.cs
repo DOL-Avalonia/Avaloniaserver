@@ -118,6 +118,9 @@ namespace DOL.GS
             set;
         }
 
+        public virtual bool IsCoffre => false;
+    
+
         /// <summary>
         /// Gets or sets the name of this item
         /// </summary>
