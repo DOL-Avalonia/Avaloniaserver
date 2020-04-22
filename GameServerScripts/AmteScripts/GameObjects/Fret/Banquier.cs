@@ -1,6 +1,7 @@
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.AI.Brain;
+using System.Threading.Tasks;
 
 namespace DOL.GS.Scripts
 {
@@ -15,9 +16,9 @@ namespace DOL.GS.Scripts
 			GuildName = "Banquier";
 		}
 
-		public override bool ReceiveMoney(GameLiving source, long money)
+		public override Task<bool> ReceiveMoney(GameLiving source, long money)
 		{
-			return ReceiveMoney(source, money, true);
+			return Task.FromResult(ReceiveMoney(source, money, true));
 		}
 
 		public bool ReceiveMoney(GameLiving source, long money, bool removeMoney)

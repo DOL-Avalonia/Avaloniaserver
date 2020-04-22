@@ -35,6 +35,7 @@ using DOL.GS.Spells;
 using DOL.GS.Styles;
 using DOL.Language;
 using DOL.GS.RealmAbilities;
+using System.Threading.Tasks;
 
 namespace DOL.GS
 {
@@ -6103,7 +6104,7 @@ namespace DOL.GS
 		/// <param name="source">Source from where to get the money</param>
 		/// <param name="money">array of money to get</param>
 		/// <returns>true if the money was successfully received</returns>
-		public override bool ReceiveMoney(GameLiving source, long money)
+		public async override Task<bool> ReceiveMoney(GameLiving source, long money)
 		{
 			if (source == null || money <= 0) return false;
 
@@ -6113,7 +6114,7 @@ namespace DOL.GS
 				((GamePlayer)source).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)source).Client.Account.Language, "GameLiving.ReceiveMoney", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 			//call base
-			return base.ReceiveMoney(source, money);
+			return await base.ReceiveMoney(source, money);
 		}
 		#endregion
 		#region Inventory

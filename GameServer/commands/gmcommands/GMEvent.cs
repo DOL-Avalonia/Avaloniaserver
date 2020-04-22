@@ -19,7 +19,7 @@ namespace DOL.GS.Commands
 	public class GMEvent
 		: AbstractCommandHandler, ICommandHandler
 	{
-		public void OnCommand(GameClient client, string[] args)
+		public async void OnCommand(GameClient client, string[] args)
 		{
 
 			if (args.Length == 1)
@@ -48,7 +48,7 @@ namespace DOL.GS.Commands
 								return;
 							}
 
-							GameEventManager.Instance.StartEvent(ev);
+							await GameEventManager.Instance.StartEvent(ev);
 							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Event.EventStarted", id), eChatType.CT_Chat, eChatLoc.CL_SystemWindow);
 						}
 

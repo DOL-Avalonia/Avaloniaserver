@@ -25,7 +25,7 @@ namespace DOL.GS.PacketHandler.Client.v168
     [PacketHandler(PacketHandlerType.TCP, eClientPackets.PlayerMoveItem, "Handle Moving Items Request", eClientStatus.PlayerInGame)]
     public class PlayerMoveItemRequestHandler : IPacketHandler
     {
-        public void HandlePacket(GameClient client, GSPacketIn packet)
+        public async void HandlePacket(GameClient client, GSPacketIn packet)
         {
             if (client.Player == null)
             {
@@ -194,7 +194,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                         return;
                     }
 
-                    if (obj.ReceiveMoney(client.Player, flatMoney))
+                    if (await obj.ReceiveMoney(client.Player, flatMoney))
                     {
                         client.Out.SendInventorySlotsUpdate(new int[] { fromClientSlot });
                         return;

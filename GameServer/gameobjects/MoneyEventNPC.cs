@@ -3,6 +3,7 @@ using DOL.GS.PacketHandler;
 using DOLDatabase.Tables;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DOL.GS
 {
@@ -100,17 +101,17 @@ namespace DOL.GS
             return true;
         }
 
-        public override bool ReceiveMoney(GameLiving source, long money)
+        public async override Task<bool> ReceiveMoney(GameLiving source, long money)
         {
             var player = source as GamePlayer;
 
             if (player == null)
-                return base.ReceiveMoney(source, money);
+                return await base.ReceiveMoney(source, money);
 
             var ev = this.CheckEventValidity();
 
             if (ev == null)
-                return base.ReceiveMoney(source, money);
+                return await base.ReceiveMoney(source, money);
 
 
             this.CurrentGold += Money.GetGold(money);
@@ -123,7 +124,7 @@ namespace DOL.GS
             {
                 var text = ValidateText ?? Language.LanguageMgr.GetTranslation(player.Client.Account.Language, ValidateTextDefault);
                 player.Client.Out.SendMessage(text, eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
-                GameEventManager.Instance.StartEvent(ev);
+                await GameEventManager.Instance.StartEvent(ev);
             }
             else
             {
@@ -132,6 +133,7 @@ namespace DOL.GS
             }
 
             player.RemoveMoney(money);
+            this.SaveIntoDatabase();
 
             return true;
         }

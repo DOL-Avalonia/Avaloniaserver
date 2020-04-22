@@ -27,8 +27,11 @@ namespace DOLDatabase.Tables
         private long m_eventChanceInterval;
         private string m_endingConditionTypes;
         private string m_mobNamesToKill;
-        private string m_endingActionEventID;
+        private string m_startActionStopEventID;
         private long m_startTriggerTime;
+        private int m_timerType;
+        private long chronoTime;
+        private string endActionStartEventID;
 
         [DataElement(AllowDbNull = false, Varchar = 255)]
         public string EventName
@@ -101,6 +104,33 @@ namespace DOLDatabase.Tables
             set
             {
                 m_startConditionType = value;
+                Dirty = true;
+            }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public int TimerType
+        {
+            get
+            {
+                return m_timerType;
+            }
+
+            set
+            {
+                m_timerType = value;
+                Dirty = true;
+            }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public long ChronoTime
+        {
+            get => chronoTime;
+
+            set
+            {
+                chronoTime = value;
                 Dirty = true;
             }
         }
@@ -322,17 +352,30 @@ namespace DOLDatabase.Tables
             }
         }
 
-        [DataElement(AllowDbNull = true)]
-        public string EndingActionEventID
+
+        [DataElement(AllowDbNull = true, Varchar = 255)]
+        public string EndActionStartEventID
+        {
+            get => endActionStartEventID;
+
+            set
+            {
+                endActionStartEventID = value;
+                Dirty = true;
+            }
+        }
+
+        [DataElement(AllowDbNull = true, Varchar = 255)]
+        public string StartActionStopEventID
         {
             get
             {
-                return m_endingActionEventID;
+                return m_startActionStopEventID;
             }
 
             set
             {
-                m_endingActionEventID = value;
+                m_startActionStopEventID = value;
                 Dirty = true;
             }
         }

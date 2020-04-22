@@ -9,15 +9,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using static DOL.GS.GameTimer;
 
 namespace DOL.GameEvents
 {
     public class GameEventManager
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly int dueTime = 5000;
+        private readonly int period = 10000;
         private static GameEventManager instance;
         private System.Threading.Timer timer;
 
@@ -43,13 +44,14 @@ namespace DOL.GameEvents
 
         private async void TimeCheck(object o)
         {
+            Instance.timer.Change(Timeout.Infinite, 0);
             Console.WriteLine("GameEvent: " + DateTime.Now.ToString());
 
 
             foreach(var ev in this.Events.Where(ev => ev.Status == EventStatus.NotOver))
             {
                 //End events with timer over
-                if (ev.EndTime.HasValue && ev.EndingConditionTypes.Contains(EndingConditionType.Timer) && DateTime.UtcNow > ev.EndTime.Value.DateTime)
+                if (ev.EndTime.HasValue && ev.EndingConditionTypes.Contains(EndingConditionType.Timer) && DateTime.UtcNow >= ev.EndTime.Value.DateTime)
                 {
                     await this.StopEvent(ev, EndingConditionType.Timer);
                 }
@@ -59,7 +61,7 @@ namespace DOL.GameEvents
                 {
                     if (DateTime.UtcNow >= ev.StartTriggerTime.Value.DateTime)
                     {
-                        this.StartEvent(ev);
+                        await this.StartEvent(ev);
                     }
                 }
             }
@@ -82,11 +84,13 @@ namespace DOL.GameEvents
                         ev.ChanceLastTimeChecked = DateTime.UtcNow;
                         if (rand.Next(0, 101) >= ev.EventChance)
                         {
-                            this.StartEvent(ev);
+                            await this.StartEvent(ev);
                         }
                     }
                 }
             }
+
+            Instance.timer.Change(Instance.period, Instance.period);
         }
 
         /// <summary>
@@ -174,7 +178,7 @@ namespace DOL.GameEvents
             log.Info(string.Format("{0} Events Loaded", Instance.Events.Count()));
 
             CreateMissingRelationObjects(Instance.Events.Select(ev => ev.ID));
-            Instance.timer = new System.Threading.Timer(Instance.TimeCheck, Instance, 5000, 10000);
+            Instance.timer = new System.Threading.Timer(Instance.TimeCheck, Instance, Instance.dueTime, Instance.period);
         }
 
         /// <summary>
@@ -311,29 +315,39 @@ namespace DOL.GameEvents
             infos.Add(" -- Name: " + e.EventName);
             infos.Add(" -- EventArea: " + (e.EventAreas != null ? string.Join(",", e.EventAreas) : string.Empty));
             infos.Add(" -- EventZone: " + (e.EventZones != null ? string.Join(",", e.EventZones) : string.Empty));
-            infos.Add(" -- Started Time: " + (e.StartedTime.HasValue ? e.StartedTime.Value.ToLocalTime().ToString() : string.Empty));
-            infos.Add(" -- Remaining Time: " + (e.EndingConditionTypes.Contains(EndingConditionType.Timer) && e.EndTime.HasValue ? string.Format(@"{0:dd\:hh\:mm\:ss}", e.EndTime.Value.Subtract(DateTimeOffset.UtcNow)) : string.Empty));
+            infos.Add(" -- Started Time: " + (e.StartedTime.HasValue ? e.StartedTime.Value.ToLocalTime().ToString() : string.Empty));            
+            
+            if (e.EndingConditionTypes.Contains(EndingConditionType.Timer) && e.EndTime.HasValue)
+            {
+                infos.Add(" -- Remaining Time: " + (string.Format(@"{0:dd\:hh\:mm\:ss}", e.EndTime.Value.Subtract(DateTimeOffset.UtcNow))));
+            }
         }
 
         private void GetGMInformations(GameEvent e, List<string> infos)
         {
-            infos.Add(" -- EndTime: " + e.EndTime?.ToLocalTime() ?? string.Empty);
+            infos.Add(" -- Status: " + e.Status.ToString());
+            infos.Add(" -- StartConditionType: " + e.StartConditionType.ToString());
+            infos.Add(" -- StartActionStopEventID: " + e.StartActionStopEventID ?? string.Empty);
             infos.Add(" -- DebutText: " + e.DebutText ?? string.Empty);
+            infos.Add(" -- TimerType: " + e.TimerType.ToString());
+            infos.Add(" -- ChronoTime: " + e.ChronoTime + " mins");
+            infos.Add(" -- End Time: " + (e.EndTime.HasValue ? e.EndTime.Value.ToLocalTime().ToString() : string.Empty));
             infos.Add(" -- EndingActionA: " + e.EndingActionA.ToString());
             infos.Add(" -- EndingActionB: " + e.EndingActionB.ToString());
+            infos.Add(" -- StartTriggerTime: " + (e.StartTriggerTime.HasValue ? e.StartTriggerTime.Value.ToLocalTime().ToString() : string.Empty));
             infos.Add(" -- EndingConditionTypes: ");
             foreach(var t in e.EndingConditionTypes)
             {
                 infos.Add("    * " + t.ToString());
             }
-            infos.Add(" -- Status: " + e.Status.ToString());
+         
+            infos.Add(" -- EndActionStartEventID: " + (e.EndActionStartEventID ?? string.Empty));
             infos.Add(" -- EndText: " + e.EndText ?? string.Empty);
             infos.Add(" -- EventChance: " + e.EventChance);
             infos.Add(" -- EventChanceInterval: " + (e.EventChanceInterval.HasValue ? (e.EventChanceInterval.Value.TotalMinutes + " mins") : string.Empty));
             infos.Add(" -- RemainingTimeText: " + e.RemainingTimeText ?? string.Empty);
             infos.Add(" -- RemainingTimeInterval: " + (e.RemainingTimeInterval.HasValue ? (e.RemainingTimeInterval.Value.TotalMinutes.ToString() + " mins") : string.Empty));
-            infos.Add(" -- ShowEvent: " + e.ShowEvent);
-            infos.Add(" -- StartConditionType: " + e.StartConditionType.ToString());
+            infos.Add(" -- ShowEvent: " + e.ShowEvent);        
             infos.Add("");
             infos.Add(" ------- MOBS ---------- Total ( " +  e.Mobs.Count() + " )");
             infos.Add("");
@@ -363,12 +377,36 @@ namespace DOL.GameEvents
         }
 
 
-        public bool StartEvent(GameEvent e)
+        public async Task<bool> StartEvent(GameEvent e)
         {
+            if (e.EndingConditionTypes.Contains(EndingConditionType.Timer))
+            {
+                if (e.TimerType == TimerType.ChronoType)
+                {
+                    e.EndTime = DateTimeOffset.UtcNow.AddMinutes(e.ChronoTime);
+                }
+                else
+                {
+                    //Cannot launch event if Endate is not set in DateType and no other ending exists
+                    if (!e.EndTime.HasValue)
+                    {
+                        if (e.EndingConditionTypes.Count() == 1)
+                        {
+                            log.Error(string.Format("Cannot Launch Event {0}, Name: {1} with DateType because EndDate is Null", e.ID, e.EventName));
+                            return false;
+                        }
+                        else
+                        {
+                            log.Warn(string.Format("Event Id: {0}, Name: {1}, started with ending type Timer DateType but Endate is Null, Event Started with other endings", e.ID, e.EventName));
+                        }
+                    }
+                }
+            }
+
             e.StartedTime = DateTimeOffset.UtcNow;
             e.Status = EventStatus.NotOver;
             WorldMgr.GetAllPlayingClients().Foreach(c => c.Out.SendMessage(e.DebutText, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow));
-         
+
             if (e.HasHandomText)
             {
                 e.RandomTextTimer.Start();
@@ -424,9 +462,28 @@ namespace DOL.GameEvents
 
             log.Info(string.Format("Event ID: {0}, Name: {1} was Launched At: {2}", e.ID, e.EventName, DateTime.Now.ToLocalTime()));
 
+            if (!string.IsNullOrEmpty(e.StartActionStopEventID))
+            {
+                await FinishEventByEventById(e.ID, e.StartActionStopEventID);
+            }
+
             e.SaveToDatabase();
 
             return true;
+        }
+
+        private async Task FinishEventByEventById(string originEventId, string startActionStopEventID)
+        {
+            var ev = this.Events.FirstOrDefault(e => e.ID.Equals(startActionStopEventID));
+
+            if (ev == null)
+            {
+                log.Error(string.Format("Impossible To Stop Event Id {0} from StartActionStopEventID (Event {1}). Event not found", startActionStopEventID, originEventId));
+                return;
+            }
+
+            log.Info(string.Format("Stop Event Id {0} from StartActionStopEventID (Event {1})", startActionStopEventID, originEventId));
+            await this.StopEvent(ev, EndingConditionType.StartingEvent);
         }
 
         private void ApplyEffect(GameObject item, Dictionary<string, ushort> dic)
@@ -439,7 +496,7 @@ namespace DOL.GameEvents
 
         public async Task StopEvent(GameEvent e, EndingConditionType end)
         {
-            e.EndTime = DateTimeOffset.Now;
+            e.EndTime = DateTimeOffset.UtcNow;
 
 
             foreach(var mob in e.Mobs)
@@ -487,18 +544,19 @@ namespace DOL.GameEvents
             //Consequence A
             if (e.EndingConditionTypes.Count() == 1 || (e.EndingConditionTypes.Count() > 1 && e.EndingConditionTypes.First() == end))
             {
-                this.HandleConsequence(e.EndingActionA, e.EventZones, e.EndingActionEventID);
+                await this.HandleConsequence(e.EndingActionA, e.EventZones, e.EndActionStartEventID);
             }
             else
             {          
                 //Consequence B
-                this.HandleConsequence(e.EndingActionB, e.EventZones, e.EndingActionEventID);     
+                await this.HandleConsequence(e.EndingActionB, e.EventZones, e.EndActionStartEventID);     
             }
- 
+
+            log.Info(string.Format("Event Id: {0}, Name: {1} was stopped At: {2}", e.ID, e.EventName, e.EndTime.Value.ToLocalTime().ToString())); 
             e.SaveToDatabase();
         }
 
-        private void HandleConsequence(EndingAction action, IEnumerable<string> zones, string eventId)
+        private async Task HandleConsequence(EndingAction action, IEnumerable<string> zones, string eventId)
         {
             if (action == EndingAction.BindStone)
             {
@@ -525,7 +583,7 @@ namespace DOL.GameEvents
                 }
                 else
                 {
-                    Instance.StartEvent(ev);                   
+                    await Instance.StartEvent(ev);                   
                 }   
             }
         }
@@ -552,8 +610,6 @@ namespace DOL.GameEvents
             }
 
             e.Clean();
-
-            log.Info(string.Format("Event ID: {0}, Name: {1} was Stopped At: {2}", e.ID, e.EventName, DateTime.Now.ToLocalTime()));
         }
     }
 }

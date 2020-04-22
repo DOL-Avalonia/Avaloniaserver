@@ -28,6 +28,7 @@ using DOL.Language;
 using DOL.GS.Quests;
 using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
+using System.Threading.Tasks;
 
 namespace DOL.GS
 {
@@ -1736,9 +1737,9 @@ namespace DOL.GS
         /// <param name="source">Source from where to get the money</param>
         /// <param name="money">array of money to get</param>
         /// <returns>true if the money was successfully received</returns>
-        public virtual bool ReceiveMoney(GameLiving source, long money)
+        public virtual Task<bool> ReceiveMoney(GameLiving source, long money)
         {
-            return false;
+            return Task.FromResult(false);
         }
 
         /// <summary>

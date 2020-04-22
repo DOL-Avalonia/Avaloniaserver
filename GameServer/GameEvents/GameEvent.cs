@@ -2,15 +2,18 @@
 using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOLDatabase.Tables;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Timers;
 
 namespace DOL.GameEvents
 {
     public class GameEvent
     {
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private object _db;
 
         public Timer RandomTextTimer { get; }
@@ -41,22 +44,33 @@ namespace DOL.GameEvents
             EventName = db.EventName;
             EventZones = !string.IsNullOrEmpty(db.EventZones) ? db.EventZones.Split(new char[] { '|' }) : null;
             ShowEvent = db.ShowEvent;
-            StartConditionType = (StartingConditionType)db.StartConditionType;
+            StartConditionType = Enum.TryParse(db.StartConditionType.ToString(), out StartingConditionType st) ? st : StartingConditionType.Timer;
             EventChanceInterval = db.EventChanceInterval > 0 && db.EventChanceInterval < long.MaxValue ? TimeSpan.FromMinutes(db.EventChanceInterval) : (TimeSpan?)null;
             DebutText = db.DebutText;
             EndText = db.EndText;
-            StartedTime = db.StartedTime > 0 && db.StartedTime < long.MaxValue ? DateTimeOffset.FromUnixTimeSeconds(db.StartedTime) : (DateTimeOffset?)null;
-            EndTime = db.EndTime > 0 && db.EndTime < long.MaxValue ? DateTimeOffset.FromUnixTimeSeconds(db.EndTime) : (DateTimeOffset?)null;
+            StartedTime = db.StartedTime > 0 && db.StartedTime < long.MaxValue ? DateTimeOffset.FromUnixTimeSeconds(db.StartedTime) : (DateTimeOffset?)null;          
             EndingConditionTypes = db.EndingConditionTypes.Split(new char[] { '|' }).Select(c => Enum.TryParse(c, out EndingConditionType end) ? end : GameEvents.EndingConditionType.Timer);
             RandomText = !string.IsNullOrEmpty(db.RandomText) ? db.RandomText.Split(new char[] { '|' }) : null;
             RandTextInterval = db.RandTextInterval > 0 && db.RandTextInterval < long.MaxValue ? TimeSpan.FromMinutes(db.RandTextInterval) : (TimeSpan?)null;
             RemainingTimeInterval = db.RemainingTimeInterval > 0 && db.RemainingTimeInterval < long.MaxValue ? TimeSpan.FromMinutes(db.RemainingTimeInterval) : (TimeSpan?)null;
             RemainingTimeText = !string.IsNullOrEmpty(db.RemainingTimeText) ? db.RemainingTimeText : null;
-            EndingActionA = (EndingAction)db.EndingActionA;
-            EndingActionB = (EndingAction)db.EndingActionB;
+            EndingActionA = Enum.TryParse(db.EndingActionA.ToString(), out EndingAction endActionA) ? endActionA : EndingAction.None;
+            EndingActionB = Enum.TryParse(db.EndingActionB.ToString(), out EndingAction endActionB) ? endActionB : EndingAction.None;
             MobNamesToKill = !string.IsNullOrEmpty(db.MobNamesToKill) ? db.MobNamesToKill.Split(new char[] { '|' }) : null;
-            EndingActionEventID = !string.IsNullOrEmpty(db.EndingActionEventID) ? db.EndingActionEventID : null;
+            EndActionStartEventID = !string.IsNullOrEmpty(db.EndActionStartEventID) ? db.EndActionStartEventID : null;
+            StartActionStopEventID = !string.IsNullOrEmpty(db.StartActionStopEventID) ? db.StartActionStopEventID : null;
             StartTriggerTime = db.StartTriggerTime > 0 && db.StartTriggerTime < long.MaxValue ? DateTimeOffset.FromUnixTimeSeconds(db.StartTriggerTime) : (DateTimeOffset?)null;
+            TimerType = Enum.TryParse(db.TimerType.ToString(), out TimerType timer) ? timer : TimerType.DateType;            
+            EndTime = db.EndTime > 0 && db.EndTime < long.MaxValue ? DateTimeOffset.FromUnixTimeSeconds(db.EndTime) : (DateTimeOffset?)null;
+            ChronoTime = db.ChronoTime;
+
+            //Handle invalid ChronoType
+            if (TimerType == TimerType.ChronoType && ChronoTime <= 0)
+            {
+                //Define 5 minutes by default
+                log.Error(string.Format("Event with Chrono Timer tpye has wrong value: {0}, value set to 5 minutes instead", ChronoTime));        
+                ChronoTime = 5;
+            }
 
             if (RandTextInterval.HasValue && RandomText != null && this.EventZones?.Any() == true)
             {
@@ -134,6 +148,18 @@ namespace DOL.GameEvents
             set;
         }
 
+        public TimerType TimerType
+        {
+            get;
+            set;
+        }
+
+        public long ChronoTime
+        {
+            get;
+            set;
+        }
+
         public DateTime? ChanceLastTimeChecked
         {
             get;
@@ -201,7 +227,13 @@ namespace DOL.GameEvents
             set;
         }
 
-        public string EndingActionEventID
+        public string EndActionStartEventID
+        {
+            get;
+            set;
+        }
+
+        public string StartActionStopEventID
         {
             get;
             set;
@@ -333,10 +365,13 @@ namespace DOL.GameEvents
             db.RemainingTimeText = RemainingTimeText;
             db.EndingActionA = (int)EndingActionA;
             db.EndingActionB = (int)EndingActionB;
-            db.EndingActionEventID = EndingActionEventID;
+            db.StartActionStopEventID = StartActionStopEventID;
+            db.EndActionStartEventID = EndActionStartEventID;
             db.MobNamesToKill = MobNamesToKill != null ? string.Join("|", MobNamesToKill) : null;
             db.Status = (int)Status;
             db.StartTriggerTime = StartTriggerTime.HasValue ? StartTriggerTime.Value.ToUnixTimeSeconds() : 0;
+            db.ChronoTime = ChronoTime;
+            db.TimerType = (int)this.TimerType;
 
             if (ID == null)
             {

@@ -376,6 +376,7 @@
     <Compile Include="GameEvents\EventStatus.cs" />
     <Compile Include="GameEvents\GameEvent.cs" />
     <Compile Include="GameEvents\GameEventManager.cs" />
+    <Compile Include="GameEvents\TimerType.cs" />
     <Compile Include="gameobjects\Atlantis\ArtifactCreditMerchant.cs" />
     <Compile Include="gameobjects\Atlantis\Teleporter\PermanentDjinn.cs" />
     <Compile Include="gameobjects\Atlantis\Teleporter\SpawnDjinnStone.cs" />
