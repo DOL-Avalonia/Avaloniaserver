@@ -1,4 +1,5 @@
-﻿using DOL.GameEvents;
+﻿using DOL.Database;
+using DOL.GameEvents;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.Language;
@@ -22,7 +23,8 @@ namespace DOL.GS.Commands
 		"'/GMEvent add <mob|coffre> <name> <region> <eventId>'Ajoute un <mob|coffre> par son nom et sa region à un event",	
 		"'/GMEvent respawn <mob|coffre> <name> <eventId> <true|false>'Change la valeur de CanRespawn du <mob|coffre> par son <name> dans un event par son <eventId> <true|false>",		
 		"'/GMEvent starteffect <mob|coffre> <name> <eventId> <spellId>'Change la valeur starteffectId du <mob|coffre> par son <name> dans un event <eventId> en spécifiant le <spellId>",
-		"'/GMEvent endeffect <mob|coffre> <name> <eventId> <spellId>'Change la valeur endeffectId du <mob|coffre> par son <name> dans un event <eventId> en spécifiant le <spellId>")]
+		"'/GMEvent endeffect <mob|coffre> <name> <eventId> <spellId>'Change la valeur endeffectId du <mob|coffre> par son <name> dans un event <eventId> en spécifiant le <spellId>",
+		"'GMEvent refresh region <regionid>'Cherche les mobs et les coffres de la région <regionid> avec des EventID récemment ajoutés et les ajoute à cet évent'")]
 	
 	public class GMEvent
 		: AbstractCommandHandler, ICommandHandler
@@ -304,12 +306,112 @@ namespace DOL.GS.Commands
 						break;
 
 
+					case "refresh":
+						if (args.Length != 4 || args[2] != "region")
+						{
+							DisplaySyntax(client);
+							return;
+						}
+						
+						if (ushort.TryParse(args[3], out ushort refreshRegion))
+						{
+							RefreshRegion(client, refreshRegion);
+						}
+						else
+						{
+							DisplaySyntax(client);
+						}
+
+						break;
+
+
 					default:
 						DisplaySyntax(client);
 						break;
 				}
 			}
 
+		}
+
+		private void RefreshRegion(GameClient client, ushort region)
+		{
+			if (!WorldMgr.Regions.ContainsKey(region))
+			{
+				client.Out.SendMessage("La region n'existe pas", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
+			bool hasNewitems = false;
+			List<string> ids = new List<string>();
+
+			var mobs = GameServer.Database.SelectObjects<Mob>("`EventID` IS NOT NULL AND `region` = @region", new QueryParameter("region", region));
+
+			if (mobs == null)
+			{
+				client.Out.SendMessage("Aucun mobs de trouvés dans la region" + region, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			}
+			else
+			{
+				foreach (var mob in mobs)
+				{
+					GameNPC mobInRegion = WorldMgr.Regions[region].Objects.FirstOrDefault(o => o != null && o is GameNPC npc && npc.InternalID.Equals(mob.ObjectId)) as GameNPC;
+					
+					if (mobInRegion != null)
+					{
+						mobInRegion.EventID = mob.EventID;
+						mobInRegion.RemoveFromWorld();
+						GameEventManager.Instance.PreloadedMobs.Add(mobInRegion);
+						hasNewitems = true;
+
+						if (!ids.Contains(mobInRegion.EventID))
+						{
+							ids.Add(mobInRegion.EventID);
+						}
+					}
+				}
+			}
+
+			 var scr = ScriptMgr.Scripts.FirstOrDefault(s => s.FullName.Contains("GameServerScripts"));
+
+			if (scr != null)
+			{
+				GameStaticItem item = null;
+				try
+				{
+					item = scr.CreateInstance("DOL.GS.Scripts.GameCoffre") as GameStaticItem;
+				}
+				catch { }
+			
+				if (item != null)
+				{
+					var coffres = item.GetCoffresUsedInEventsInDb(region);
+
+					if (coffres == null)
+					{
+						client.Out.SendMessage("Aucun Coffres ont été trouvés dans la region" + region, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					}
+					else
+					{
+						foreach (var coffreInfo in coffres)
+						{
+							coffreInfo.Item1.EventID = coffreInfo.Item2;
+							coffreInfo.Item1.RemoveFromWorld();
+							GameEventManager.Instance.PreloadedCoffres.Add(coffreInfo.Item1);
+							hasNewitems = true;
+
+							if (!ids.Contains(coffreInfo.Item1.EventID))
+							{
+								ids.Add(coffreInfo.Item1.EventID);
+							}
+						}
+					}
+				}
+			}
+
+			if (hasNewitems && ids.Any())
+			{
+				GameEventManager.CreateMissingRelationObjects(ids);
+			}
 		}
 
 		private void ShowLightEvents(GameClient client)

@@ -11,8 +11,7 @@ namespace DOL.GS.Commands
 	[CmdAttribute(
 		"&event",
 		ePrivLevel.Player,
-		"Commands.Players.Event.Description",
-		"Commands.Players.Friend.Usage")]
+		"Liste les événements en cours")]
 	public class Event :
 		AbstractCommandHandler, ICommandHandler
 	{
