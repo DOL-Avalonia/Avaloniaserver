@@ -110,3 +110,10 @@ AblativeArmor.Attacker:	Un bouclier absorbe {0} points de dégats de votre attaq
 
 #Amnesia
 Amnesia.MessageToTarget:	Votre esprit s'emmêle et vous oubliez ce que vous étiez en train de faire !
+
+# AblativeArmor
+AblativeArmor.DelveInfo.Function:			    Fonction: tampon de points de mélée
+AblativeArmor.DelveInfo.Absorption1:			Absorption: {0}%
+AblativeArmor.DelveInfo.Absorption2:			Absorption: 100%
+AblativeArmor.DelveInfo.Absorption3:			Absorption: 25%
+AblativeArmor.DelveInfo.CastingTime:			Instantanné
