@@ -46,8 +46,8 @@ namespace DOL.GameEvents
             ShowEvent = db.ShowEvent;
             StartConditionType = Enum.TryParse(db.StartConditionType.ToString(), out StartingConditionType st) ? st : StartingConditionType.Timer;
             EventChanceInterval = db.EventChanceInterval > 0 && db.EventChanceInterval < long.MaxValue ? TimeSpan.FromMinutes(db.EventChanceInterval) : (TimeSpan?)null;
-            DebutText = db.DebutText;
-            EndText = db.EndText;
+            DebutText = !string.IsNullOrEmpty(db.DebutText) ? db.DebutText : null;
+            EndText = !string.IsNullOrEmpty(db.EndText) ? db.EndText : null;
             StartedTime = db.StartedTime > 0 && db.StartedTime < long.MaxValue ? DateTimeOffset.FromUnixTimeSeconds(db.StartedTime) : (DateTimeOffset?)null;          
             EndingConditionTypes = db.EndingConditionTypes.Split(new char[] { '|' }).Select(c => Enum.TryParse(c, out EndingConditionType end) ? end : GameEvents.EndingConditionType.Timer);
             RandomText = !string.IsNullOrEmpty(db.RandomText) ? db.RandomText.Split(new char[] { '|' }) : null;
@@ -63,6 +63,7 @@ namespace DOL.GameEvents
             TimerType = Enum.TryParse(db.TimerType.ToString(), out TimerType timer) ? timer : TimerType.DateType;            
             EndTime = db.EndTime > 0 && db.EndTime < long.MaxValue ? DateTimeOffset.FromUnixTimeSeconds(db.EndTime) : (DateTimeOffset?)null;
             ChronoTime = db.ChronoTime;
+            KillStartingMob = !string.IsNullOrEmpty(db.KillStartingMob) ? db.KillStartingMob : null;
 
             //Handle invalid ChronoType
             if (TimerType == TimerType.ChronoType && ChronoTime <= 0)
@@ -70,6 +71,11 @@ namespace DOL.GameEvents
                 //Define 5 minutes by default
                 log.Error(string.Format("Event with Chrono Timer tpye has wrong value: {0}, value set to 5 minutes instead", ChronoTime));        
                 ChronoTime = 5;
+            }
+
+            if (StartConditionType == StartingConditionType.Kill && KillStartingMob == null)
+            {
+                log.Error(string.Format("Event Id: {0}, Name: {1}, with kill Starting Type will not start because KillStartingMob is Null", ID, EventName));
             }
 
             if (RandTextInterval.HasValue && RandomText != null && this.EventZones?.Any() == true)
@@ -155,6 +161,12 @@ namespace DOL.GameEvents
         }
 
         public long ChronoTime
+        {
+            get;
+            set;
+        }
+
+        public string KillStartingMob
         {
             get;
             set;
@@ -355,23 +367,24 @@ namespace DOL.GameEvents
             db.StartConditionType = (int)StartConditionType;
             db.EndingConditionTypes = string.Join("|", EndingConditionTypes.Select(t => ((int)t).ToString()));
             db.EventChanceInterval = EventChanceInterval.HasValue ? (long)EventChanceInterval.Value.TotalMinutes : 0;
-            db.DebutText = DebutText;
+            db.DebutText = !string.IsNullOrEmpty(DebutText) ? DebutText : null;
             db.EndText = EndText;
             db.StartedTime = StartedTime?.ToUnixTimeSeconds() ?? 0;
             db.EndTime = EndTime.HasValue ? EndTime.Value.ToUnixTimeSeconds() : 0;
             db.RandomText = RandomText != null ? string.Join("|", RandomText) : null;
             db.RandTextInterval = RandTextInterval.HasValue ? (long)RandTextInterval.Value.TotalMinutes : 0;
             db.RemainingTimeInterval = RemainingTimeInterval.HasValue ? (long)RemainingTimeInterval.Value.TotalMinutes : 0;
-            db.RemainingTimeText = RemainingTimeText;
+            db.RemainingTimeText = !string.IsNullOrEmpty(RemainingTimeText) ? RemainingTimeText : null;
             db.EndingActionA = (int)EndingActionA;
             db.EndingActionB = (int)EndingActionB;
-            db.StartActionStopEventID = StartActionStopEventID;
+            db.StartActionStopEventID = !string.IsNullOrEmpty(StartActionStopEventID) ? StartActionStopEventID : null;
             db.EndActionStartEventID = EndActionStartEventID;
             db.MobNamesToKill = MobNamesToKill != null ? string.Join("|", MobNamesToKill) : null;
             db.Status = (int)Status;
             db.StartTriggerTime = StartTriggerTime.HasValue ? StartTriggerTime.Value.ToUnixTimeSeconds() : 0;
             db.ChronoTime = ChronoTime;
             db.TimerType = (int)this.TimerType;
+            db.KillStartingMob = KillStartingMob;
 
             if (ID == null)
             {

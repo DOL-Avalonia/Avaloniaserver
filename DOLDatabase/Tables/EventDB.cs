@@ -32,6 +32,7 @@ namespace DOLDatabase.Tables
         private int m_timerType;
         private long chronoTime;
         private string endActionStartEventID;
+        private string killStartingMob;
 
         [DataElement(AllowDbNull = false, Varchar = 255)]
         public string EventName
@@ -352,6 +353,17 @@ namespace DOLDatabase.Tables
             }
         }
 
+        [DataElement(AllowDbNull = true, Varchar = 255)]
+        public string KillStartingMob
+        {
+            get => killStartingMob;
+
+            set
+            {
+                killStartingMob = value;
+                Dirty = true;
+            }
+        }
 
         [DataElement(AllowDbNull = true, Varchar = 255)]
         public string EndActionStartEventID

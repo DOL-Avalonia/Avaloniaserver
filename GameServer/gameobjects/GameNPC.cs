@@ -4235,16 +4235,28 @@ namespace DOL.GS
 
 			if (this.EventID != null)
 			{
-				var ev = GameEventManager.Instance.Events.FirstOrDefault(e => e.IsKillingEvent && e.Mobs.Contains(this));
+				var ev = GameEventManager.Instance.Events.FirstOrDefault(e => e.ID.Equals(this.EventID));
 
 				if (ev != null)
 				{
-					ev.WantedMobsCount--;
-
-					if (ev.WantedMobsCount == 0)
+					//Check if mob is a mob to kill in event
+					if (ev.Mobs.Contains(this) && ev.IsKillingEvent && ev.MobNamesToKill?.Contains(this.Name) == true)
 					{
-						Task.Run(async () => await GameEventManager.Instance.StopEvent(ev, EndingConditionType.Kill));
+						ev.WantedMobsCount--;
+
+						if (ev.WantedMobsCount == 0)
+						{
+							Task.Run(() => GameEventManager.Instance.StopEvent(ev, EndingConditionType.Kill));
+						}
 					}
+					else
+					{
+						//Check if killed mob starts event
+						if (ev.StartConditionType == StartingConditionType.Kill && ev.KillStartingMob?.Equals(this.Name) == true)
+						{
+							Task.Run(() => GameEventManager.Instance.StartEvent(ev));
+						}
+					}			
 				}
 			}
 

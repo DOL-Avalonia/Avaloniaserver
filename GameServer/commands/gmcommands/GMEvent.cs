@@ -19,14 +19,11 @@ namespace DOL.GS.Commands
 		"'/GMEvent infolight' Affiche les informations sur les Events, plus succin",
 		"'/GMEvent start <id>' Lance l'evenement avec son <id>",
 		"'/GMEvent add <eventId>' Ajoute la cible (mob ou coffre) à l'event et le fait disparaitre du monde",
-		"'/GMEvent add mob <name> <region> <eventId>'Ajoute un mob par son nom et sa region à un event",
-		"'/GMEvent add coffre <name> <region> <eventId>'Ajoute un coffre par son nom et sa region à un event",
-		"'/GMEvent respawn mob <name> <eventId> <true|false>'Change la valeur de CanRespawn de l'item par son <name> dans un event par son <eventId> <true|false>",
-		"'/GMEvent respawn coffre <name> <eventId> <true|false>'Change la valeur de CanRespawn de l'item par son <name> dans un event par son <eventId> <true|false>",
-		"'/GMEvent starteffect mob <name> <eventId> <spellId>'Change la valeur starteffectId du mob avec son <name> dans un event <eventId> en spécifiant le <spellId>",
-		"'/GMEvent endeffect mob <name> <eventId> <spellId>'Change la valeur endeffectId du mob avec son <name> dans un event <eventId> en spécifiant le <spellId>",
-		"'/GMEvent starteffect coffre <name> <eventId> <spellId>'Change la valeur starteffectId du coffre avec son <name> dans un event <eventId> en spécifiant le <spellId>",
-		"'/GMEvent endeffect coffre <name> <eventId> <spellId>'Change la valeur endeffectId du coffre avec son <name> dans un event <eventId> en spécifiant le <spellId>")]
+		"'/GMEvent add <mob|coffre> <name> <region> <eventId>'Ajoute un <mob|coffre> par son nom et sa region à un event",	
+		"'/GMEvent respawn <mob|coffre> <name> <eventId> <true|false>'Change la valeur de CanRespawn du <mob|coffre> par son <name> dans un event par son <eventId> <true|false>",		
+		"'/GMEvent starteffect <mob|coffre> <name> <eventId> <spellId>'Change la valeur starteffectId du <mob|coffre> par son <name> dans un event <eventId> en spécifiant le <spellId>",
+		"'/GMEvent endeffect <mob|coffre> <name> <eventId> <spellId>'Change la valeur endeffectId du <mob|coffre> par son <name> dans un event <eventId> en spécifiant le <spellId>")]
+	
 	public class GMEvent
 		: AbstractCommandHandler, ICommandHandler
 	{

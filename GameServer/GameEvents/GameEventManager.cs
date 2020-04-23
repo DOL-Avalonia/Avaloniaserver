@@ -482,11 +482,15 @@ namespace DOL.GameEvents
                         }
                     }
                 }
-            }
+            }         
 
             e.StartedTime = DateTimeOffset.UtcNow;
             e.Status = EventStatus.NotOver;
-            WorldMgr.GetAllPlayingClients().Foreach(c => c.Out.SendMessage(e.DebutText, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow));
+
+            if (e.DebutText != null)
+            {
+                WorldMgr.GetAllPlayingClients().Foreach(c => c.Out.SendMessage(e.DebutText, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow));
+            }
 
             if (e.HasHandomText)
             {
@@ -526,7 +530,7 @@ namespace DOL.GameEvents
                 }
                 else if (delta > 0)
                 {
-                    log.Error(string.Format("Event ID: {0}, Name {1}: with Kill type has {2} mobs missings, MobNamesToKill column in datatabase and tagged mobs Name should match", e.ID, e.EventName, delta));
+                    log.Error(string.Format("Event ID: {0}, Name {1}: with Kill type has {2} mobs missings, MobNamesToKill column in datatabase and tagged mobs Name should match.", e.ID, e.EventName, delta));
                 }
             }
         
@@ -541,13 +545,12 @@ namespace DOL.GameEvents
                 }
             }
 
-            log.Info(string.Format("Event ID: {0}, Name: {1} was Launched At: {2}", e.ID, e.EventName, DateTime.Now.ToLocalTime()));
-
             if (!string.IsNullOrEmpty(e.StartActionStopEventID))
             {
                 await FinishEventByEventById(e.ID, e.StartActionStopEventID);
             }
 
+            log.Info(string.Format("Event ID: {0}, Name: {1} was Launched At: {2}", e.ID, e.EventName, DateTime.Now.ToLocalTime()));
             e.SaveToDatabase();
 
             return true;
@@ -560,6 +563,12 @@ namespace DOL.GameEvents
             if (ev == null)
             {
                 log.Error(string.Format("Impossible To Stop Event Id {0} from StartActionStopEventID (Event {1}). Event not found", startActionStopEventID, originEventId));
+                return;
+            }
+
+            if (!ev.EndingConditionTypes.Contains(EndingConditionType.StartingEvent))
+            {
+                log.Error(string.Format("Event ID: {0}, Name: {1}, cannot be stop because EndingConditionTypes does not contain StartingEvent type", ev.ID, ev.EventName));
                 return;
             }
 
