@@ -316,7 +316,7 @@ namespace DOL.GameEvents
         {
             List<string> infos = new List<string>();
 
-            foreach(var e in this.Events)
+            foreach(var e in this.Events.Where(e => e.Status == EventStatus.NotOver))
             {
                 GetMainInformations(e, infos);
 
@@ -590,38 +590,24 @@ namespace DOL.GameEvents
         {
             e.EndTime = DateTimeOffset.UtcNow;
 
-
-            foreach(var mob in e.Mobs)
-            {
-                if (e.EndEffects.ContainsKey(mob.InternalID))
-                {
-                    this.ApplyEffect(mob, e.EndEffects);
-                }
-            }
-
-            foreach(var coffre in e.Coffres)
-            {
-                if (e.EndEffects.ContainsKey(coffre.InternalID))
-                {
-                    this.ApplyEffect(coffre, e.EndEffects);
-                }
-            }
-
             if (end == EndingConditionType.Kill && e.IsKillingEvent)
             {
                 e.Status = EventStatus.EndedByKill;
                 //Allow time to loot
                 await Task.Delay(TimeSpan.FromSeconds(20));
+                ShowEndEffects(e);
                 CleanEvent(e);
             }
             else if (end == EndingConditionType.StartingEvent)
             {
                 e.Status = EventStatus.EndedByEventStarting;
+                ShowEndEffects(e);
                 CleanEvent(e);
             }
             else if (end == EndingConditionType.Timer)
             {
                 e.Status = EventStatus.EndedByTimer;
+                ShowEndEffects(e);
                 CleanEvent(e);
             }
 
@@ -639,13 +625,32 @@ namespace DOL.GameEvents
                 await this.HandleConsequence(e.EndingActionA, e.EventZones, e.EndActionStartEventID);
             }
             else
-            {          
+            {
                 //Consequence B
-                await this.HandleConsequence(e.EndingActionB, e.EventZones, e.EndActionStartEventID);     
+                await this.HandleConsequence(e.EndingActionB, e.EventZones, e.EndActionStartEventID);
             }
 
-            log.Info(string.Format("Event Id: {0}, Name: {1} was stopped At: {2}", e.ID, e.EventName, e.EndTime.Value.ToLocalTime().ToString())); 
+            log.Info(string.Format("Event Id: {0}, Name: {1} was stopped At: {2}", e.ID, e.EventName, e.EndTime.Value.ToLocalTime().ToString()));
             e.SaveToDatabase();
+        }
+
+        private void ShowEndEffects(GameEvent e)
+        {
+            foreach (var mob in e.Mobs)
+            {
+                if (e.EndEffects.ContainsKey(mob.InternalID))
+                {
+                    this.ApplyEffect(mob, e.EndEffects);
+                }
+            }
+
+            foreach (var coffre in e.Coffres)
+            {
+                if (e.EndEffects.ContainsKey(coffre.InternalID))
+                {
+                    this.ApplyEffect(coffre, e.EndEffects);
+                }
+            }
         }
 
         private async Task HandleConsequence(EndingAction action, IEnumerable<string> zones, string eventId)

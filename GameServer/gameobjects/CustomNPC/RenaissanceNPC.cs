@@ -24,7 +24,7 @@ namespace DOL.GS
                 return true;
             }
 
-            if (player.Level >= 40)
+            if (player.Level >= 50)
             {                
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "RenaissanceNPC.AskForRenaissance"), eChatType.CT_System, eChatLoc.CL_PopupWindow);
             }        
@@ -42,7 +42,7 @@ namespace DOL.GS
             }
 
 
-            if (item.Id_nb.Equals(RENAISSANCE_ITEM_ID))
+            if (item.Id_nb.Equals(RENAISSANCE_ITEM_ID) && player.Level >= 50)
             {
                 player.ApplyRenaissance();
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "RenaissanceNPC.RenaissanceDone"), eChatType.CT_System, eChatLoc.CL_PopupWindow);
@@ -56,7 +56,7 @@ namespace DOL.GS
 
         public override eQuestIndicator GetQuestIndicator(GamePlayer player)
         {
-            if (player.Level >= 40 && !player.IsRenaissance)
+            if (player.Level >= 50 && !player.IsRenaissance)
             {
                 return eQuestIndicator.Lore;
             }

@@ -40,7 +40,7 @@ namespace DOL.GS
             }
 
             TurnTo(player, 5000);
-            if (!player.Champion && player.Level == 50)
+            if (!player.Champion && player.Level >= 40 && player.IsRenaissance)
             {
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "KingNPC.WhisperReceive.AskForChampion"), eChatType.CT_System, eChatLoc.CL_PopupWindow);
             }
@@ -82,7 +82,7 @@ namespace DOL.GS
                 return false;
             }
 
-            if (str == "Champions" && player.Level == 50)
+            if (str == "Champions" && player.Level >= 40 && player.IsRenaissance)
             {
                 if (player.Champion == true)
                 {

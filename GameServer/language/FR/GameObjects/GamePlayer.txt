@@ -583,8 +583,6 @@ GameObjects.GamePlayer.SendReceive.Afk:						{0} is currently AFK.
 GameObjects.GamePlayer.SendReceive.AfkMessage:				<AFK> {0} sends, "{1}"
 GameObjects.GamePlayer.Send.target.DontUnderstandYou:				{0} doesn't seem to understand you!
 GameObjects.GamePlayer.Send.YouSendTo:						You send, "{0}" to {1}.
-GameObjects.GamePlayer.SetControlledNpc.ReleaseTarget:		You release control of your controlled target.
-GameObjects.GamePlayer.SetControlledNpc.ReleaseTarget2:		You lose control of the {0}.
 GameObjects.GamePlayer.Shade.AlreadyShade:				You are already a shade!	
 GameObjects.GamePlayer.Shade.NoLongerShade:				You are no longer a shade!	
 GameObjects.GamePlayer.Sit.AlreadySitting:				You are already sitting!	
@@ -607,25 +605,6 @@ GameObjects.GamePlayer.Sprint.CantSprintHidden:			You can't sprint while you are
 GameObjects.GamePlayer.Sprint.NoLongerReady:			You are no longer ready to sprint.		
 GameObjects.GamePlayer.Sprint.PrepareSprint:			You prepare to sprint!		
 GameObjects.GamePlayer.Sprint.TooFatigued:				You are too fatigued to sprint!
-GameObjects.GamePlayer.StartAttack.CannotMelee:			You cannot enter melee combat mode with an instrument!		
-GameObjects.GamePlayer.StartAttack.CannotWithoutWeapon:		You cannot enter combat mode without a weapon!			
-GameObjects.GamePlayer.StartAttack.CantAttackmesmerized:	You can't attack when you are mesmerized!			
-GameObjects.GamePlayer.StartAttack.CantAttackStunned:		You can't attack when you are stunned!			
-GameObjects.GamePlayer.StartAttack.CantDisarmed:			You are disarmed and cannot attack!
-GameObjects.GamePlayer.StartAttack.CantInShadeMode:			You cannot enter combat in shade mode!
-GameObjects.GamePlayer.StartAttack.CantUseQuiver:			You can't use the selected quiver ammo with your weapon!		
-GameObjects.GamePlayer.StartAttack.CombatNoTarget:			You enter combat mode but have no target!		
-GameObjects.GamePlayer.StartAttack.CombatTarget:			You enter combat mode and target [{0}]		
-GameObjects.GamePlayer.StartAttack.SelectQuiver:			You must select a quiver slot to draw from!		
-GameObjects.GamePlayer.StartAttack.SpellCancelled:			Your spell is cancelled!		
-GameObjects.GamePlayer.StartAttack.TargetInRange:			, target is in range		
-GameObjects.GamePlayer.StartAttack.TargetOutOfRange:		, target is out of range			
-GameObjects.GamePlayer.StartAttack.TiredShot:				You're too tired to perform a critical shot!		
-GameObjects.GamePlayer.StartAttack.TiredUse:				You're too tired to use your {0}!		
-GameObjects.GamePlayer.StartAttack.YouCantCombat:			You can't enter combat mode while lying down!		
-GameObjects.GamePlayer.StartAttack.YouMustWait:				You must wait {0} more second to attempt to attack!		
-GameObjects.GamePlayer.StartAttack.YouMustWaitAgain:		You must wait {0} more seconds before attacking again.			
-GameObjects.GamePlayer.StartAttack.YouPrepare:				You prepare your {0} ({1}.{2}s to fire{3})		
 GameObjects.GamePlayer.Stealth.NoLongerHidden:				You are no longer hidden!		
 GameObjects.GamePlayer.Stealth.NowHidden:					You are now hidden!	
 GameObjects.GamePlayer.SwitchQuiver.NoMoreAmmo:				You have no more ammo in your quiver!		
