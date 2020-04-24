@@ -4,6 +4,7 @@
     {
         None,
         BindStone,
-        Event
+        Event,
+        Restart
     }
 }

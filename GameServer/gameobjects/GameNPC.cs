@@ -4252,7 +4252,7 @@ namespace DOL.GS
 					else
 					{
 						//Check if killed mob starts event
-						if (ev.StartConditionType == StartingConditionType.Kill && ev.KillStartingMob?.Equals(this.Name) == true)
+						if (ev.StartConditionType == StartingConditionType.Kill && ev.KillStartingMob?.Equals(this.Name) == true && !ev.StartedTime.HasValue)
 						{
 							Task.Run(() => GameEventManager.Instance.StartEvent(ev));
 						}

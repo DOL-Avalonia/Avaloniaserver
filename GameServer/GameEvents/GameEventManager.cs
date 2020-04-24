@@ -110,7 +110,7 @@ namespace DOL.GameEvents
             }
 
             //Load Only Not Over Events
-            foreach (var eventdb in eventsFromDb.Where(ev => ev.Status == 0))
+            foreach (var eventdb in eventsFromDb)
             {
                 GameEvent newEvent = new GameEvent(eventdb);
 
@@ -457,6 +457,88 @@ namespace DOL.GameEvents
             }         
         }
 
+        private void ResetEventsFromId(string id)
+        {
+            List<string> resetIds = new List<string>();
+            var ids = this.GetDependentEventsFromRootEvent(id);
+
+            if (ids == null)
+            {
+                ids = new string[] { id };
+            }
+            else
+            {
+                if (!ids.Contains(id))
+                {
+                    ids = Enumerable.Concat(ids, new string[] { id });
+                }
+            }
+
+            foreach (var eventId in ids.OrderBy(i => i))
+            {
+                var ev = this.Events.FirstOrDefault(e => e.ID.Equals(eventId));
+
+                if (ev == null)
+                {
+                    break;
+                }
+
+                if (ev.TimerType == TimerType.DateType && ev.EndingConditionTypes.Contains(EndingConditionType.Timer) && ev.EndingConditionTypes.Count() == 1)
+                {
+                    log.Error(string.Format("Cannot Reset Event {0}, Name: {1} with DateType with only Timer as Ending condition", ev.ID, ev.EventName));
+                }
+                else
+                {
+                    this.ResetEvent(ev);
+                    resetIds.Add(ev.ID);
+                }
+            }
+
+            if (resetIds.Any())
+            {
+                log.Info(string.Format("Event Reset called by Event {0}, Reset events are : {1}", id, string.Join(",", resetIds)));
+            }
+            else
+            {
+                log.Error(string.Format("Reset called by Event: {0} but not Event Resets", id));
+            }
+        }
+
+        public void ResetEvent(GameEvent ev)
+        {
+            ev.StartedTime = null;
+            ev.EndTime = null;
+            ev.Status = EventStatus.NotOver;
+
+            if (ev.StartConditionType == StartingConditionType.Money)
+            {
+                //Reset related NPC Money
+                var moneyNpcDb = GameServer.Database.SelectObjects<MoneyNpcDb>("`EventID` = @id", new QueryParameter("id", ev.ID))?.FirstOrDefault();
+
+                if (moneyNpcDb != null)
+                {
+                    var mob = GameServer.Database.FindObjectByKey<Mob>(moneyNpcDb.MobID);
+
+                    if (mob != null)
+                    {
+                        MoneyEventNPC mobIngame = WorldMgr.Regions[mob.Region].Objects.FirstOrDefault(o => o?.InternalID.Equals(mob.ObjectId) == true && o is MoneyEventNPC) as MoneyEventNPC;
+
+                        if (mobIngame != null)
+                        {
+                            mobIngame.CurrentSilver = 0;
+                            mobIngame.CurrentCopper = 0;
+                            mobIngame.CurrentGold = 0;
+                            mobIngame.CurrentMithril = 0;
+                            mobIngame.CurrentPlatinum = 0;
+                            mobIngame.SaveIntoDatabase();
+                        }
+                    }
+                }
+
+            }
+
+            ev.SaveToDatabase();
+        }
 
         public async Task<bool> StartEvent(GameEvent e)
         {
@@ -594,20 +676,20 @@ namespace DOL.GameEvents
             {
                 e.Status = EventStatus.EndedByKill;
                 //Allow time to loot
-                await Task.Delay(TimeSpan.FromSeconds(20));
-                ShowEndEffects(e);
+                await Task.Delay(TimeSpan.FromSeconds(15));
+                await ShowEndEffects(e);
                 CleanEvent(e);
             }
             else if (end == EndingConditionType.StartingEvent)
             {
                 e.Status = EventStatus.EndedByEventStarting;
-                ShowEndEffects(e);
+                await ShowEndEffects(e);
                 CleanEvent(e);
             }
             else if (end == EndingConditionType.Timer)
             {
                 e.Status = EventStatus.EndedByTimer;
-                ShowEndEffects(e);
+                await ShowEndEffects(e);
                 CleanEvent(e);
             }
 
@@ -622,19 +704,19 @@ namespace DOL.GameEvents
             //Consequence A
             if (e.EndingConditionTypes.Count() == 1 || (e.EndingConditionTypes.Count() > 1 && e.EndingConditionTypes.First() == end))
             {
-                await this.HandleConsequence(e.EndingActionA, e.EventZones, e.EndActionStartEventID);
+                await this.HandleConsequence(e.EndingActionA, e.EventZones, e.EndActionStartEventID, e.RestartEventID);
             }
             else
             {
                 //Consequence B
-                await this.HandleConsequence(e.EndingActionB, e.EventZones, e.EndActionStartEventID);
+                await this.HandleConsequence(e.EndingActionB, e.EventZones, e.EndActionStartEventID, e.RestartEventID);
             }
 
             log.Info(string.Format("Event Id: {0}, Name: {1} was stopped At: {2}", e.ID, e.EventName, e.EndTime.Value.ToLocalTime().ToString()));
             e.SaveToDatabase();
         }
 
-        private void ShowEndEffects(GameEvent e)
+        private async Task ShowEndEffects(GameEvent e)
         {
             foreach (var mob in e.Mobs)
             {
@@ -651,9 +733,11 @@ namespace DOL.GameEvents
                     this.ApplyEffect(coffre, e.EndEffects);
                 }
             }
+
+            await Task.Delay(TimeSpan.FromSeconds(5));
         }
 
-        private async Task HandleConsequence(EndingAction action, IEnumerable<string> zones, string eventId)
+        private async Task HandleConsequence(EndingAction action, IEnumerable<string> zones, string startEventId, string restartEventId)
         {
             if (action == EndingAction.BindStone)
             {
@@ -664,24 +748,46 @@ namespace DOL.GameEvents
 
                 return;
             }
-            
-            if (action == EndingAction.Event && eventId != null)
+
+            if (action == EndingAction.Event && startEventId != null)
             {
-                var ev = Instance.Events.FirstOrDefault(e => e.ID.Equals(eventId));
+                var ev = Instance.Events.FirstOrDefault(e => e.ID.Equals(startEventId));
 
                 if (ev == null)
                 {
-                    log.Error(string.Format("Ending Consequence Event: Impossible to start Event ID: {0}. Event not found.", eventId));
+                    log.Error(string.Format("Ending Consequence Event: Impossible to start Event ID: {0}. Event not found.", startEventId));
+                    return;
                 }
 
                 if (ev.StartConditionType != StartingConditionType.Event)
                 {
-                    log.Error(string.Format("Ending Consequence Event: Impossible to start Event ID: {0}. Event is not Event Start type", eventId));
+                    log.Error(string.Format("Ending Consequence Event: Impossible to start Event ID: {0}. Event is not Event Start type", startEventId));
                 }
                 else
                 {
+                    ev.StartedTime = null;
                     await Instance.StartEvent(ev);                   
-                }   
+                }
+            }
+            else if (action == EndingAction.Restart && restartEventId != null)
+            {
+                var resetEvent = this.Events.FirstOrDefault(e => e.ID.Equals(restartEventId));
+
+                if (resetEvent == null)
+                {
+                    log.Error("Impossible to reset Event from resetEventId : " + restartEventId);
+                    return;
+                }
+
+                if (resetEvent.TimerType == TimerType.DateType && resetEvent.EndingConditionTypes.Contains(EndingConditionType.Timer) && resetEvent.EndingConditionTypes.Count() == 1)
+                {
+                    log.Error(string.Format("Cannot Reset Event {0}, Name: {1} with DateType with only Timer as Ending condition", resetEvent.ID, resetEvent.EventName));
+                }
+                else
+                {
+                    this.ResetEvent(resetEvent);
+                    await this.StartEvent(resetEvent);
+                }
             }
         }
 
@@ -707,6 +813,82 @@ namespace DOL.GameEvents
             }
 
             e.Clean();
+        }
+
+        public IEnumerable<string> GetDependentEventsFromRootEvent(string id)
+        {
+            List<string> ids = new List<string>();
+            IEnumerable<string> newIds = Enumerable.Empty<string>();          
+            
+            var ev = Instance.Events.FirstOrDefault(e => e.ID.Equals(id));
+
+            if (ev != null)
+            {
+                var deps = this.SearchDependencies(ev.ID);
+
+                if (deps != null)
+                {
+                    ids = deps.ToList();
+                    List<string> loopMem = new List<string>();
+                    while (newIds != null)
+                    {
+                        loopMem.Clear();
+                        foreach (var i in ids)
+                        {
+                            deps = this.SearchDependencies(i);
+
+                            if (deps != null)
+                            {
+                                newIds = this.Add(deps, ids);
+                                if (newIds != null)
+                                    loopMem.AddRange(newIds);
+                            }                          
+                        }
+
+                        if (loopMem.Any())
+                        {
+                            loopMem.ForEach(i => ids.Add(i));
+                        }
+
+                        if (deps == null)
+                        {
+                            newIds = null;
+                        }
+                    }
+                }
+
+                return ids.Any() ? ids : null;
+            }
+
+            return null;
+        }
+
+
+        private IEnumerable<string> Add(IEnumerable<string> deps, List<string> ids)
+        {
+            List<string> newIds = new List<string>();
+
+            foreach (var id in deps)
+            {
+                if (!ids.Contains(id))
+                {
+                    newIds.Add(id);                    
+                }
+            }
+
+            return (newIds == null || !newIds.Any()) ? null : newIds;
+        }
+
+        private IEnumerable<string> SearchDependencies(string id)
+        {
+           var ev = Instance.Events.Where(e => e.EndActionStartEventID?.Equals(id) == true);
+
+            if (!ev.Any())
+            {
+                return null;
+            }
+
+            return ev.Select(e => e.ID);
         }
     }
 }

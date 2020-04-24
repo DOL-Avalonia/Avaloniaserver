@@ -33,6 +33,7 @@ namespace DOLDatabase.Tables
         private long chronoTime;
         private string endActionStartEventID;
         private string killStartingMob;
+        private string m_restartEventId;
 
         [DataElement(AllowDbNull = false, Varchar = 255)]
         public string EventName
@@ -108,6 +109,23 @@ namespace DOLDatabase.Tables
                 Dirty = true;
             }
         }
+
+
+        [DataElement(AllowDbNull = true, Varchar = 255)]
+        public string RestartEventId
+        {
+            get
+            {
+                return m_restartEventId;
+            }
+
+            set
+            {
+                m_restartEventId = value;
+                Dirty = true;
+            }
+        }
+
 
         [DataElement(AllowDbNull = false)]
         public int TimerType

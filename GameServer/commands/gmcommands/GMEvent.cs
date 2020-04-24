@@ -18,7 +18,8 @@ namespace DOL.GS.Commands
 		"Commands.Players.Event.Description",
 		"'/GMEvent info [id]' Affiche les informations sur les Events, [id] pour un event sinon tous sont affichés",
 		"'/GMEvent infolight' Affiche les informations sur les Events, plus succin",
-		"'/GMEvent start <id>' Lance l'evenement avec son <id>",
+		"'/GMEvent start <id>' Lance l'event avec son <id>",
+		"'/GMEvent reset <id>' Reset l'event avec son <id>, reset également les events qui ont lancés cet event",
 		"'/GMEvent add <eventId>' Ajoute la cible (mob ou coffre) à l'event et le fait disparaitre du monde",
 		"'/GMEvent add <mob|coffre> <name> <region> <eventId>'Ajoute un <mob|coffre> par son nom et sa region à un event",	
 		"'/GMEvent respawn <mob|coffre> <name> <eventId> <true|false>'Change la valeur de CanRespawn du <mob|coffre> par son <name> dans un event par son <eventId> <true|false>",		
@@ -134,6 +135,19 @@ namespace DOL.GS.Commands
 							}
 						}
 
+						break;
+
+					case "reset":
+
+						if (args.Length == 3)
+						{
+							id = args[2];
+							ResetEventAndDependencies(client, id);
+						}
+						else
+						{
+							DisplaySyntax(client);
+						}
 						break;
 
 					case "respawn":
@@ -295,8 +309,15 @@ namespace DOL.GS.Commands
 								return;
 							}
 
-							await GameEventManager.Instance.StartEvent(ev);
-							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Event.EventStarted", id), eChatType.CT_Chat, eChatLoc.CL_SystemWindow);
+							if (ev.StartedTime.HasValue)
+							{
+								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Event.EventAlreadyStarted", id), eChatType.CT_Chat, eChatLoc.CL_SystemWindow);
+							}
+							else
+							{
+								await GameEventManager.Instance.StartEvent(ev);
+								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Event.EventStarted", id), eChatType.CT_Chat, eChatLoc.CL_SystemWindow);
+							}
 						}
 						else
 						{
@@ -332,6 +353,8 @@ namespace DOL.GS.Commands
 			}
 
 		}
+
+	
 
 		private void RefreshRegion(GameClient client, ushort region)
 		{
@@ -581,6 +604,56 @@ namespace DOL.GS.Commands
 
 			return true;
 		}
+
+		private void ResetEventAndDependencies(GameClient client, string id)
+		{
+			List<string> resetIds = new List<string>();
+			var ids = GameEventManager.Instance.GetDependentEventsFromRootEvent(id);
+
+			if (ids == null)
+			{
+				ids = new string[] { id };
+			}
+			else
+			{
+				if (!ids.Contains(id))
+				{
+					ids = Enumerable.Concat(ids, new string[] { id });
+				}
+			}
+
+			foreach(var eventId in ids.OrderBy(i => i))
+			{
+				var ev = GetEventById(client, eventId);
+
+				if (ev == null)
+				{
+					break;
+				}
+
+				if (ev.TimerType == TimerType.DateType && ev.EndingConditionTypes.Contains(EndingConditionType.Timer) && ev.EndingConditionTypes.Count() == 1)
+				{
+					client.Out.SendMessage(string.Format("Impossible de reset Event ID: {0}, Name: {1}, car il n'a qu'un seul Ending de type Timer de type DateType.", ev.ID, ev.EventName), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					break;
+				}
+				else
+				{
+					GameEventManager.Instance.ResetEvent(ev);
+				}
+
+				resetIds.Add(ev.ID);
+			}
+
+			if (resetIds.Any())
+			{
+				client.Out.SendMessage(string.Format("Les Events Reset sont: {0}", string.Join(",", resetIds)), eChatType.CT_Chat, eChatLoc.CL_SystemWindow);
+			}
+			else
+			{
+				client.Out.SendMessage(string.Format("Aucun Event n'a été Reset"), eChatType.CT_Chat, eChatLoc.CL_SystemWindow);
+			}
+		}
+
 
 		private bool ChangeRespawnValue(GameClient client, string name, string id, bool canRespawn, bool isMob)
 		{

@@ -64,6 +64,8 @@ namespace DOL.GameEvents
             EndTime = db.EndTime > 0 && db.EndTime < long.MaxValue ? DateTimeOffset.FromUnixTimeSeconds(db.EndTime) : (DateTimeOffset?)null;
             ChronoTime = db.ChronoTime;
             KillStartingMob = !string.IsNullOrEmpty(db.KillStartingMob) ? db.KillStartingMob : null;
+            RestartEventID = !string.IsNullOrEmpty(db.RestartEventId) ? db.RestartEventId : null;
+            Status = Enum.TryParse(db.Status.ToString(), out EventStatus stat) ? stat : EventStatus.NotOver;
 
             //Handle invalid ChronoType
             if (TimerType == TimerType.ChronoType && ChronoTime <= 0)
@@ -143,6 +145,12 @@ namespace DOL.GameEvents
         }
 
         public IEnumerable<string> MobNamesToKill
+        {
+            get;
+            set;
+        }
+
+        public string RestartEventID
         {
             get;
             set;
@@ -334,18 +342,12 @@ namespace DOL.GameEvents
             if (this.RandomTextTimer != null)
             {
                 this.RandomTextTimer.Stop();
-                this.RandomTextTimer.Elapsed -= this.RandomTextTimer_Elapsed;
             }
 
             if (this.RemainingTimeTimer != null)
             {
                 this.RemainingTimeTimer.Stop();
-                this.RemainingTimeTimer.Elapsed -= RemainingTimeTimer_Elapsed;
             }
-
-            this.Mobs.Clear();
-            this.Coffres.Clear();
-
         }
 
         public void SaveToDatabase()
@@ -385,6 +387,7 @@ namespace DOL.GameEvents
             db.ChronoTime = ChronoTime;
             db.TimerType = (int)this.TimerType;
             db.KillStartingMob = KillStartingMob;
+            db.RestartEventId = RestartEventID;
 
             if (ID == null)
             {
