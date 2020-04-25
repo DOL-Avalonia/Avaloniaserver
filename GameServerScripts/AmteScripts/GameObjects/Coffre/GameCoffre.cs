@@ -435,9 +435,7 @@ namespace DOL.GS.Scripts
 			GameLocation pos = timer.Properties.getProperty<GameLocation>("TP", null);
 			GamePlayer player = timer.Properties.getProperty<GamePlayer>("player", null);
 
-			player.MoveTo(pos.RegionID, pos.X, pos.Y, pos.Z, pos.Heading);		
-			player.Bind(true);
-
+			player.MoveTo(pos.RegionID, pos.X, pos.Y, pos.Z, pos.Heading);	
 			return 0;
 		}
 
