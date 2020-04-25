@@ -5,6 +5,6 @@
         None,
         BindStone,
         Event,
-        Restart
+        Reset
     }
 }

@@ -64,7 +64,7 @@ namespace DOL.GameEvents
             EndTime = db.EndTime > 0 && db.EndTime < long.MaxValue ? DateTimeOffset.FromUnixTimeSeconds(db.EndTime) : (DateTimeOffset?)null;
             ChronoTime = db.ChronoTime;
             KillStartingMob = !string.IsNullOrEmpty(db.KillStartingMob) ? db.KillStartingMob : null;
-            RestartEventID = !string.IsNullOrEmpty(db.RestartEventId) ? db.RestartEventId : null;
+            ResetEventId = !string.IsNullOrEmpty(db.ResetEventId) ? db.ResetEventId : null;
             Status = Enum.TryParse(db.Status.ToString(), out EventStatus stat) ? stat : EventStatus.NotOver;
 
             //Handle invalid ChronoType
@@ -150,7 +150,7 @@ namespace DOL.GameEvents
             set;
         }
 
-        public string RestartEventID
+        public string ResetEventId
         {
             get;
             set;
@@ -387,7 +387,7 @@ namespace DOL.GameEvents
             db.ChronoTime = ChronoTime;
             db.TimerType = (int)this.TimerType;
             db.KillStartingMob = KillStartingMob;
-            db.RestartEventId = RestartEventID;
+            db.ResetEventId = ResetEventId;
 
             if (ID == null)
             {

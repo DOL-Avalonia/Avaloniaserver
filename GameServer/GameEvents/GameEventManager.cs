@@ -588,6 +588,9 @@ namespace DOL.GameEvents
 
             foreach(var mob in e.Mobs)
             {
+                mob.Health = mob.MaxHealth;
+                mob.Mana = mob.MaxMana;
+
                 mob.AddToWorld();
 
                 if (e.IsKillingEvent && e.MobNamesToKill.Contains(mob.Name))
@@ -704,12 +707,12 @@ namespace DOL.GameEvents
             //Consequence A
             if (e.EndingConditionTypes.Count() == 1 || (e.EndingConditionTypes.Count() > 1 && e.EndingConditionTypes.First() == end))
             {
-                await this.HandleConsequence(e.EndingActionA, e.EventZones, e.EndActionStartEventID, e.RestartEventID);
+                await this.HandleConsequence(e.EndingActionA, e.EventZones, e.EndActionStartEventID, e.ResetEventId);
             }
             else
             {
                 //Consequence B
-                await this.HandleConsequence(e.EndingActionB, e.EventZones, e.EndActionStartEventID, e.RestartEventID);
+                await this.HandleConsequence(e.EndingActionB, e.EventZones, e.EndActionStartEventID, e.ResetEventId);
             }
 
             log.Info(string.Format("Event Id: {0}, Name: {1} was stopped At: {2}", e.ID, e.EventName, e.EndTime.Value.ToLocalTime().ToString()));
@@ -737,7 +740,7 @@ namespace DOL.GameEvents
             await Task.Delay(TimeSpan.FromSeconds(5));
         }
 
-        private async Task HandleConsequence(EndingAction action, IEnumerable<string> zones, string startEventId, string restartEventId)
+        private async Task HandleConsequence(EndingAction action, IEnumerable<string> zones, string startEventId, string resetEventId)
         {
             if (action == EndingAction.BindStone)
             {
@@ -769,13 +772,13 @@ namespace DOL.GameEvents
                     await Instance.StartEvent(ev);                   
                 }
             }
-            else if (action == EndingAction.Restart && restartEventId != null)
+            else if (action == EndingAction.Reset && resetEventId != null)
             {
-                var resetEvent = this.Events.FirstOrDefault(e => e.ID.Equals(restartEventId));
+                var resetEvent = this.Events.FirstOrDefault(e => e.ID.Equals(resetEventId));
 
                 if (resetEvent == null)
                 {
-                    log.Error("Impossible to reset Event from resetEventId : " + restartEventId);
+                    log.Error("Impossible to reset Event from resetEventId : " + resetEventId);
                     return;
                 }
 
@@ -785,8 +788,7 @@ namespace DOL.GameEvents
                 }
                 else
                 {
-                    this.ResetEvent(resetEvent);
-                    await this.StartEvent(resetEvent);
+                    this.ResetEventsFromId(resetEventId);
                 }
             }
         }
@@ -804,7 +806,7 @@ namespace DOL.GameEvents
         {
             foreach (var mob in e.Mobs)
             {
-                mob.RemoveFromWorld();
+                mob.Delete();
             }
 
             foreach (var coffre in e.Coffres)

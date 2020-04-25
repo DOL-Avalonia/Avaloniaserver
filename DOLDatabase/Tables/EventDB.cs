@@ -33,7 +33,7 @@ namespace DOLDatabase.Tables
         private long chronoTime;
         private string endActionStartEventID;
         private string killStartingMob;
-        private string m_restartEventId;
+        private string m_resetEventId;
 
         [DataElement(AllowDbNull = false, Varchar = 255)]
         public string EventName
@@ -112,16 +112,16 @@ namespace DOLDatabase.Tables
 
 
         [DataElement(AllowDbNull = true, Varchar = 255)]
-        public string RestartEventId
+        public string ResetEventId
         {
             get
             {
-                return m_restartEventId;
+                return m_resetEventId;
             }
 
             set
             {
-                m_restartEventId = value;
+                m_resetEventId = value;
                 Dirty = true;
             }
         }
