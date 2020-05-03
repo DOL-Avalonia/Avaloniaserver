@@ -16,9 +16,9 @@ namespace DOL.GS.Scripts
 			GuildName = "Banquier";
 		}
 
-		public override Task<bool> ReceiveMoney(GameLiving source, long money)
+		public override bool ReceiveMoney(GameLiving source, long money)
 		{
-			return Task.FromResult(ReceiveMoney(source, money, true));
+			return ReceiveMoney(source, money, true);
 		}
 
 		public bool ReceiveMoney(GameLiving source, long money, bool removeMoney)

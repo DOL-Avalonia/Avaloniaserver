@@ -459,6 +459,7 @@ namespace DOL.GameEvents
 
         private void ResetEventsFromId(string id)
         {
+            Instance.timer.Change(Timeout.Infinite, 0);
             List<string> resetIds = new List<string>();
             var ids = this.GetDependentEventsFromRootEvent(id);
 
@@ -502,12 +503,14 @@ namespace DOL.GameEvents
             {
                 log.Error(string.Format("Reset called by Event: {0} but not Event Resets", id));
             }
+
+            Instance.timer.Change(Instance.period, Instance.period);
         }
 
         public void ResetEvent(GameEvent ev)
         {
-            ev.StartedTime = null;
-            ev.EndTime = null;
+            ev.StartedTime = (DateTimeOffset?)null;
+            ev.EndTime = (DateTimeOffset?)null;
             ev.Status = EventStatus.NotOver;
 
             if (ev.StartConditionType == StartingConditionType.Money)
@@ -521,7 +524,7 @@ namespace DOL.GameEvents
 
                     if (mob != null)
                     {
-                        MoneyEventNPC mobIngame = WorldMgr.Regions[mob.Region].Objects.FirstOrDefault(o => o?.InternalID.Equals(mob.ObjectId) == true && o is MoneyEventNPC) as MoneyEventNPC;
+                        MoneyEventNPC mobIngame = WorldMgr.Regions[mob.Region].Objects?.FirstOrDefault(o => o?.InternalID?.Equals(mob.ObjectId) == true && o is MoneyEventNPC) as MoneyEventNPC;
 
                         if (mobIngame != null)
                         {
@@ -533,6 +536,10 @@ namespace DOL.GameEvents
                             mobIngame.SaveIntoDatabase();
                         }
                     }
+
+
+                    moneyNpcDb.CurrentAmount = 0;
+                    GameServer.Database.SaveObject(moneyNpcDb);
                 }
 
             }
@@ -649,13 +656,7 @@ namespace DOL.GameEvents
             {
                 log.Error(string.Format("Impossible To Stop Event Id {0} from StartActionStopEventID (Event {1}). Event not found", startActionStopEventID, originEventId));
                 return;
-            }
-
-            if (!ev.EndingConditionTypes.Contains(EndingConditionType.StartingEvent))
-            {
-                log.Error(string.Format("Event ID: {0}, Name: {1}, cannot be stop because EndingConditionTypes does not contain StartingEvent type", ev.ID, ev.EventName));
-                return;
-            }
+            }         
 
             log.Info(string.Format("Stop Event Id {0} from StartActionStopEventID (Event {1})", startActionStopEventID, originEventId));
             await this.StopEvent(ev, EndingConditionType.StartingEvent);
@@ -715,7 +716,7 @@ namespace DOL.GameEvents
                 await this.HandleConsequence(e.EndingActionB, e.EventZones, e.EndActionStartEventID, e.ResetEventId);
             }
 
-            log.Info(string.Format("Event Id: {0}, Name: {1} was stopped At: {2}", e.ID, e.EventName, e.EndTime.Value.ToLocalTime().ToString()));
+            log.Info(string.Format("Event Id: {0}, Name: {1} was stopped At: {2}", e.ID, e.EventName, DateTime.Now.ToString()));
             e.SaveToDatabase();
         }
 

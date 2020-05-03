@@ -1737,9 +1737,9 @@ namespace DOL.GS
         /// <param name="source">Source from where to get the money</param>
         /// <param name="money">array of money to get</param>
         /// <returns>true if the money was successfully received</returns>
-        public virtual Task<bool> ReceiveMoney(GameLiving source, long money)
+        public virtual bool ReceiveMoney(GameLiving source, long money)
         {
-            return Task.FromResult(false);
+            return false;
         }
 
         /// <summary>

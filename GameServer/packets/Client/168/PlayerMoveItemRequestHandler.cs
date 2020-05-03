@@ -194,7 +194,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                         return;
                     }
 
-                    if (await obj.ReceiveMoney(client.Player, flatMoney))
+                    if (obj.ReceiveMoney(client.Player, flatMoney))
                     {
                         client.Out.SendInventorySlotsUpdate(new int[] { fromClientSlot });
                         return;

@@ -1,4 +1,5 @@
-﻿using DOL.GameEvents;
+﻿using DOL.Database;
+using DOL.GameEvents;
 using DOL.GS.PacketHandler;
 using DOLDatabase.Tables;
 using System;
@@ -10,7 +11,8 @@ namespace DOL.GS
     public class MoneyEventNPC
         : GameNPC
     {
-        private string Id;
+        private string id;
+        private string mobId;
         public readonly string InteractDefault = "MoneyEventNPC.InteractTextDefault";
         public readonly string ValidateTextDefault = "MoneyEventNPC.ValidateTextDefault";
         public readonly string NeedMoreMoneyTextDefault = "MoneyEventNPC.NeedMoreMoneyTextDefault";
@@ -101,17 +103,17 @@ namespace DOL.GS
             return true;
         }
 
-        public async override Task<bool> ReceiveMoney(GameLiving source, long money)
+        public override bool ReceiveMoney(GameLiving source, long money)
         {
             var player = source as GamePlayer;
 
             if (player == null)
-                return await base.ReceiveMoney(source, money);
+                return base.ReceiveMoney(source, money);
 
             var ev = this.CheckEventValidity();
 
             if (ev == null)
-                return await base.ReceiveMoney(source, money);
+                return base.ReceiveMoney(source, money);
 
 
             this.CurrentGold += Money.GetGold(money);
@@ -124,17 +126,18 @@ namespace DOL.GS
             {
                 var text = ValidateText ?? Language.LanguageMgr.GetTranslation(player.Client.Account.Language, ValidateTextDefault);
                 player.Client.Out.SendMessage(text, eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
-                await GameEventManager.Instance.StartEvent(ev);
+                player.RemoveMoney(money);
+                this.SaveIntoDatabase();
+                Task.Run(() => GameEventManager.Instance.StartEvent(ev));
             }
             else
             {
                 var text = NeedMoreMoneyText ?? Language.LanguageMgr.GetTranslation(player.Client.Account.Language, NeedMoreMoneyTextDefault);
                 player.Client.Out.SendMessage(text, eChatType.CT_Chat, eChatLoc.CL_PopupWindow);
+                player.RemoveMoney(money);
+                this.SaveIntoDatabase();
             }
-
-            player.RemoveMoney(money);
-            this.SaveIntoDatabase();
-
+            
             return true;
         }
 
@@ -153,15 +156,40 @@ namespace DOL.GS
             return ev;
         }
 
+        public override bool AddToWorld()
+        {
+            if (!base.AddToWorld())
+            {
+                return false;
+            }
+
+            this.ReloadMoneyValues();
+            return true;
+        }
+
         public override void LoadFromDatabase(Database.DataObject obj)
         {
             base.LoadFromDatabase(obj);
-
-            var eventNpc = GameServer.Database.SelectObjects<MoneyNpcDb>("`MobID` = @MobID", new Database.QueryParameter("MobID", obj.ObjectId))?.FirstOrDefault();
+            var mob = GameServer.Database.SelectObjects<MoneyNpcDb>("`MobID` = @MobID", new Database.QueryParameter("MobID", obj.ObjectId))?.FirstOrDefault();
             
+            if (mob != null)
+            {
+                id = mob.ObjectId;
+                mobId = mob.MobID;
+                ReloadMoneyValues(mob);
+            }
+
+        }
+
+        private void ReloadMoneyValues(MoneyNpcDb eventNpc = null)
+        {
+            if (eventNpc == null)
+            {
+                eventNpc = GameServer.Database.FindObjectByKey<MoneyNpcDb>(this.id);
+            }
+
             if (eventNpc != null)
             {
-                this.Id = eventNpc.ObjectId;
                 this.CurrentGold = Money.GetGold(eventNpc.CurrentAmount);
                 this.CurrentCopper = Money.GetCopper(eventNpc.CurrentAmount);
                 this.CurrentMithril = Money.GetMithril(eventNpc.CurrentAmount);
@@ -187,13 +215,13 @@ namespace DOL.GS
 
             MoneyNpcDb db = null;
 
-            if (Id == null)
+            if (id == null)
             {
                 db = new MoneyNpcDb();  
             }
             else
             {
-                db = GameServer.Database.FindObjectByKey<MoneyNpcDb>(Id);
+                db = GameServer.Database.FindObjectByKey<MoneyNpcDb>(this.id);
             }
             
             if (db != null)
@@ -214,10 +242,10 @@ namespace DOL.GS
                     db.ValidateText = ValidateText;
             }
 
-            if (Id == null)
+            if (id == null)
             {
                 GameServer.Database.AddObject(db);
-                Id = db.ObjectId;
+                id = db.ObjectId;
             }
             else
             {
