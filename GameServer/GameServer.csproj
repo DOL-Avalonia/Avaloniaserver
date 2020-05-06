@@ -393,6 +393,7 @@
     <Compile Include="gameobjects\CharacterClasses\Midgard\CharacterClassBoneDancer.cs" />
     <Compile Include="gameobjects\CustomNPC\BuffMerchant.cs" />
     <Compile Include="gameobjects\CustomNPC\RenaissanceNPC.cs" />
+    <Compile Include="gameobjects\CustomNPC\StaticMob.cs" />
     <Compile Include="gameobjects\FeuDeCamp.cs" />
     <Compile Include="gameobjects\MoneyEventNPC.cs" />
     <Compile Include="gameutils\FeuxCamp\FeuxCampMgr.cs" />
