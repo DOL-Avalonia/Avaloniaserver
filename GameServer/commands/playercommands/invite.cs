@@ -170,7 +170,7 @@ namespace DOL.GS.Commands
 				target.Out.SendMessage(
 					LanguageMgr.GetTranslation(
 						targetClient.Account.Language,
-						"Commands.Players.InvitedYou",
+						"Commands.Players.Invite.InvitedYou",
 						client.Player.Name,
 						client.Player.GetPronoun(1, false)),
 					eChatType.CT_System, eChatLoc.CL_SystemWindow);

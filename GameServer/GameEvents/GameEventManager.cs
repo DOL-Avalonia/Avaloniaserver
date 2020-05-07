@@ -67,7 +67,7 @@ namespace DOL.GameEvents
             }
 
             var chanceEvents = this.Events.Where(e => e.Status == EventStatus.NotOver && e.EventChanceInterval.HasValue && e.EventChance > 0 && !e.StartedTime.HasValue);
-            var rand = new Random(DateTime.Now.Millisecond);
+            var rand = new Random((int)(DateTimeOffset.Now.ToUnixTimeSeconds() / 10000));
 
 
             //Start Event if chance proc
@@ -82,7 +82,7 @@ namespace DOL.GameEvents
                     if (DateTime.UtcNow - ev.ChanceLastTimeChecked.Value >= ev.EventChanceInterval.Value)
                     {
                         ev.ChanceLastTimeChecked = DateTime.UtcNow;
-                        if (rand.Next(0, 101) >= ev.EventChance)
+                        if (rand.Next(0, 101) <= ev.EventChance)
                         {
                             await this.StartEvent(ev);
                         }
@@ -576,9 +576,10 @@ namespace DOL.GameEvents
             e.StartedTime = DateTimeOffset.UtcNow;
             e.Status = EventStatus.NotOver;
 
-            if (e.DebutText != null)
-            {
-                WorldMgr.GetAllPlayingClients().Foreach(c => c.Out.SendMessage(e.DebutText, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow));
+
+            if (e.DebutText != null && e.EventZones?.Any() == true)
+            {                
+                NotifyPlayersInEventZones(e.DebutText, e.EventZones);              
             }
 
             if (e.HasHandomText)
@@ -604,7 +605,13 @@ namespace DOL.GameEvents
                 {
                     e.WantedMobsCount++;
                 }
+            }
 
+            //need give more time to client after addtoworld to perform animation
+            await Task.Delay(500);
+
+            foreach (var mob in e.Mobs)
+            {
                 if (e.StartEffects.ContainsKey(mob.InternalID))
                 {
                     this.ApplyEffect(mob, e.StartEffects);
@@ -625,17 +632,20 @@ namespace DOL.GameEvents
                     log.Error(string.Format("Event ID: {0}, Name {1}: with Kill type has {2} mobs missings, MobNamesToKill column in datatabase and tagged mobs Name should match.", e.ID, e.EventName, delta));
                 }
             }
-        
+
+
+            e.Coffres.ForEach(c => c.AddToWorld());          
+
+            //need give more time to client after addtoworld to perform animation
+            await Task.Delay(500);
 
             foreach (var coffre in e.Coffres)
             {
-                coffre.AddToWorld();
-
                 if (e.StartEffects.ContainsKey(coffre.InternalID))
                 {
                     ApplyEffect(coffre, e.StartEffects);
                 }
-            }
+            }         
 
             if (!string.IsNullOrEmpty(e.StartActionStopEventID))
             {
