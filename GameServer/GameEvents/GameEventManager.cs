@@ -54,7 +54,7 @@ namespace DOL.GameEvents
                 if (ev.EndTime.HasValue && ev.EndingConditionTypes.Contains(EndingConditionType.Timer) && DateTime.UtcNow >= ev.EndTime.Value.DateTime)
                 {
                     await this.StopEvent(ev, EndingConditionType.Timer);
-                }
+                }       
 
                 //Start Events Timer
                 if (!ev.StartedTime.HasValue && ev.StartTriggerTime.HasValue && ev.StartConditionType == StartingConditionType.Timer)
@@ -75,13 +75,14 @@ namespace DOL.GameEvents
             {
                 if (!ev.ChanceLastTimeChecked.HasValue)
                 {
-                    ev.ChanceLastTimeChecked = DateTime.UtcNow;
+                    ev.ChanceLastTimeChecked = DateTimeOffset.UtcNow;
+                    ev.SaveToDatabase();
                 }
                 else
                 {
-                    if (DateTime.UtcNow - ev.ChanceLastTimeChecked.Value >= ev.EventChanceInterval.Value)
+                    if (DateTimeOffset.UtcNow - ev.ChanceLastTimeChecked.Value >= ev.EventChanceInterval.Value)
                     {
-                        ev.ChanceLastTimeChecked = DateTime.UtcNow;
+                        ev.ChanceLastTimeChecked = DateTimeOffset.UtcNow;
                         if (rand.Next(0, 101) <= ev.EventChance)
                         {
                             await this.StartEvent(ev);
@@ -571,7 +572,33 @@ namespace DOL.GameEvents
                         }
                     }
                 }
-            }         
+            }
+
+            foreach (var mob in e.Mobs)
+            {
+                mob.Health = mob.MaxHealth;
+                mob.Mana = mob.MaxMana;
+
+                if (e.IsKillingEvent && e.MobNamesToKill.Contains(mob.Name))
+                {
+                    e.WantedMobsCount++;
+                }
+            }
+
+            if (e.IsKillingEvent)
+            {
+                int delta = e.MobNamesToKill.Count() - e.WantedMobsCount;
+
+                if (e.WantedMobsCount == 0 && e.EndingConditionTypes.Where(ed => ed != EndingConditionType.Kill).Count() == 0)
+                {
+                    log.Error(string.Format("Event ID: {0}, Name: {1}, cannot be start because No Mobs found for Killing Type ending and no other ending type set", e.ID, e.EventName));
+                    return false;
+                }
+                else if (delta > 0)
+                {
+                    log.Error(string.Format("Event ID: {0}, Name {1}: with Kill type has {2} mobs missings, MobNamesToKill column in datatabase and tagged mobs Name should match.", e.ID, e.EventName, delta));
+                }
+            }
 
             e.StartedTime = DateTimeOffset.UtcNow;
             e.Status = EventStatus.NotOver;
@@ -592,19 +619,9 @@ namespace DOL.GameEvents
                 e.RemainingTimeTimer.Start();
             }
 
-            e.WantedMobsCount = 0;           
-
             foreach(var mob in e.Mobs)
             {
-                mob.Health = mob.MaxHealth;
-                mob.Mana = mob.MaxMana;
-
                 mob.AddToWorld();
-
-                if (e.IsKillingEvent && e.MobNamesToKill.Contains(mob.Name))
-                {
-                    e.WantedMobsCount++;
-                }
             }
 
             //need give more time to client after addtoworld to perform animation
@@ -617,22 +634,6 @@ namespace DOL.GameEvents
                     this.ApplyEffect(mob, e.StartEffects);
                 }
             }
-
-            if (e.IsKillingEvent)
-            {
-                int delta = e.MobNamesToKill.Count() - e.WantedMobsCount;
-            
-                if (e.WantedMobsCount == 0 && e.EndingConditionTypes.Where(ed => ed != EndingConditionType.Kill).Count() == 0)
-                {
-                    log.Error(string.Format("Event ID: {0}, Name: {1}, cannot be start because No Mobs found for Killing Type ending and no other ending type set", e.ID, e.EventName));
-                    return false;
-                }
-                else if (delta > 0)
-                {
-                    log.Error(string.Format("Event ID: {0}, Name {1}: with Kill type has {2} mobs missings, MobNamesToKill column in datatabase and tagged mobs Name should match.", e.ID, e.EventName, delta));
-                }
-            }
-
 
             e.Coffres.ForEach(c => c.AddToWorld());          
 
@@ -727,6 +728,17 @@ namespace DOL.GameEvents
             }
 
             log.Info(string.Format("Event Id: {0}, Name: {1} was stopped At: {2}", e.ID, e.EventName, DateTime.Now.ToString()));
+
+            //Handle Interval Starting Event
+            //let a chance to this event to trigger at next interval
+            if (e.StartConditionType == StartingConditionType.Interval)
+            {
+                e.Status = EventStatus.NotOver;
+                e.StartedTime = null;
+                e.EndTime = null;
+                e.ChanceLastTimeChecked = (DateTimeOffset?)null;
+            }
+
             e.SaveToDatabase();
         }
 

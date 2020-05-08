@@ -1048,13 +1048,16 @@ namespace DOL.GS.ServerRules
 		{
 			lock (killedNPC.XPGainers)
 			{
+
 				#region Worth no experience
 				//"This monster has been charmed recently and is worth no experience."
 				string message = "You gain no experience from this kill!";
+#if RELEASE
 				if (killedNPC.CurrentRegion.Time - GameNPC.CHARMED_NOEXP_TIMEOUT < killedNPC.TempProperties.getProperty<long>(GameNPC.CHARMED_TICK_PROP))
 				{
 					message = "This monster has been charmed recently and is worth no experience.";
 				}
+#endif
 
 				if (!killedNPC.IsWorthReward)
 				{
@@ -1066,9 +1069,9 @@ namespace DOL.GS.ServerRules
 					}
 					return;
 				}
-				#endregion
+#endregion
 
-				#region Group/Total Damage
+#region Group/Total Damage
 				var totalDamage = 0.0;
 				Dictionary<Group, int> plrGrpExp = new Dictionary<Group, int>();
 				GamePlayer highestPlayer = null;
@@ -1100,7 +1103,7 @@ namespace DOL.GS.ServerRules
 					}
 
 				}
-				#endregion
+#endregion
 
 				long npcExpValue = killedNPC.ExperienceValue;
 				int npcRPValue = killedNPC.RealmPointsValue;
@@ -1131,7 +1134,7 @@ namespace DOL.GS.ServerRules
 					//Changed: people were getting penalized for their pets doing damage
 					double damagePercent = de.Value / totalDamage;
 
-					#region Realm Points
+#region Realm Points
 
 					// realm points
 					int rpCap = living.RealmPointsValue * 2;
@@ -1159,9 +1162,9 @@ namespace DOL.GS.ServerRules
 					if (realmPoints > 0)
 						living.GainRealmPoints(realmPoints);
 
-					#endregion
+#endregion
 
-					#region Bounty Points
+#region Bounty Points
 
 					// bounty points
 
@@ -1183,7 +1186,7 @@ namespace DOL.GS.ServerRules
 					if (bountyPoints > 0)
 						living.GainBountyPoints(bountyPoints);
 
-					#endregion
+#endregion
 
 					// experience points
 					long xpReward = 0;
@@ -1218,7 +1221,7 @@ namespace DOL.GS.ServerRules
 						}
 					}
 
-					#region Challenge Code
+#region Challenge Code
 					//let's check the con, for example if a level 50 kills a green, we want our level 1 to get green xp too
 					/*
 					 * http://www.camelotherald.com/more/110.shtml
@@ -1242,14 +1245,14 @@ namespace DOL.GS.ServerRules
 					}
 
 
-					#endregion
+#endregion
 
 					expCap = (long)(expCap * npcExceedXPCapAmount);
 
 					if (xpReward > expCap)
 						xpReward = expCap;
 
-					#region Camp Bonus
+#region Camp Bonus
 					// average max camp bonus is somewhere between 50 and 60%
 					double fullCampBonus = ServerProperties.Properties.MAX_CAMP_BONUS;
 					double campBonusPerc = 0;
@@ -1276,9 +1279,9 @@ namespace DOL.GS.ServerRules
 						campBonusPerc = fullCampBonus;
 
 					campBonus = (long)(xpReward * campBonusPerc);
-					#endregion
+#endregion
 
-					#region Outpost Bonus
+#region Outpost Bonus
 					//outpost XP
 					//1.54 http://www.camelotherald.com/more/567.shtml
 					//- Players now receive an exp bonus when fighting within 16,000
@@ -1308,7 +1311,7 @@ namespace DOL.GS.ServerRules
 						else if (Keeps.KeepBonusMgr.RealmHasBonus(eKeepBonusType.Experience_3, living.Realm))
 							outpostXP += (xpReward / 100) * 3;
 					}
-					#endregion
+#endregion
 
 					if (xpReward > 0)
 					{
@@ -1499,7 +1502,7 @@ namespace DOL.GS.ServerRules
 					}
 					totalDamage += de.Value;
 				}
-
+#if RELEASE
 				if (dealNoXP)
 				{
 					foreach (var de in killedPlayer.XPGainers)
@@ -1510,7 +1513,7 @@ namespace DOL.GS.ServerRules
 					}
 					return;
 				}
-
+#endif
 
 				long playerExpValue = killedPlayer.ExperienceValue;
 				playerExpValue = (long)(playerExpValue * ServerProperties.Properties.XP_RATE);
@@ -1864,7 +1867,7 @@ namespace DOL.GS.ServerRules
 			List<string> stat = new List<string>();
 
 			int total = 0;
-			#region Players Killed
+#region Players Killed
 			//only show if there is a kill [by Suncheck]
 			if ((player.KillsAlbionPlayers + player.KillsMidgardPlayers + player.KillsHiberniaPlayers) > 0)
 			{
@@ -1889,9 +1892,9 @@ namespace DOL.GS.ServerRules
 				}
 				stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.Kill.TotalPlayers") + ": " + total.ToString("N0"));
 			}
-			#endregion
+#endregion
 			stat.Add(" ");
-			#region Players Deathblows
+#region Players Deathblows
 			//only show if there is a kill [by Suncheck]
 			if ((player.KillsAlbionDeathBlows + player.KillsMidgardDeathBlows + player.KillsHiberniaDeathBlows) > 0)
 			{
@@ -1916,9 +1919,9 @@ namespace DOL.GS.ServerRules
 				}
 				stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.Deathblows.TotalPlayers") + ": " + total.ToString("N0"));
 			}
-			#endregion
+#endregion
 			stat.Add(" ");
-			#region Players Solo Kills
+#region Players Solo Kills
 			//only show if there is a kill [by Suncheck]
 			if ((player.KillsAlbionSolo + player.KillsMidgardSolo + player.KillsHiberniaSolo) > 0)
 			{
@@ -1943,9 +1946,9 @@ namespace DOL.GS.ServerRules
 				}
 				stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.Solo.TotalPlayers") + ": " + total.ToString("N0"));
 			}
-			#endregion
+#endregion
 			stat.Add(" ");
-			#region Keeps
+#region Keeps
 			//only show if there is a capture [by Suncheck]
 			if ((player.CapturedKeeps + player.CapturedTowers) > 0)
 			{
@@ -1966,9 +1969,9 @@ namespace DOL.GS.ServerRules
 				//stat.Add("Realm Guard Kills Hibernia: " + player.RealmGuardTotalKills.ToString("N0"));
 				//stat.Add("Total Realm Guard Kills: " + player.RealmGuardTotalKills.ToString("N0"));
 			}
-			#endregion
+#endregion
 			stat.Add(" ");
-			#region PvE
+#region PvE
 			//only show if there is a kill [by Suncheck]
 			if ((player.KillsDragon + player.KillsEpicBoss + player.KillsLegion) > 0)
 			{
@@ -1977,7 +1980,7 @@ namespace DOL.GS.ServerRules
 				if (player.KillsEpicBoss > 0) stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.PvE.KillsEpic") + ": " + player.KillsEpicBoss.ToString("N0"));
 				if (player.KillsLegion > 0) stat.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerStatistic.PvE.KillsLegion") + ": " + player.KillsLegion.ToString("N0"));
 			}
-			#endregion
+#endregion
 
 			return stat;
 		}
@@ -2320,7 +2323,7 @@ namespace DOL.GS.ServerRules
 		public virtual void OnPlayerLevelUp(GamePlayer player, int previousLevel)
 		{
 		}
-		#region MessageToLiving
+#region MessageToLiving
 		/// <summary>
 		/// Send system text message to system window
 		/// </summary>
@@ -2352,6 +2355,6 @@ namespace DOL.GS.ServerRules
 			if (living is GamePlayer)
 				((GamePlayer)living).Out.SendMessage(message, type, loc);
 		}
-		#endregion
+#endregion
 	}
 }

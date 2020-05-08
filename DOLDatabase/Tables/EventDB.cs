@@ -32,8 +32,9 @@ namespace DOLDatabase.Tables
         private int m_timerType;
         private long chronoTime;
         private string endActionStartEventID;
-        private string killStartingMob;
+        private string killStartingGroupMobId;
         private string m_resetEventId;
+        private long m_chanceLastTimeChecked;
 
         [DataElement(AllowDbNull = false, Varchar = 255)]
         public string EventName
@@ -106,6 +107,21 @@ namespace DOLDatabase.Tables
             set
             {
                 m_startConditionType = value;
+                Dirty = true;
+            }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public long ChanceLastTimeChecked
+        {
+            get
+            {
+                return m_chanceLastTimeChecked;
+            }
+
+            set
+            {
+                m_chanceLastTimeChecked = value;
                 Dirty = true;
             }
         }
@@ -372,13 +388,13 @@ namespace DOLDatabase.Tables
         }
 
         [DataElement(AllowDbNull = true, Varchar = 255)]
-        public string KillStartingMob
+        public string KillStartingGroupMobId
         {
-            get => killStartingMob;
+            get => killStartingGroupMobId;
 
             set
             {
-                killStartingMob = value;
+                killStartingGroupMobId = value;
                 Dirty = true;
             }
         }

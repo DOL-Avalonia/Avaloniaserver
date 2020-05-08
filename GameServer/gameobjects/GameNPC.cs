@@ -38,6 +38,7 @@ using DOL.Language;
 using DOL.GS.ServerProperties;
 using DOL.GameEvents;
 using System.Threading.Tasks;
+using DOL.MobGroups;
 
 namespace DOL.GS
 {
@@ -158,6 +159,15 @@ namespace DOL.GS
 		}
 
 		public string EventID
+		{
+			get;
+			set;
+		}
+
+		/// <summary>
+		/// If this mob is a Member of GroupMob, it holds its groupId
+		/// </summary>
+		public string GroupMobId
 		{
 			get;
 			set;
@@ -4145,10 +4155,12 @@ namespace DOL.GS
 						GameObject obj = de.Key;
 						if (obj is GamePlayer player)
 						{
+#if RELEASE
 							//If a gameplayer with privlevel > 1 attacked the
 							//mob, then the players won't gain xp ...
 							if (player.Client.Account.PrivLevel > 1)
 								return false;
+#endif
 							//If a player to which we are gray killed up we
 							//aren't worth anything either
 							if (player.IsObjectGreyCon(this))
@@ -4248,18 +4260,24 @@ namespace DOL.GS
 						{
 							Task.Run(() => GameEventManager.Instance.StopEvent(ev, EndingConditionType.Kill));
 						}
-					}
-					else
-					{
-						//Check if killed mob starts event
-						if (ev.StartConditionType == StartingConditionType.Kill && ev.KillStartingMob?.Equals(this.Name) == true && !ev.StartedTime.HasValue)
-						{
-							Task.Run(() => GameEventManager.Instance.StartEvent(ev));
-						}
 					}			
 				}
 			}
 
+			//Check if killed mob starts event
+			if (this.GroupMobId != null)
+			{
+				var mobGroupEvent = GameEventManager.Instance.Events.FirstOrDefault(e => 
+				e.KillStartingGroupMobId?.Equals(this.GroupMobId) == true && 
+			   !e.StartedTime.HasValue && 
+			    e.Status == EventStatus.NotOver &&
+				e.StartConditionType == StartingConditionType.Kill);
+
+				if (mobGroupEvent != null && MobGroupManager.Instance.IsAllOthersGroupMobDead(this))
+				{
+					Task.Run(() => GameEventManager.Instance.StartEvent(mobGroupEvent));
+				}
+			}
 
 			Delete();
 

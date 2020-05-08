@@ -5,7 +5,8 @@
         Timer,
         Kill,
         Event,
-        Money
+        Money,
+        Interval
     }
 
     public enum EndingConditionType

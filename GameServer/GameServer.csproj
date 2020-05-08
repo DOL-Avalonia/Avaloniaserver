@@ -197,6 +197,7 @@
     <Compile Include="commands\gmcommands\ClientList.cs" />
     <Compile Include="commands\gmcommands\GMEvent.cs" />
     <Compile Include="commands\gmcommands\gmstealth.cs" />
+    <Compile Include="commands\gmcommands\GroupMob.cs" />
     <Compile Include="commands\gmcommands\MoneyNPC.cs" />
     <Compile Include="commands\gmcommands\translate.cs" />
     <Compile Include="commands\gmcommands\zone.cs" />
@@ -972,6 +973,7 @@
     <Compile Include="minotaurrelics\MinotaurRelicManager.cs" />
     <Compile Include="minotaurrelics\Protectors\ArrektosProtector.cs" />
     <Compile Include="minotaurrelics\Protectors\BaseProtector.cs" />
+    <Compile Include="MobGroups\MobGroupManager.cs" />
     <Compile Include="packets\Client\168\BadNameCheckRequestHandler.cs" />
     <Compile Include="packets\Client\168\BuyHookPointHandler.cs" />
     <Compile Include="packets\Client\168\CharacterDeleteRequestHandler.cs" />

@@ -67,7 +67,6 @@
     <OutputPath>..\Debug\Tests\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="GameEvents\EventListTest.cs" />
     <Compile Include="GameServer\gameutils\ServerTest.cs" />
     <Compile Include="GameServer\InvalidNamesStartupTest.cs" />
     <Compile Include="Managers\FriendsManagerTest.cs" />
@@ -200,6 +199,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="GameEvents\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -63,9 +63,10 @@ namespace DOL.GameEvents
             TimerType = Enum.TryParse(db.TimerType.ToString(), out TimerType timer) ? timer : TimerType.DateType;            
             EndTime = db.EndTime > 0 && db.EndTime < long.MaxValue ? DateTimeOffset.FromUnixTimeSeconds(db.EndTime) : (DateTimeOffset?)null;
             ChronoTime = db.ChronoTime;
-            KillStartingMob = !string.IsNullOrEmpty(db.KillStartingMob) ? db.KillStartingMob : null;
+            KillStartingGroupMobId = !string.IsNullOrEmpty(db.KillStartingGroupMobId) ? db.KillStartingGroupMobId : null;
             ResetEventId = !string.IsNullOrEmpty(db.ResetEventId) ? db.ResetEventId : null;
             Status = Enum.TryParse(db.Status.ToString(), out EventStatus stat) ? stat : EventStatus.NotOver;
+            ChanceLastTimeChecked = db.ChanceLastTimeChecked > 0 ? DateTimeOffset.FromUnixTimeSeconds(db.ChanceLastTimeChecked) : (DateTimeOffset?)null;
 
             //Handle invalid ChronoType
             if (TimerType == TimerType.ChronoType && ChronoTime <= 0)
@@ -75,7 +76,7 @@ namespace DOL.GameEvents
                 ChronoTime = 5;
             }
 
-            if (StartConditionType == StartingConditionType.Kill && KillStartingMob == null)
+            if (StartConditionType == StartingConditionType.Kill && KillStartingGroupMobId == null)
             {
                 log.Error(string.Format("Event Id: {0}, Name: {1}, with kill Starting Type will not start because KillStartingMob is Null", ID, EventName));
             }
@@ -174,13 +175,13 @@ namespace DOL.GameEvents
             set;
         }
 
-        public string KillStartingMob
+        public string KillStartingGroupMobId
         {
             get;
             set;
         }
 
-        public DateTime? ChanceLastTimeChecked
+        public DateTimeOffset? ChanceLastTimeChecked
         {
             get;
             set;
@@ -386,8 +387,9 @@ namespace DOL.GameEvents
             db.StartTriggerTime = StartTriggerTime.HasValue ? StartTriggerTime.Value.ToUnixTimeSeconds() : 0;
             db.ChronoTime = ChronoTime;
             db.TimerType = (int)this.TimerType;
-            db.KillStartingMob = KillStartingMob;
+            db.KillStartingGroupMobId = KillStartingGroupMobId;
             db.ResetEventId = ResetEventId;
+            db.ChanceLastTimeChecked = ChanceLastTimeChecked.HasValue ? ChanceLastTimeChecked.Value.ToUnixTimeSeconds() : 0;
 
             if (ID == null)
             {

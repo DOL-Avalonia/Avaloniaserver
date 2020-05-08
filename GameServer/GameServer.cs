@@ -888,6 +888,13 @@ namespace DOL.GS
                 }
 
                 //---------------------------------------------------------------
+                // Try to initialize the MobGroup Manager
+                if (!InitComponent(MobGroups.MobGroupManager.Instance.LoadFromDatabase(), "MobGroup Manager"))
+                {
+                    return false;
+                }
+
+                //---------------------------------------------------------------
                 // Try to initialize the Game Events
                 if (!InitComponent(GameEventManager.Instance.Init(), "Game Events"))
                 {
