@@ -391,7 +391,7 @@ namespace DOL.GameEvents
             
             if (e.EndingConditionTypes.Contains(EndingConditionType.Timer) && e.EndTime.HasValue)
             {
-                infos.Add(" -- Remaining Time: " + (string.Format(@"{0:dd\:hh\:mm\:ss}", e.EndTime.Value.Subtract(DateTimeOffset.UtcNow))));
+                infos.Add(" -- Remaining Time: " + (e.Status == EventStatus.NotOver ? string.Format(@"{0:dd\:hh\:mm\:ss}", e.EndTime.Value.Subtract(DateTimeOffset.UtcNow)) : "-"));
             }
         }
 
@@ -403,10 +403,14 @@ namespace DOL.GameEvents
             infos.Add(" -- DebutText: " + e.DebutText ?? string.Empty);
             infos.Add(" -- TimerType: " + e.TimerType.ToString());
             infos.Add(" -- ChronoTime: " + e.ChronoTime + " mins");
-            infos.Add(" -- End Time: " + (e.EndTime.HasValue ? e.EndTime.Value.ToLocalTime().ToString() : string.Empty));
+            infos.Add(" -- EndTime: " + (e.EndTime.HasValue ? e.EndTime.Value.ToLocalTime().ToString() : string.Empty));
             infos.Add(" -- EndingActionA: " + e.EndingActionA.ToString());
             infos.Add(" -- EndingActionB: " + e.EndingActionB.ToString());
             infos.Add(" -- StartTriggerTime: " + (e.StartTriggerTime.HasValue ? e.StartTriggerTime.Value.ToLocalTime().ToString() : string.Empty));
+            infos.Add(" -- MobNamesToKill: " + (e.MobNamesToKill != null ? string.Join(",", e.MobNamesToKill) : "-"));
+            infos.Add(" -- KillStartingGroupMobId: " + (e.KillStartingGroupMobId ?? "-"));
+            infos.Add(" -- ResetEventId: " + (e.ResetEventId ?? "-"));
+            infos.Add(" -- ChanceLastTimeChecked: " + (e.ChanceLastTimeChecked.HasValue ? e.ChanceLastTimeChecked.Value.ToLocalTime().ToString() : "-"));
             infos.Add(" -- EndingConditionTypes: ");
             foreach(var t in e.EndingConditionTypes)
             {
@@ -513,6 +517,9 @@ namespace DOL.GameEvents
             ev.StartedTime = (DateTimeOffset?)null;
             ev.EndTime = (DateTimeOffset?)null;
             ev.Status = EventStatus.NotOver;
+            ev.WantedMobsCount = 0;
+
+            CleanEvent(ev);
 
             if (ev.StartConditionType == StartingConditionType.Money)
             {
@@ -550,6 +557,8 @@ namespace DOL.GameEvents
 
         public async Task<bool> StartEvent(GameEvent e)
         {
+            e.WantedMobsCount = 0;
+
             if (e.EndingConditionTypes.Contains(EndingConditionType.Timer))
             {
                 if (e.TimerType == TimerType.ChronoType)
@@ -606,7 +615,7 @@ namespace DOL.GameEvents
 
             if (e.DebutText != null && e.EventZones?.Any() == true)
             {                
-                NotifyPlayersInEventZones(e.DebutText, e.EventZones);              
+                NotifyPlayersInEventZones(e.AnnonceType, e.DebutText, e.EventZones);              
             }
 
             if (e.HasHandomText)
@@ -710,7 +719,7 @@ namespace DOL.GameEvents
 
             if (e.EndText != null && e.EventZones?.Any() == true)
             {
-                NotifyPlayersInEventZones(e.EndText, e.EventZones);
+                NotifyPlayersInEventZones(e.AnnonceType, e.EndText, e.EventZones);
                 //Enjoy the message
                 await Task.Delay(TimeSpan.FromSeconds(5));
             }
@@ -816,14 +825,46 @@ namespace DOL.GameEvents
             }
         }
 
-        public static void NotifyPlayersInEventZones(string message, IEnumerable<string> zones)
+        public static void NotifyPlayersInEventZones(AnnonceType annonceType, string message, IEnumerable<string> zones)
         {
+            eChatType type;
+            eChatLoc loc;
+
+            switch (annonceType)
+            {
+                case AnnonceType.Log:
+                    type = eChatType.CT_Merchant;
+                    loc = eChatLoc.CL_SystemWindow;
+                    break;
+
+                case AnnonceType.Send:
+                    type = eChatType.CT_Send;
+                    loc = eChatLoc.CL_SystemWindow;
+                    break;
+
+                case AnnonceType.Windowed:
+                    type = eChatType.CT_System;
+                    loc = eChatLoc.CL_PopupWindow;
+                    break;
+
+                default:
+                    type = eChatType.CT_ScreenCenter;
+                    loc = eChatLoc.CL_SystemWindow;
+                    break;
+            }
+         
             foreach (var cl in WorldMgr.GetAllPlayingClients().Where(c => zones.Contains(c.Player.CurrentZone.ID.ToString())))
             {
-                cl.Out.SendMessage(message, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
+                if (annonceType == AnnonceType.Confirm)
+                {
+                    cl.Out.SendDialogBox(eDialogCode.CustomDialog, 0, 0, 0, 0, eDialogType.Ok, true, message);
+                }
+                else
+                {
+                    cl.Out.SendMessage(message, type, loc);
+                }
             }
         }
-
 
         private static void CleanEvent(GameEvent e)
         {

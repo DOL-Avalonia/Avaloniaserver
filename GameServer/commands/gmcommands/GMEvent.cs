@@ -25,7 +25,8 @@ namespace DOL.GS.Commands
 		"'/GMEvent respawn <mob|coffre> <name> <eventId> <true|false>'Change la valeur de CanRespawn du <mob|coffre> par son <name> dans un event par son <eventId> <true|false>",		
 		"'/GMEvent starteffect <mob|coffre> <name> <eventId> <spellId>'Change la valeur starteffectId du <mob|coffre> par son <name> dans un event <eventId> en spécifiant le <spellId>",
 		"'/GMEvent endeffect <mob|coffre> <name> <eventId> <spellId>'Change la valeur endeffectId du <mob|coffre> par son <name> dans un event <eventId> en spécifiant le <spellId>",
-		"'GMEvent refresh region <regionid>'Cherche les mobs et les coffres de la région <regionid> avec des EventID récemment ajoutés et les ajoute à cet évent'")]
+		"'/GMEvent refresh region <regionid>'Cherche les mobs et les coffres de la région <regionid> avec des EventID récemment ajoutés et les ajoute à cet évent'",
+		"'/GMEvent annonce <screen|windowed|send|log|confirm> <id>'Change le type d'annonce de l'event spécifié par <id>")]
 	
 	public class GMEvent
 		: AbstractCommandHandler, ICommandHandler
@@ -195,6 +196,19 @@ namespace DOL.GS.Commands
 						}
 						break;
 
+					case "annonce":
+
+						if (args.Length != 4)
+						{
+							DisplaySyntax(client);
+							return;
+						}
+
+						id = args[3];
+						ChangeAnnonce(client, args[2], id);
+
+						break;
+
 					case "starteffect":
 
 						if (args.Length != 6)
@@ -354,7 +368,52 @@ namespace DOL.GS.Commands
 
 		}
 
-	
+		private void ChangeAnnonce(GameClient client, string type, string id)
+		{			
+			if (type == null)
+			{
+				DisplaySyntax(client);
+				return;
+			}
+			
+			var e = GameEventManager.Instance.Events.FirstOrDefault(ev => ev.ID.Equals(id));
+
+			if (e == null)
+			{
+				client.Out.SendMessage($"L'event avec l'id {id} n'a pas été trouvé.", eChatType.CT_Chat, eChatLoc.CL_SystemWindow);
+				return;
+			}	
+
+			switch (type)
+			{
+				case "log":
+					e.AnnonceType = AnnonceType.Log;
+					break;
+
+				case "screen":
+					e.AnnonceType = AnnonceType.Center;
+					break;
+
+				case "confirm":
+					e.AnnonceType = AnnonceType.Confirm;
+					break;
+
+				case "windowed":
+					e.AnnonceType = AnnonceType.Windowed;
+					break;
+
+				case "send":
+					e.AnnonceType = AnnonceType.Send;
+					break;	
+
+				default:
+					DisplaySyntax(client);
+					return;
+			}
+
+			e.SaveToDatabase();
+			client.Out.SendMessage($"L'event avec l'id {id} a désormais un type d'annonce {type}", eChatType.CT_Chat, eChatLoc.CL_SystemWindow);
+		}
 
 		private void RefreshRegion(GameClient client, ushort region)
 		{

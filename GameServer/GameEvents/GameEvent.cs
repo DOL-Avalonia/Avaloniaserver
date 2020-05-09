@@ -67,6 +67,7 @@ namespace DOL.GameEvents
             ResetEventId = !string.IsNullOrEmpty(db.ResetEventId) ? db.ResetEventId : null;
             Status = Enum.TryParse(db.Status.ToString(), out EventStatus stat) ? stat : EventStatus.NotOver;
             ChanceLastTimeChecked = db.ChanceLastTimeChecked > 0 ? DateTimeOffset.FromUnixTimeSeconds(db.ChanceLastTimeChecked) : (DateTimeOffset?)null;
+            AnnonceType = Enum.TryParse(db.AnnonceType.ToString(), out AnnonceType a) ? a : AnnonceType.Center;
 
             //Handle invalid ChronoType
             if (TimerType == TimerType.ChronoType && ChronoTime <= 0)
@@ -110,7 +111,7 @@ namespace DOL.GameEvents
 
         private void RemainingTimeTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            GameEventManager.NotifyPlayersInEventZones(this.RemainingTimeText, this.EventZones);
+            GameEventManager.NotifyPlayersInEventZones(this.AnnonceType, this.RemainingTimeText, this.EventZones);
         }
 
         private void RandomTextTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -118,7 +119,7 @@ namespace DOL.GameEvents
             var rand = new Random(DateTime.Now.Millisecond);
             int index = rand.Next(0, this.RandomText.Count());
 
-            GameEventManager.NotifyPlayersInEventZones(RandomText.ElementAt(index), this.EventZones);
+            GameEventManager.NotifyPlayersInEventZones(this.AnnonceType, RandomText.ElementAt(index), this.EventZones);
         }
      
         public string ID
@@ -231,6 +232,12 @@ namespace DOL.GameEvents
         }
 
         public TimeSpan? EventChanceInterval
+        {
+            get;
+            set;
+        }
+
+        public AnnonceType AnnonceType
         {
             get;
             set;
@@ -390,6 +397,7 @@ namespace DOL.GameEvents
             db.KillStartingGroupMobId = KillStartingGroupMobId;
             db.ResetEventId = ResetEventId;
             db.ChanceLastTimeChecked = ChanceLastTimeChecked.HasValue ? ChanceLastTimeChecked.Value.ToUnixTimeSeconds() : 0;
+            db.AnnonceType = (byte)AnnonceType;
 
             if (ID == null)
             {

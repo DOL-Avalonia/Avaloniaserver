@@ -373,6 +373,7 @@
     <Compile Include="events\gameobjects\SwitchedTargetEventArgs.cs" />
     <Compile Include="events\IDOLEventHandler.cs" />
     <Compile Include="events\server\GameServerCoffreLoadedAttribute.cs" />
+    <Compile Include="GameEvents\AnnonceType.cs" />
     <Compile Include="GameEvents\ConditionTypes.cs" />
     <Compile Include="GameEvents\EndingAction.cs" />
     <Compile Include="GameEvents\EventStatus.cs" />

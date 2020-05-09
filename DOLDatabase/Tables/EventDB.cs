@@ -35,6 +35,7 @@ namespace DOLDatabase.Tables
         private string killStartingGroupMobId;
         private string m_resetEventId;
         private long m_chanceLastTimeChecked;
+        private byte m_AnnonceType;
 
         [DataElement(AllowDbNull = false, Varchar = 255)]
         public string EventName
@@ -154,6 +155,21 @@ namespace DOLDatabase.Tables
             set
             {
                 m_timerType = value;
+                Dirty = true;
+            }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public byte AnnonceType
+        {
+            get
+            {
+                return m_AnnonceType;
+            }
+
+            set
+            {
+                m_AnnonceType = value;
                 Dirty = true;
             }
         }
