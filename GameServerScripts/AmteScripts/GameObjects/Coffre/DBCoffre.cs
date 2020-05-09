@@ -81,6 +81,7 @@ namespace DOL.Database
 		private int m_tpHeading;
 		private bool m_hasPickableAnim;
 		private string m_eventID;
+		private int m_coffreOpeningInterval;
 
 		[DataElement(AllowDbNull=false)]
 		public string Name
@@ -193,7 +194,29 @@ namespace DOL.Database
 				m_model = value;
 			}
 		}
-		
+
+		[DataElement(AllowDbNull = false)]
+		public int CoffreOpeningInterval
+		{
+			get
+			{
+				return m_coffreOpeningInterval;
+			}
+
+			set
+			{
+				m_coffreOpeningInterval = value;
+				Dirty = true;
+			}
+		}
+
+		[DataElement(AllowDbNull = false)]
+		public bool IsLargeCoffre
+		{
+			get;
+			set;
+		}
+
 		/// <summary>
 		/// Temps en minutes avant la réapparition d'un item
 		/// </summary>

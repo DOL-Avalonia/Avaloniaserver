@@ -34,7 +34,9 @@ namespace DOL.GS.Scripts
          "'/coffre tpisrenaissance' Alterne l'état IsRenaissance du coffre",
          "'/coffre isOpeningRenaissance' Alterne l'état isOpeningRenaissanceType du coffre",
          "'/coffre punishSpellId <SpellId>' Définit le SpellID pour punir le joueur si il n'est pas Isrenaissance",
-         "'/coffre pickableAnim' Alterne l'état de HasPickableAnim ou Activer ou désactiver l'emote pickup")]
+         "'/coffre pickableAnim' Alterne l'état de HasPickableAnim ou Activer ou désactiver l'emote pickup",
+         "'/coffre interval <minutes>' Change l'interval d'ouverture d'un coffre en minutes",
+         "'/coffre longdistance <true|false>' Change la distance d'interraction du coffre. (utile pour les gros coffres)")]
     public class CoffreCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
@@ -91,6 +93,38 @@ namespace DOL.GS.Scripts
                     ChatUtil.SendSystemMessage(client, "Le coffre \"" + coffre.Name + "\" a maintenant le model " + coffre.Model);
                     break;
                 #endregion
+
+                case "interval":
+                    int min = 0;
+
+                    if (coffre != null && args.Length == 3 && int.TryParse(args[2], out min) && min >= 0)
+                    {
+                        coffre.CoffreOpeningInterval = min;
+                        coffre.SaveIntoDatabase();
+                        ChatUtil.SendSystemMessage(client, "Le coffre \"" + coffre.Name + "\" a maintenant l'interval d'ouverture de " + min + " minutes");
+                    }
+                    else
+                    {
+                        DisplaySyntax(client);                        
+                    }
+
+                    break;
+
+                case "longdistance":
+                    bool isLongDitance = false;
+
+                    if (coffre != null && args.Length == 3 && bool.TryParse(args[2], out isLongDitance))
+                    {
+                        coffre.IsLargeCoffre = isLongDitance;
+                        coffre.SaveIntoDatabase();
+                        ChatUtil.SendSystemMessage(client, "La valeur LongDistance du coffre \"" + coffre.Name + " est maintenant de: " + isLongDitance);
+                    }
+                    else
+                    {
+                        DisplaySyntax(client);
+                    }
+
+                    break;
 
                 #region item - add - remove
                 case "item":

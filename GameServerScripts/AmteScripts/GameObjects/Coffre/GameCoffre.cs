@@ -12,6 +12,7 @@ namespace DOL.GS.Scripts
 	{
 		public const string CROCHET = "Crochet"; //Id_nb des crochets
 		public const int	UNLOCK_TIME = 10; //Temps pour crocheter une serrure en secondes
+		public readonly int LARGE_ITEM_DIST = 320;
 	    private GamePlayer m_interactPlayer;
 	    private DateTime m_lastInteract;
 		
@@ -119,6 +120,12 @@ namespace DOL.GS.Scripts
 			set;
 		}
 
+		public bool IsLargeCoffre
+		{
+			get;
+			set;
+		}
+
 		public int TpEffect
 		{
 			get;
@@ -138,6 +145,19 @@ namespace DOL.GS.Scripts
 		}
 
 		public int PunishSpellId
+		{
+			get;
+			set;
+		}
+
+
+		public int CoffreOpeningInterval
+		{
+			get;
+			set;
+		}
+
+		public DateTime? LastTimeChecked
 		{
 			get;
 			set;
@@ -235,7 +255,7 @@ namespace DOL.GS.Scripts
 		{
 			if (!base.Interact (player) || !player.IsAlive) return false;
 
-			if (!this.IsWithinRadius(player, WorldMgr.GIVE_ITEM_DISTANCE + 60)) return false;	
+			if (!this.IsWithinRadius(player, (IsLargeCoffre ? LARGE_ITEM_DIST : WorldMgr.GIVE_ITEM_DISTANCE + 60))) return false;	
 
 			if (HasPickableAnim)
 			{
@@ -313,49 +333,57 @@ namespace DOL.GS.Scripts
 			bool gotItemOrUsedTeleporter = false;
 			if (!IsTeleporter)
 			{
-				CoffreItem coffre = GetRandomItem();
-				if (coffre.Id_nb == "" && coffre.Chance == 0)
-					player.Out.SendMessage("Vous ne trouvez rien d'intéressant.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				else
+				if (this.CoffreOpeningInterval == 0 || !this.LastTimeChecked.HasValue || (DateTime.Now - this.LastTimeChecked.Value) > TimeSpan.FromMinutes(this.CoffreOpeningInterval) )
 				{
-					ItemTemplate item = GameServer.Database.SelectObject<ItemTemplate>("Id_nb = '" + GameServer.Database.Escape(coffre.Id_nb) + "'");
-					if (item == null)
-					{
-						player.Out.SendMessage("Vous ne trouvez rien d'intéressant. (Erreur de donnée, veuillez le signaliser à un GameMaster)", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-						coffre.Chance = 0;
-					}
+					this.LastTimeChecked = DateTime.Now;
+					CoffreItem coffre = GetRandomItem();
+					if (coffre.Id_nb == "" && coffre.Chance == 0)
+						player.Out.SendMessage("Vous ne trouvez rien d'intéressant.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 					else
 					{
-						if (!IsOpeningRenaissanceType)
+						ItemTemplate item = GameServer.Database.SelectObject<ItemTemplate>("Id_nb = '" + GameServer.Database.Escape(coffre.Id_nb) + "'");
+						if (item == null)
 						{
-							gotItemOrUsedTeleporter = GetItem(player, item);
+							player.Out.SendMessage("Vous ne trouvez rien d'intéressant. (Erreur de donnée, veuillez le signaliser à un GameMaster)", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+							coffre.Chance = 0;
 						}
 						else
 						{
-							if (player.IsRenaissance)
+							if (!IsOpeningRenaissanceType)
 							{
 								gotItemOrUsedTeleporter = GetItem(player, item);
 							}
 							else
 							{
-								if (PunishSpellId > 0)
+								if (player.IsRenaissance)
 								{
-									var spell = GameServer.Database.SelectObject<DBSpell>("SpellID = " + PunishSpellId);							
-
-									if (spell != null)
+									gotItemOrUsedTeleporter = GetItem(player, item);
+								}
+								else
+								{
+									if (PunishSpellId > 0)
 									{
-										foreach (GamePlayer pl in this.GetPlayersInRadius(5000))
+										var spell = GameServer.Database.SelectObject<DBSpell>("SpellID = " + PunishSpellId);
+
+										if (spell != null)
 										{
-											pl.Out.SendSpellEffectAnimation(pl, pl, (ushort)PunishSpellId, 0, false, 5);
+											foreach (GamePlayer pl in this.GetPlayersInRadius(5000))
+											{
+												pl.Out.SendSpellEffectAnimation(pl, pl, (ushort)PunishSpellId, 0, false, 5);
+											}
+											player.TakeDamage(this, eDamageType.Energy, (int)spell.Damage, 0);
 										}
-										player.TakeDamage(this, eDamageType.Energy, (int)spell.Damage, 0);
 									}
 								}
 							}
-						}			
 
-						HandlePopMob();
+							HandlePopMob();
+						}
 					}
+				}
+				else
+				{
+					player.Out.SendMessage("Quelqu'un est déjà passé avant vous, revenez plus tard.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				}
 			}
 			else
@@ -587,7 +615,7 @@ namespace DOL.GS.Scripts
 		#region Item aléatoire
 		private CoffreItem GetRandomItem()
 		{
-			if(!Util.Chance(ItemChance))
+			if (!Util.Chance(ItemChance))
 				return new CoffreItem("",0);
 
 			int num = Util.Random(1, AllChance);
@@ -682,6 +710,8 @@ namespace DOL.GS.Scripts
 			TpEffect = coffre.TpEffect;
 			TpRegion = coffre.TpRegion;
 			EventID = coffre.EventID;
+			CoffreOpeningInterval = coffre.CoffreOpeningInterval;
+			IsLargeCoffre = coffre.IsLargeCoffre;
 
 			InitTimer();
 
@@ -740,6 +770,8 @@ namespace DOL.GS.Scripts
 			Coffre.TpRegion = TpRegion;
 			Coffre.IsOpeningRenaissanceType = IsOpeningRenaissanceType;
 			Coffre.EventID = EventID;
+			Coffre.CoffreOpeningInterval = CoffreOpeningInterval;
+			Coffre.IsLargeCoffre = IsLargeCoffre;
 
 			if (Items != null)
 			{
@@ -814,7 +846,9 @@ namespace DOL.GS.Scripts
 					"-- Coffre --",
 					" + Chance d'apparition d'un item: " + ItemChance + "%",
 					" + Interval d'apparition d'un item: " + ItemInterval + " minutes",
-					" + Dernière fois que le coffre a été ouvert: " + LastOpen.ToShortDateString() + " " + LastOpen.ToShortTimeString()
+					" + Interval d'ouverture un coffre: " + this.CoffreOpeningInterval + " minutes",
+					" + Dernière fois que le coffre a été ouvert: " + LastOpen.ToShortDateString() + " " + LastOpen.ToShortTimeString(),
+					" + IsLongDistance type: " + this.IsLargeCoffre
 				};
 			if (LockDifficult > 0)
 				text.Add(" + Difficulté pour crocheter le coffre: " + LockDifficult + "%");
