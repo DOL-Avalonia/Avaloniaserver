@@ -121,6 +121,7 @@
     <Compile Include="Amtescripts\GameObjects\GameMobKamikaze.cs" />
     <Compile Include="Amtescripts\GameObjects\MasterTrainer.cs" />
     <Compile Include="Amtescripts\GameObjects\MobHirule.cs" />
+    <Compile Include="Amtescripts\GameObjects\TextNPC\RequireItemInfo.cs" />
     <Compile Include="Amtescripts\GvG\GuildCaptainGuard.cs" />
     <Compile Include="Amtescripts\PvP\PvpManager.cs" />
     <Compile Include="Amtescripts\PvP\TeleporterPvP.cs" />

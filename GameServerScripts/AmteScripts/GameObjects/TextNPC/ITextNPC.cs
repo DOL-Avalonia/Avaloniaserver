@@ -3,6 +3,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using DOL.Database;
 using DOL.GS.PacketHandler;
@@ -33,6 +34,8 @@ namespace DOL.GS.Scripts
         public TextNPCCondition Condition { get; private set; }
         public DBTextNPC TextDB { get; set; }
 
+        public Dictionary<string, EchangeurInfo> PlayerReferences;
+
         public TextNPCPolicy(GameNPC body)
         {
             Condition = new TextNPCCondition("");
@@ -43,6 +46,7 @@ namespace DOL.GS.Scripts
             _lastPhrase = 0;
             Interact_Text = "";
             PhraseInterval = 0;
+            PlayerReferences = new Dictionary<string, EchangeurInfo>();
         }
 
         public bool Interact(GamePlayer player)
@@ -118,39 +122,260 @@ namespace DOL.GS.Scripts
                 return false;
             }
 
-            if (!player.Inventory.RemoveCountFromStack(item, EchItem.ItemRecvCount))
+            if (EchItem.GoldPrice > 0 && Money.GetGold(player.GetCurrentMoney()) < EchItem.GoldPrice)
+            {
+                player.Out.SendMessage(string.Format("Vous avez besoin de {0} pièces d'or pour échanger cet objet", EchItem.GoldPrice), eChatType.CT_System, eChatLoc.CL_PopupWindow);
                 return false;
-            InventoryLogging.LogInventoryAction(player, _body, eInventoryActionType.Quest, item.Template, EchItem.ItemRecvCount);
+            }
 
-            if (EchItem.GiveTemplate != null)
-                if (!player.Inventory.AddTemplate(GameInventoryItem.Create(EchItem.GiveTemplate), EchItem.ItemGiveCount, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+            var requireditems = this.GetRequireItems(EchItem);
+
+            if (requireditems.Any())
+            {            
+                //Handle references for callback
+                if (PlayerReferences.ContainsKey(player.InternalID))
                 {
-                    player.Out.SendMessage("Votre inventaire est plein, l'objet est déposé au sol.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    for (int i = 0; i < EchItem.ItemGiveCount; i++)
-                        player.CreateItemOnTheGround(GameInventoryItem.Create(EchItem.GiveTemplate));
+                    this.PlayerReferences[player.InternalID] = new EchangeurInfo() { requireInfos = requireditems, GiveItem = item as GameInventoryItem };
                 }
                 else
-                    InventoryLogging.LogInventoryAction(_body, player, eInventoryActionType.Quest, EchItem.GiveTemplate, EchItem.ItemGiveCount);
+                {
+                    this.PlayerReferences.Add(player.InternalID, new EchangeurInfo() { requireInfos = requireditems, GiveItem = item as GameInventoryItem });
+                }
 
-            if (EchItem.GainMoney > 0)
-            {
-                player.AddMoney(EchItem.GainMoney);
-                InventoryLogging.LogInventoryAction(_body, player, eInventoryActionType.Quest, EchItem.GainMoney);
+                if (this.HasAllRequiredItems(player, requireditems, item.Id_nb))
+                { 
+                    player.Client.Out.SendCustomDialog(string.Format("Afin de procéder à l'échange, il va falloir payer {0} pièces d'or et me donner en plus {1}", 
+                       EchItem.GoldPrice,
+                       string.Join(", ", requireditems.Select(r => string.Format("{0} {1}", r.Count, r.Name)))
+                        ), this.HandleClientResponse);
+                }
+                else
+                {
+                    player.Client.Out.SendMessage("Il va te manquer des elements pour procéder à l'échange", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                }
+
+                return false;
             }
-            if (EchItem.GainXP > 0)
-                player.GainExperience(GameLiving.eXPSource.Quest, EchItem.GainXP);
-            else if (EchItem.GainXP < 0)
+            else
             {
-                long xp = (player.ExperienceForNextLevel - player.ExperienceForCurrentLevel ) * EchItem.GainXP / -1000;
+                if (EchItem.GoldPrice > 0)
+                {
+                    player.Client.Out.SendCustomDialog(string.Format("J'aurais besoin de {0} pièces d'or pour échanger ça. Valider l'échange ?", EchItem.GoldPrice), this.HandleClientResponse);
+                }
+                
+                return ProcessExchange(item, player, EchItem, requireditems);      
+            }
+        }
+
+        public void HandleClientResponse(GamePlayer player, byte response)
+        {
+            if (response == 1)
+            {
+                if (this.PlayerReferences.ContainsKey(player.InternalID) && EchangeurDB.ContainsKey(this.PlayerReferences[player.InternalID].GiveItem.Id_nb))
+                {
+                    var echangeur = EchangeurDB[this.PlayerReferences[player.InternalID].GiveItem.Id_nb];
+
+                    this.ProcessExchange(this.PlayerReferences[player.InternalID].GiveItem, player, echangeur, this.PlayerReferences[player.InternalID].requireInfos);
+                }
+                else
+                {
+                    log.Error("Impossible to get player reference from callback in Echangeur from player id" + player.InternalID);
+                }
+            }
+
+            this.PlayerReferences.Remove(player.InternalID);
+        }
+
+        private IEnumerable<RequireItemInfo> GetRequireItems(DBEchangeur ech)
+        {
+            List<RequireItemInfo> items = new List<RequireItemInfo>();
+
+            var val1 = this.ParseItem(ech.PriceRessource1);
+
+            if (val1 != null)
+            {
+                items.Add(val1);
+            }
+
+            var val2 = this.ParseItem(ech.PriceRessource2);
+
+            if (val2 != null)
+            {
+                items.Add(val2);
+            }
+
+            var val3 = this.ParseItem(ech.PriceRessource3);
+
+            if (val3 != null)
+            {
+                items.Add(val3);
+            }
+
+            return items;
+        }
+
+        private RequireItemInfo ParseItem(string raw)
+        {
+            if (string.IsNullOrEmpty(raw))
+            {
+                return null;
+            }
+
+            int count = 0;
+            var item =  raw.Split(new char[] { '|' });
+
+            if (item.Length == 2 && int.TryParse(item[1], out count))
+            {
+                return new RequireItemInfo()
+                {
+                    ItemId = item[0],
+                    Count = count
+                };
+            }
+
+            return null;
+        }
+
+
+        private void RemoveItemsFromPlayer(GamePlayer player, IEnumerable<RequireItemInfo> requireItems, InventoryItem gaveItem)
+        {
+            List<GameInventoryItem> items = new List<GameInventoryItem>();
+            var playerItems = new Dictionary<string, int>();
+
+            foreach (var val in requireItems)
+            {
+                if (!playerItems.ContainsKey(val.ItemId))
+                    playerItems.Add(val.ItemId, 0);
+            }
+
+            bool hasRemovedgaveItem = false;
+
+            items.Add(gaveItem as GameInventoryItem);
+
+            foreach (GameInventoryItem item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+            {
+                var requireItem = requireItems.FirstOrDefault(i => i.ItemId.Equals(item.Id_nb));
+
+                if (requireItem != null)
+                {
+                    if (item.Id_nb.Equals(gaveItem) && !hasRemovedgaveItem)
+                    {
+                        hasRemovedgaveItem = true;
+                        continue;
+                    }
+
+                    if (item.Count >= requireItem.Count)
+                    {
+                        player.Inventory.RemoveCountFromStack(item, requireItem.Count);
+                    }
+                    else
+                    {
+                        items.Add(item);
+                    }
+                    requireItem.Name = item.Name;
+                }
+            }
+
+            foreach (var item in items)
+            {
+                if (item.OwnerID == null)
+                    item.OwnerID = player.InternalID;
+
+                player.Inventory.RemoveItem(item);
+            }
+        }
+
+        private bool HasAllRequiredItems(GamePlayer player, IEnumerable<RequireItemInfo> requireItems, string gaveItem)
+        {
+            var playerItems = new Dictionary<string, int>();
+
+            foreach (var val in requireItems)
+            {
+                if (!playerItems.ContainsKey(val.ItemId))
+                    playerItems.Add(val.ItemId, 0);
+            }
+
+            bool hasRemovedgaveItem = false;
+
+            foreach (var item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+            { 
+                var requireItem = requireItems.FirstOrDefault(i => i.ItemId.Equals(item.Id_nb));
+
+                if (requireItem != null)
+                {
+                    if (item.Id_nb.Equals(gaveItem) && !hasRemovedgaveItem)
+                    {
+                        hasRemovedgaveItem = true;
+                        continue;
+                    }
+
+                    if (item.Count >= requireItem.Count)
+                    {
+                        playerItems[item.Id_nb] = item.Count;
+                    }
+                    else
+                    {
+                        playerItems[item.Id_nb] += item.Count;
+                    }
+
+                    requireItem.Name = item.Name;
+                }
+            }
+
+            foreach (var reqItem in requireItems)
+            {                
+                if (playerItems[reqItem.ItemId] < reqItem.Count)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+
+        private bool ProcessExchange(InventoryItem item, GamePlayer player, DBEchangeur echItem, IEnumerable<RequireItemInfo> requireItems)
+        {
+            if (!player.Inventory.RemoveCountFromStack(item, echItem.ItemRecvCount))
+                return false;
+            InventoryLogging.LogInventoryAction(player, _body, eInventoryActionType.Quest, item.Template, echItem.ItemRecvCount);
+
+            if (echItem.GiveTemplate != null)
+                if (!player.Inventory.AddTemplate(GameInventoryItem.Create(echItem.GiveTemplate), echItem.ItemGiveCount, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+                {
+                    player.Out.SendMessage("Votre inventaire est plein, l'objet est déposé au sol.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    for (int i = 0; i < echItem.ItemGiveCount; i++)
+                        player.CreateItemOnTheGround(GameInventoryItem.Create(echItem.GiveTemplate));
+                }
+                else
+                    InventoryLogging.LogInventoryAction(_body, player, eInventoryActionType.Quest, echItem.GiveTemplate, echItem.ItemGiveCount);
+
+            if (echItem.GainMoney > 0)
+            {
+                player.AddMoney(echItem.GainMoney);
+                InventoryLogging.LogInventoryAction(_body, player, eInventoryActionType.Quest, echItem.GainMoney);
+            }
+            if (echItem.GainXP > 0)
+                player.GainExperience(GameLiving.eXPSource.Quest, echItem.GainXP);
+            else if (echItem.GainXP < 0)
+            {
+                long xp = (player.ExperienceForNextLevel - player.ExperienceForCurrentLevel) * echItem.GainXP / -1000;
                 player.GainExperience(GameLiving.eXPSource.Quest, xp);
             }
 
-            EchItem.ChangedItemCount++;
-            GameServer.Database.SaveObject(EchItem);
+            if (echItem.GoldPrice > 0)
+                player.RemoveMoney(Money.GetMoney(0,0,echItem.GoldPrice,0,0), "Vous avez payé {0}");
 
-            if (Reponses != null && Reponses.ContainsKey(EchItem.ItemRecvID))
+            if (requireItems.Any())
+                this.RemoveItemsFromPlayer(player, requireItems, item);  
+
+
+            echItem.ChangedItemCount++;
+            GameServer.Database.SaveObject(echItem);
+
+            if (Reponses != null && Reponses.ContainsKey(echItem.ItemRecvID))
             {
-                string text = string.Format(Reponses[EchItem.ItemRecvID], player.Name, player.LastName, player.GuildName, player.CharacterClass.Name, player.RaceName);
+                string text = string.Format(Reponses[echItem.ItemRecvID], player.Name, player.LastName, player.GuildName, player.CharacterClass.Name, player.RaceName);
                 if (text != "")
                     player.Out.SendMessage(text, eChatType.CT_System, eChatLoc.CL_PopupWindow);
             }
@@ -307,6 +532,7 @@ namespace DOL.GS.Scripts
             }
             RandomPhrases = table4;
             PhraseInterval = TextDB.PhraseInterval;
+            
 
 
             //Chargement des conditions
@@ -373,7 +599,7 @@ namespace DOL.GS.Scripts
                 }
             }
             TextDB.RandomPhraseEmote = reponse;
-            TextDB.PhraseInterval = PhraseInterval;
+            TextDB.PhraseInterval = PhraseInterval;            
 
             //Sauve les conditions
             if (Condition != null)

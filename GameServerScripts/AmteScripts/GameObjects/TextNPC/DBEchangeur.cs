@@ -24,18 +24,22 @@ namespace DOL.Database
 		private int m_changedItemCount;
 
 		private ItemTemplate m_GiveTemplate;
+		private int m_goldPrice;
+		private string m_priceRessource1;
+		private string m_priceRessource2;
+		private string m_priceRessource3;
 
 		public ItemTemplate GiveTemplate
 		{
 			get
 			{
-                if (m_GiveTemplate == null)
-                {
-                    if (String.IsNullOrEmpty(m_itemGiveID))
-                        return null;
-                	m_GiveTemplate = GameServer.Database.SelectObject<ItemTemplate>("Id_nb = '" + GameServer.Database.Escape(m_itemGiveID) + "'");
-                }
-			    return m_GiveTemplate;
+				if (m_GiveTemplate == null)
+				{
+					if (String.IsNullOrEmpty(m_itemGiveID))
+						return null;
+					m_GiveTemplate = GameServer.Database.SelectObject<ItemTemplate>("Id_nb = '" + GameServer.Database.Escape(m_itemGiveID) + "'");
+				}
+				return m_GiveTemplate;
 			}
 		}
 
@@ -154,6 +158,66 @@ namespace DOL.Database
 			{
 				Dirty = true;
 				m_changedItemCount = value;
+			}
+		}
+
+		[DataElement(AllowDbNull = false)]
+		public int GoldPrice
+		{
+			get
+			{
+				return m_goldPrice;
+			}
+
+			set
+			{
+				m_goldPrice = value;
+				Dirty = true;
+			}
+		}
+
+		[DataElement(AllowDbNull = true, Varchar = 255)]
+		public string PriceRessource1
+		{
+			get
+			{
+				return m_priceRessource1;
+			}
+
+			set
+			{
+				m_priceRessource1 = value;
+				Dirty = true;
+			}
+		}
+
+		[DataElement(AllowDbNull = true, Varchar = 255)]
+		public string PriceRessource2
+		{
+			get
+			{
+				return m_priceRessource2;
+			}
+
+			set
+			{
+				m_priceRessource2 = value;
+				Dirty = true;
+			}
+		}
+
+		[DataElement(AllowDbNull = true, Varchar = 255)]
+		public string PriceRessource3
+		{
+			get
+			{
+				return m_priceRessource3;
+			}
+
+			set
+			{
+				m_priceRessource3 = value;
+				Dirty = true;
 			}
 		}
 	}

@@ -123,6 +123,7 @@
     <Compile Include="Tables\CharacterXDataQuest.cs" />
     <Compile Include="Tables\ClassXSpecialization.cs" />
     <Compile Include="Tables\CharacterXDQRewardQ.cs" />
+    <Compile Include="Tables\CombineItemDb.cs" />
     <Compile Include="Tables\DataQuestRewardQuest.cs" />
     <Compile Include="Tables\EventDB.cs" />
     <Compile Include="Tables\EventsXObjects.cs" />

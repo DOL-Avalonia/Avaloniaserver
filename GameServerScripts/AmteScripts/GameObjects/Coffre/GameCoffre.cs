@@ -247,6 +247,7 @@ namespace DOL.GS.Scripts
 
 		public void RespawnCoffre()
 		{
+			this.LastTimeChecked = (DateTime?)null;
 			base.AddToWorld();
 		}
 
@@ -429,14 +430,17 @@ namespace DOL.GS.Scripts
 
 		private bool GetItem(GamePlayer player, ItemTemplate item)
 		{
-			if (player.Inventory.AddTemplate(GameInventoryItem.Create(item), 1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
-			{
+			var witem = GameInventoryItem.Create(item);
+			if (player.Inventory.AddTemplate(witem, 1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			{				
 				player.Out.SendMessage("Vous récupérez un objet!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				InventoryLogging.LogInventoryAction(this, player, eInventoryActionType.Loot, item);
 				return true;
 			}
 			else
+			{
 				player.Out.SendMessage("Vous récupérez un objet mais votre sac-à-dos est plein.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			}
 
 			return false;
 		}

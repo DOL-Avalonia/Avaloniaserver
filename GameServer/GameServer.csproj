@@ -2102,6 +2102,7 @@
     <Compile Include="spells\Artifacts\Traldor.cs" />
     <Compile Include="spells\AstralPetSummon.cs" />
     <Compile Include="spells\Bainshee\BainsheePulseDmgSpellHandler.cs" />
+    <Compile Include="spells\CombineItemSpellHandler.cs" />
     <Compile Include="spells\negative\BeFriendSpellHandler.cs" />
     <Compile Include="spells\negative\FearBrain.cs" />
     <Compile Include="spells\negative\FearSpellHandler.cs" />
