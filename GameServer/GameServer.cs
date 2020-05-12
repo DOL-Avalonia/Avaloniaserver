@@ -47,6 +47,7 @@ using log4net.Core;
 using GameServerScripts.Utils;
 using DOL.GameEvents;
 using DOL.events.server;
+using DOL.Territory;
 
 namespace DOL.GS
 {
@@ -701,6 +702,11 @@ namespace DOL.GS
 
                 // Init the mail manager
                 InitComponent(MailMgr.Init(), "Mail Manager Initialization");
+
+
+                // Init the Territory manager
+                InitComponent(TerritoryManager.Instance.LoadTerritories(), "Territory Manager Initialization");
+
 
                 //---------------------------------------------------------------
                 // Try to initialize the WorldMgr in early state

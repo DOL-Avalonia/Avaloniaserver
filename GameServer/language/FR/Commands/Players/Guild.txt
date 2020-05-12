@@ -191,6 +191,7 @@ Commands.Players.Guild.RankTitleSet:			Vous avez pour changer les titres de rang
 Commands.Players.Guild.RankUpgradeSet:			Vous avez {0} les mise à jour des forts au rang {1}.
 Commands.Players.Guild.RankViewSet:				Vous avez {0} l'apperçu de la guilde au rang {1}.
 Commands.Players.Guild.RankWithdrawSet:			Vous avez {0} la caisse de guilde au rang {1}.
+Commands.Players.Guild.Rank.ErrorChanging:      Erreur durant le changement de rang.
 Commands.Players.Guild.ThirdArgNotNum:			Cet argument n'est pas un nombre valide.
 Commands.Players.Guild.UnableToCreate:			La guilde {0} vient d'être créée.
 Commands.Players.Guild.UnableToCreateLead:		La guilde {0} vient d'être créée, {1} est le chef de guilde.
@@ -208,5 +209,8 @@ Commands.Players.Guild.Alliance.Leader:			Chef d'Alliance {0}
 Commands.Players.Guild.Alliance.Members:		Membres de l'Alliance :
 Commands.Players.Guild.Alliance.Member:			{0} - {1}
 Commands.Players.Guild.Alliance.NoLeader:		Pas de chef d'Alliance
+Commands.Players.Guild.GuildDeclined:          Vous refusez de former la guilde
+Commands.Players.Guild.GuildAccept:            Vous acceptez de créer la guilde
 
 Commands.Players.Guild.InviteNotThis:			Vous ne pouvez pas inviter un membre de ce royaume dans votre guilde.
+Commands.Players.Guild.Help.GuildTerritoires:   '/gc territoires' Affiche les territoires occupés par votre guilde.

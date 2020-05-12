@@ -128,20 +128,10 @@ namespace DOL.GS.Scripts
                 return false;
             }
 
-            var requireditems = this.GetRequireItems(EchItem);
+            var requireditems = this.GetRequireItems(EchItem);          
 
             if (requireditems.Any())
-            {            
-                //Handle references for callback
-                if (PlayerReferences.ContainsKey(player.InternalID))
-                {
-                    this.PlayerReferences[player.InternalID] = new EchangeurInfo() { requireInfos = requireditems, GiveItem = item as GameInventoryItem };
-                }
-                else
-                {
-                    this.PlayerReferences.Add(player.InternalID, new EchangeurInfo() { requireInfos = requireditems, GiveItem = item as GameInventoryItem });
-                }
-
+            {
                 if (this.HasAllRequiredItems(player, requireditems, item.Id_nb))
                 { 
                     player.Client.Out.SendCustomDialog(string.Format("Afin de procéder à l'échange, il va falloir payer {0} pièces d'or et me donner en plus {1}", 
@@ -154,16 +144,39 @@ namespace DOL.GS.Scripts
                     player.Client.Out.SendMessage("Il va te manquer des elements pour procéder à l'échange", eChatType.CT_System, eChatLoc.CL_PopupWindow);
                 }
 
+                //Handle references for callback
+                if (PlayerReferences.ContainsKey(player.InternalID))
+                {
+                    this.PlayerReferences[player.InternalID] = new EchangeurInfo() { requireInfos = requireditems, GiveItem = item as GameInventoryItem };
+                }
+                else
+                {
+                    this.PlayerReferences.Add(player.InternalID, new EchangeurInfo() { requireInfos = requireditems, GiveItem = item as GameInventoryItem });
+                }
+
                 return false;
             }
             else
             {
                 if (EchItem.GoldPrice > 0)
                 {
+                    //Handle references for callback
+                    if (PlayerReferences.ContainsKey(player.InternalID))
+                    {
+                        this.PlayerReferences[player.InternalID] = new EchangeurInfo() { requireInfos = requireditems, GiveItem = item as GameInventoryItem };
+                    }
+                    else
+                    {
+                        this.PlayerReferences.Add(player.InternalID, new EchangeurInfo() { requireInfos = requireditems, GiveItem = item as GameInventoryItem });
+                    }
+
                     player.Client.Out.SendCustomDialog(string.Format("J'aurais besoin de {0} pièces d'or pour échanger ça. Valider l'échange ?", EchItem.GoldPrice), this.HandleClientResponse);
+                    return false;
                 }
-                
-                return ProcessExchange(item, player, EchItem, requireditems);      
+                else
+                {
+                    return ProcessExchange(item, player, EchItem, requireditems);
+                }
             }
         }
 

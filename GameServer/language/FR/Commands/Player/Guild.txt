@@ -33,7 +33,8 @@ Commands.Players.Guild.BannerNotAfford:		    Vous avez besoin de 50,000 points d
 Commands.Players.Guild.BannerSummoned:		    Vous avez invoqué votre bannière de guilde.
 Commands.Players.Guild.BannerUnsummoned:		    Vous avez retiré votre bannière de guilde.
 Commands.Players.Guild.BannerNotRvR:			    Vous devez vous trouvés dans une zone RvR pour invoqué une bannière !
-Commands.Players.Guild.BuffActivated:			    [Guild Buff] {0} a utilisé  1000 Points de Mérite de Guilde et a activé une Amélioration de Guilde !
+Commands.Players.Guild.BuffActivatedBy:			    [Guild Buff] {0} a utilisé  1000 Points de Mérite de Guilde et a activé une Amélioration de Guilde !
+Commands.Players.Guild.BuffActivated:               Le buff {0} a été activé
 Commands.Players.Guild.BuffBountyPoints:		    Votre guilde gagnera maintenant 5 % aux primes de royaume de plus pendant 24 heures !
 Commands.Players.Guild.BuffBPActivated:		    [Guild Buff] Votre guilde recevra un bonus aux primes de royaume pendant 24 heures !
 Commands.Players.Guild.BuffMPActivated:		    [Guild Buff] Votre guilde recevra un bonus aux points de mérite de guilde pendant 24 heures !
@@ -164,6 +165,7 @@ Commands.Players.Guild.NoPlayerSelected:		Sélectionnez un joueur.
 Commands.Players.Guild.NoPlayersInAcc:			Il n'y a pas de joueur du compte demandé dans votre guilde.
 Commands.Players.Guild.NoPrivilages:			Votre rang de guilde ne possède pas assez de priviléges pour utiliser cette commande.
 Commands.Players.Guild.NoteSet:					La note de guilde est : {0}
+Commands.Players.Guild.NoPlayerWithName:        Il n'y a pas de joueur avec le nom {0}
 Commands.Players.Guild.NotInYourGuild:			Ce joueur n'est pas dans la guilde.
 Commands.Players.Guild.NotMember:				Vous devez être dans une guilde pour utiliser cette commande.
 Commands.Players.Guild.OMotdSet:				Le message des officiers est maintenant actualisé.

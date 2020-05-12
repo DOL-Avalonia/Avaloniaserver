@@ -20,6 +20,7 @@ namespace DOL.GS.Scripts
         "'/echangeur priceressource1 <ID de l'item a donner> <item_id> <nombre>' Définit l'objet requis par son <item_id> et le <nombre> requis pour la ressource 1",
         "'/echangeur priceressource2 <ID de l'item a donner> <item_id> <nombre>' Définit l'objet requis par son <item_id> et le <nombre> requis pour la ressource 2",
         "'/echangeur priceressource3 <ID de l'item a donner> <item_id> <nombre>' Définit l'objet requis par son <item_id> et le <nombre> requis pour la ressource 3",
+        "'/echangeur priceressource remove <1|2|3> <ID de l'item a donner>' Supprime la condition de Price Ressource numéro <1|2|3> pour l'item à donner.",
         "Pour la réponse, ajoutez une réponse avec l'ID de l'item à donner grace aux commandes des textnpc")]
     public class EchangeurNPCCommandHandler : AbstractCommandHandler, ICommandHandler
     {
@@ -245,6 +246,58 @@ namespace DOL.GS.Scripts
                 case "priceressource3":
                     this.ChangeRessource(3, npc, args, client);
                     break;
+
+
+                case "priceressource":
+                    if (args.Length != 5 || npc == null)
+                    {
+                        DisplaySyntax(client);
+                        break;
+                    }
+
+                    if (args[2] != "remove")
+                    {
+                        DisplaySyntax(client);
+                        break;
+                    }
+
+                    int num = 0;
+                    if (int.TryParse(args[3], out num))
+                    {
+                        if (num == 1 || num == 2 || num == 3)
+                        {
+                            item = args[4];
+
+                            if (!string.IsNullOrEmpty(item))
+                            {
+                                if (!npc.TextNPCData.EchangeurDB.ContainsKey(item))
+                                    player.Out.SendMessage(item + " n'existe pas.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                else
+                                {
+                                    if (num == 1)
+                                    {
+                                        npc.TextNPCData.EchangeurDB[item].PriceRessource1 = null;
+                                    }
+                                    else if (num == 2)
+                                    {
+                                        npc.TextNPCData.EchangeurDB[item].PriceRessource2 = null;
+                                    }
+                                    else
+                                    {
+                                        npc.TextNPCData.EchangeurDB[item].PriceRessource3 = null;
+                                    }
+                  
+                                    npc.TextNPCData.SaveIntoDatabase();
+                                    player.Out.SendMessage("La ressource " + num + " a été supprimée pour l'objet " + item, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                    break;
+                                }
+                            }
+                        }                       
+                    }
+
+                    DisplaySyntax(client);
+                    break;
+
 
                 default:
                     DisplaySyntax(client);
