@@ -374,6 +374,7 @@
     <Compile Include="events\gameobjects\SwitchedTargetEventArgs.cs" />
     <Compile Include="events\IDOLEventHandler.cs" />
     <Compile Include="events\server\GameServerCoffreLoadedAttribute.cs" />
+    <Compile Include="events\server\GameEventLoadedAttribute.cs" />
     <Compile Include="GameEvents\AnnonceType.cs" />
     <Compile Include="GameEvents\ConditionTypes.cs" />
     <Compile Include="GameEvents\EndingAction.cs" />
@@ -2354,6 +2355,7 @@
     <Compile Include="styles\StyleProcessor.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Territory\AreaCoordinate.cs" />
     <Compile Include="Territory\Territory.cs" />
     <Compile Include="Territory\TerritoryManager.cs" />
     <Compile Include="trainer\albion\AcolyteTrainer.cs">

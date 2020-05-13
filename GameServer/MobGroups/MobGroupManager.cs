@@ -44,6 +44,26 @@ namespace DOL.MobGroups
             return this.Groups[npc.GroupMobId].All(m => !m.IsAlive);
         }
 
+
+        public string GetGroupIdFromMobId(string mobId)
+        {
+            if (mobId == null)
+            {
+                return null;
+            }
+
+            foreach (var group in this.Groups)
+            {
+                if (group.Value.Any(npc => npc.InternalID.Equals(mobId)))
+                {
+                    return group.Key;
+                }
+            }
+
+            return null;
+        }
+
+
         public bool RemoveGroupsAndMobs(string groupId)
         {
             if (!this.Groups.ContainsKey(groupId))
@@ -51,7 +71,6 @@ namespace DOL.MobGroups
                 return false;
             }
 
-            bool success = true;
             foreach (var npc in this.Groups[groupId].ToList())
             {
                this.RemoveMobFromGroup(npc, groupId);
@@ -69,7 +88,6 @@ namespace DOL.MobGroups
                     GameServer.Database.DeleteObject(item);
                 }
             }
-
 
             return true;
         }

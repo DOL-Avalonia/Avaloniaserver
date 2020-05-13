@@ -208,6 +208,7 @@ namespace DOL.GameEvents
 
             CreateMissingRelationObjects(Instance.Events.Select(ev => ev.ID));
             Instance.timer = new System.Threading.Timer(Instance.TimeCheck, Instance, Instance.dueTime, Instance.period);
+            GameEventMgr.Notify(GameServerEvent.GameEventLoaded);
         }
 
 

@@ -701,12 +701,7 @@ namespace DOL.GS
                 }
 
                 // Init the mail manager
-                InitComponent(MailMgr.Init(), "Mail Manager Initialization");
-
-
-                // Init the Territory manager
-                InitComponent(TerritoryManager.Instance.LoadTerritories(), "Territory Manager Initialization");
-
+                InitComponent(MailMgr.Init(), "Mail Manager Initialization");            
 
                 //---------------------------------------------------------------
                 // Try to initialize the WorldMgr in early state
@@ -714,7 +709,8 @@ namespace DOL.GS
                 if (!InitComponent(WorldMgr.EarlyInit(out regionsData), "World Manager PreInitialization"))
                 {
                     return false;
-                }
+                }         
+
 
                 //---------------------------------------------------------------
                 // Try to initialize the script components
@@ -786,7 +782,7 @@ namespace DOL.GS
                 if (!InitComponent(AreaMgr.LoadAllAreas(), "Areas"))
                 {
                     return false;
-                }
+                }           
 
                 //---------------------------------------------------------------
                 // Enable Worldsave timer now
@@ -900,13 +896,15 @@ namespace DOL.GS
                     return false;
                 }
 
+                // Init the Territory manager
+                InitComponent(TerritoryManager.Instance.Init(), "Territory Manager Initialization");
+
                 //---------------------------------------------------------------
                 // Try to initialize the Game Events
                 if (!InitComponent(GameEventManager.Instance.Init(), "Game Events"))
                 {
                     return false;
-                }
-
+                }         
 
                 //---------------------------------------------------------------
                 // Notify our scripts that everything went fine!
@@ -1085,6 +1083,7 @@ namespace DOL.GS
 
 
                 GameEventMgr.RegisterGlobalEvents(Assembly.GetExecutingAssembly(), typeof(GameServerCoffreLoadedAttribute), GameServerEvent.CoffreLoaded);
+                GameEventMgr.RegisterGlobalEvents(Assembly.GetExecutingAssembly(), typeof(GameEventLoadedAttribute), GameServerEvent.GameEventLoaded);
 
                 //---------------------------------------------------------------
                 // Register all event handlers

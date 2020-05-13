@@ -12,7 +12,6 @@ namespace DOLDatabase.Tables
     public class TerritoryDb
         : DataObject
     {
-        private string m_name;
         private ushort m_regionId;
         private ushort m_zoneId;
         private string m_areaId;
@@ -20,22 +19,7 @@ namespace DOLDatabase.Tables
         private string m_groupId;
         private int m_areaX;
         private int m_areaY;
-
-        [DataElement(AllowDbNull = false, Varchar = 255)]
-        public string Name
-        {
-            get
-            {
-                return m_name;
-            }
-
-            set
-            {
-                m_name = value;
-                Dirty = true;
-            }
-        }
-
+      
         [DataElement(AllowDbNull = false)]
         public ushort RegionId
         {

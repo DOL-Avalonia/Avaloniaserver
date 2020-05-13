@@ -31,8 +31,13 @@ Commands.Players.Guild.BannerNoGroup:			    Vous avez besoin d'un groupe pour in
 Commands.Players.Guild.BannerNone:			    Votre guilde ne possède pas de bannière de guilde.
 Commands.Players.Guild.BannerNotAfford:		    Vous avez besoin de 50,000 points de mérite pour acheter une bannière de guilde !
 Commands.Players.Guild.BannerSummoned:		    Vous avez invoqué votre bannière de guilde.
-Commands.Players.Guild.BannerUnsummoned:		    Vous avez retiré votre bannière de guilde.
+Commands.Players.Guild.BannerUnsummoned.You:		Vous avez retiré votre bannière de guilde.
+Commands.Players.Guild.BannerUnsummoned:		    {0} a retiré votre bannière de guilde.
 Commands.Players.Guild.BannerNotRvR:			    Vous devez vous trouvés dans une zone RvR pour invoqué une bannière !
+Commands.Players.Guild.Banner.BuyPrice:             Vous devez payer la somme de {0} pour acheter une bannière
+Commands.Players.Guild.BannerCarriyng.None:         Vous ne portez pas de bannière.
+Commands.Players.Guild.Banner.LostMinutes           Votre bannière a été perdue à l'énemie. Vous devez attendre {0} minute(s) !
+Commands.Players.Guild.Banner.LostHours:            Votre bannière a été perdue à l'énemie. Vous devez attendre {0} Heure(s) !
 Commands.Players.Guild.BuffActivated:			    [Guild Buff] {0} a utilisé  1000 Points de Mérite de Guilde et a activé une Amélioration de Guilde !
 Commands.Players.Guild.BuffBountyPoints:		    Votre guilde gagnera maintenant 5 % aux primes de royaume de plus pendant 24 heures !
 Commands.Players.Guild.BuffBPActivated:		    [Guild Buff] Votre guilde recevra un bonus aux primes de royaume pendant 24 heures !
@@ -57,6 +62,7 @@ Commands.Players.Guild.EmblemNPCNotSelected:		Vous devez sélectionner l'EmblemN
 Commands.Players.Guild.EmblemRedo:			    Vous voulez refaire votre emblème pour 100 pièces d'or ?
 Commands.Players.Guild.FormNoGroup:			    Vous devez être dans un groupe pour former une guilde.
 Commands.Players.Guild.FormNoMembers:			    Vous avez besoin de {0} membres dans votre groupe pour créer une guilde.
+Commands.Players.Guild.Form.NoRegistrar:            Vous devez etre pret d'un registrar de Guilde pour faire cette commande.
 Commands.Players.Guild.GuildCreated:			    La guilde {0} vient d'être créée avec {1} comme chef.
 Commands.Players.Guild.GuildExists:			    Cette guilde ne peut être créée car elle existe déjà.
 Commands.Players.Guild.GuildForceLeave:			{0} est retiré·e de la guilde par {1}.

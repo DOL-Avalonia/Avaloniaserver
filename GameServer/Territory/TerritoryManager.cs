@@ -1,5 +1,9 @@
 ﻿using DOL.Database;
+using DOL.events.server;
+using DOL.Events;
+using DOL.GameEvents;
 using DOL.GS;
+using DOL.MobGroups;
 using DOLDatabase.Tables;
 using log4net;
 using System;
@@ -9,6 +13,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using static DOL.GS.Area;
+using static DOL.GS.GameObject;
 
 namespace DOL.Territory
 {
@@ -16,6 +21,10 @@ namespace DOL.Territory
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private static TerritoryManager instance;
+        public static readonly ushort NEUTRAL_EMBLEM = 256;
+        private readonly string BOSS_CLASS = "DOL.GS.Scripts.TerritoryBoss";
+        private readonly string GUARD_CLASS = "DOL.GS.Scripts.TerritoryGuard";
+        private readonly string GUARD_BASIC_TEMPLATE = "gvg_guard_Basique";
 
         public static TerritoryManager Instance => instance ?? (instance = new TerritoryManager());
 
@@ -29,8 +38,14 @@ namespace DOL.Territory
             this.Territories = new List<Territory>();
         }
 
+        public bool Init()
+        {
+            return true;
+        }
 
-        public bool LoadTerritories()
+
+        [GameEventLoaded]
+        public static void LoadTerritories(DOLEvent e, object sender, EventArgs arguments)
         {
             var values = GameServer.Database.SelectAllObjects<TerritoryDb>();
             int count = 0;
@@ -45,12 +60,35 @@ namespace DOL.Territory
 
                         if (zone != null)
                         {
-                            var area = zone.GetAreasOfSpot(new Point3D(territoryDb.AreaX, territoryDb.AreaY, 0), false)?.FirstOrDefault(a => a.ID.Equals(territoryDb.AreaId));
+                            var areaDb = GameServer.Database.SelectObjects<DBArea>("area_id = @id", new QueryParameter("id", territoryDb.AreaId))?.FirstOrDefault();
+
+                            if (areaDb == null)
+                            {
+                                log.Error($"Cannot find Area in Database with ID: { territoryDb.AreaId }");
+                                continue;
+                            }
+
+                            var area = zone.GetAreasOfSpot(new Point3D(territoryDb.AreaX, territoryDb.AreaY, 0), false)?.FirstOrDefault(a => ((AbstractArea)a).Description.Equals(areaDb.Description));
 
                             if (area != null)
                             {
-                                this.Territories.Add(new Territory(area, territoryDb.Name, territoryDb.RegionId, territoryDb.ZoneId, territoryDb.GroupId, territoryDb.BossMobId));
-                                count++;
+                                var mobinfo = Instance.FindBossFromGroupId(territoryDb.GroupId);
+
+                                if (mobinfo.Error == null)
+                                {
+                                    if (!territoryDb.BossMobId.Equals(mobinfo.Mob.InternalID))
+                                    {
+                                        log.Error($"Boss Id does not match from GroupId { territoryDb.GroupId } and Found Bossid from groupId (event search) { mobinfo.Mob.InternalID } , {territoryDb.BossMobId} identified in database");
+                                        continue;
+                                    }
+
+                                    Instance.Territories.Add(new Territory(area, territoryDb.AreaId, territoryDb.RegionId, territoryDb.ZoneId, territoryDb.GroupId, mobinfo.Mob));
+                                    count++;
+                                }
+                                else
+                                {
+                                    log.Error(mobinfo.Error);
+                                }
                             }
                         }
                     }
@@ -58,23 +96,160 @@ namespace DOL.Territory
             }
 
             log.Info(count + " Territoires Chargés");
-            return true;
+        }
+            
+        public void ChangeGuildOwner(string mobId, string guildName, string equipment = null,  bool isBoss = false)
+        {
+            if (string.IsNullOrEmpty(guildName) || string.IsNullOrEmpty(mobId))
+            {
+                return;
+            }
+
+            Territory territory = null;
+            
+            if (isBoss)
+            {
+                territory = this.Territories.FirstOrDefault(t => t.BossId.Equals(mobId));
+            }
+            else
+            {
+                territory = GetTerritoryFromMobId(mobId);
+            }     
+
+            if (territory == null || territory.Mobs == null)
+            {
+                log.Error("Cannot get Territory from MobId: " + mobId);
+                return;
+            }        
+
+            if (equipment == null)
+            {
+                equipment = GUARD_BASIC_TEMPLATE;
+            }
+            var cls = WorldMgr.GetAllPlayingClients().Where(c => c.Player.CurrentZone.ID.Equals(territory.ZoneId));
+
+            foreach (var mob in territory.Mobs.Where(m => m.GetType().FullName.Equals(GUARD_CLASS)))
+            { 
+                mob.LoadEquipmentTemplateFromDatabase(equipment);
+                ApplyNewEmblem(guildName, mob);
+                foreach (var cl in cls)
+                {
+                    cl.Out.SendLivingEquipmentUpdate(mob);
+                }
+            }
+
+            territory.Mobs.ForEach(m => m.GuildName = guildName);
+        }
+
+        public void ResetEmblem(Territory territory)
+        {
+            if (territory == null || territory.Mobs == null || territory.Boss == null)
+                return;
+
+            foreach (var mob in territory.Mobs)
+            {
+                foreach (var item in mob.Inventory.VisibleItems)
+                {
+                    item.Color = NEUTRAL_EMBLEM;
+                    item.Emblem = 0;
+                }
+            }
+
+            foreach (var item in territory.Boss.Inventory.VisibleItems)
+            {
+                item.Color = NEUTRAL_EMBLEM;
+                item.Emblem = 0;
+            }
         }
 
 
-        public bool AddTerritory(IArea area, ushort regionId, string name, string groupId, string bossId)
+        private static void ApplyNewEmblem(string guildName, GameNPC mob)
         {
-            if (!WorldMgr.Regions.ContainsKey(regionId) || groupId == null || bossId == null)
+            if (string.IsNullOrWhiteSpace(guildName) || mob.ObjectState != eObjectState.Active || mob.CurrentRegion == null || mob.Inventory == null || mob.Inventory.VisibleItems == null)
+                return;
+            var guild = GuildMgr.GetGuildByName(guildName);
+            if (guild == null)
+                return;
+            foreach (var item in mob.Inventory.VisibleItems)
+                if (item.Emblem != 0 || item.Color == NEUTRAL_EMBLEM)
+                    item.Emblem = guild.Emblem;
+        }
+
+        public MobInfo FindBossFromGroupId(string groupId)
+        {
+            var bossEvent = GameEventManager.Instance.Events.FirstOrDefault(e => e.KillStartingGroupMobId?.Equals(groupId) == true);
+
+            if (bossEvent == null)
+            {
+                return new MobInfo()
+                {
+                    Error = "Impossible de trouver l'event lié au GroupId: " + groupId
+                };
+            } 
+
+            var boss = bossEvent.Mobs.FirstOrDefault(m => m.GetType().FullName.Equals(BOSS_CLASS));
+
+            if (boss == null)
+            {
+                return new MobInfo()
+                {
+                    Error = $"Aucun mob avec la classe { BOSS_CLASS } a été trouvé dans l'Event {bossEvent.ID}"
+                };
+            }
+
+            return new MobInfo()
+            {
+                Mob = boss
+            };
+        }
+
+        public static Territory GetTerritoryFromMobId(string mobId)
+        {
+            foreach (var territory in Instance.Territories)
+            {
+                if (territory.Mobs.Any(m => m.InternalID.Equals(mobId)))
+                    return territory;
+            }
+
+            return null;
+        }
+
+        public bool AddTerritory(IArea area, string areaId, ushort regionId, string groupId, GameNPC boss)
+        {
+            if (!WorldMgr.Regions.ContainsKey(regionId) || groupId == null || boss == null || areaId == null)
             {
                 return false;
             }
 
+            var coords = GetCoordinates(area);
+            
+            if (coords == null)
+            {
+                return false;
+            }
+
+            var zone = WorldMgr.Regions[regionId].GetZone(coords.X, coords.Y);
+
+            if (zone == null)
+            {
+                return false;
+            }
+
+            var territory = new Territory(area, areaId, regionId, zone.ID, groupId, boss);
+
+            this.Territories.Add(territory);
+            return true;
+        }
+
+
+        public static AreaCoordinate GetCoordinates(IArea area)
+        {
             int x, y;
 
             if (area is Circle circle)
             {
                 x = circle.X;
-                y = circle.Y; 
+                y = circle.Y;
             }
             else if (area is Square sq)
             {
@@ -88,21 +263,29 @@ namespace DOL.Territory
             }
             else
             {
-                return false;
+                return null;
             }
 
-
-            var zone = WorldMgr.Regions[regionId].GetZone(x, y);
-
-            if (zone == null)
+            return new AreaCoordinate()
             {
-                return false;
-            }
+                X = x,
+                Y = y
+            };
+        }
+    }
 
-            var territory = new Territory(area, name, regionId, zone.ID, groupId, bossId);
+    public class MobInfo
+    {
+        public GameNPC Mob
+        {
+            get;
+            set;
+        }
 
-            this.Territories.Add(territory);
-            return true;
+        public string Error
+        {
+            get;
+            set;
         }
     }
 }
