@@ -24,6 +24,7 @@ using DOL.Database;
 using DOL.Language;
 using DOL.GS.Keeps;
 using log4net;
+using System.Linq;
 using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
 
@@ -125,6 +126,12 @@ namespace DOL.GS
 		/// </summary>
 		protected ushort m_id;
 
+
+		/// <summary>
+		/// Territories List containing Area Ids
+		/// </summary>
+		private List<string> territories;
+
 		/// <summary>
 		/// Stores claimed keeps (unique)
 		/// </summary>
@@ -164,7 +171,8 @@ namespace DOL.GS
 			{
 				this.m_DBguild.Ranks = value;
 			}
-		}
+		}	
+
 
 		public int GuildHouseNumber
 		{
@@ -220,6 +228,38 @@ namespace DOL.GS
 		{
 			m_DBguild.Dues = dues;
 		}
+
+
+		public void AddTerritory(string area)
+		{
+			if (!territories.Contains(area))
+			{
+				this.territories.Add(area);
+				this.m_DBguild.Territories = string.Join("|", this.territories);
+				this.SaveIntoDatabase();
+			}
+		}
+
+		public void RemoveTerritory(string area)
+		{
+			if (territories.Contains(area))
+			{
+				this.territories.Remove(area);
+				this.m_DBguild.Territories = this.territories.Any() ? string.Join("|", this.territories) : null;
+				this.SaveIntoDatabase();
+			}
+		}
+
+		public bool DoesGuildOwnTerritory(string area)
+		{
+			if (area == null)
+			{
+				return false;
+			}
+
+			return this.territories.Contains(area);
+		}
+
 
 		public void SetGuildDuesPercent(long dues)
 		{
@@ -302,6 +342,19 @@ namespace DOL.GS
 		{
 			m_DBguild = dbGuild;
 			bannerStatus = "None";
+			this.territories = new List<string>();
+			this.LoadTerritories();
+		}
+
+		private void LoadTerritories()
+		{
+			if (!string.IsNullOrEmpty(m_DBguild.Territories))
+			{
+				foreach (var area in m_DBguild.Territories.Split(new char[] { '|' }))
+				{
+					this.territories.Add(area);
+				}
+			}
 		}
 
 		public int Emblem

@@ -22,7 +22,7 @@ namespace DOL.Territory
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private static TerritoryManager instance;
         public static readonly ushort NEUTRAL_EMBLEM = 256;
-        private readonly string BOSS_CLASS = "DOL.GS.Scripts.TerritoryBoss";
+        private readonly string BOSS_CLASS = "DOL.GS.Scripts.TerritoryBoss";    
         private readonly string GUARD_CLASS = "DOL.GS.Scripts.TerritoryGuard";
         private readonly string GUARD_BASIC_TEMPLATE = "gvg_guard_Basique";
 
@@ -82,7 +82,7 @@ namespace DOL.Territory
                                         continue;
                                     }
 
-                                    Instance.Territories.Add(new Territory(area, territoryDb.AreaId, territoryDb.RegionId, territoryDb.ZoneId, territoryDb.GroupId, mobinfo.Mob));
+                                    Instance.Territories.Add(new Territory(area, territoryDb.AreaId, territoryDb.RegionId, territoryDb.ZoneId, territoryDb.GroupId, mobinfo.Mob, territoryDb.Bonus, territoryDb.ObjectId));
                                     count++;
                                 }
                                 else
@@ -97,10 +97,21 @@ namespace DOL.Territory
 
             log.Info(count + " Territoires Chargés");
         }
-            
-        public void ChangeGuildOwner(string mobId, string guildName, string equipment = null,  bool isBoss = false)
+
+
+        public void ChangeGuildOwner(Guild guild, Territory territory)
         {
-            if (string.IsNullOrEmpty(guildName) || string.IsNullOrEmpty(mobId))
+            if (guild == null || territory == null)
+            {
+                return;
+            }
+
+            this.ApplyTerritoryChange(guild, territory, false);
+        }
+            
+        public void ChangeGuildOwner(string mobId, Guild guild, string equipment = null,  bool isBoss = false)
+        {
+            if (guild == null || string.IsNullOrEmpty(mobId))
             {
                 return;
             }
@@ -120,48 +131,45 @@ namespace DOL.Territory
             {
                 log.Error("Cannot get Territory from MobId: " + mobId);
                 return;
-            }        
-
-            if (equipment == null)
-            {
-                equipment = GUARD_BASIC_TEMPLATE;
-            }
-            var cls = WorldMgr.GetAllPlayingClients().Where(c => c.Player.CurrentZone.ID.Equals(territory.ZoneId));
-
-            foreach (var mob in territory.Mobs.Where(m => m.GetType().FullName.Equals(GUARD_CLASS)))
-            { 
-                mob.LoadEquipmentTemplateFromDatabase(equipment);
-                ApplyNewEmblem(guildName, mob);
-                foreach (var cl in cls)
-                {
-                    cl.Out.SendLivingEquipmentUpdate(mob);
-                }
             }
 
-            territory.Mobs.ForEach(m => m.GuildName = guildName);
-        }
+            this.ApplyTerritoryChange(guild, territory, true, equipment);        
+        }        
 
         public void ResetEmblem(Territory territory)
         {
             if (territory == null || territory.Mobs == null || territory.Boss == null)
                 return;
 
-            foreach (var mob in territory.Mobs)
+            var cls = WorldMgr.GetAllPlayingClients().Where(c => c.Player.CurrentZone.ID.Equals(territory.ZoneId));
+
+            foreach (var mob in territory.Mobs.Where(m => m.GetType().FullName.Equals(GUARD_CLASS)))
             {
                 foreach (var item in mob.Inventory.VisibleItems)
                 {
                     item.Color = NEUTRAL_EMBLEM;
                     item.Emblem = 0;
                 }
+
+                cls.ForEach(c => c.Out.SendLivingEquipmentUpdate(mob));
             }
 
-            foreach (var item in territory.Boss.Inventory.VisibleItems)
+            foreach (var mob in territory.Mobs)
             {
-                item.Color = NEUTRAL_EMBLEM;
-                item.Emblem = 0;
+                if (territory.OriginalGuilds.ContainsKey(mob.InternalID))
+                {
+                    mob.GuildName = territory.OriginalGuilds[mob.InternalID];
+                }
+                else
+                {
+                    mob.GuildName = null;
+                }
             }
-        }
+            territory.GuildOwner = null;
+            territory.Boss.RestoreOriginalGuildName();
+            territory.SaveIntoDatabase();
 
+        }
 
         private static void ApplyNewEmblem(string guildName, GameNPC mob)
         {
@@ -203,6 +211,29 @@ namespace DOL.Territory
             };
         }
 
+        public IList<string> GetTerritoriesInformations()
+        {
+            List<string> infos = new List<string>();
+            
+            foreach (var territory in this.Territories)
+            {   
+                string line = (((AbstractArea)territory.Area).Description + " / ");
+
+                var zone = WorldMgr.Regions[territory.RegionId].Zones.FirstOrDefault(z => z.ID.Equals(territory.ZoneId));
+
+                if (zone != null)
+                {
+                    line += zone.Description + " / ";
+                }
+
+                line += territory.GuildOwner ?? "Neutre";
+                infos.Add(line);
+                infos.Add("");
+            }
+
+            return infos;
+        }
+
         public static Territory GetTerritoryFromMobId(string mobId)
         {
             foreach (var territory in Instance.Territories)
@@ -236,9 +267,54 @@ namespace DOL.Territory
             }
 
             var territory = new Territory(area, areaId, regionId, zone.ID, groupId, boss);
-
             this.Territories.Add(territory);
+
+            try
+            {
+                territory.SaveIntoDatabase();
+            }
+            catch(Exception e)
+            {
+                log.Error(e.Message);
+                return false;
+            }
+
             return true;
+        }
+
+        private void ApplyTerritoryChange(Guild guild, Territory territory, bool saveChange, string equipment = null)
+        {
+            //remove Territory from old Guild if any
+            if (territory.GuildOwner != null)
+            {
+                var oldGuild = GuildMgr.GetGuildByName(territory.GuildOwner);
+
+                if (oldGuild != null)
+                {
+                    oldGuild.RemoveTerritory(territory.AreaId);
+                }
+            }
+
+            guild.AddTerritory(territory.AreaId);
+            territory.GuildOwner = guild.Name;
+
+            if (equipment == null)
+            {
+                equipment = GUARD_BASIC_TEMPLATE;
+            }
+            var cls = WorldMgr.GetAllPlayingClients().Where(c => c.Player.CurrentZone.ID.Equals(territory.ZoneId));
+
+            foreach (var mob in territory.Mobs.Where(m => m.GetType().FullName.Equals(GUARD_CLASS)))
+            {
+                mob.LoadEquipmentTemplateFromDatabase(equipment);
+                ApplyNewEmblem(guild.Name, mob);
+                cls.ForEach(c => c.Out.SendLivingEquipmentUpdate(mob));
+            }
+
+            territory.Mobs.ForEach(m => m.GuildName = guild.Name);
+
+            if (saveChange)
+                territory.SaveIntoDatabase();
         }
 
 

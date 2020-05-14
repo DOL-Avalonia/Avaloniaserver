@@ -424,6 +424,12 @@ namespace DOL.GS.ServerProperties
         public static bool REMOVE_QUIT_TIMER { get; set; }
 
         /// <summary>
+        /// Allow GM Attack by npc ?
+        /// </summary>
+        [ServerProperty("server", "allow_gm_attack", "Allow GM Attack by npc ?", false)]
+        public static bool ALLOW_GM_ATTACK { get; set; }
+
+        /// <summary>
         /// Enable integrated serverlistupdate script?
         /// </summary>
         [ServerProperty("server", "enable_serverlistupdate", "Enable in-built serverlistupdate script?", false)]

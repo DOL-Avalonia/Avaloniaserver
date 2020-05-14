@@ -18,19 +18,26 @@ namespace DOL.commands.gmcommands
         "&GMTerritoires",
         ePrivLevel.GM,
         "GM Territoires Cmd",
-        "'/GMTerritoires add <areaId> <zoneId> <name> <groupId>' ajoute un territoire en spécifant l'<areaId>, la <zoneId>, le <name> et le <groupId> à utiliser et pour ce territoire",
-        "'/GMTerritoires info <areaId> Donne les infos relatives au territoire par son <areaId>'")]
+        "'/GMTerritoires add <areaId> <zoneId> <name> <groupId>' Ajoute un territoire en spécifant l'<areaId>, la <zoneId>, le <name> et le <groupId> à utiliser et pour ce territoire",
+        "'/GMTerritoires info <areaId>' Donne les infos relatives au territoire par son <areaId>",
+        "'/GMTerritoires clear <areadId>' Remet le territoire sélectionné par <areaId> en état neutre",
+        "'/GMTerritoires bonus add <resist> <areaId>' Ajoute une resist pour l'<areaId> sélectionné",
+        "'/GMTerritoires bonus remove <resist> <areaId>' Supprime une resist pour l'<areaId> sélectionné",
+         "resist: <nature|crush|slash|thrust|body|cold|energy|heat|matter|spirit>")]
     public class GMTerritoires
         : AbstractCommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
         {
+            Territory.Territory territory = null;
+
             if (args.Length < 2)
             {
                 DisplaySyntax(client);
                 return;
             }
             string areaId = null;
+          
 
             switch (args[1].ToLowerInvariant())
             {
@@ -108,20 +115,9 @@ namespace DOL.commands.gmcommands
                             break;
                         }
 
-                        TerritoryManager.Instance.AddTerritory(area, areaId, areaDb.Region, groupId, mobinfo.Mob);
+                        bool saved = TerritoryManager.Instance.AddTerritory(area, areaId, areaDb.Region, groupId, mobinfo.Mob);                     
 
-                        var territory = new TerritoryDb()
-                        {
-                            AreaId = areaId,
-                            AreaX = areaDb.X,
-                            AreaY = areaDb.Y,
-                            RegionId = areaDb.Region,
-                            ZoneId = zoneId,
-                            GroupId = groupId,
-                            BossMobId = mobinfo.Mob.InternalID
-                        };
-
-                        if (!GameServer.Database.AddObject(territory))
+                        if (!saved)
                         {
                             client.Out.SendMessage("Le Territoire " + name + " n'a pas pu etre sauvegardé dans la base de données.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                             break;
@@ -143,7 +139,7 @@ namespace DOL.commands.gmcommands
                             break;
                         }                        
 
-                        var territory = TerritoryManager.Instance.Territories.FirstOrDefault(t => t.AreaId.Equals(areaId));
+                        territory = TerritoryManager.Instance.Territories.FirstOrDefault(t => t.AreaId.Equals(areaId));
 
                         if (territory == null)
                         {
@@ -160,10 +156,119 @@ namespace DOL.commands.gmcommands
                     DisplaySyntax(client);
                     break;
 
+                case "clear":
+                    if (args.Length == 3)
+                    {
+                        areaId = args[2];
+
+                        if (string.IsNullOrEmpty(areaId))
+                        {
+                            DisplaySyntax(client);
+                            break;
+                        }
+
+                        territory = TerritoryManager.Instance.Territories.FirstOrDefault(t => t.AreaId.Equals(areaId));
+
+                        if (territory == null)
+                        {
+                            client.Out.SendMessage("Le Territoire avec AreaId " + areaId + " n'a pas été trouvé.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            break;
+                        }
+
+                        TerritoryManager.Instance.ResetEmblem(territory);
+                        client.Out.SendMessage("Le Territoire avec AreaId " + areaId + " est de nouveau neutre.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    }
+
+                    break;
+
+                case "bonus":
+
+                    if (args.Length != 5)
+                    {
+                        DisplaySyntax(client);
+                        break;
+                    }
+
+                    string action = args[2].ToLowerInvariant();
+                    var bonus = this.GetResist(args[3].ToLowerInvariant());
+                    areaId = args[4];
+
+                    if (string.IsNullOrEmpty(areaId) || !bonus.HasValue)
+                    {
+                        DisplaySyntax(client);
+                        break;
+                    }
+
+                    territory = TerritoryManager.Instance.Territories.FirstOrDefault(t => t.AreaId.Equals(areaId));
+
+                    if (territory == null)
+                    {
+                        client.Out.SendMessage("Le Territoire avec AreaId " + areaId + " n'a pas été trouvé.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                        break;
+                    }
+
+                    if (action == "add")
+                    {
+                        territory.Bonus.Add(bonus.Value);
+                        territory.SaveIntoDatabase();
+                        client.Out.SendMessage("Le Territoire avec AreaId " + areaId + " a désormais un bonus suppmémentaire de " + bonus.Value.ToString(), eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                        break;
+                    }
+                    else if (action == "remove")
+                    {
+                        int index;
+                        index = territory.Bonus.FindIndex(b => b == bonus.Value);
+                        
+                        if (index != -1)
+                        {
+                            territory.Bonus.RemoveAt(index);
+                            territory.SaveIntoDatabase();
+                            client.Out.SendMessage("Le bonus de "+ bonus.Value.ToString() + " a été retiré de Territoire avec AreaId " + areaId, eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                        }
+                    }
+
+                    break;
+
+                /*        <nature|crush|slash|thrust|body|cold|energy|heat|matter|spirit>      
+                 * 	Natural = eProperty.Resist_Natural,
+                    Crush = eProperty.Resist_Crush,
+                    Slash = eProperty.Resist_Slash,
+                    Thrust = eProperty.Resist_Thrust,
+                    Body = eProperty.Resist_Body,
+                    Cold = eProperty.Resist_Cold,
+                    Energy = eProperty.Resist_Energy,
+                    Heat = eProperty.Resist_Heat,
+                    Matter = eProperty.Resist_Matter,
+                    Spirit = eProperty.Resist_Spirit               
+                 * 
+                 * */
+
 
                 default:
                     DisplaySyntax(client);
                     break;
+            }
+        }
+
+
+        private eResist? GetResist(string resist)
+        {
+            switch (resist)
+            {
+
+                case "nature": return eResist.Natural;
+                case "crush": return eResist.Crush;
+                case "slash": return eResist.Slash;
+                case "thrust": return eResist.Thrust;
+                case "body": return eResist.Body;
+                case "cold": return eResist.Cold;
+                case "energy": return eResist.Energy;
+                case "heat": return eResist.Heat;
+                case "matter": return eResist.Matter;
+                case "spirit": return eResist.Spirit;
+
+                default:
+                    return null;
             }
         }
     }

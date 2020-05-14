@@ -13,12 +13,16 @@ using System.Threading.Tasks;
 
 namespace DOL.GS.Scripts
 {
+    /// <summary>
+    /// Beware, Changing this class Name or Namespace breaks TerritoryManager
+    /// </summary>
     public class TerritoryGuard : AmteMob, IGuardNPC
     { 
         public TerritoryGuard()
         {
             var brain = new TerritoryBrain();
             brain.AggroLink = 3;
+            brain.AggroRange = 500;
             SetOwnBrain(brain);
         }
 
@@ -44,14 +48,23 @@ namespace DOL.GS.Scripts
             }
 
             var cloaks = GameServer.Database.SelectObjects<NPCEquipment>("TemplateID like @guard AND Slot = @slot", new QueryParameter[] { new QueryParameter("guard", "gvg_guard_%"), new QueryParameter("slot", 26) });
-            player.Out.SendMessage(
-                string.Format("Bonjour {0}, vous pouvez modifier l'équippement que je porte, sélectionner l'ensemble que vous souhaitez :\n", player.Name) +
-                string.Join("\n", cloaks.Select(c => string.Format("[{0}]", c.TemplateID.Substring(10)))),
-                eChatType.CT_System,
-                eChatLoc.CL_PopupWindow
-            );
+            if (cloaks != null)
+            {
+                player.Out.SendMessage(
+                   string.Format("Bonjour {0}, vous pouvez modifier l'équippement que je porte, sélectionner l'ensemble que vous souhaitez :\n", player.Name) +
+                   string.Join("\n", cloaks.Select(c => string.Format("[{0}]", c.TemplateID.Substring(10)))),
+                   eChatType.CT_System,
+                   eChatLoc.CL_PopupWindow
+               );
+            }
+            else
+            {
+                player.Out.SendMessage("Umh.. j'ai beau chercher mais je ne trouve pas de capes dans mon inventaire.. Tu devrais dire ça à un GM..", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+            }        
+               
             return true;
         }
+
         public override bool WhisperReceive(GameLiving source, string text)
         {
             if (!base.WhisperReceive(source, text) || string.IsNullOrWhiteSpace(GuildName))
@@ -69,9 +82,22 @@ namespace DOL.GS.Scripts
 
             var cloaks = GameServer.Database.SelectObjects<NPCEquipment>("TemplateID like @guard AND Slot = @slot", new QueryParameter[] { new QueryParameter("guard", "gvg_guard_%"), new QueryParameter("slot", 26) });
             text = string.Format("gvg_guard_{0}", text);
-            if (cloaks.Any(c => c.TemplateID == text))
-            TerritoryManager.Instance.ChangeGuildOwner(this.InternalID, player.GuildName, text);
+            if (cloaks != null && cloaks.Any(c => c.TemplateID == text))
+                TerritoryManager.Instance.ChangeGuildOwner(this.InternalID, player.Guild, text);
             return true;
+        }
+
+        public override void LoadFromDatabase(DataObject obj)
+        {
+            base.LoadFromDatabase(obj);
+            var brain = this.Brain as TerritoryBrain;
+            Mob mob = obj as Mob;
+
+            if (brain != null && mob != null)
+            {
+                if (mob.AggroRange > 0)
+                    brain.AggroRange = mob.AggroRange;
+            }
         }
 
         public override void Die(GameObject killer)

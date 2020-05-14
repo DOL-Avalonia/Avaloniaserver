@@ -1,4 +1,5 @@
 ﻿using DOL.GS;
+using DOLDatabase.Tables;
 using log4net;
 using System;
 using System.Collections.Generic;
@@ -13,9 +14,11 @@ namespace DOL.Territory
     public class Territory
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private string id;
 
-        public Territory(IArea area, string areaId, ushort regionId, ushort zoneId, string groupId, GameNPC boss)
+        public Territory(IArea area, string areaId, ushort regionId, ushort zoneId, string groupId, GameNPC boss, string bonus = null, string id = null)
         {
+            this.id = id;
             this.Area = area;
             this.RegionId = regionId;
             this.Name = ((AbstractArea)area).Description;
@@ -27,11 +30,32 @@ namespace DOL.Territory
             this.Coordinates = TerritoryManager.GetCoordinates(area);
             this.Radius = this.GetRadius();
             this.OriginalGuilds = new Dictionary<string, string>();
+            this.Bonus = new List<eResist>();
             this.Mobs = this.GetMobsInTerritory();
             this.SaveOriginalGuilds();
+            this.LoadBonus(bonus);
+            this.ApplyGuildOwner();
         }
 
+        private void ApplyGuildOwner()
+        {
+            var owner = GuildMgr.GetAllGuilds().FirstOrDefault(g => g.DoesGuildOwnTerritory(this.AreaId));
+
+            if (owner != null)
+            {
+                TerritoryManager.Instance.ChangeGuildOwner(owner, this);
+            }
+        }
+
+        /// <summary>
+        /// Key: MobId | Value: Original GuildName
+        /// </summary>
         public Dictionary<string, string> OriginalGuilds
+        {
+            get;
+        }
+
+        public List<eResist> Bonus
         {
             get;
         }
@@ -107,6 +131,27 @@ namespace DOL.Territory
         }
 
 
+        private void LoadBonus(string raw)
+        {
+            if (raw != null)
+            {
+                foreach (var item in raw.Split(new char[] { '|' }))
+                {
+                    if (Enum.TryParse(item, out eResist resist))
+                    {
+                        this.Bonus.Add(resist);
+                    }
+                }
+            }
+        }
+
+
+        private string SaveBonus()
+        {
+            return !this.Bonus.Any() ? null : string.Join("|", this.Bonus.Select(b => (byte)b));
+        }
+
+
         private void SaveOriginalGuilds()
         {
             if (this.Mobs != null)
@@ -142,6 +187,7 @@ namespace DOL.Territory
             {
                 if (item is GameNPC mob && (mob.Flags & GameNPC.eFlags.CANTTARGET) == 0)
                 {
+                    mob.IsInTerritory = true;
                     mobs.Add(mob);
                 }
             }
@@ -193,10 +239,49 @@ namespace DOL.Territory
                 " Region: " + this.RegionId,
                 " Zone: " + this.ZoneId,
                 " Guild Owner: " + (this.GuildOwner ?? "None"),
-                " Mobs -- Count(" + this.Mobs.Count() + " )",
-                 string.Join("\n", this.Mobs.Select(m => "Name: " + m.Name + "\n Id: " + m.InternalID))
-            };            
+                " Bonus: " + (this.Bonus?.Any() == true ? (string.Join("\n * ", this.Bonus.Select(b => b.ToString()))) : "-"), 
+                " Mobs -- Count( " + this.Mobs.Count() + " )",
+                 string.Join("\n", this.Mobs.Select(m => " * Name: " + m.Name + " Id: " + m.InternalID))
+            }; 
+        }
 
+
+        public void SaveIntoDatabase()
+        {
+            TerritoryDb db = null;
+            bool isNew = false;
+
+            if (this.id == null)
+            {
+                db = new TerritoryDb();
+                isNew = true;
+            }
+            else
+            {
+                db = GameServer.Database.FindObjectByKey<TerritoryDb>(this.id);
+            }
+
+            if (db != null)
+            {
+                db.AreaId = this.AreaId;
+                db.AreaX = this.Coordinates.X;
+                db.AreaY = this.Coordinates.Y;
+                db.BossMobId = this.BossId;
+                db.GroupId = this.GroupId;
+                db.GuidldOwner = this.GuildOwner;
+                db.RegionId = this.RegionId;
+                db.ZoneId = this.ZoneId;
+                db.Bonus = this.SaveBonus();
+
+                if (isNew)
+                {
+                    GameServer.Database.AddObject(db);
+                }
+                else
+                {
+                    GameServer.Database.SaveObject(db);
+                }
+            }
         }
     }
 }

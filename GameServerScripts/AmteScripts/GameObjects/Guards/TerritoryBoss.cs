@@ -13,6 +13,9 @@ using System.Threading.Tasks;
 
 namespace DOL.GS.Scripts
 {
+    /// <summary>
+    /// Beware, Changing this class Name or Namespace breaks TerritoryManager
+    /// </summary>
     public class TerritoryBoss
         : AmteMob, IGuardNPC
     {
@@ -22,6 +25,7 @@ namespace DOL.GS.Scripts
         {
             var brain = new TerritoryBrain();
             brain.AggroLink = 3;
+            brain.AggroRange = 500;
             SetOwnBrain(brain);
         }
   
@@ -54,12 +58,12 @@ namespace DOL.GS.Scripts
         public override void Die(GameObject killer)
         {
             base.Die(killer);
+            GamePlayer player = killer as GamePlayer;
 
-            if (killer.GuildName != null)
+            if (killer.GuildName != null && player != null)
             {
                 this.GuildName = killer.GuildName;
-                TerritoryManager.Instance.ChangeGuildOwner(this.InternalID, killer.GuildName, isBoss: true);
-                //handle bonus
+                TerritoryManager.Instance.ChangeGuildOwner(this.InternalID, player.Guild, isBoss: true);
             }
         }
 
@@ -67,12 +71,23 @@ namespace DOL.GS.Scripts
         public override void LoadFromDatabase(DataObject obj)
         {
             base.LoadFromDatabase(obj);
-
+            TerritoryBrain brain = this.Brain as TerritoryBrain;
             Mob mob = obj as Mob;
             if (mob != null)
             {
                 this.originalGuildName = mob.Guild;
             }
+
+            if (brain != null && mob != null)
+            {
+                if (mob.AggroRange > 0)
+                    brain.AggroRange = mob.AggroRange;
+            }
+        }
+
+        public override void RestoreOriginalGuildName()
+        {
+            this.GuildName = originalGuildName;
         }
     }
 }

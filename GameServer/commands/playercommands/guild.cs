@@ -25,6 +25,7 @@ using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.Language;
+using DOL.Territory;
 
 namespace DOL.GS.Commands
 {
@@ -574,7 +575,7 @@ namespace DOL.GS.Commands
 								client.Out.SendMessage(
 									LanguageMgr.GetTranslation(
 										client.Account.Language,
-										"Commands.Players.Guild.Invite.NoSelected"
+										"Commands.Players.Guild.InviteNoSelected"
 									),
 									eChatType.CT_System,
 									eChatLoc.CL_SystemWindow
@@ -586,7 +587,7 @@ namespace DOL.GS.Commands
 								client.Out.SendMessage(
 									LanguageMgr.GetTranslation(
 										client.Account.Language,
-										"Commands.Players.Guild.Invite.NoSelf"
+										"Commands.Players.Guild.InviteNoSelf"
 									),
 									eChatType.CT_System,
 									eChatLoc.CL_SystemWindow
@@ -611,7 +612,7 @@ namespace DOL.GS.Commands
 								client.Out.SendMessage(
 									LanguageMgr.GetTranslation(
 										client.Account.Language,
-										"Commands.Players.Guild.Invite.Dead"
+										"Commands.Players.Guild.InviteDead"
 									),
 									eChatType.CT_System,
 									eChatLoc.CL_SystemWindow
@@ -623,7 +624,7 @@ namespace DOL.GS.Commands
 								client.Out.SendMessage(
 									LanguageMgr.GetTranslation(
 										client.Account.Language,
-										"Commands.Players.Guild.Invite.NotThis"
+										"Commands.Players.Guild.InviteNotThis"
 									), 
 									eChatType.CT_System,
 									eChatLoc.CL_SystemWindow
@@ -635,7 +636,7 @@ namespace DOL.GS.Commands
 								client.Out.SendMessage(
 									LanguageMgr.GetTranslation(
 										client.Account.Language,
-										"Commands.Players.Guild.Invite.NotThis"
+										"Commands.Players.Guild.InviteNotThis"
 									),
 									eChatType.CT_System,
 									eChatLoc.CL_SystemWindow
@@ -646,7 +647,7 @@ namespace DOL.GS.Commands
 								client.Player,
 								LanguageMgr.GetTranslation(
 									client.Account.Language,
-									"Commands.Players.Guild.Invite.Recieved",
+									"Commands.Players.Guild.InviteRecieved",
 									client.Player.Name,
 									client.Player.Guild.Name
 								)
@@ -654,7 +655,7 @@ namespace DOL.GS.Commands
 							client.Out.SendMessage(
 								LanguageMgr.GetTranslation(
 									client.Account.Language,
-									"Commands.Players.Guild.Invite.Sent",
+									"Commands.Players.Guild.InviteSent",
 									obj.Name,
 									client.Player.Guild.Name
 								),
@@ -960,7 +961,7 @@ namespace DOL.GS.Commands
 										client.Out.SendMessage(
 											LanguageMgr.GetTranslation(
 												client.Account.Language,
-												"Commands.Players.Guild.InfoBanner.Purchase.Available"),
+												"Commands.Players.Guild.InfoBanner.PurchaseAvailable"),
 											eChatType.CT_Guild,
 											eChatLoc.CL_SystemWindow);
 									}
@@ -1733,7 +1734,7 @@ namespace DOL.GS.Commands
 								client.Out.SendMessage(
 									LanguageMgr.GetTranslation(
 										client.Account.Language,
-										"Commands.Players.Guild.Form.NoRegistrar"),
+										"Commands.Players.Guild.FormNoRegistrar"),
 									eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
 							}
@@ -1744,7 +1745,7 @@ namespace DOL.GS.Commands
 								client.Out.SendMessage(
 									LanguageMgr.GetTranslation(
 										client.Account.Language,
-										"Commands.Players.Guild.Form.NoGroup"),
+										"Commands.Players.Guild.FormNoGroup"),
 									eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
 							}
@@ -1766,7 +1767,7 @@ namespace DOL.GS.Commands
 								client.Out.SendMessage(
 									LanguageMgr.GetTranslation(
 										client.Account.Language,
-										"Commands.Players.Guild.Form.NoMembers",
+										"Commands.Players.Guild.FormNoMembers",
 										Properties.GUILD_NUM),
 									eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
@@ -3063,11 +3064,11 @@ namespace DOL.GS.Commands
 							double amount = double.Parse(args[2]);
 							if (amount < 0 || amount > 1000000001)
 							{
-								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Guild.Deposit.Invalid"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Guild.DepositInvalid"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							}
 							else if (client.Player.GetCurrentMoney() < amount)
 							{
-								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Guild.Deposit.TooMuch"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Guild.DepositTooMuch"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							}
 							else
 							{
@@ -3133,11 +3134,10 @@ namespace DOL.GS.Commands
 						{
 							client.Out.SendMessage("Vous devez etre dans une guilde pour voir les territoires occupés", eChatType.CT_System, eChatLoc.CL_ChatWindow);
 							break;
-						}
-
-
-
-
+						}					
+				
+						IList<string> infos = TerritoryManager.Instance.GetTerritoriesInformations();
+						client.Out.SendCustomTextWindow("[ TERRITOIRES ]", infos);
 						break;
                     #endregion
 

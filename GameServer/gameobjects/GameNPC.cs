@@ -1978,6 +1978,16 @@ namespace DOL.GS
 		}
 
 
+		public virtual void RestoreOriginalGuildName() {}	
+
+
+		public bool IsInTerritory
+		{
+			get;
+			set;
+		}
+
+
 		/// <summary>
 		/// Load a npc from the npc template
 		/// </summary>

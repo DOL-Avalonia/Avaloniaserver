@@ -19,7 +19,9 @@ namespace DOLDatabase.Tables
         private string m_groupId;
         private int m_areaX;
         private int m_areaY;
-      
+        private string m_bonus;
+        private string m_guildOwner;
+
         [DataElement(AllowDbNull = false)]
         public ushort RegionId
         {
@@ -76,6 +78,36 @@ namespace DOLDatabase.Tables
             set
             {
                 m_bossMobId = value;
+                Dirty = true;
+            }
+        }
+
+        [DataElement(AllowDbNull = true, Varchar = 255)]
+        public string GuidldOwner
+        {
+            get
+            {
+                return m_guildOwner;
+            }
+
+            set
+            {
+                m_guildOwner = value;
+                Dirty = true;
+            }
+        }
+
+        [DataElement(AllowDbNull = true, Varchar = 255)]
+        public string Bonus
+        {
+            get
+            {
+                return m_bonus;
+            }
+
+            set
+            {
+                m_bonus = value;
                 Dirty = true;
             }
         }
