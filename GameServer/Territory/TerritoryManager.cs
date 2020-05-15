@@ -3,6 +3,7 @@ using DOL.events.server;
 using DOL.Events;
 using DOL.GameEvents;
 using DOL.GS;
+using DOL.GS.PacketHandler;
 using DOL.MobGroups;
 using DOLDatabase.Tables;
 using log4net;
@@ -25,6 +26,8 @@ namespace DOL.Territory
         private readonly string BOSS_CLASS = "DOL.GS.Scripts.TerritoryBoss";    
         private readonly string GUARD_CLASS = "DOL.GS.Scripts.TerritoryGuard";
         private readonly string GUARD_BASIC_TEMPLATE = "gvg_guard_Basique";
+        private readonly byte DAILY_TAX = 16;
+        private readonly byte DAILY_MERIT_POINTS = 41;
 
         public static TerritoryManager Instance => instance ?? (instance = new TerritoryManager());
 
@@ -177,7 +180,6 @@ namespace DOL.Territory
             territory.GuildOwner = null;
             territory.Boss.RestoreOriginalGuildName();
             territory.SaveIntoDatabase();
-
         }
 
         private static void ApplyNewEmblem(string guildName, GameNPC mob)
@@ -356,6 +358,75 @@ namespace DOL.Territory
                 X = x,
                 Y = y
             };
+        }
+
+        public void ProceedPayments()
+        {
+            foreach (var guildGroup in this.Territories.GroupBy(t => t.GuildOwner))
+            {
+                var guildName = guildGroup.Key;
+                if (guildName != null)
+                {
+                    var guild = GuildMgr.GetGuildByName(guildName);
+
+                    if (guild != null)
+                    {
+                        int count = guildGroup.Count();
+                        bool shouldRemoveTerritories = false;
+                        var players = guild.GetListOfOnlineMembers();
+
+                        if (count < 6)
+                        {
+                            int sum = count * DAILY_TAX;
+                            if (guild.TryPayTerritoryTax(Money.GetMoney(0,0,sum,0,0)))
+                            {
+                                players.Foreach(p => p.Out.SendMessage(Language.LanguageMgr.GetTranslation(p.Client.Account.Language, "Commands.Players.Guild.TerritoryPaid", sum),
+                                              eChatType.CT_Guild, eChatLoc.CL_SystemWindow));
+                            }
+                            else
+                            {
+                                players.Foreach(p => p.Out.SendMessage(Language.LanguageMgr.GetTranslation(p.Client.Account.Language, "Commands.Players.Guild.TerritoryNoMoney"),
+                                                                            eChatType.CT_Guild, eChatLoc.CL_SystemWindow));
+                                shouldRemoveTerritories = true;
+                            }
+                        }
+                        else
+                        {
+                            int over = count - 5;
+                            int baseAmount = 5 * DAILY_TAX;
+                            int total = (over * (DAILY_TAX + 10)) + baseAmount;
+
+                            if (guild.TryPayTerritoryTax(Money.GetMoney(0, 0, total, 0, 0)))
+                            {
+                                players.Foreach(p => p.Out.SendMessage(Language.LanguageMgr.GetTranslation(p.Client.Account.Language, "Commands.Players.Guild.TerritoryPaid", total),
+                                              eChatType.CT_Guild, eChatLoc.CL_SystemWindow));
+                            }
+                            else
+                            {
+                                players.Foreach(p => p.Out.SendMessage(Language.LanguageMgr.GetTranslation(p.Client.Account.Language, "Commands.Players.Guild.TerritoryNoMoney"),
+                                              eChatType.CT_Guild, eChatLoc.CL_SystemWindow));                             
+                                shouldRemoveTerritories = true;
+                            }
+                        }
+
+
+                        if (shouldRemoveTerritories)
+                        {
+                            foreach (var territory in guildGroup)
+                            {
+                                this.ClearTerritory(territory);
+                            }
+                        }
+                        else
+                        {
+                            int mp = count * DAILY_MERIT_POINTS;
+                            guild.GainMeritPoints(mp);
+                            players.Foreach(p => p.Out.SendMessage(Language.LanguageMgr.GetTranslation(p.Client.Account.Language, "Commands.Players.Guild.TerritoryMeritPoints", mp),
+                                             eChatType.CT_Guild, eChatLoc.CL_SystemWindow));
+                        }
+                    }
+                }
+            }
         }
     }
 

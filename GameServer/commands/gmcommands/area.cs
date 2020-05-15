@@ -80,15 +80,25 @@ namespace DOL.GS.Commands
 						area.X = client.Player.X;
 						area.Y = client.Player.Y;
 						area.Z = client.Player.Z;
+						area.ObjectId = area.Description;
 
-						Assembly gasm = Assembly.GetAssembly(typeof(GameServer));
+						Assembly gasm = Assembly.GetAssembly(typeof(GameServer));					
 						AbstractArea newArea = (AbstractArea)gasm.CreateInstance(area.ClassType, false);
 						newArea.LoadFromDatabase(area);
 
 						newArea.Sound = area.Sound;
 						newArea.CanBroadcast = area.CanBroadcast;
 						WorldMgr.GetRegion(client.Player.CurrentRegionID).AddArea(newArea);
-						GameServer.Database.AddObject(area);
+						try
+						{
+							GameServer.Database.AddObject(area);
+						}
+						catch
+						{
+							client.Out.SendMessage("Le nom de cet Area doit etre unique", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							break;
+						}
+	
 						DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Commands.GM.Area.AreaCreated", area.Description, area.X, area.Y, area.Z, area.Radius, area.CanBroadcast.ToString(), area.Sound));
 						break;
 					}

@@ -227,6 +227,9 @@ Commands.Players.Guild.WithdrawTooMuch:			Vous ne pouvez plus ajouter d'argent d
 
 Commands.Players.Guild.InviteNotThis:			Vous ne pouvez pas inviter un membre de ce royaume dans votre guilde.
 Commands.Players.Guild.Help.GuildTerritoires:   '/gc territoires' Affiche les territoires ainsi que leurs occupations.
+Commands.Players.Guild.TerritoryPaid:           La somme de {0} a été retirée de la banque de votre guilde pour financer vos territoires.
+Commands.Players.Guild.TerritoryNoMoney:        Votre guilde n'a pas pu honorer ses dettes et vous avez perdu vos territoires conquis.  
+Commands.Players.Guild.TerritoryMeritPoints:   L'occupation de vos territoires vous rapporte {0} points de mérite.
 
 
 # /Guilds a traduire:

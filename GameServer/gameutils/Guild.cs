@@ -223,6 +223,18 @@ namespace DOL.GS
 			return this.m_DBguild.Bank;
 		}
 
+		public bool TryPayTerritoryTax(double tax)
+		{
+			if (m_DBguild.Bank >= tax)
+			{
+				m_DBguild.Bank -= tax;
+				GameServer.Database.SaveObject(m_DBguild);
+				return true;
+			}
+
+			return false;
+		}
+
 		public bool IsGuildDuesOn()
 		{
 			return m_DBguild.Dues;

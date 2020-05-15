@@ -38,7 +38,15 @@ namespace DOL.GS.Scripts
             player.Notify(GameObjectEvent.InteractWith, player, new InteractWithEventArgs(this));
 
             if (string.IsNullOrWhiteSpace(GuildName) || player.Guild == null)
+            {
+                if (string.IsNullOrWhiteSpace(GuildName) && player.Client.Account.PrivLevel >= 2)
+                {
+                    player.Out.SendMessage("Message aux GM+: Donnez-moi dans une guilde pour fonctionner.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                }
+
                 return false;
+            }
+
             if (player.Client.Account.PrivLevel == 1 && player.GuildName != GuildName)
                 return false;
             if (!player.GuildRank.Claim)
