@@ -27,6 +27,7 @@ using log4net;
 using System.Linq;
 using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
+using DOL.Territory;
 
 namespace DOL.GS
 {
@@ -133,6 +134,11 @@ namespace DOL.GS
 		private List<string> territories;
 
 		/// <summary>
+		/// Territory Resists based on owned Territories
+		/// </summary>
+		private Dictionary<eResist, int> TerritoryResists;
+
+		/// <summary>
 		/// Stores claimed keeps (unique)
 		/// </summary>
 		protected List<AbstractGameKeep> m_claimedKeeps = new List<AbstractGameKeep>();
@@ -160,6 +166,9 @@ namespace DOL.GS
 				this.m_DBguild.Webpage = value;
 			}
 		}
+
+
+		public IEnumerable<string> Territories => this.territories.ToList();
 
 		public DBRank[] Ranks
 		{
@@ -230,14 +239,44 @@ namespace DOL.GS
 		}
 
 
-		public void AddTerritory(string area)
+		public void AddTerritory(string area, bool saveChanges)
 		{
 			if (!territories.Contains(area))
 			{
 				this.territories.Add(area);
-				this.m_DBguild.Territories = string.Join("|", this.territories);
-				this.SaveIntoDatabase();
+				if (saveChanges)
+				{
+					this.m_DBguild.Territories = string.Join("|", this.territories);
+					this.SaveIntoDatabase();
+				}				
 			}
+
+			var territory = TerritoryManager.Instance.Territories.FirstOrDefault(t => t.AreaId.Equals(area));
+
+			if (territory != null)
+			{
+				if (territories.Count < 6)
+				{
+					AddResistsFromTerritory(territory);
+				}
+			}			
+		}
+
+		private void AddResistsFromTerritory(Territory.Territory territory)
+		{	
+			foreach (var resist in territory.Bonus)
+			{
+				if (this.TerritoryResists.ContainsKey(resist))
+				{
+					this.TerritoryResists[resist] += 1;
+				}
+				else
+				{
+					this.TerritoryResists.Add(resist, 1);
+				}
+			}
+
+			this.m_onlineGuildPlayers.Values.ForEach(p => p.Out.SendCharResistsUpdate());
 		}
 
 		public void RemoveTerritory(string area)
@@ -247,7 +286,32 @@ namespace DOL.GS
 				this.territories.Remove(area);
 				this.m_DBguild.Territories = this.territories.Any() ? string.Join("|", this.territories) : null;
 				this.SaveIntoDatabase();
+
+				var territory = TerritoryManager.Instance.Territories.FirstOrDefault(t => t.AreaId.Equals(area));
+
+				if (territory != null)
+				{
+					foreach (var resist in territory.Bonus)
+					{
+						if (TerritoryResists.ContainsKey(resist))
+						{
+							TerritoryResists.Remove(resist);
+						}
+					}
+
+					this.m_onlineGuildPlayers.Values.ForEach(p => p.Out.SendCharResistsUpdate());
+				}
 			}
+		}
+
+		public int GetResistFromTerritories(eResist resist)
+		{
+			if (this.TerritoryResists.ContainsKey(resist))
+			{
+				return this.TerritoryResists[resist];
+			}
+
+			return 0;
 		}
 
 		public bool DoesGuildOwnTerritory(string area)
@@ -343,16 +407,21 @@ namespace DOL.GS
 			m_DBguild = dbGuild;
 			bannerStatus = "None";
 			this.territories = new List<string>();
-			this.LoadTerritories();
+			this.TerritoryResists = new Dictionary<eResist, int>();
 		}
 
-		private void LoadTerritories()
+		public void LoadTerritories()
 		{
 			if (!string.IsNullOrEmpty(m_DBguild.Territories))
 			{
 				foreach (var area in m_DBguild.Territories.Split(new char[] { '|' }))
 				{
-					this.territories.Add(area);
+					var territory = TerritoryManager.Instance.Territories.FirstOrDefault(t => t.AreaId.Equals(area));
+					
+					if (territory != null)
+					{
+						TerritoryManager.Instance.ChangeGuildOwner(this, territory);
+					}					
 				}
 			}
 		}

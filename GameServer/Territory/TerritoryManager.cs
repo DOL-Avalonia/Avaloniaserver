@@ -95,6 +95,7 @@ namespace DOL.Territory
                 }
             }
 
+            GuildMgr.GetAllGuilds().ForEach(g => g.LoadTerritories());
             log.Info(count + " Territoires Chargés");
         }
 
@@ -136,7 +137,7 @@ namespace DOL.Territory
             this.ApplyTerritoryChange(guild, territory, true, equipment);        
         }        
 
-        public void ResetEmblem(Territory territory)
+        public void ClearTerritory(Territory territory)
         {
             if (territory == null || territory.Mobs == null || territory.Boss == null)
                 return;
@@ -165,6 +166,14 @@ namespace DOL.Territory
                     mob.GuildName = null;
                 }
             }
+
+            Guild oldOwner = GuildMgr.GetGuildByName(territory.GuildOwner);
+
+            if (oldOwner != null)
+            {
+                oldOwner.RemoveTerritory(territory.AreaId);
+            }
+
             territory.GuildOwner = null;
             territory.Boss.RestoreOriginalGuildName();
             territory.SaveIntoDatabase();
@@ -295,7 +304,7 @@ namespace DOL.Territory
                 }
             }
 
-            guild.AddTerritory(territory.AreaId);
+            guild.AddTerritory(territory.AreaId, saveChange);
             territory.GuildOwner = guild.Name;
 
             if (equipment == null)

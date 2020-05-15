@@ -94,6 +94,7 @@ GameObjects.GamePlayer.DrowningTimerCallback.Take5%Damage:  Vous perdez 5% de vo
 GameObjects.GamePlayer.DuelStop.DuelEnds:				            Votre duel se termine.
 
 GameObjects.GamePlayer.GainBountyPoints.YouGet:			            Vous obtenez {0} primes de royaume.
+GameObjects.GamePlayer.GainBountyPoints.TerritoryBonus:             Vous gagnez un bonus grâce à vos territoires de {0} primes de royaumes.
 
 GameObjects.GamePlayer.GainCraftingSkill.GainSkill:                 Vous gagnez une compétence en {0}. ({1})
 GameObjects.GamePlayer.GainCraftingSkill.ReachedSkill:              {0} a atteint le titre "Légendaire" en {1}
@@ -106,6 +107,8 @@ GameObjects.GamePlayer.GainExperience.RoyaumesouspeupleBonus:       Vous gagnez 
 GameObjects.GamePlayer.GainExperience.CannotRaise:		            Vous ne pouvez pas atteindre le niveau 6 tant que vous n'avez pas choisi une spécialisation.
 GameObjects.GamePlayer.GainExperience.TalkToTrainer:	            Parlez à votre entraineur pour plus d'informations.
 GameObjects.GamePlayer.GainExperience.YouGet:			            Vous obtenez {0} points d'expérience.
+GameObjects.GamePlayer.GainExperience.BonusRenaissance:             dont {0} points bonus de Renaissance
+GameObjects.GamePlayer.GainExperience.BonusTerritory:               dont {0} points bonus de Territoires
 
 GameObjects.GamePlayer.GainRealmPoints.Earned:			            {0} a gagné 1,000,000 de points de royaume dans {1}
 GameObjects.GamePlayer.GainRealmPoints.GainBonus:		            Vous gagnez un bonus de +{0} dans toutes vos spécialisations !

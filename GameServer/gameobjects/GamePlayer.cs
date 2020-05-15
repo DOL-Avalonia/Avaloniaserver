@@ -5003,6 +5003,7 @@ namespace DOL.GS
 			}
 
 			int bonusRenaissance = 0;
+			int territoryExp = 0;
 
 			if (this.IsRenaissance)
 			{
@@ -5016,6 +5017,24 @@ namespace DOL.GS
 				}
 
 				expTotal += bonusRenaissance; 
+			}
+
+			int territoryCount = 0;
+
+			if (this.Guild != null && this.Guild.Territories.Any())
+			{
+				territoryCount = this.Guild.Territories.Count();
+				
+				if (territoryCount < 5)
+				{
+					territoryExp = (int)Math.Round(expTotal * territoryCount * 2D / 100D);
+				}
+				else
+				{
+					territoryExp = (int)Math.Round(expTotal * 10D / 100D);
+				}
+
+				expTotal += territoryExp;
 			}
 
 			// Get Champion Experience too
@@ -5082,8 +5101,13 @@ namespace DOL.GS
 
 				if (bonusRenaissance > 0)
 				{
-					Out.SendMessage(string.Format("dont {0} points bonus de Renaissance", bonusRenaissance), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				}				
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.GainExperience.BonusRenaissance", bonusRenaissance), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				}
+
+				if (territoryExp > 0)
+				{
+					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.GainExperience.BonusTerritory", territoryExp), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				}
 			}
 
 			Experience += expTotal;

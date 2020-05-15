@@ -34,18 +34,7 @@ namespace DOL.Territory
             this.Mobs = this.GetMobsInTerritory();
             this.SaveOriginalGuilds();
             this.LoadBonus(bonus);
-            this.ApplyGuildOwner();
-        }
-
-        private void ApplyGuildOwner()
-        {
-            var owner = GuildMgr.GetAllGuilds().FirstOrDefault(g => g.DoesGuildOwnTerritory(this.AreaId));
-
-            if (owner != null)
-            {
-                TerritoryManager.Instance.ChangeGuildOwner(owner, this);
-            }
-        }
+        }      
 
         /// <summary>
         /// Key: MobId | Value: Original GuildName
@@ -145,12 +134,10 @@ namespace DOL.Territory
             }
         }
 
-
         private string SaveBonus()
         {
             return !this.Bonus.Any() ? null : string.Join("|", this.Bonus.Select(b => (byte)b));
         }
-
 
         private void SaveOriginalGuilds()
         {
@@ -228,6 +215,10 @@ namespace DOL.Territory
             }
         }
 
+        /// <summary>
+        /// GM Informations
+        /// </summary>
+        /// <returns></returns>
         public IList<string> GetInformations()
         {
             return new string[]
@@ -239,9 +230,11 @@ namespace DOL.Territory
                 " Region: " + this.RegionId,
                 " Zone: " + this.ZoneId,
                 " Guild Owner: " + (this.GuildOwner ?? "None"),
-                " Bonus: " + (this.Bonus?.Any() == true ? (string.Join("\n * ", this.Bonus.Select(b => b.ToString()))) : "-"), 
+                " Bonus: " + (this.Bonus?.Any() == true ? (string.Join(" | ", this.Bonus.Select(b => b.ToString()))) : "-"), 
+                "",
                 " Mobs -- Count( " + this.Mobs.Count() + " )",
-                 string.Join("\n", this.Mobs.Select(m => " * Name: " + m.Name + " Id: " + m.InternalID))
+                "",
+                 string.Join("\n", this.Mobs.Select(m => " * Name: " + m.Name + " |  Id: " + m.InternalID))
             }; 
         }
 
