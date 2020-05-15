@@ -74,7 +74,7 @@ namespace DOL.GS.Quests
         protected List<string> m_questGoals = new List<string>(); // initial list of quest goals upon starting the quest
 		protected List<DQRQuestGoal.GoalType> m_goalType = new List<DQRQuestGoal.GoalType>(); // the quest goal types kill, interact etc
 		protected List<int> m_goalRepeatNo = new List<int>(); // how many times does goal need to be met ie (0/3)
-		protected List<string> m_goalTargetName = new List<string>(); // the target object/NPC name for the goal		
+		protected List<string> m_goalTargetName = new List<string>(); // the target object/NPC name for the goal	
 		protected List<string> m_goalTargetText = new List<string>(); // target text, used for mob to say somethen when slain, or interact
 		protected List<int> m_goalStepPosition = new List<int>(); // at what step is this goal created
 		protected List<string> m_advanceTexts = new List<string>(); // whisper text needed to advance an interact goal				
@@ -310,8 +310,8 @@ namespace DOL.GS.Quests
                     }
                 }
 
-                // the text that must be whispered to the target to advance the quest
-                lastParse = m_dqRewardQ.AdvanceText;
+				// the text that must be whispered to the target to advance the quest
+				lastParse = m_dqRewardQ.AdvanceText;
 				if (!string.IsNullOrEmpty(lastParse))
 				{
 					parse1 = lastParse.Split('|');
@@ -555,7 +555,7 @@ namespace DOL.GS.Quests
 						{
 							collectItem = _stepItemTemplates[index];
 						}
-						
+
 						newgoals = AddGoal(m_questGoals[index], m_goalType[index], m_goalRepeatNo[index], collectItem, m_goalTargetName[index]);
 						CurrentGoal = newgoals;// we do this , to check for an interactfinish goaltype
 					}
@@ -1271,6 +1271,24 @@ namespace DOL.GS.Quests
 					return;
 				}
 
+				if (e == GamePlayerEvent.Dying)
+				{
+					var a = args as DyingEventArgs;
+					var npc = sender as GameNPC;
+
+					if (CurrentGoal.Type == DQRQuestGoal.GoalType.KillGroup)
+					{
+						if (npc != null && a.PlayerKillers.Contains(this.QuestPlayer) && npc.GroupMobId?.Equals(this.CurrentGoal.TargetObject) == true)
+						{
+							if (MobGroups.MobGroupManager.Instance.IsAllOthersGroupMobDead(npc))
+							{
+								AdvanceQuestStep(npc);
+							}
+						}
+					}
+					return;
+				}
+
                 if (e == GamePlayerEvent.GiveItem)
                 {
                     var giveArgs = args as GiveItemEventArgs;
@@ -1714,9 +1732,9 @@ namespace DOL.GS.Quests
                             }
                         }
                         AdvanceQuestStep(living);
-                    }
+                    }			
                 }
-            }
+			}
 		}
 
         /// <summary>
@@ -2095,6 +2113,7 @@ namespace DOL.GS.Quests
 			InteractWhisper = 6,	// Whisper to the target to advance the goal. 
 			InteractDeliver = 7,    // Deliver a dummy item to the target to advance the goal.
 			DeliverFinish = 8,      // Deliver item to the target to finish the quest.
+			KillGroup = 9,
 			Collect = 10,			// Player must give the target an item to advance the step	
 			Unknown = 255
 		}
