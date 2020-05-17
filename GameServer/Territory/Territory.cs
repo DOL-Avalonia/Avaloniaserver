@@ -269,6 +269,7 @@ namespace DOL.Territory
                 if (isNew)
                 {
                     GameServer.Database.AddObject(db);
+                    id = db.ObjectId;
                 }
                 else
                 {

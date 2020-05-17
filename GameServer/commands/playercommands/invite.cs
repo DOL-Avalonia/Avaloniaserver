@@ -121,40 +121,42 @@ namespace DOL.GS.Commands
 				return;
 			}
 
-			if (client.Account.PrivLevel > target.Client.Account.PrivLevel)
-			{
-				// you have no choice!
+			//if (client.Account.PrivLevel > target.Client.Account.PrivLevel)
+			//{
+			//	// you have no choice!
 
-				if (client.Player.Group == null)
-				{
-					Group group = new Group(client.Player);
-					GroupMgr.AddGroup(group);
-					group.AddMember(client.Player);
-					group.AddMember(target);
-				}
-				else
-				{
-					client.Player.Group.AddMember(target);
-				}
+			//	if (client.Player.Group == null)
+			//	{
+			//		Group group = new Group(client.Player);
+			//		GroupMgr.AddGroup(group);
+			//		group.AddMember(client.Player);
+			//		group.AddMember(target);
+			//	}
+			//	else
+			//	{
+			//		client.Player.Group.AddMember(target);
+			//	}
 
-				client.Out.SendMessage(
-					LanguageMgr.GetTranslation(
-						client.Account.Language,
-						"Commands.Players.Invite.GM.Added",
-						target.Name),
-					eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				target.Out.SendMessage(
-					LanguageMgr.GetTranslation(
-						client.Account.Language,
-						"Commands.Players.Invite.GM.You",
-						 client.Player.Name,
-						 client.Player.GetPronoun(1, false)),
-					eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			}
-			else
-			{
-				GameClient targetClient = WorldMgr.GetClientByPlayerNameAndRealm(targetName, 0, true);
-				client.Out.SendMessage(
+			//	client.Out.SendMessage(
+			//		LanguageMgr.GetTranslation(
+			//			client.Account.Language,
+			//			"Commands.Players.Invite.GM.Added",
+			//			target.Name),
+			//		eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			//	target.Out.SendMessage(
+			//		LanguageMgr.GetTranslation(
+			//			client.Account.Language,
+			//			"Commands.Players.Invite.GM.You",
+			//			 client.Player.Name,
+			//			 client.Player.GetPronoun(1, false)),
+			//		eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			//}
+			//else
+			//
+
+			GameClient targetNewClient = target?.Client ?? WorldMgr.GetClientByPlayerNameAndRealm(targetName, 0, true);
+
+			client.Out.SendMessage(
 					LanguageMgr.GetTranslation(
 						client.Account.Language,
 						"Commands.Players.Invite.YouInvite",
@@ -163,18 +165,18 @@ namespace DOL.GS.Commands
 				target.Out.SendGroupInviteCommand(
 					client.Player,
 					LanguageMgr.GetTranslation(
-						targetClient.Account.Language,
+						targetNewClient.Account.Language,
 						"Commands.Players.Invite.InvitedYouTo",
 						client.Player.Name,
 						client.Player.GetPronoun(1, false)));
 				target.Out.SendMessage(
 					LanguageMgr.GetTranslation(
-						targetClient.Account.Language,
+						targetNewClient.Account.Language,
 						"Commands.Players.Invite.InvitedYou",
 						client.Player.Name,
 						client.Player.GetPronoun(1, false)),
 					eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			}
+
 		}
 	}
 }

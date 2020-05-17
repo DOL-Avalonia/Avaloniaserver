@@ -750,6 +750,7 @@ namespace DOL.GS
 				addPlayer.Out.SendMessage("You have agreed to join " + this.Name + "!", eChatType.CT_Group, eChatLoc.CL_SystemWindow);
 				addPlayer.Out.SendMessage("Your current rank is " + addPlayer.GuildRank.Title + "!", eChatType.CT_Group, eChatLoc.CL_SystemWindow);
 				SendMessageToGuildMembers(addPlayer.Name + " has joined the guild!", eChatType.CT_Group, eChatLoc.CL_SystemWindow);
+				addPlayer.Client.Out.SendCharResistsUpdate();
 			}
 			catch (Exception e)
 			{
@@ -786,6 +787,8 @@ namespace DOL.GS
 					member.Out.SendMessage("You leave the guild.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				else
 					member.Out.SendMessage(removername + " removed you from " + Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+				member.Client.Out.SendCharResistsUpdate();
 			}
 			catch (Exception e)
 			{
