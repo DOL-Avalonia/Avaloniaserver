@@ -4424,7 +4424,7 @@ namespace DOL.GS
 
 			//Let's send the notification at the end
 			Notify(GameLivingEvent.Dying, this, new DyingEventArgs(killer));
-			playerAttackers.ForEach(p => p.QuestList.ForEach(q => q.Notify(GamePlayerEvent.Dying, this, new DyingEventArgs(killer, playerAttackers))));
+			playerAttackers?.ForEach(p => p.QuestList?.ForEach(q => q.Notify(GamePlayerEvent.Dying, this, new DyingEventArgs(killer, playerAttackers))));
 		}
 
 		/// <summary>

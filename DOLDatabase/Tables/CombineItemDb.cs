@@ -15,6 +15,8 @@ namespace DOLDatabase.Tables
         private string m_itemsIds;
         private int m_spellEffect;
         private string m_itemTemplateId;
+        private int m_craftingSkill;
+        private int m_craftingValue;
 
         [DataElement(AllowDbNull = false)]
         public string ItemsIds
@@ -48,6 +50,36 @@ namespace DOLDatabase.Tables
             set
             {
                 m_itemTemplateId = value;
+                Dirty = true;
+            }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public int CraftingSkill
+        {
+            get
+            {
+                return m_craftingSkill;
+            }
+
+            set
+            {
+                m_craftingSkill = value;
+                Dirty = true;
+            }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public int CraftingValue
+        {
+            get
+            {
+                return m_craftingValue;
+            }
+
+            set
+            {
+                m_craftingValue = value;
                 Dirty = true;
             }
         }

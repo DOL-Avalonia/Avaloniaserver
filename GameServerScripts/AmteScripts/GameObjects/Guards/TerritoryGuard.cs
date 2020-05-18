@@ -82,7 +82,7 @@ namespace DOL.GS.Scripts
                 return false;
             if (player.Client.Account.PrivLevel == 1 && player.GuildName != GuildName)
                 return false;
-            if (!player.GuildRank.Claim)
+            if (player.Client.Account.PrivLevel == 1 && !player.GuildRank.Claim)
             {
                 player.Out.SendMessage(string.Format("Bonjour {0}, je ne discute pas avec les bleus, circulez.", player.Name), eChatType.CT_System, eChatLoc.CL_PopupWindow);
                 return true;
@@ -132,14 +132,15 @@ namespace DOL.GS.Scripts
                     eChatLoc.CL_ChatWindow
                 );
 
-                foreach (Guild guildAlly in guild.alliance.Guilds)
-                {
-                    guildAlly.SendMessageToGuildMembers(
-                     string.Format("un garde vient d'être tué par {0}.", name),
-                     eChatType.CT_Guild,
-                     eChatLoc.CL_ChatWindow
-                    );
-                } 
+                if (guild.alliance != null)
+                    foreach (Guild guildAlly in guild.alliance.Guilds)
+                    {
+                        guildAlly.SendMessageToGuildMembers(
+                         string.Format("un garde vient d'être tué par {0}.", name),
+                         eChatType.CT_Guild,
+                         eChatLoc.CL_ChatWindow
+                        );
+                    } 
             }
         }
 

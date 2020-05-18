@@ -85,7 +85,7 @@ namespace DOL.Territory
                                         continue;
                                     }
 
-                                    Instance.Territories.Add(new Territory(area, territoryDb.AreaId, territoryDb.RegionId, territoryDb.ZoneId, territoryDb.GroupId, mobinfo.Mob, territoryDb.Bonus, territoryDb.ObjectId));
+                                    Instance.Territories.Add(new Territory(area, territoryDb.AreaId, territoryDb.RegionId, territoryDb.ZoneId, territoryDb.GroupId, mobinfo.Mob, bonus: territoryDb.Bonus, id: territoryDb.ObjectId));
                                     count++;
                                 }
                                 else
@@ -189,7 +189,7 @@ namespace DOL.Territory
             var guild = GuildMgr.GetGuildByName(guildName);
             if (guild == null)
                 return;
-            foreach (var item in mob.Inventory.VisibleItems)
+            foreach (var item in mob.Inventory.VisibleItems.Where(i => i.SlotPosition == 26))
                 if (item.Emblem != 0 || item.Color == NEUTRAL_EMBLEM)
                     item.Emblem = guild.Emblem;
         }

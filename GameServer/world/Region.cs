@@ -771,7 +771,8 @@ namespace DOL.GS
                     {
                         try
                         {
-                            myMob.LoadFromDatabase(mob);
+                            if (mob.EventID == null)
+                                myMob.LoadFromDatabase(mob);
 
                             if (myMob is GameMerchant)
                             {
@@ -799,6 +800,7 @@ namespace DOL.GS
                         }
                         else
                         {
+                            myMob.InternalID = mob.ObjectId;
                             GameEventManager.Instance.PreloadedMobs.Add(myMob);
                         }
                     }

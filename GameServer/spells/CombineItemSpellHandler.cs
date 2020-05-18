@@ -62,7 +62,8 @@ namespace DOL.spells
         /// <param name="effectiveness"></param>
         public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
         {
-            if (!(Caster is GamePlayer player))
+            var player = Caster as GamePlayer;
+            if (player == null)
             {
                 return;
             }
@@ -115,6 +116,22 @@ namespace DOL.spells
                 return;
             }
 
+            if (match.CraftingSkill != eCraftingSkill.NoCrafting && match.CraftValue > 0)
+            {
+                if (!player.CraftingSkills.ContainsKey(match.CraftingSkill))
+                {
+                    log.Warn($"Combine Item: Crafting skill { match.CraftingSkill.ToString() }  not found in Player { player.InternalID }  Crafting Skill");
+                }
+                else
+                {
+                    if (player.CraftingSkills[match.CraftingSkill] <= match.CraftValue)
+                    {
+                        player.Out.SendMessage($"Votre niveau en { match.CraftingSkill.ToString() } doit etre au moins de { match.CraftValue } ", eChatType.CT_Chat, eChatLoc.CL_SystemWindow);
+                        return;
+                    }
+                }
+            }
+
             removeItems.Add(useItem);
 
 
@@ -151,7 +168,14 @@ namespace DOL.spells
                 return null;
             }
 
-            var neededItems = cbitems.Select(c => new Combinable() { Items = c.ItemsIds.Split(new char[] { '|' }), TemplateId = c.ItemTemplateId, SpellEfect = c.SpellEffect });
+            var neededItems = cbitems.Select(
+                c => new Combinable()
+                { 
+                    Items = c.ItemsIds.Split(new char[] { '|' }),
+                    TemplateId = c.ItemTemplateId, SpellEfect = c.SpellEffect,
+                    CraftingSkill = Enum.TryParse(c.CraftingSkill.ToString(), out eCraftingSkill craft) ? craft : eCraftingSkill.NoCrafting,
+                    CraftValue = c.CraftingValue
+                });
 
             return neededItems.Where(i => i.Items.Contains(usedItemId));
         }
@@ -165,6 +189,10 @@ namespace DOL.spells
         public string TemplateId { get; set; }
 
         public int SpellEfect { get; set; }
+
+        public eCraftingSkill CraftingSkill { get; set; }
+
+        public int CraftValue { get; set; }
     }
 
 }

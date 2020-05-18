@@ -4254,7 +4254,7 @@ namespace DOL.GS
 				GameServer.ServerRules.OnNPCKilled(this, killer);
 				base.Die(killer);
 			}
-
+			bool isStoppingEvent = false;
 			if (this.EventID != null)
 			{
 				var ev = GameEventManager.Instance.Events.FirstOrDefault(e => e.ID.Equals(this.EventID));
@@ -4268,6 +4268,7 @@ namespace DOL.GS
 
 						if (ev.WantedMobsCount == 0)
 						{
+							isStoppingEvent = true;
 							Task.Run(() => GameEventManager.Instance.StopEvent(ev, EndingConditionType.Kill));
 						}
 					}			
@@ -4294,7 +4295,7 @@ namespace DOL.GS
 			// remove temp properties
 			TempProperties.removeAllProperties();
 
-			if (!(this is GamePet) && (this.EventID == null || CanRespawnWithinEvent))
+			if (!(this is GamePet) && (this.EventID == null || (CanRespawnWithinEvent && !isStoppingEvent)))
 				StartRespawn();
 		}
 

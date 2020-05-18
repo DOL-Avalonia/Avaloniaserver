@@ -44,7 +44,7 @@ namespace DOL.GameEvents
 
         private async void TimeCheck(object o)
         {
-            Instance.timer.Change(Timeout.Infinite, 0);
+            Instance.timer.Change(Timeout.Infinite, Timeout.Infinite);
             Console.WriteLine("GameEvent: " + DateTime.Now.ToString());
 
 
@@ -300,6 +300,7 @@ namespace DOL.GameEvents
                         {
                             ev.Mobs.Add(npc);
                             npc.RemoveFromWorld();
+                            npc.Delete();
                         }
                         else
                         {
@@ -585,9 +586,9 @@ namespace DOL.GameEvents
             }
 
             foreach (var mob in e.Mobs)
-            {
-                mob.Health = mob.MaxHealth;
-                mob.Mana = mob.MaxMana;
+            {             
+                var db = GameServer.Database.FindObjectByKey<Mob>(mob.InternalID);
+                mob.LoadFromDatabase(db);
 
                 if (e.IsKillingEvent && e.MobNamesToKill.Contains(mob.Name))
                 {
@@ -871,12 +872,20 @@ namespace DOL.GameEvents
         {
             foreach (var mob in e.Mobs)
             {
-                mob.Delete();
+                if (mob.ObjectState == GameObject.eObjectState.Active)
+                {
+                    if (!(mob is MoneyEventNPC))
+                        mob.Health = 0;
+                    
+                    mob.RemoveFromWorld();
+                    mob.Delete();
+                }
             }
 
             foreach (var coffre in e.Coffres)
             {
-                coffre.RemoveFromWorld();
+                if (coffre.ObjectState == GameObject.eObjectState.Active)
+                    coffre.RemoveFromWorld();
             }
 
             e.Clean();
