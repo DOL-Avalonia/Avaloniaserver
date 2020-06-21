@@ -46,5 +46,7 @@ namespace DOL.GS
         public int WaterLevel { get; set; }
 
         public bool IsLava { get; set; }
+
+        public bool AllowMagicalItem { get; set; }
     }
 }

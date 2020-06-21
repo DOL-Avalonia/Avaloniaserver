@@ -74,7 +74,7 @@ namespace DOL.GS
 
         public AbstractArea()
             : base()
-        {
+        {    
         }
 
         /// <summary>
@@ -143,6 +143,8 @@ namespace DOL.GS
 
         public abstract bool IsContaining(int x, int y, int z, bool checkZ);
 
+        public bool CanVol { get; protected set; }
+
         /// <summary>
         /// Called whenever a player leaves the given area
         /// </summary>
@@ -153,6 +155,8 @@ namespace DOL.GS
             {
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractArea.Left", Description), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
+
+            player.IsAllowToVolInThisArea = true;
 
             player.Notify(AreaEvent.PlayerLeave, this, new AreaEventArgs(this, player));
         }
@@ -194,6 +198,8 @@ namespace DOL.GS
             {
                 player.Out.SendRegionEnterSound(Sound);
             }
+
+            player.IsAllowToVolInThisArea = this.CanVol;
 
             player.Notify(AreaEvent.PlayerEnter, this, new AreaEventArgs(this, player));
         }

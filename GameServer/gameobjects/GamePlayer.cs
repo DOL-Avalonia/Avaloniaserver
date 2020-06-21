@@ -278,7 +278,13 @@ namespace DOL.GS
 			get { return m_canFly; }
 			set { m_canFly = value; }
 		}
-		
+
+		public bool IsAllowToVolInThisArea
+		{
+			get;
+			set;
+		}
+
 		private bool m_statsAnon = false;
 
 		/// <summary>
@@ -9575,16 +9581,23 @@ namespace DOL.GS
 			{
 				int minutes = cooldown / 60;
 				int seconds = cooldown % 60;
-				Out.SendMessage(String.Format("You must wait {0} to discharge this item!",
+				Out.SendMessage(String.Format("Vous devez attendre {0} pour utiliser cet objet !",
 				                              (minutes <= 0)
-				                              ? String.Format("{0} more seconds", seconds)
-				                              : String.Format("{0} more minutes and {1} seconds",
+				                              ? String.Format("encore {0} secondes", seconds)
+				                              : String.Format("ecnore {0} minutes et {1} secondes",
 				                                              minutes, seconds)),
 				                eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 				return false;
 			}
 
+			//Check if Zone allows to use Magical Item
+			//For Example, Magical Item Should be diable in PvP
+			if (!this.CurrentZone.AllowMagicalItem)
+			{
+				Out.SendMessage("L'utilisation d'objets magiques n'est pas permise dans cette zone.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
 
 			//Eden
 			if (IsMezzed || (IsStunned && !(Steed != null && Steed.Name == "Forceful Zephyr")) || !IsAlive)

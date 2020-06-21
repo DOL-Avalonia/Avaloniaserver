@@ -439,7 +439,7 @@ namespace DOL.GameEvents
                     infos.Add(" * Brain: " + mob.Brain?.GetType()?.FullName ?? string.Empty);
                     infos.Add(string.Format(" * X: {0}, Y: {1}, Z: {2}", mob.X, mob.Y, mob.Z));
                     infos.Add(" * Region: " + mob.CurrentRegionID);
-                    infos.Add(" * Zone: " + mob.CurrentZone.ID);
+                    infos.Add(" * Zone: " + (mob.CurrentZone != null ? mob.CurrentZone.ID.ToString() : "-"));
                     infos.Add(" * Area: " + (mob.CurrentAreas != null ? string.Join(",", mob.CurrentAreas) : string.Empty));
                     infos.Add("");
                 }
@@ -451,7 +451,7 @@ namespace DOL.GameEvents
                     infos.Add(" * Name: " + coffre.Name);
                     infos.Add(string.Format(" * X: {0}, Y: {1}, Z: {2}", coffre.X, coffre.Y, coffre.Z));
                     infos.Add(" * Region: " + coffre.CurrentRegionID);
-                    infos.Add(" * Zone: " + coffre.CurrentZone.ID);
+                    infos.Add(" * Zone: " + (coffre.CurrentZone != null ? coffre.CurrentZone.ID.ToString() : "-"));
                     infos.Add(" * Area: " + (coffre.CurrentAreas != null ? string.Join(",", coffre.CurrentAreas) : string.Empty));
                     infos.Add("");
                 }
@@ -589,6 +589,13 @@ namespace DOL.GameEvents
             {             
                 var db = GameServer.Database.FindObjectByKey<Mob>(mob.InternalID);
                 mob.LoadFromDatabase(db);
+
+                var groupMob = GameServer.Database.SelectObjects<GroupMobXMobs>("MobID = @mobid", new QueryParameter("mobid", mob.InternalID))?.FirstOrDefault();
+
+                if (groupMob != null)
+                {
+                    mob.GroupMobId = groupMob.GroupId;
+                }
 
                 if (e.IsKillingEvent && e.MobNamesToKill.Contains(mob.Name))
                 {

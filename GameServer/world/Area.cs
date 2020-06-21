@@ -139,6 +139,7 @@ namespace DOL.GS
                 Y = area.Y;
                 Width = area.Radius;
                 Height = area.Radius;
+                this.CanVol = area.AllowVol;
             }
         }
 
@@ -275,6 +276,7 @@ namespace DOL.GS
                 Z = area.Z;
                 Radius = area.Radius;
                 m_RadiusRadius = area.Radius * area.Radius;
+                this.CanVol = area.AllowVol;
             }
         }
 
@@ -451,6 +453,7 @@ namespace DOL.GS
                 Y = area.Y;
                 Radius = area.Radius;
                 StringPoints = area.Points;
+                this.CanVol = area.AllowVol;
             }
         }
 

@@ -173,6 +173,13 @@ namespace DOL.GS.Commands
 				return;
 			}
 
+			if (!Player.IsAllowToVolInThisArea)
+			{
+				Player.Out.SendMessage("Vous ne pouvez pas voler ici...",
+				eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
 			if(!Player.IsWithinRadius(Player.TargetObject, WorldMgr.GIVE_ITEM_DISTANCE))
 			{
 				Player.Out.SendMessage("Vous etes trop loin de la cible pour la voler !",

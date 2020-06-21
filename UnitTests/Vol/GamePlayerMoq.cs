@@ -11,6 +11,8 @@ namespace DOL.Vol
     {
         public byte Level { get; set ; }
 
+        public bool IsAllowToVolInThisArea { get; set; }
+
         public int GetBaseSpecLevel(string keyname)
         {
             return 10;

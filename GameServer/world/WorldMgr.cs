@@ -382,8 +382,10 @@ namespace DOL.GS
                 zoneData.WaterLevel = dbZone.WaterLevel;
                 zoneData.DivingFlag = dbZone.DivingFlag;
                 zoneData.IsLava = dbZone.IsLava;
+                zoneData.AllowMagicalItem = dbZone.AllowMagicalItem;
+
                 RegisterZone(zoneData, zoneData.ZoneID, zoneData.RegionID, zoneData.Description,
-                    dbZone.Experience, dbZone.Realmpoints, dbZone.Bountypoints, dbZone.Coin, dbZone.Realm);
+                    dbZone.Experience, dbZone.Realmpoints, dbZone.Bountypoints, dbZone.Coin, dbZone.Realm, dbZone.AllowMagicalItem);
 
                 // Save the zonedata.
                 if (!m_zonesData.ContainsKey(zoneData.RegionID))
@@ -831,7 +833,7 @@ namespace DOL.GS
         /// <summary>
         /// Registers a Zone into a Region
         /// </summary>
-        public static void RegisterZone(ZoneData zoneData, ushort zoneID, ushort regionID, string zoneName, int xpBonus, int rpBonus, int bpBonus, int coinBonus, byte realm)
+        public static void RegisterZone(ZoneData zoneData, ushort zoneID, ushort regionID, string zoneName, int xpBonus, int rpBonus, int bpBonus, int coinBonus, byte realm, bool allowMagicalItem)
         {
             Region region = GetRegion(regionID);
             if (region == null)
@@ -877,7 +879,8 @@ namespace DOL.GS
                 rpBonus,
                 bpBonus,
                 coinBonus,
-                realm);
+                realm,
+                allowMagicalItem);
 
             region.Zones.Add(zone);
             m_zones.AddOrReplace(zoneID, zone);
@@ -1832,7 +1835,7 @@ namespace DOL.GS
                     return true;
                 }))
                 {
-                    RegisterZone(dat, (ushort)zoneID, ID, $"{dat.Description} (Instance)", 0, 0, 0, 0, 0);
+                    RegisterZone(dat, (ushort)zoneID, ID, $"{dat.Description} (Instance)", 0, 0, 0, 0, 0, dat.AllowMagicalItem);
                 }
             }
 

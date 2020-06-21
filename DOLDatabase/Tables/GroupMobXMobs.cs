@@ -31,7 +31,7 @@ namespace DOLDatabase.Tables
             }
         }
 
-        [DataElement(AllowDbNull = false, Varchar = 255)]
+        [DataElement(AllowDbNull = false, Varchar = 255, Index = true)]
         public string MobID
         {
             get

@@ -42,6 +42,7 @@ namespace DOL
             private int m_bonusBP;
             private int m_bonusCoin;
             private byte m_realm;
+            private bool m_allowMagicalItem;
 
             public Zones()
             {
@@ -288,6 +289,21 @@ namespace DOL
                 {
                     Dirty = true;
                     m_realm = value;
+                }
+            }
+
+            [DataElement(AllowDbNull = false)]
+            public bool AllowMagicalItem
+            {
+                get
+                {
+                    return m_allowMagicalItem;
+                }
+
+                set
+                {
+                    m_allowMagicalItem = value;
+                    Dirty = true;
                 }
             }
         }

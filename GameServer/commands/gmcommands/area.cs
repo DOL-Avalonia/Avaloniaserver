@@ -44,7 +44,7 @@ namespace DOL.GS.Commands
 				#region Create
 				case "create":
 					{
-						if (args.Length != 7)
+						if (!(args.Length != 7 || args.Length != 8))
 						{
 							DisplaySyntax(client);
 							return;
@@ -82,9 +82,14 @@ namespace DOL.GS.Commands
 						area.Z = client.Player.Z;
 						area.ObjectId = area.Description;
 
+						if (args.Length == 8 && bool.TryParse(args[7], out bool canVol))
+						{
+							area.AllowVol = canVol;
+						}
+
 						Assembly gasm = Assembly.GetAssembly(typeof(GameServer));					
 						AbstractArea newArea = (AbstractArea)gasm.CreateInstance(area.ClassType, false);
-						newArea.LoadFromDatabase(area);
+						newArea.LoadFromDatabase(area);				
 
 						newArea.Sound = area.Sound;
 						newArea.CanBroadcast = area.CanBroadcast;

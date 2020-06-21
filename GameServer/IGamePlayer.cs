@@ -19,5 +19,7 @@ namespace DOL
         bool HasAbility(string keyName);
 
         int GetBaseSpecLevel(string keyname);
+
+        bool IsAllowToVolInThisArea { get; set; }
     }
 }

@@ -17,9 +17,11 @@ namespace DOL.Database
         private byte m_sound;
         private bool m_checkLOS;
         private string m_points;
+        private bool m_allowVol;
 
         public DBArea()
         {
+            this.m_allowVol = true;
         }
 
         [DataElement(AllowDbNull = true)]
@@ -151,6 +153,21 @@ namespace DOL.Database
             {
                 Dirty = true;
                 m_canBroadcast = value;
+            }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public bool AllowVol
+        {
+            get
+            {
+                return m_allowVol;
+            }
+
+            set
+            {
+                Dirty = true;
+                m_allowVol = value;
             }
         }
 
