@@ -6902,7 +6902,7 @@ namespace DOL.GS
 
 					if (reactiveEffectLine != null)
 					{
-						if (reactiveItem.ProcSpellID != 0)
+						if (reactiveItem.ProcSpellID != 0 && ((GameInventoryItem)reactiveItem).IsBonusAllowed(nameof(reactiveItem.ProcSpellID), this))
 						{
 							Spell spell = SkillBase.FindSpell(reactiveItem.ProcSpellID, reactiveEffectLine);
 
@@ -6921,7 +6921,7 @@ namespace DOL.GS
 							}
 						}
 
-						if (reactiveItem.ProcSpellID1 != 0)
+						if (reactiveItem.ProcSpellID1 != 0 && ((GameInventoryItem)reactiveItem).IsBonusAllowed(nameof(reactiveItem.ProcSpellID1), this))
 						{
 							Spell spell = SkillBase.FindSpell(reactiveItem.ProcSpellID1, reactiveEffectLine);
 
@@ -9602,13 +9602,13 @@ namespace DOL.GS
 			//Eden
 			if (IsMezzed || (IsStunned && !(Steed != null && Steed.Name == "Forceful Zephyr")) || !IsAlive)
 			{
-				Out.SendMessage("You can't use anything in your state.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				Out.SendMessage("Vous ne pouvez rien utiliser dans votre état.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;
 			}
 
 			if (m_runningSpellHandler != null)
 			{
-				Out.SendMessage("You are already casting a spell.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				Out.SendMessage("Vous etes déjà en train de lancer un sort.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;
 			}
 
@@ -9627,11 +9627,11 @@ namespace DOL.GS
 
 					if (requiredLevel > Level)
 					{
-						Out.SendMessage("You are not powerful enough to use this item's spell.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						Out.SendMessage("Vous n'êtes pas assez puissant pour utiliser le sort de cet objet.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						return false;
 					}
 
-					Out.SendMessage(String.Format("You use {0}.", item.GetName(0, false)), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
+					Out.SendMessage(String.Format("Vous utilisez {0}.", item.GetName(0, false)), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
 
 					ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(this, spell, itemSpellLine);
 					if (spellHandler == null)
@@ -12078,6 +12078,7 @@ namespace DOL.GS
 					continue;
 				// skip weapons. only active weapons should fire equip event, done in player.SwitchWeapon
 				bool add = true;
+
 				if (slotToLoad != "")
 				{
 					switch (item.SlotPosition)
@@ -12114,56 +12115,56 @@ namespace DOL.GS
 				}
 
 				if (!add) continue;
-				if (item is IGameInventoryItem)
-				{
-					(item as IGameInventoryItem).CheckValid(this);
-				}
+				if (item is GameInventoryItem gameItem)
+				{					
+					gameItem.CheckValid(this);
 
-				if (item.IsMagical)
-				{
-					if (item.Bonus1 != 0)
+					if (item.IsMagical)
 					{
-						ItemBonus[item.Bonus1Type] += item.Bonus1;
-					}
-					if (item.Bonus2 != 0)
-					{
-						ItemBonus[item.Bonus2Type] += item.Bonus2;
-					}
-					if (item.Bonus3 != 0)
-					{
-						ItemBonus[item.Bonus3Type] += item.Bonus3;
-					}
-					if (item.Bonus4 != 0)
-					{
-						ItemBonus[item.Bonus4Type] += item.Bonus4;
-					}
-					if (item.Bonus5 != 0)
-					{
-						ItemBonus[item.Bonus5Type] += item.Bonus5;
-					}
-					if (item.Bonus6 != 0)
-					{
-						ItemBonus[item.Bonus6Type] += item.Bonus6;
-					}
-					if (item.Bonus7 != 0)
-					{
-						ItemBonus[item.Bonus7Type] += item.Bonus7;
-					}
-					if (item.Bonus8 != 0)
-					{
-						ItemBonus[item.Bonus8Type] += item.Bonus8;
-					}
-					if (item.Bonus9 != 0)
-					{
-						ItemBonus[item.Bonus9Type] += item.Bonus9;
-					}
-					if (item.Bonus10 != 0)
-					{
-						ItemBonus[item.Bonus10Type] += item.Bonus10;
-					}
-					if (item.ExtraBonus != 0)
-					{
-						ItemBonus[item.ExtraBonusType] += item.ExtraBonus;
+						if (item.Bonus1 != 0 && gameItem.IsBonusAllowed(nameof(item.Bonus1), this))
+						{
+							ItemBonus[item.Bonus1Type] += item.Bonus1;
+						}
+						if (item.Bonus2 != 0 && gameItem.IsBonusAllowed(nameof(item.Bonus2), this))
+						{
+							ItemBonus[item.Bonus2Type] += item.Bonus2;
+						}
+						if (item.Bonus3 != 0 && gameItem.IsBonusAllowed(nameof(item.Bonus3), this))
+						{
+							ItemBonus[item.Bonus3Type] += item.Bonus3;
+						}
+						if (item.Bonus4 != 0 && gameItem.IsBonusAllowed(nameof(item.Bonus4), this))
+						{
+							ItemBonus[item.Bonus4Type] += item.Bonus4;
+						}
+						if (item.Bonus5 != 0 && gameItem.IsBonusAllowed(nameof(item.Bonus5), this))
+						{
+							ItemBonus[item.Bonus5Type] += item.Bonus5;
+						}
+						if (item.Bonus6 != 0 && gameItem.IsBonusAllowed(nameof(item.Bonus6), this))
+						{
+							ItemBonus[item.Bonus6Type] += item.Bonus6;
+						}
+						if (item.Bonus7 != 0 && gameItem.IsBonusAllowed(nameof(item.Bonus7), this))
+						{
+							ItemBonus[item.Bonus7Type] += item.Bonus7;
+						}
+						if (item.Bonus8 != 0 && gameItem.IsBonusAllowed(nameof(item.Bonus8), this))
+						{
+							ItemBonus[item.Bonus8Type] += item.Bonus8;
+						}
+						if (item.Bonus9 != 0 && gameItem.IsBonusAllowed(nameof(item.Bonus9), this))
+						{
+							ItemBonus[item.Bonus9Type] += item.Bonus9;
+						}
+						if (item.Bonus10 != 0 && gameItem.IsBonusAllowed(nameof(item.Bonus10), this))
+						{
+							ItemBonus[item.Bonus10Type] += item.Bonus10;
+						}
+						if (item.ExtraBonus != 0 && gameItem.IsBonusAllowed(nameof(item.ExtraBonus), this))
+						{
+							ItemBonus[item.ExtraBonusType] += item.ExtraBonus;
+						}
 					}
 				}
 			}

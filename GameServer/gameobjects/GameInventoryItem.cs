@@ -26,6 +26,8 @@ using DOL.Database;
 using DOL.GS.Spells;
 
 using log4net;
+using DOL.Bonus;
+using System.Linq;
 
 namespace DOL.GS
 {
@@ -38,19 +40,23 @@ namespace DOL.GS
 
 		protected GamePlayer m_owner = null;
 
+
 		public GameInventoryItem()
 			: base()
 		{
+			this.BonusConditions = new List<BonusCondition>();
 		}
 
 		public GameInventoryItem(ItemTemplate template)
 			: base(template)
 		{
+			this.BonusConditions = BonusCondition.LoadFromString(template.BonusConditions).ToList();
 		}
 
 		public GameInventoryItem(ItemUnique template)
 			: base(template)
 		{
+			this.BonusConditions = BonusCondition.LoadFromString(template.BonusConditions).ToList();
 		}
 
 		public GameInventoryItem(InventoryItem item)
@@ -58,11 +64,18 @@ namespace DOL.GS
 		{
 			OwnerID = item.OwnerID;
 			ObjectId = item.ObjectId;
+			this.BonusConditions = BonusCondition.LoadFromString(item.Template?.BonusConditions).ToList();
 		}
 
 		public virtual LanguageDataObject.eTranslationIdentifier TranslationIdentifier
 		{
 			get { return LanguageDataObject.eTranslationIdentifier.eItem; }
+		}
+
+		public List<BonusCondition> BonusConditions
+		{
+			get;
+			protected set;
 		}
 
 		/// <summary>
@@ -140,6 +153,41 @@ namespace DOL.GS
 		public static GameInventoryItem Create<T>(InventoryItem item)
 		{
 			return Create(item);
+		}
+
+
+		private BonusCondition GetBonusCondition(string bonusName)
+		{
+			return this.BonusConditions.FirstOrDefault(b => b.BonusName.Equals(bonusName));
+		}
+
+
+		public bool IsBonusAllowed(string bonusName, GamePlayer player)
+		{
+			var bonusCondition = this.GetBonusCondition(bonusName);
+
+			//If bonus not present, it is allowed
+			if (bonusCondition == null)
+			{
+				return true;
+			}
+
+			if (bonusCondition.ChampionLevel > 0 && player.ChampionLevel < bonusCondition.ChampionLevel)
+			{
+				return false;
+			}
+
+			if (bonusCondition.MlLevel > 0 && player.MLLevel < bonusCondition.MlLevel)
+			{
+				return false;
+			}
+
+			if (bonusCondition.IsRenaissanceRequired && !player.IsRenaissance)
+			{
+				return false;
+			}
+
+			return true;
 		}
 		
 		/// <summary>

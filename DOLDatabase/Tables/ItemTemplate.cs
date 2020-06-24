@@ -158,6 +158,7 @@ namespace DOL.Database
         protected string m_classType;
 
         protected int m_salvageYieldID;
+        private string m_bonusConditions;
 
         public ItemTemplate()
         {
@@ -894,6 +895,13 @@ namespace DOL.Database
         {
             get { return m_salvageYieldID; }
             set { Dirty = true; m_salvageYieldID = value; }
+        }
+
+        [DataElement(AllowDbNull = true, Varchar = 0)]
+        public string BonusConditions
+        {
+            get { return m_bonusConditions; }
+            set { Dirty = true; m_bonusConditions = value; }
         }
 
         public virtual byte BaseDurabilityPercent
