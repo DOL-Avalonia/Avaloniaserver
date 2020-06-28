@@ -34,7 +34,8 @@ namespace DOL.Bonus
         {
             try
             {
-                return Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<BonusCondition>>(raw);
+                var conditions = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<BonusCondition>>(raw);
+                return conditions;
             }
             catch
             {

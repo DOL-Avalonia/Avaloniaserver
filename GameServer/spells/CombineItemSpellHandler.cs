@@ -156,6 +156,11 @@ namespace DOL.spells
                 }
 
                 player.Out.SendMessage($"Vous avez créé {combined.Name } en combinant {useItem.Name} ainsi que { match.Items.Count() -1 } autres objects.", eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
+
+                foreach(var skill in match.RewardCraftingSkills.Keys)
+                {
+                    player.GainCraftingSkill(skill, match.RewardCraftingSkills[skill]);
+                }
             }
         }
 
@@ -173,11 +178,49 @@ namespace DOL.spells
                 { 
                     Items = c.ItemsIds.Split(new char[] { '|' }),
                     TemplateId = c.ItemTemplateId, SpellEfect = c.SpellEffect,
-                    CraftingSkill = Enum.TryParse(c.CraftingSkill.ToString(), out eCraftingSkill craft) ? craft : eCraftingSkill.NoCrafting,
-                    CraftValue = c.CraftingValue
+                    CraftingSkill = (eCraftingSkill)c.CraftingSkill,
+                    CraftValue = c.CraftingValue,
+                    RewardCraftingSkills = this.BuildRewardSkills(c.RewardCraftingSkills)
                 });
 
             return neededItems.Where(i => i.Items.Contains(usedItemId));
+        }
+
+        private Dictionary<eCraftingSkill, int> BuildRewardSkills(string rawSkills)
+        {
+            var skills = new Dictionary<eCraftingSkill, int>();
+
+            if(rawSkills == null)
+            {
+                return skills;
+            }
+
+            var skillRaws = rawSkills.Split('|');
+
+            foreach (var skillRaw in skillRaws)
+            {
+                var values = skillRaw.Split(';');
+
+                if (values.Length == 2)
+                {
+                    if (Enum.TryParse(values[0], out eCraftingSkill skill) && int.TryParse(values[1], out int val))
+                    {
+                        if (skill != eCraftingSkill.NoCrafting)
+                        {
+                            if (!skills.ContainsKey(skill))
+                            {
+                                skills.Add(skill, val);
+                            }
+                            else
+                            {
+                                skills[skill] += val;
+                            }
+                        }                      
+                    }
+                }
+            }
+
+            return skills;
         }
     }
 
@@ -193,6 +236,9 @@ namespace DOL.spells
         public eCraftingSkill CraftingSkill { get; set; }
 
         public int CraftValue { get; set; }
+
+        public Dictionary<eCraftingSkill, int> RewardCraftingSkills { get; set; }
+
     }
 
 }

@@ -17,6 +17,7 @@ namespace DOLDatabase.Tables
         private string m_itemTemplateId;
         private int m_craftingSkill;
         private int m_craftingValue;
+        private string m_rewardCraftingSkills;
 
         [DataElement(AllowDbNull = false)]
         public string ItemsIds
@@ -83,5 +84,20 @@ namespace DOLDatabase.Tables
                 Dirty = true;
             }
         }
+
+        [DataElement(AllowDbNull = true, Varchar = 255)]
+        public string RewardCraftingSkills
+        {
+            get
+            {
+                return m_rewardCraftingSkills;
+            }
+
+            set
+            {
+                Dirty = true;
+                m_rewardCraftingSkills = value;
+            }
+        }    
     }
 }
