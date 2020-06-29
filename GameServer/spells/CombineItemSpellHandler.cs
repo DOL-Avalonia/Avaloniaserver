@@ -161,6 +161,11 @@ namespace DOL.spells
                 {
                     player.GainCraftingSkill(skill, match.RewardCraftingSkills[skill]);
                 }
+
+                if (match.RewardCraftingSkills.Any())
+                {
+                    player.Out.SendUpdateCraftingSkills();
+                }
             }
         }
 
