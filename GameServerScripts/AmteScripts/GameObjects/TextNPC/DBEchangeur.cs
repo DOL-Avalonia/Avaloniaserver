@@ -24,7 +24,7 @@ namespace DOL.Database
 		private int m_changedItemCount;
 
 		private ItemTemplate m_GiveTemplate;
-		private int m_goldPrice;
+		private long m_moneyPrice;
 		private string m_priceRessource1;
 		private string m_priceRessource2;
 		private string m_priceRessource3;
@@ -162,16 +162,16 @@ namespace DOL.Database
 		}
 
 		[DataElement(AllowDbNull = false)]
-		public int GoldPrice
+		public long MoneyPrice
 		{
 			get
 			{
-				return m_goldPrice;
+				return m_moneyPrice;
 			}
 
 			set
 			{
-				m_goldPrice = value;
+				m_moneyPrice = value;
 				Dirty = true;
 			}
 		}

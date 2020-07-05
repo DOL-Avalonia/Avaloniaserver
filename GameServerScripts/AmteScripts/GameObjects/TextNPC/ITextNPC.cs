@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using DOL.Database;
 using DOL.GS.PacketHandler;
+using GameServerScripts.Amtescripts.GameObjects.TextNPC;
 using log4net;
 
 namespace DOL.GS.Scripts
@@ -122,9 +123,9 @@ namespace DOL.GS.Scripts
                 return false;
             }
 
-            if (EchItem.GoldPrice > 0 && Money.GetGold(player.GetCurrentMoney()) < EchItem.GoldPrice)
+            if (EchItem.MoneyPrice > 0 && player.GetCurrentMoney() < EchItem.MoneyPrice)
             {
-                player.Out.SendMessage(string.Format("Vous avez besoin de {0} pièces d'or pour échanger cet objet", EchItem.GoldPrice), eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                player.Out.SendMessage(string.Format("Vous avez besoin de {0} pour échanger cet objet", Money.GetString(EchItem.MoneyPrice)), eChatType.CT_System, eChatLoc.CL_PopupWindow);
                 return false;
             }
 
@@ -132,16 +133,17 @@ namespace DOL.GS.Scripts
 
             if (requireditems.Any())
             {
-                if (this.HasAllRequiredItems(player, requireditems, item.Id_nb))
+                var playerItems = this.GetPlayerRequiredItems(player, requireditems, item.Id_nb);
+                if (playerItems.HasAllRequiredItems)
                 { 
-                    player.Client.Out.SendCustomDialog(string.Format("Afin de procéder à l'échange, il va falloir payer {0} pièces d'or et me donner en plus {1}", 
-                       EchItem.GoldPrice,
+                    player.Client.Out.SendCustomDialog(string.Format("Afin de procéder à l'échange, il va falloir payer {0} et me donner en plus {1}", 
+                       Money.GetString(EchItem.MoneyPrice),
                        string.Join(", ", requireditems.Select(r => string.Format("{0} {1}", r.Count, r.Name)))
                         ), this.HandleClientResponse);
                 }
                 else
                 {
-                    player.Client.Out.SendMessage("Il va te manquer des elements pour procéder à l'échange", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                    player.Client.Out.SendMessage(string.Format("Il va te manquer \n{0}\n pour procéder à l'échange.", string.Join("\n", playerItems.Items.Select(i => string.Format("{0} {1}", i.Value, i.Key)))), eChatType.CT_System, eChatLoc.CL_PopupWindow);
                 }
 
                 //Handle references for callback
@@ -158,7 +160,7 @@ namespace DOL.GS.Scripts
             }
             else
             {
-                if (EchItem.GoldPrice > 0)
+                if (EchItem.MoneyPrice > 0)
                 {
                     //Handle references for callback
                     if (PlayerReferences.ContainsKey(player.InternalID))
@@ -170,7 +172,7 @@ namespace DOL.GS.Scripts
                         this.PlayerReferences.Add(player.InternalID, new EchangeurInfo() { requireInfos = requireditems, GiveItem = item as GameInventoryItem });
                     }
 
-                    player.Client.Out.SendCustomDialog(string.Format("J'aurais besoin de {0} pièces d'or pour échanger ça. Valider l'échange ?", EchItem.GoldPrice), this.HandleClientResponse);
+                    player.Client.Out.SendCustomDialog(string.Format("J'aurais besoin de {0} pour échanger ça. Valider l'échange ?", Money.GetString(EchItem.MoneyPrice)), this.HandleClientResponse);
                     return false;
                 }
                 else
@@ -239,10 +241,19 @@ namespace DOL.GS.Scripts
 
             if (item.Length == 2 && int.TryParse(item[1], out count))
             {
+                var itemTemplate = GameServer.Database.FindObjectByKey<ItemTemplate>(item[0]);
+                string name = string.Empty;
+
+                if (itemTemplate != null)
+                {
+                    name = itemTemplate.Name;
+                }
+
                 return new RequireItemInfo()
                 {
                     ItemId = item[0],
-                    Count = count
+                    Count = count,
+                    Name = name
                 };
             }
 
@@ -261,19 +272,14 @@ namespace DOL.GS.Scripts
                     playerItems.Add(val.ItemId, 0);
             }
 
-            bool hasRemovedgaveItem = false;
-
-            items.Add(gaveItem as GameInventoryItem);
-
             foreach (GameInventoryItem item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
             {
                 var requireItem = requireItems.FirstOrDefault(i => i.ItemId.Equals(item.Id_nb));
 
                 if (requireItem != null)
                 {
-                    if (item.Id_nb.Equals(gaveItem) && !hasRemovedgaveItem)
+                    if (item.Id_nb.Equals(gaveItem))
                     {
-                        hasRemovedgaveItem = true;
                         continue;
                     }
 
@@ -298,9 +304,11 @@ namespace DOL.GS.Scripts
             }
         }
 
-        private bool HasAllRequiredItems(GamePlayer player, IEnumerable<RequireItemInfo> requireItems, string gaveItem)
+        private EchangeurPlayerItemsCount GetPlayerRequiredItems(GamePlayer player, IEnumerable<RequireItemInfo> requireItems, string gaveItem)
         {
             var playerItems = new Dictionary<string, int>();
+            var playerItemsCount = new Dictionary<string, int>();
+            bool hasAllRequiredItems = true;
 
             foreach (var val in requireItems)
             {
@@ -335,15 +343,18 @@ namespace DOL.GS.Scripts
                 }
             }
 
+
             foreach (var reqItem in requireItems)
-            {                
-                if (playerItems[reqItem.ItemId] < reqItem.Count)
+            {
+                int missingCount = reqItem.Count - playerItems[reqItem.ItemId];
+                if (missingCount > 0)
                 {
-                    return false;
+                    hasAllRequiredItems = false;
+                    playerItemsCount.Add(reqItem.Name, missingCount);
                 }
             }
 
-            return true;
+            return new EchangeurPlayerItemsCount() { HasAllRequiredItems = hasAllRequiredItems, Items = playerItemsCount  };
         }
 
 
@@ -376,8 +387,8 @@ namespace DOL.GS.Scripts
                 player.GainExperience(GameLiving.eXPSource.Quest, xp);
             }
 
-            if (echItem.GoldPrice > 0)
-                player.RemoveMoney(Money.GetMoney(0,0,echItem.GoldPrice,0,0), "Vous avez payé {0}");
+            if (echItem.MoneyPrice > 0)
+                player.RemoveMoney(echItem.MoneyPrice, "Vous avez payé {0}");
 
             if (requireItems.Any())
                 this.RemoveItemsFromPlayer(player, requireItems, item);  

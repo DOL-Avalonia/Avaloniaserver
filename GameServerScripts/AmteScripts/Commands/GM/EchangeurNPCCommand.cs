@@ -184,7 +184,7 @@ namespace DOL.GS.Scripts
                             text.Add("     Réponse: " + npc.TextNPCData.Reponses[pair.Value.ItemRecvID]);
                         text.Add(" . " + pair.Value.ChangedItemCount + " Items échangés");
 
-                        text.Add(" PriceMoney: " + pair.Value.GoldPrice + " or");
+                        text.Add(" PriceMoney: " + pair.Value.MoneyPrice + " or");
                         if (!string.IsNullOrEmpty(pair.Value.PriceRessource1))
                         {
                             var val1 = pair.Value.PriceRessource1.Split(new char[] { '|' });
@@ -224,7 +224,7 @@ namespace DOL.GS.Scripts
                     {
                         if (int.TryParse(args[3], out gold))
                         {
-                            npc.TextNPCData.EchangeurDB[item].GoldPrice = gold;
+                            npc.TextNPCData.EchangeurDB[item].MoneyPrice = gold;
                             npc.TextNPCData.SaveIntoDatabase();
                             player.Out.SendMessage("il faut désormais " + gold + " or(s) pour échanger " + item + " maintenant.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         }

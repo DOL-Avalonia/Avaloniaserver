@@ -32,6 +32,11 @@ namespace DOL.Bonus
 
         public static IEnumerable<BonusCondition> LoadFromString(string raw)
         {
+            if (raw == null)
+            {
+                return null;
+            }
+
             try
             {
                 var conditions = Newtonsoft.Json.JsonConvert.DeserializeObject<IEnumerable<BonusCondition>>(raw);
