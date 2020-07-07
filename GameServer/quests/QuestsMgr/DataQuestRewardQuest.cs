@@ -1278,7 +1278,7 @@ namespace DOL.GS.Quests
 
 					if (CurrentGoal.Type == DQRQuestGoal.GoalType.KillGroup)
 					{
-						if (npc != null && a.PlayerKillers.Contains(this.QuestPlayer) && npc.GroupMobId?.Equals(this.CurrentGoal.TargetObject) == true)
+						if (npc != null && a.PlayerKillers.Contains(this.QuestPlayer) && npc.CurrentGroupMob?.GroupId.Equals(this.CurrentGoal.TargetObject) == true)
 						{
 							if (MobGroups.MobGroupManager.Instance.IsAllOthersGroupMobDead(npc))
 							{

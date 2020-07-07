@@ -3,6 +3,7 @@ using DOL.events.server;
 using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
+using DOL.MobGroups;
 using DOLDatabase.Tables;
 using log4net;
 using System;
@@ -594,7 +595,13 @@ namespace DOL.GameEvents
 
                 if (groupMob != null)
                 {
-                    mob.GroupMobId = groupMob.GroupId;
+                    var mobgroupDb = GameServer.Database.FindObjectByKey<GroupMobDb>(groupMob.GroupId);
+                    if (mobgroupDb != null)
+                    {
+                        var groupInteraction = mobgroupDb.InteractGroupId != null ?  GameServer.Database.FindObjectByKey<GroupMobInteract>(mobgroupDb.GroupMobInteractId) : null;
+                        mob.CurrentGroupMob = new MobGroup(mobgroupDb, groupInteraction);
+                    }
+                        
                 }
 
                 if (e.IsKillingEvent && e.MobNamesToKill.Contains(mob.Name))

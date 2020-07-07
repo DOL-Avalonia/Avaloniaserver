@@ -20,30 +20,97 @@ namespace DOL.MobGroups
 
         private MobGroupManager()
         {
-            this.Groups = new Dictionary<string, List<GameNPC>>();
+            this.Groups = new Dictionary<string, MobGroup>();
         }
 
-        public Dictionary<string, List<GameNPC>> Groups
+        public Dictionary<string, MobGroup> Groups
         {
             get;
         }
 
         public bool IsAllOthersGroupMobDead(GameNPC npc)
         {
-            if (npc == null || npc.GroupMobId == null)
+            if (npc == null || npc.CurrentGroupMob == null)
             {
                 return false;
             }
 
-            if (!this.Groups.ContainsKey(npc.GroupMobId))
+            if (!this.Groups.ContainsKey(npc.CurrentGroupMob.GroupId))
             {
-                log.Warn($"Mob has a GroupMobId with a value: {npc.GroupMobId} but the group is not declared");
+                log.Warn($"Mob has a GroupMobId with a value: {npc.CurrentGroupMob} but the group is not declared");
                 return false;
             }
+        
+            bool allDead = this.Groups[npc.CurrentGroupMob.GroupId].NPCs.All(m => !m.IsAlive);
 
-            return this.Groups[npc.GroupMobId].All(m => !m.IsAlive);
+            if (allDead)
+            {
+                this.HandleInteraction(this.Groups[npc.CurrentGroupMob.GroupId]);
+            }
+
+            return allDead;
         }
 
+        private void HandleInteraction(MobGroup master)
+        {
+            if (master.InteractGroupId != null && this.Groups.ContainsKey(master.InteractGroupId) && master.GroupInteractions != null)
+            {
+                var slave = this.Groups[master.InteractGroupId];
+
+                if (slave.NPCs?.Any() == true)
+                {
+                    if (master.GroupInteractions.IsInvincible.HasValue)
+                    {
+                        slave.GroupInfos.IsInvincible = master.GroupInteractions.IsInvincible.Value;
+                    }
+
+                    if (master.GroupInteractions.Effect.HasValue)
+                    {
+                        slave.GroupInfos.Effect = master.GroupInteractions.Effect.Value;
+
+                        slave.NPCs.ForEach(npc =>
+                        {
+                            foreach (GamePlayer player in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                            {
+                                player.Out.SendSpellEffectAnimation(npc, npc, (ushort)master.GroupInteractions.Effect.Value, 0, false, 1);
+                            }
+                        });
+                    }
+
+                    if (master.GroupInteractions.Flag.HasValue)
+                    {
+                        slave.GroupInfos.Flag = master.GroupInteractions.Flag.Value;
+                        slave.NPCs.ForEach(n => n.Flags = master.GroupInteractions.Flag.Value);
+                    }
+
+                    if (master.GroupInteractions.Model.HasValue)
+                    {
+                        slave.GroupInfos.Model = master.GroupInteractions.Model.Value;
+                        slave.NPCs.ForEach(n => n.Model = (ushort)master.GroupInteractions.Model.Value);
+                    }
+
+                    if (master.GroupInteractions.Race.HasValue)
+                    {
+                        slave.GroupInfos.Race = master.GroupInteractions.Race.Value;
+                        slave.NPCs.ForEach(n => n.Race = (short)master.GroupInteractions.Race.Value);
+                    }
+
+                    if (master.GroupInteractions.VisibleSlot.HasValue)
+                    {
+                        slave.GroupInfos.VisibleSlot = master.GroupInteractions.VisibleSlot.Value;
+                        slave.NPCs.ForEach(npc => {
+                            npc.VisibleActiveWeaponSlots = master.GroupInteractions.VisibleSlot.Value;
+                            foreach (GamePlayer player in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                            {
+                                player.Out.SendLivingEquipmentUpdate(npc);
+                            } 
+                        });
+                    }
+
+                    slave.SaveToDabatase();
+                }
+            }
+        }
 
         public string GetGroupIdFromMobId(string mobId)
         {
@@ -54,7 +121,7 @@ namespace DOL.MobGroups
 
             foreach (var group in this.Groups)
             {
-                if (group.Value.Any(npc => npc.InternalID.Equals(mobId)))
+                if (group.Value.NPCs.Any(npc => npc.InternalID.Equals(mobId)))
                 {
                     return group.Key;
                 }
@@ -71,12 +138,12 @@ namespace DOL.MobGroups
                 return false;
             }
 
-            foreach (var npc in this.Groups[groupId].ToList())
+            foreach (var npc in this.Groups[groupId].NPCs.ToList())
             {
                this.RemoveMobFromGroup(npc, groupId);
             }
          
-            this.Groups[groupId].RemoveAll(n => n != null);
+            this.Groups[groupId].NPCs.RemoveAll(n => n != null);
             this.Groups.Remove(groupId);
 
             var all = GameServer.Database.SelectAllObjects<GroupMobDb>();
@@ -104,7 +171,12 @@ namespace DOL.MobGroups
                 {
                     if (!this.Groups.ContainsKey(group.GroupId))
                     {
-                        this.Groups.Add(group.GroupId, new List<GameNPC>());
+                        var groupDb = GameServer.Database.FindObjectByKey<GroupMobDb>(group.GroupId);
+                        if (groupDb != null)
+                        {
+                            var groupInteraction = groupDb.InteractGroupId != null ? GameServer.Database.FindObjectByKey<GroupMobInteract>(groupDb.GroupMobInteractId) : null;
+                            this.Groups.Add(group.GroupId, new MobGroup(groupDb, groupInteraction));
+                        }                           
                     }                    
 
                     if (WorldMgr.Regions.ContainsKey(group.RegionID))
@@ -113,10 +185,10 @@ namespace DOL.MobGroups
 
                         if (mobInWorld != null)
                         {
-                            if (this.Groups[group.GroupId].FirstOrDefault(m => m.InternalID.Equals(mobInWorld.InternalID)) == null)
+                            if (this.Groups[group.GroupId].NPCs.FirstOrDefault(m => m.InternalID.Equals(mobInWorld.InternalID)) == null)
                             {
-                                this.Groups[group.GroupId].Add(mobInWorld);
-                                mobInWorld.GroupMobId = group.GroupId;
+                                this.Groups[group.GroupId].NPCs.Add(mobInWorld);
+                                mobInWorld.CurrentGroupMob = this.Groups[group.GroupId];
                             }
                         }
                     }
@@ -134,21 +206,21 @@ namespace DOL.MobGroups
             }
 
             bool isnew = false;
-            if (! this.Groups.ContainsKey(groupId))
+            if (!this.Groups.ContainsKey(groupId))
             {
-                this.Groups.Add(groupId, new List<GameNPC>());
+                this.Groups.Add(groupId, new MobGroup(groupId));
                 isnew = true;
             }
 
 
-            this.Groups[groupId].Add(npc);
-            npc.GroupMobId = groupId;            
+            this.Groups[groupId].NPCs.Add(npc);
+            npc.CurrentGroupMob = this.Groups[groupId];            
 
             if (isnew)
             {
                 GameServer.Database.AddObject(new GroupMobDb() 
                 { 
-                     GroupId = groupId                      
+                     GroupId = groupId
                 });
 
                 GameServer.Database.AddObject(new GroupMobXMobs()
@@ -199,7 +271,7 @@ namespace DOL.MobGroups
             }
 
 
-            if (!this.Groups[groupId].Remove(npc))
+            if (!this.Groups[groupId].NPCs.Remove(npc))
             {
                 log.Error($"Impossible to remove NPC { npc.InternalID } from groupId: { groupId }");
                 return false;
@@ -215,12 +287,12 @@ namespace DOL.MobGroups
             if (grp == null)
             {
                 log.Error($"Impossible to remove GroupMobXMobs entry with MobId: {npc.InternalID} and groupId: { groupId }");
-                this.Groups[groupId].Add(npc);
+                this.Groups[groupId].NPCs.Add(npc);
                 return false;
             }
             else
             {
-                npc.GroupMobId = null;
+                npc.CurrentGroupMob = null;
                 return GameServer.Database.DeleteObject(grp);
             }
         }

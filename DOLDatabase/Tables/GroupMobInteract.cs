@@ -8,29 +8,18 @@ using System.Threading.Tasks;
 
 namespace DOLDatabase.Tables
 {
-    [DataTable(TableName ="groupmob")]
-    public class GroupMobDb
+    public class GroupMobInteract
         : DataObject
     {
-        private string m_groupId;
         private string m_IsInvincible;
         private string m_flag;
         private string m_visibleSlot;
         private string m_race;
         private string m_model;
         private string m_effect;
-        private string m_InteractGroupId;
-        private string m_groupMobInteractId;
 
-        [DataElement(AllowDbNull = false, Varchar = 255, Unique = true)]
-        public string GroupId
-        {
-            get => m_groupId;
-            set { m_groupId = value; Dirty = true; }
-        }
-
-        [DataElement(AllowDbNull = false)]
-        public string IsInvincible
+        [DataElement(AllowDbNull = true, Varchar = 1)]
+        public string SetInvincible
         {
             get => m_IsInvincible;
             set { Dirty = true; m_IsInvincible = value; }
@@ -43,7 +32,7 @@ namespace DOLDatabase.Tables
             set { Dirty = true; m_flag = value; }
         }
 
-        [DataElement(AllowDbNull = true, Varchar = 10)]
+        [DataElement(AllowDbNull = true, Varchar = 255)]
         public string VisibleSlot
         {
             get => m_visibleSlot;
@@ -69,20 +58,6 @@ namespace DOLDatabase.Tables
         {
             get => m_effect;
             set { Dirty = true; m_effect = value; }
-        }
-
-        [DataElement(AllowDbNull = true, Varchar = 255)]
-        public string InteractGroupId
-        {
-            get => m_InteractGroupId;
-            set { m_InteractGroupId = value; Dirty = true; }
-        }
-
-        [DataElement(AllowDbNull = true)]
-        public string GroupMobInteractId
-        {
-            get => m_groupMobInteractId;
-            set { Dirty = true; m_groupMobInteractId = value; }
         }
     }
 }

@@ -980,6 +980,8 @@
     <Compile Include="minotaurrelics\MinotaurRelicManager.cs" />
     <Compile Include="minotaurrelics\Protectors\ArrektosProtector.cs" />
     <Compile Include="minotaurrelics\Protectors\BaseProtector.cs" />
+    <Compile Include="MobGroups\MobGroup.cs" />
+    <Compile Include="MobGroups\MobGroupInfo.cs" />
     <Compile Include="MobGroups\MobGroupManager.cs" />
     <Compile Include="packets\Client\168\BadNameCheckRequestHandler.cs" />
     <Compile Include="packets\Client\168\BuyHookPointHandler.cs" />

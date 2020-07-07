@@ -165,9 +165,9 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// If this mob is a Member of GroupMob, it holds its groupId
+		/// If this mob is a Member of GroupMob
 		/// </summary>
-		public string GroupMobId
+		public MobGroup CurrentGroupMob
 		{
 			get;
 			set;
@@ -4276,10 +4276,10 @@ namespace DOL.GS
 			}
 
 			//Check if killed mob starts event
-			if (this.GroupMobId != null)
+			if (this.CurrentGroupMob != null)
 			{
 				var mobGroupEvent = GameEventManager.Instance.Events.FirstOrDefault(e => 
-				e.KillStartingGroupMobId?.Equals(this.GroupMobId) == true && 
+				e.KillStartingGroupMobId?.Equals(this.CurrentGroupMob) == true && 
 			   !e.StartedTime.HasValue && 
 			    e.Status == EventStatus.NotOver &&
 				e.StartConditionType == StartingConditionType.Kill);
