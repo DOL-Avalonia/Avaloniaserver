@@ -34,15 +34,7 @@ namespace DOL.MobGroups
                 VisibleSlot = db.VisibleSlot != null ? byte.TryParse(db.VisibleSlot, out byte slot) ? slot : (byte?)null : (byte?)null
             };
 
-            this.GroupInteractions = groupInteract == null ? null : new MobGroupInfo()
-            {
-                Effect = groupInteract.Effect != null ? int.TryParse(groupInteract.Effect, out int grEffect) ? grEffect : (int?)null : (int?)null,
-                Flag = groupInteract.Flag != null ? Enum.TryParse(groupInteract.Flag, out eFlags groupFlag) ? groupFlag : (eFlags?)null : (eFlags?)null,
-                IsInvincible = groupInteract.SetInvincible != null ? bool.TryParse(groupInteract.SetInvincible, out bool inv) ? inv : (bool?)null : (bool?)null,
-                Model = groupInteract.Model != null ? int.TryParse(groupInteract.Model, out int grModel) ? grModel : (int?)null : (int?)null,
-                Race = groupInteract.Race != null ? Enum.TryParse(groupInteract.Race, out eRace grRace) ? grRace : (eRace?)null : (eRace?)null,
-                VisibleSlot = groupInteract.VisibleSlot != null ? byte.TryParse(groupInteract.VisibleSlot, out byte grSlot) ? grSlot : (byte?)null : (byte?)null
-            };
+            this.SetGroupInteractions(groupInteract);
         }
 
         public string InternalId
@@ -79,6 +71,19 @@ namespace DOL.MobGroups
         {
             get;
             set;
+        }
+
+        public void SetGroupInteractions(GroupMobInteract groupInteract)
+        {
+            this.GroupInteractions = groupInteract == null ? null : new MobGroupInfo()
+            {
+                Effect = groupInteract.Effect != null ? int.TryParse(groupInteract.Effect, out int grEffect) ? grEffect : (int?)null : (int?)null,
+                Flag = groupInteract.Flag != null ? Enum.TryParse(groupInteract.Flag, out eFlags groupFlag) ? groupFlag : (eFlags?)null : (eFlags?)null,
+                IsInvincible = groupInteract.SetInvincible != null ? bool.TryParse(groupInteract.SetInvincible, out bool inv) ? inv : (bool?)null : (bool?)null,
+                Model = groupInteract.Model != null ? int.TryParse(groupInteract.Model, out int grModel) ? grModel : (int?)null : (int?)null,
+                Race = groupInteract.Race != null ? Enum.TryParse(groupInteract.Race, out eRace grRace) ? grRace : (eRace?)null : (eRace?)null,
+                VisibleSlot = groupInteract.VisibleSlot != null ? byte.TryParse(groupInteract.VisibleSlot, out byte grSlot) ? grSlot : (byte?)null : (byte?)null
+            };
         }
 
         public void SaveToDabatase()

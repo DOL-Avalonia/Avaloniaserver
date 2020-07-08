@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace DOLDatabase.Tables
 {
+    [DataTable(TableName = "groupMobInteract")]
     public class GroupMobInteract
         : DataObject
     {
@@ -17,8 +18,16 @@ namespace DOLDatabase.Tables
         private string m_race;
         private string m_model;
         private string m_effect;
+        private string m_interactId;
 
-        [DataElement(AllowDbNull = true, Varchar = 1)]
+        [DataElement(AllowDbNull = false, Index = true)]
+        public string InteractId
+        {
+            get => m_interactId;
+            set { Dirty = true; m_interactId = value; }
+        }
+
+        [DataElement(AllowDbNull = true, Varchar = 5)]
         public string SetInvincible
         {
             get => m_IsInvincible;

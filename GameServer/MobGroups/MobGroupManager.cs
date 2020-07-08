@@ -112,6 +112,42 @@ namespace DOL.MobGroups
             }
         }
 
+        public List<string> GetInfos(MobGroup mobGroup)
+        {
+            if (mobGroup == null)
+            {
+                return null;
+            }
+
+            var infos = new List<string>();
+            infos.Add(" - GroupId : " + mobGroup.GroupId);
+            infos.Add(" - Db Id : " + (mobGroup.InternalId ?? string.Empty));
+            infos.Add(" - GroupInfos : ");
+            infos.Add(" - Effect : " + mobGroup.GroupInfos.Effect);
+            infos.Add(" - Flag : " + mobGroup.GroupInfos.Flag?.ToString() ?? "-") ;
+            infos.Add(" - IsInvincible : " + (mobGroup.GroupInfos.IsInvincible?.ToString() ??  "-"));
+            infos.Add(" - Model : " + (mobGroup.GroupInfos.Model?.ToString() ?? "-"));
+            infos.Add(" - Race : " + (mobGroup.GroupInfos.Race?.ToString() ?? "-"));
+            infos.Add(" - VisibleSlot : " + (mobGroup.GroupInfos.VisibleSlot?.ToString() ?? "-"));
+            infos.Add("");
+            infos.Add(" - InteractGroupId : " + (mobGroup.InteractGroupId ?? "-"));
+            infos.Add("");
+            if (mobGroup.GroupInteractions != null)
+            {
+                infos.Add(" Actions on Group Killed : ");
+                infos.Add(" - Set Effect : " + mobGroup.GroupInteractions.Effect);
+                infos.Add(" - Set Flag : " + mobGroup.GroupInteractions.Flag?.ToString() ?? "-");
+                infos.Add(" - Set IsInvincible : " + (mobGroup.GroupInteractions.IsInvincible?.ToString() ?? "-"));
+                infos.Add(" - Set Model : " + (mobGroup.GroupInteractions.Model?.ToString() ?? "-"));
+                infos.Add(" - Set Race : " + (mobGroup.GroupInteractions.Race?.ToString() ?? "-"));
+                infos.Add(" - Set VisibleSlot : " + (mobGroup.GroupInteractions.VisibleSlot?.ToString() ?? "-"));
+            }
+            infos.Add("******************");
+            infos.Add(" - NPC Count: " + mobGroup.NPCs.Count);
+            mobGroup.NPCs.ForEach(n => infos.Add(string.Format("Name: {0} | Id: {1} | Region: {2} | Alive: {3} ", n.Name, n.ObjectID, n.CurrentRegionID, n.IsAlive)));
+            return infos;
+        }
+
         public string GetGroupIdFromMobId(string mobId)
         {
             if (mobId == null)
@@ -171,7 +207,7 @@ namespace DOL.MobGroups
                 {
                     if (!this.Groups.ContainsKey(group.GroupId))
                     {
-                        var groupDb = GameServer.Database.FindObjectByKey<GroupMobDb>(group.GroupId);
+                        var groupDb = GameServer.Database.SelectObjects<GroupMobDb>("GroupId = @GroupId", new QueryParameter("GroupId", group.GroupId))?.FirstOrDefault();
                         if (groupDb != null)
                         {
                             var groupInteraction = groupDb.InteractGroupId != null ? GameServer.Database.FindObjectByKey<GroupMobInteract>(groupDb.GroupMobInteractId) : null;
@@ -183,7 +219,7 @@ namespace DOL.MobGroups
                     {
                         var mobInWorld = WorldMgr.Regions[group.RegionID].Objects?.FirstOrDefault(o => o?.InternalID?.Equals(group.MobID) == true && o is GameNPC) as GameNPC;
 
-                        if (mobInWorld != null)
+                        if (mobInWorld != null && this.Groups.ContainsKey(group.GroupId))
                         {
                             if (this.Groups[group.GroupId].NPCs.FirstOrDefault(m => m.InternalID.Equals(mobInWorld.InternalID)) == null)
                             {
