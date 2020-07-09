@@ -11,6 +11,9 @@ namespace DOL.MobGroups
 {
     public class MobGroup
     {
+        private MobGroupInfo originalGroupInfo;
+        private string mobGroupInterfactFk;
+
         public MobGroup(string id)
         {
             this.GroupId = id;
@@ -22,7 +25,7 @@ namespace DOL.MobGroups
         {
             this.InternalId = db.ObjectId;
             this.GroupId = db.GroupId;
-            this.InteractGroupId = db.InteractGroupId;
+            this.SlaveGroupId = db.SlaveGroupId;
             this.NPCs = new List<GameNPC>();
             this.GroupInfos = new MobGroupInfo()
             {
@@ -34,7 +37,21 @@ namespace DOL.MobGroups
                 VisibleSlot = db.VisibleSlot != null ? byte.TryParse(db.VisibleSlot, out byte slot) ? slot : (byte?)null : (byte?)null
             };
 
+            this.originalGroupInfo = CopyGroupInfo(this.GroupInfos);
             this.SetGroupInteractions(groupInteract);
+        }
+
+        private static MobGroupInfo CopyGroupInfo(MobGroupInfo copy)
+        {
+            return copy == null ? null : new MobGroupInfo()
+            {
+                Effect = copy.Effect,
+                Flag = copy.Flag,
+                IsInvincible = copy.IsInvincible,
+                Model = copy.Model,
+                Race = copy.Race,
+                VisibleSlot = copy.VisibleSlot
+            };
         }
 
         public string InternalId
@@ -49,7 +66,7 @@ namespace DOL.MobGroups
             set;
         }
 
-        public string InteractGroupId
+        public string SlaveGroupId
         {
             get;
             set;
@@ -75,6 +92,7 @@ namespace DOL.MobGroups
 
         public void SetGroupInteractions(GroupMobInteract groupInteract)
         {
+            this.mobGroupInterfactFk = groupInteract?.InteractId;
             this.GroupInteractions = groupInteract == null ? null : new MobGroupInfo()
             {
                 Effect = groupInteract.Effect != null ? int.TryParse(groupInteract.Effect, out int grEffect) ? grEffect : (int?)null : (int?)null,
@@ -84,6 +102,11 @@ namespace DOL.MobGroups
                 Race = groupInteract.Race != null ? Enum.TryParse(groupInteract.Race, out eRace grRace) ? grRace : (eRace?)null : (eRace?)null,
                 VisibleSlot = groupInteract.VisibleSlot != null ? byte.TryParse(groupInteract.VisibleSlot, out byte grSlot) ? grSlot : (byte?)null : (byte?)null
             };
+        }
+
+        public void ResetGroupInfo()
+        {
+           this.GroupInfos = CopyGroupInfo(this.originalGroupInfo);
         }
 
         public void SaveToDabatase()
@@ -111,9 +134,10 @@ namespace DOL.MobGroups
             db.VisibleSlot = this.GroupInfos.VisibleSlot?.ToString();
             db.Effect = this.GroupInfos.Effect?.ToString();
             db.GroupId = this.GroupId;
-            db.InteractGroupId = this.InteractGroupId;
+            db.SlaveGroupId = this.SlaveGroupId;
             db.IsInvincible = this.GroupInfos.IsInvincible?.ToString();
             db.ObjectId = this.InternalId;
+            db.GroupMobInteract_FK_Id = this.mobGroupInterfactFk;
             
             if (isNew)
             {

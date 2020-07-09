@@ -20,8 +20,8 @@ namespace DOL.commands.gmcommands
 		  "'/GroupMob remove <groupId>' Supprime le mob en target de son groupe",
 		  "'/GroupMob group remove <groupId>' Supprime le groupe et tous les mobs associés à celui-ci",
 		  "'/GroupMob info <GroupId>' Affiche les infos sur un GroupMob en fournissant son <GroupId>",
-		  "'/GroupMob interact <GroupId> set <GroupInteractId> Affect un GroupInteract à un <GroudId>'",
-		  "'/GroupMob interact <GroupdId> create Effect<SpellId|null> Flag<FlagValue> IsInvicible<true|false|null> Model<id|null> VisibleWeapon<value|null> Race<id|null>' - Créer un GroupInteract et l'affecte au groupe")]
+		  "'/GroupMob interact <GroupId> set <GroupInteractId> <SlaveGroupId> Affecte un GroupMobInteract<GroupInteractId> à un <GroupId>(master) envers un <GroupId>(slave)'",
+		  "'/GroupMob interact <GroupdId> create <SpellId|null> <FlagsValue|null> <true|false|null>(IsInvicible) <id|null>(Model) <value|null>(VisibleWeapon) <id|null>(Race)' - Créer un GroupInteract et l'affecte au groupe master (renvoie en sortie <GroupInteractId>)")]
 
 	public class GroupMob
 		  : AbstractCommandHandler, ICommandHandler
@@ -117,7 +117,7 @@ namespace DOL.commands.gmcommands
 
 				case "interact":
 
-					if (args.Length < 5)
+					if (args.Length < 6)
                     {
 						DisplaySyntax(client);
 						return;
@@ -132,17 +132,26 @@ namespace DOL.commands.gmcommands
 					if (args[3].ToLowerInvariant() == "set")
                     {
 						string groupInteractId = args[4];
+						string slaveGroupId = args[5];
+
+						if (!MobGroupManager.Instance.Groups.ContainsKey(slaveGroupId))
+                        {
+							client.Out.SendMessage("Le SlaveGroupId : " + slaveGroupId + " n'existe pas.", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
+							return;
+						}
+						
 						var groupInteract = GameServer.Database.SelectObjects<GroupMobInteract>("InteractId = @InteractId", new QueryParameter("InteractId", groupInteractId))?.FirstOrDefault();
 
 						if (groupInteract == null)
                         {
 							client.Out.SendMessage("Le GroupMobInteract Id: " + groupInteractId + " n'existe pas.", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
 							return;
-                        }
+                        }						
 
 						MobGroupManager.Instance.Groups[groupId].SetGroupInteractions(groupInteract);
+						MobGroupManager.Instance.Groups[groupId].SlaveGroupId = slaveGroupId;
 						MobGroupManager.Instance.Groups[groupId].SaveToDabatase();
-						client.Out.SendMessage("Le GroupId: " + groupId + " a été mis à jour.", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
+						client.Out.SendMessage("Le MobGroup: " + groupId + " a été associé au GroupMobInteract" + groupInteract.InteractId, GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
 						return;
 
 					}
@@ -167,12 +176,23 @@ namespace DOL.commands.gmcommands
 						groupInteract.InteractId = Guid.NewGuid().ToString().Substring(0,8);
 						groupInteract.Model = model;
 						groupInteract.Race = race?.ToString();
-						groupInteract.SetInvincible = isInvincible.ToString();
+						groupInteract.SetInvincible = isInvincible?.ToString();
 						groupInteract.VisibleSlot = visibleWeapon?.ToString();
-						GameServer.Database.AddObject(groupInteract);
-						MobGroupManager.Instance.Groups[groupId].SetGroupInteractions(groupInteract);
 
-						client.Out.SendMessage("Le Groupe " + groupId + " a été mis à jour et le GroupMobInteract a été créé et associé.", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
+                        try
+                        {
+							GameServer.Database.AddObject(groupInteract);
+                        }
+                        catch
+                        {
+							groupInteract.InteractId = Guid.NewGuid().ToString().Substring(0, 8);
+							GameServer.Database.AddObject(groupInteract);
+						}
+	
+						MobGroupManager.Instance.Groups[groupId].SetGroupInteractions(groupInteract);
+						MobGroupManager.Instance.Groups[groupId].SaveToDabatase();
+
+						client.Out.SendMessage("Le Groupe " + groupId + " a été mis à jour et le GroupMobInteract a été créé et associé. GroupInteractId: " + groupInteract.InteractId, GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
 						return;
 					}
 

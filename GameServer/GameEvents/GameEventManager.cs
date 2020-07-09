@@ -598,10 +598,9 @@ namespace DOL.GameEvents
                     var mobgroupDb = GameServer.Database.FindObjectByKey<GroupMobDb>(groupMob.GroupId);
                     if (mobgroupDb != null)
                     {
-                        var groupInteraction = mobgroupDb.InteractGroupId != null ?  GameServer.Database.FindObjectByKey<GroupMobInteract>(mobgroupDb.GroupMobInteractId) : null;
+                        var groupInteraction = mobgroupDb.GroupMobInteract_FK_Id != null ?  GameServer.Database.SelectObjects<GroupMobInteract>("InteractId = @InteractId", new QueryParameter("InteractId", mobgroupDb.GroupMobInteract_FK_Id))?.FirstOrDefault() : null;
                         mob.CurrentGroupMob = new MobGroup(mobgroupDb, groupInteraction);
-                    }
-                        
+                    }                        
                 }
 
                 if (e.IsKillingEvent && e.MobNamesToKill.Contains(mob.Name))

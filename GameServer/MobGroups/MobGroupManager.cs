@@ -45,7 +45,11 @@ namespace DOL.MobGroups
 
             if (allDead)
             {
+                //Handle interaction if any slave group
                 this.HandleInteraction(this.Groups[npc.CurrentGroupMob.GroupId]);
+
+                //Reset GroupInfo
+                this.Groups[npc.CurrentGroupMob.GroupId].ResetGroupInfo();
             }
 
             return allDead;
@@ -53,9 +57,9 @@ namespace DOL.MobGroups
 
         private void HandleInteraction(MobGroup master)
         {
-            if (master.InteractGroupId != null && this.Groups.ContainsKey(master.InteractGroupId) && master.GroupInteractions != null)
+            if (master.SlaveGroupId != null && this.Groups.ContainsKey(master.SlaveGroupId) && master.GroupInteractions != null)
             {
-                var slave = this.Groups[master.InteractGroupId];
+                var slave = this.Groups[master.SlaveGroupId];
 
                 if (slave.NPCs?.Any() == true)
                 {
@@ -130,7 +134,7 @@ namespace DOL.MobGroups
             infos.Add(" - Race : " + (mobGroup.GroupInfos.Race?.ToString() ?? "-"));
             infos.Add(" - VisibleSlot : " + (mobGroup.GroupInfos.VisibleSlot?.ToString() ?? "-"));
             infos.Add("");
-            infos.Add(" - InteractGroupId : " + (mobGroup.InteractGroupId ?? "-"));
+            infos.Add(" - InteractGroupId : " + (mobGroup.SlaveGroupId ?? "-"));
             infos.Add("");
             if (mobGroup.GroupInteractions != null)
             {
@@ -164,8 +168,7 @@ namespace DOL.MobGroups
             }
 
             return null;
-        }
-
+        }    
 
         public bool RemoveGroupsAndMobs(string groupId)
         {
@@ -210,7 +213,7 @@ namespace DOL.MobGroups
                         var groupDb = GameServer.Database.SelectObjects<GroupMobDb>("GroupId = @GroupId", new QueryParameter("GroupId", group.GroupId))?.FirstOrDefault();
                         if (groupDb != null)
                         {
-                            var groupInteraction = groupDb.InteractGroupId != null ? GameServer.Database.FindObjectByKey<GroupMobInteract>(groupDb.GroupMobInteractId) : null;
+                            var groupInteraction = groupDb.SlaveGroupId != null ? GameServer.Database.FindObjectByKey<GroupMobInteract>(groupDb.GroupMobInteract_FK_Id) : null;
                             this.Groups.Add(group.GroupId, new MobGroup(groupDb, groupInteraction));
                         }                           
                     }                    

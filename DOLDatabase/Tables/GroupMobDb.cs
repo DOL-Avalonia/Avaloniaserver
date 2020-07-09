@@ -29,7 +29,7 @@ namespace DOLDatabase.Tables
             set { m_groupId = value; Dirty = true; }
         }
 
-        [DataElement(AllowDbNull = false)]
+        [DataElement(AllowDbNull = true, Varchar = 5)]
         public string IsInvincible
         {
             get => m_IsInvincible;
@@ -72,14 +72,14 @@ namespace DOLDatabase.Tables
         }
 
         [DataElement(AllowDbNull = true, Varchar = 255)]
-        public string InteractGroupId
+        public string SlaveGroupId
         {
             get => m_InteractGroupId;
             set { m_InteractGroupId = value; Dirty = true; }
         }
 
-        [DataElement(AllowDbNull = true)]
-        public string GroupMobInteractId
+        [DataElement(AllowDbNull = true, Varchar = 255)]
+        public string GroupMobInteract_FK_Id
         {
             get => m_groupMobInteractId;
             set { Dirty = true; m_groupMobInteractId = value; }
