@@ -201,7 +201,6 @@ namespace DOL.MobGroups
 
         public bool LoadFromDatabase()
         {
-
             var groups = GameServer.Database.SelectAllObjects<GroupMobXMobs>();
 
             if (groups != null)
@@ -213,7 +212,7 @@ namespace DOL.MobGroups
                         var groupDb = GameServer.Database.SelectObjects<GroupMobDb>("GroupId = @GroupId", new QueryParameter("GroupId", group.GroupId))?.FirstOrDefault();
                         if (groupDb != null)
                         {
-                            var groupInteraction = groupDb.SlaveGroupId != null ? GameServer.Database.FindObjectByKey<GroupMobInteract>(groupDb.GroupMobInteract_FK_Id) : null;
+                            var groupInteraction = groupDb.SlaveGroupId != null ? GameServer.Database.SelectObjects<GroupMobInteract>("InteractId = @InteractId", new QueryParameter("InteractId", groupDb.GroupMobInteract_FK_Id))?.FirstOrDefault() : null;
                             this.Groups.Add(group.GroupId, new MobGroup(groupDb, groupInteraction));
                         }                           
                     }                    

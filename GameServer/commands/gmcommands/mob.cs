@@ -1303,7 +1303,7 @@ namespace DOL.GS.Commands
             info.Add(" + Mana: " + targetMob.Mana + "/" + targetMob.MaxMana);
             info.Add(" + IsRenaissance: " + targetMob.IsRenaissance);
             info.Add(" + EventId: " + targetMob.EventID);
-            info.Add(" + GroupMobId: " + (targetMob?.CurrentGroupMob.GroupId ?? "-"));
+            info.Add(" + GroupMobId: " + (targetMob?.CurrentGroupMob?.GroupId ?? "-"));
 
             if (targetMob.DamageRvRMemory > 0)
             {

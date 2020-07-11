@@ -1679,7 +1679,8 @@ namespace DOL.GS
             {
 				if (npc.CurrentGroupMob.GroupInfos.IsInvincible == true)
 				{
-					ad.AttackResult = eAttackResult.NoValidTarget;
+					ad.AttackResult = eAttackResult.Any;
+					ad.Damage = 0;
 					return ad;
 				}
             }

@@ -4278,15 +4278,16 @@ namespace DOL.GS
 			//Check if killed mob starts event
 			if (this.CurrentGroupMob != null)
 			{
+				bool isAllOthersGroupMobDead = MobGroupManager.Instance.IsAllOthersGroupMobDead(this);
 				var mobGroupEvent = GameEventManager.Instance.Events.FirstOrDefault(e => 
-				e.KillStartingGroupMobId?.Equals(this.CurrentGroupMob) == true && 
+				e.KillStartingGroupMobId?.Equals(this.CurrentGroupMob.GroupId) == true && 
 			   !e.StartedTime.HasValue && 
 			    e.Status == EventStatus.NotOver &&
 				e.StartConditionType == StartingConditionType.Kill);
 
-				if (mobGroupEvent != null && MobGroupManager.Instance.IsAllOthersGroupMobDead(this))
-				{
-					Task.Run(() => GameEventManager.Instance.StartEvent(mobGroupEvent));
+				if (isAllOthersGroupMobDead && mobGroupEvent != null)
+                {
+					Task.Run(() => GameEventManager.Instance.StartEvent(mobGroupEvent));				
 				}
 			}
 
