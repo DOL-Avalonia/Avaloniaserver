@@ -21,6 +21,7 @@ namespace DOLDatabase.Tables
         private string m_effect;
         private string m_InteractGroupId;
         private string m_groupMobInteractId;
+        private string m_groupMobOrigin_FK_Id;
 
         [DataElement(AllowDbNull = false, Varchar = 255, Unique = true)]
         public string GroupId
@@ -83,6 +84,13 @@ namespace DOLDatabase.Tables
         {
             get => m_groupMobInteractId;
             set { Dirty = true; m_groupMobInteractId = value; }
+        }
+
+        [DataElement(AllowDbNull = true, Varchar = 255)]
+        public string GroupMobOrigin_FK_Id
+        {
+            get => m_groupMobOrigin_FK_Id;
+            set { Dirty = true; m_groupMobOrigin_FK_Id = value; }
         }
     }
 }

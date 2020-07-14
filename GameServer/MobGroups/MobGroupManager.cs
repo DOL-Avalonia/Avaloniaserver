@@ -68,10 +68,10 @@ namespace DOL.MobGroups
                         slave.GroupInfos.IsInvincible = master.GroupInteractions.IsInvincible.Value;
                     }
 
-                    if (master.GroupInteractions.Effect.HasValue)
-                    {
-                        slave.GroupInfos.Effect = master.GroupInteractions.Effect.Value;
+                    slave.GroupInfos.Effect = master.GroupInteractions.Effect;
 
+                    if (slave.GroupInfos.Effect.HasValue)
+                    {
                         slave.NPCs.ForEach(npc =>
                         {
                             foreach (GamePlayer player in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
@@ -79,37 +79,40 @@ namespace DOL.MobGroups
                                 player.Out.SendSpellEffectAnimation(npc, npc, (ushort)master.GroupInteractions.Effect.Value, 0, false, 1);
                             }
                         });
-                    }
+                    } 
+                 
+                    slave.GroupInfos.Flag = master.GroupInteractions.Flag;
 
-                    if (master.GroupInteractions.Flag.HasValue)
+                    if (slave.GroupInfos.Flag.HasValue)
                     {
-                        slave.GroupInfos.Flag = master.GroupInteractions.Flag.Value;
                         slave.NPCs.ForEach(n => n.Flags = master.GroupInteractions.Flag.Value);
                     }
-
+                    
+                    slave.GroupInfos.Model = master.GroupInteractions.Model;
                     if (master.GroupInteractions.Model.HasValue)
                     {
-                        slave.GroupInfos.Model = master.GroupInteractions.Model.Value;
                         slave.NPCs.ForEach(n => n.Model = (ushort)master.GroupInteractions.Model.Value);
                     }
-
+                 
+                    slave.GroupInfos.Race = master.GroupInteractions.Race;
                     if (master.GroupInteractions.Race.HasValue)
                     {
-                        slave.GroupInfos.Race = master.GroupInteractions.Race.Value;
                         slave.NPCs.ForEach(n => n.Race = (short)master.GroupInteractions.Race.Value);
-                    }
+                    }                    
 
+                  
+                    slave.GroupInfos.VisibleSlot = master.GroupInteractions.VisibleSlot;
                     if (master.GroupInteractions.VisibleSlot.HasValue)
                     {
-                        slave.GroupInfos.VisibleSlot = master.GroupInteractions.VisibleSlot.Value;
-                        slave.NPCs.ForEach(npc => {
+                        slave.NPCs.ForEach(npc =>
+                        {
                             npc.VisibleActiveWeaponSlots = master.GroupInteractions.VisibleSlot.Value;
                             foreach (GamePlayer player in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                             {
                                 player.Out.SendLivingEquipmentUpdate(npc);
-                            } 
+                            }
                         });
-                    }
+                    }                    
 
                     slave.SaveToDabatase();
                 }
@@ -126,7 +129,7 @@ namespace DOL.MobGroups
             var infos = new List<string>();
             infos.Add(" - GroupId : " + mobGroup.GroupId);
             infos.Add(" - Db Id : " + (mobGroup.InternalId ?? string.Empty));
-            infos.Add(" - GroupInfos : ");
+            infos.Add(" ** GroupInfos ** ");
             infos.Add(" - Effect : " + mobGroup.GroupInfos.Effect);
             infos.Add(" - Flag : " + mobGroup.GroupInfos.Flag?.ToString() ?? "-") ;
             infos.Add(" - IsInvincible : " + (mobGroup.GroupInfos.IsInvincible?.ToString() ??  "-"));
@@ -134,7 +137,9 @@ namespace DOL.MobGroups
             infos.Add(" - Race : " + (mobGroup.GroupInfos.Race?.ToString() ?? "-"));
             infos.Add(" - VisibleSlot : " + (mobGroup.GroupInfos.VisibleSlot?.ToString() ?? "-"));
             infos.Add("");
-            infos.Add(" - InteractGroupId : " + (mobGroup.SlaveGroupId ?? "-"));
+            infos.Add("MobGroup Origin StatusId: " + (mobGroup?.mobGroupOriginFk ?? "-"));
+            infos.Add("MobGroup Interact StatusId:" + (mobGroup?.mobGroupInterfactFk ?? "-"));
+            infos.Add(" - SlaveGroupId : " + (mobGroup.SlaveGroupId ?? "-"));
             infos.Add("");
             if (mobGroup.GroupInteractions != null)
             {
@@ -212,8 +217,9 @@ namespace DOL.MobGroups
                         var groupDb = GameServer.Database.SelectObjects<GroupMobDb>("GroupId = @GroupId", new QueryParameter("GroupId", group.GroupId))?.FirstOrDefault();
                         if (groupDb != null)
                         {
-                            var groupInteraction = groupDb.SlaveGroupId != null ? GameServer.Database.SelectObjects<GroupMobInteract>("InteractId = @InteractId", new QueryParameter("InteractId", groupDb.GroupMobInteract_FK_Id))?.FirstOrDefault() : null;
-                            this.Groups.Add(group.GroupId, new MobGroup(groupDb, groupInteraction));
+                            var groupInteraction = groupDb.GroupMobInteract_FK_Id != null ? GameServer.Database.SelectObjects<GroupMobStatusDb>("GroupStatusId = @GroupStatusId", new QueryParameter("GroupStatusId", groupDb.GroupMobInteract_FK_Id))?.FirstOrDefault() : null;
+                            var originalStatus = groupDb.GroupMobOrigin_FK_Id != null ? GameServer.Database.SelectObjects<GroupMobStatusDb>("GroupStatusId = @GroupStatusId", new QueryParameter("GroupStatusId", groupDb.GroupMobOrigin_FK_Id))?.FirstOrDefault() : null;
+                            this.Groups.Add(group.GroupId, new MobGroup(groupDb, groupInteraction, originalStatus));
                         }                           
                     }                    
 
@@ -231,6 +237,7 @@ namespace DOL.MobGroups
                         }
                     }
                 }
+                Instance.Groups.Foreach(g => g.Value.UpdateGroupInfos());
             }
 
             return true;

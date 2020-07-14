@@ -595,12 +595,27 @@ namespace DOL.GameEvents
 
                 if (groupMob != null)
                 {
-                    var mobgroupDb = GameServer.Database.FindObjectByKey<GroupMobDb>(groupMob.GroupId);
-                    if (mobgroupDb != null)
+                    if (MobGroupManager.Instance.Groups.ContainsKey(groupMob.GroupId))
                     {
-                        var groupInteraction = mobgroupDb.GroupMobInteract_FK_Id != null ?  GameServer.Database.SelectObjects<GroupMobInteract>("InteractId = @InteractId", new QueryParameter("InteractId", mobgroupDb.GroupMobInteract_FK_Id))?.FirstOrDefault() : null;
-                        mob.CurrentGroupMob = new MobGroup(mobgroupDb, groupInteraction);
-                    }                        
+                        mob.CurrentGroupMob = MobGroupManager.Instance.Groups[groupMob.GroupId];                     
+                    }
+                    else
+                    {
+                        var mobgroupDb = GameServer.Database.FindObjectByKey<GroupMobDb>(groupMob.GroupId);
+                        if (mobgroupDb != null)
+                        {
+                            var groupInteraction = mobgroupDb.GroupMobInteract_FK_Id != null ? GameServer.Database.SelectObjects<GroupMobStatusDb>("GroupStatusId = @GroupStatusId", new QueryParameter("GroupStatusId", mobgroupDb.GroupMobInteract_FK_Id))?.FirstOrDefault() : null;
+                            var groupOriginStatus = mobgroupDb.GroupMobOrigin_FK_Id != null ? GameServer.Database.SelectObjects<GroupMobStatusDb>("GroupStatusId = @GroupStatusId", new QueryParameter("GroupStatusId", mobgroupDb.GroupMobOrigin_FK_Id))?.FirstOrDefault() : null;
+                            mob.CurrentGroupMob = new MobGroup(mobgroupDb, groupInteraction, groupOriginStatus);
+                            MobGroupManager.Instance.Groups.Add(groupMob.GroupId, mob.CurrentGroupMob);
+                        }
+                    }
+
+                    if (!MobGroupManager.Instance.Groups[groupMob.GroupId].NPCs.Contains(mob))
+                    {
+                        MobGroupManager.Instance.Groups[groupMob.GroupId].NPCs.Add(mob);
+                        MobGroupManager.Instance.Groups[groupMob.GroupId].UpdateGroupInfos();
+                    }
                 }
 
                 if (e.IsKillingEvent && e.MobNamesToKill.Contains(mob.Name))

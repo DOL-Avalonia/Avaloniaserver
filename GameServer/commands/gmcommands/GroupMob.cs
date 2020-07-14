@@ -20,8 +20,9 @@ namespace DOL.commands.gmcommands
 		  "'/GroupMob remove <groupId>' Supprime le mob en target de son groupe",
 		  "'/GroupMob group remove <groupId>' Supprime le groupe et tous les mobs associés à celui-ci",
 		  "'/GroupMob info <GroupId>' Affiche les infos sur un GroupMob en fournissant son <GroupId>",
-		  "'/GroupMob interact <GroupId> set <GroupInteractId> <SlaveGroupId> Affecte un GroupMobInteract<GroupInteractId> à un <GroupId>(master) envers un <GroupId>(slave)'",
-		  "'/GroupMob interact <GroupdId> create <SpellId|null> <FlagsValue|null> <true|false|null>(IsInvicible) <id|null>(Model) <value|null>(VisibleWeapon) <id|null>(Race)' - Créer un GroupInteract et l'affecte au groupe master (renvoie en sortie <GroupInteractId>)")]
+		  "'/GroupMob status <GroupId> set <StatusId> <SlaveGroupId> Affecte un GroupMobStatus<StatusId> à un <GroupId>(master) envers un <GroupId>(slave)'",
+		  "'/GroupMob status origin set <StatusId> <GroupId>' Attribut un Status d'origine à un GroupMob en donnant son <GroupdId> et le <StatusId> souhaité",
+		  "'/GroupMob status create <SpellId|null>(Effect) <FlagsValue|null>(Flags) <true|false|null>(IsInvicible) <id|null>(Model) <value|null>(VisibleWeapon) <id|null>(Race)' - Créer un GroupStatus et renvoie en sortie <StatusId>)")]
 
 	public class GroupMob
 		  : AbstractCommandHandler, ICommandHandler
@@ -32,7 +33,7 @@ namespace DOL.commands.gmcommands
 			GameNPC target = client.Player.TargetObject as GameNPC;
 			string groupId = null;
 
-			if (target == null && args.Length > 3 && args[1].ToLowerInvariant() != "interact")
+			if (target == null && args.Length > 3 && args[1].ToLowerInvariant() != "status")
 			{
 				if (args.Length == 4 && args[1].ToLowerInvariant() == "group" && args[2].ToLowerInvariant() == "remove")
 				{
@@ -115,7 +116,7 @@ namespace DOL.commands.gmcommands
                     }
 					break;
 
-				case "interact":
+				case "status":
 
 					if (args.Length < 6)
                     {
@@ -123,76 +124,97 @@ namespace DOL.commands.gmcommands
 						return;
 					}
 
-					if (!MobGroupManager.Instance.Groups.ContainsKey(groupId))
-					{
-						client.Out.SendMessage("Le GroupId: " + groupId + " n'existe pas.", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
-						return;
-					}
-
 					if (args[3].ToLowerInvariant() == "set")
                     {
-						string groupInteractId = args[4];
+						string groupStatusId = args[4];
 						string slaveGroupId = args[5];
-
-						if (!MobGroupManager.Instance.Groups.ContainsKey(slaveGroupId))
+						
+						if (args[2].ToLowerInvariant() == "origin")
                         {
-							client.Out.SendMessage("Le SlaveGroupId : " + slaveGroupId + " n'existe pas.", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
+							groupId = args[5];
+
+							if (!this.isGroupIdAvailable(groupId, client))
+							{
+								return;
+							}
+
+							var status = GameServer.Database.SelectObjects<GroupMobStatusDb>("GroupStatusId = @GroupStatusId", new QueryParameter("GroupStatusId", groupStatusId))?.FirstOrDefault();
+
+							if (status == null)
+							{
+								client.Out.SendMessage("Le GroupStatusId: " + groupStatusId + " n'existe pas.", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
+								return;
+							}
+
+							MobGroupManager.Instance.Groups[groupId].SetGroupInfo(status);
+							MobGroupManager.Instance.Groups[groupId].SaveToDabatase();
+							client.Out.SendMessage("Le GroupStatus: " + groupStatusId + " a été attribué au MobGroup " + groupId, GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
 							return;
 						}
-						
-						var groupInteract = GameServer.Database.SelectObjects<GroupMobInteract>("InteractId = @InteractId", new QueryParameter("InteractId", groupInteractId))?.FirstOrDefault();
-
-						if (groupInteract == null)
+                        else
                         {
-							client.Out.SendMessage("Le GroupMobInteract Id: " + groupInteractId + " n'existe pas.", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
+							if (!this.isGroupIdAvailable(groupId, client))
+                            {
+								return;
+                            }
+
+							if (!MobGroupManager.Instance.Groups.ContainsKey(slaveGroupId))
+							{
+								client.Out.SendMessage("Le SlaveGroupId : " + slaveGroupId + " n'existe pas.", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
+								return;
+							}
+
+							var groupInteract = GameServer.Database.SelectObjects<GroupMobStatusDb>("GroupStatusId = @GroupStatusId", new QueryParameter("GroupStatusId", groupStatusId))?.FirstOrDefault();
+
+							if (groupInteract == null)
+							{
+								client.Out.SendMessage("Le GroupStatusId: " + groupStatusId + " n'existe pas.", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
+								return;
+							}
+
+							MobGroupManager.Instance.Groups[groupId].SetGroupInteractions(groupInteract);
+							MobGroupManager.Instance.Groups[groupId].SlaveGroupId = slaveGroupId;
+							MobGroupManager.Instance.Groups[groupId].SaveToDabatase();
+							client.Out.SendMessage("Le MobGroup: " + groupId + " a été associé au GroupMobInteract" + groupInteract.GroupStatusId, GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
 							return;
-                        }						
-
-						MobGroupManager.Instance.Groups[groupId].SetGroupInteractions(groupInteract);
-						MobGroupManager.Instance.Groups[groupId].SlaveGroupId = slaveGroupId;
-						MobGroupManager.Instance.Groups[groupId].SaveToDabatase();
-						client.Out.SendMessage("Le MobGroup: " + groupId + " a été associé au GroupMobInteract" + groupInteract.InteractId, GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
-						return;
-
+						}
 					}
-					else if(args[3].ToLowerInvariant() == "create")
+					else if(args[2].ToLowerInvariant() == "create")
                     {
-						if (args.Length != 10)
+						if (args.Length != 9)
                         {
 							DisplaySyntax(client);
 							return;
-						}
-// "'/GroupMob interact <GroupdId> create Effect<SpellId|null> Flag<FlagValue> IsInvicible<true|false|null> Model<id|null> VisibleWeapon<value|null> Race<id|null>'
-						ushort? effect = args[4].ToLowerInvariant() == "null" ? (ushort?)null: ushort.TryParse(args[4], out ushort effectVal) ? effectVal : (ushort?)null;
-						eFlags? flag = args[5].ToLowerInvariant() == "null" ? (eFlags?)null : Enum.TryParse(args[5], out eFlags flagEnum) ? flagEnum : (eFlags?)null;
-						bool? isInvincible = args[6].ToLowerInvariant() == "null" ? (bool?)null : bool.TryParse(args[6], out bool isInvincibleBool) ? isInvincibleBool : (bool?)null;
-						string model = args[7].ToLowerInvariant() == "null" ? null : args[7];
-						byte? visibleWeapon = args[8].ToLowerInvariant() == "null" ? (byte?)null : byte.TryParse(args[8], out byte wp) ? wp : (byte?)null;
-						eRace? race = args[9].ToLowerInvariant() == "null" ? (eRace?)null : Enum.TryParse(args[9], out eRace raceEnum) ? raceEnum : (eRace?)null;
+						}					
 
-						var groupInteract = new GroupMobInteract();
-						groupInteract.Effect = effect?.ToString();
-						groupInteract.Flag = flag?.ToString();
-						groupInteract.InteractId = Guid.NewGuid().ToString().Substring(0,8);
-						groupInteract.Model = model;
-						groupInteract.Race = race?.ToString();
-						groupInteract.SetInvincible = isInvincible?.ToString();
-						groupInteract.VisibleSlot = visibleWeapon?.ToString();
+// "'/GroupMob interact <GroupdId> create Effect<SpellId|null> Flag<FlagValue> IsInvicible<true|false|null> Model<id|null> VisibleWeapon<value|null> Race<id|null>'
+						ushort? effect = args[3].ToLowerInvariant() == "null" ? (ushort?)null: ushort.TryParse(args[3], out ushort effectVal) ? effectVal : (ushort?)null;
+						eFlags? flag = args[4].ToLowerInvariant() == "null" ? (eFlags?)null : Enum.TryParse(args[4], out eFlags flagEnum) ? flagEnum : (eFlags?)null;
+						bool? isInvincible = args[5].ToLowerInvariant() == "null" ? (bool?)null : bool.TryParse(args[5], out bool isInvincibleBool) ? isInvincibleBool : (bool?)null;
+						string model = args[6].ToLowerInvariant() == "null" ? null : args[6];
+						byte? visibleWeapon = args[7].ToLowerInvariant() == "null" ? (byte?)null : byte.TryParse(args[7], out byte wp) ? wp : (byte?)null;
+						eRace? race = args[8].ToLowerInvariant() == "null" ? (eRace?)null : Enum.TryParse(args[8], out eRace raceEnum) ? raceEnum : (eRace?)null;
+
+						var groupStatus = new GroupMobStatusDb();
+						groupStatus.Effect = effect?.ToString();
+						groupStatus.Flag = flag?.ToString();
+						groupStatus.GroupStatusId = Guid.NewGuid().ToString().Substring(0,8);
+						groupStatus.Model = model;
+						groupStatus.Race = race?.ToString();
+						groupStatus.SetInvincible = isInvincible?.ToString();
+						groupStatus.VisibleSlot = visibleWeapon?.ToString();
 
                         try
                         {
-							GameServer.Database.AddObject(groupInteract);
+							GameServer.Database.AddObject(groupStatus);
                         }
                         catch
                         {
-							groupInteract.InteractId = Guid.NewGuid().ToString().Substring(0, 8);
-							GameServer.Database.AddObject(groupInteract);
+							groupStatus.GroupStatusId = Guid.NewGuid().ToString().Substring(0, 8);
+							GameServer.Database.AddObject(groupStatus);
 						}
-	
-						MobGroupManager.Instance.Groups[groupId].SetGroupInteractions(groupInteract);
-						MobGroupManager.Instance.Groups[groupId].SaveToDabatase();
 
-						client.Out.SendMessage("Le Groupe " + groupId + " a été mis à jour et le GroupMobInteract a été créé et associé. GroupInteractId: " + groupInteract.InteractId, GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
+						client.Out.SendMessage("Le GroupStatus a été créé avec le GroupStatusId: " + groupStatus.GroupStatusId, GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
 						return;
 					}
 
@@ -202,6 +224,17 @@ namespace DOL.commands.gmcommands
 					DisplaySyntax(client);
 					break;
 			}
+		}
+
+		private bool isGroupIdAvailable(string groupId, GameClient client)
+        {
+			if (!MobGroupManager.Instance.Groups.ContainsKey(groupId))
+			{
+				client.Out.SendMessage("Le GroupId: " + groupId + " n'existe pas.", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
+				return false;
+			}
+
+			return true;
 		}
 	}
 }

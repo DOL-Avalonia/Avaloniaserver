@@ -130,7 +130,7 @@
     <Compile Include="Tables\FeuxCampXItem.cs" />
     <Compile Include="Tables\Gravestones.cs" />
     <Compile Include="Tables\GroupMobDb.cs" />
-    <Compile Include="Tables\GroupMobInteract.cs" />
+    <Compile Include="Tables\GroupMobStatusDb.cs" />
     <Compile Include="Tables\GroupMobXMobs.cs" />
     <Compile Include="Tables\HousingConsignmentMerchant.cs" />
     <Compile Include="Tables\JumpPoint.cs" />

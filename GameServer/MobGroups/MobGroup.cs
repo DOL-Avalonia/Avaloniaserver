@@ -12,7 +12,6 @@ namespace DOL.MobGroups
     public class MobGroup
     {
         private MobGroupInfo originalGroupInfo;
-        private string mobGroupInterfactFk;
 
         public MobGroup(string id)
         {
@@ -21,7 +20,7 @@ namespace DOL.MobGroups
             this.GroupInfos = new MobGroupInfo();
         }
        
-        public MobGroup(GroupMobDb db, GroupMobInteract groupInteract)
+        public MobGroup(GroupMobDb db, GroupMobStatusDb groupInteract, GroupMobStatusDb originalStatus)
         {
             this.InternalId = db.ObjectId;
             this.GroupId = db.GroupId;
@@ -37,8 +36,22 @@ namespace DOL.MobGroups
                 VisibleSlot = db.VisibleSlot != null ? byte.TryParse(db.VisibleSlot, out byte slot) ? slot : (byte?)null : (byte?)null
             };
 
-            this.originalGroupInfo = CopyGroupInfo(this.GroupInfos);
+            this.mobGroupOriginFk = originalStatus?.GroupStatusId;
+            this.originalGroupInfo = GetMobInfoFromSource(originalStatus);
             this.SetGroupInteractions(groupInteract);
+        }
+
+        private static MobGroupInfo GetMobInfoFromSource(GroupMobStatusDb source)
+        {
+            return source == null ? null : new MobGroupInfo()
+            {
+                Effect = source.Effect != null ? int.TryParse(source.Effect, out int grEffect) ? grEffect : (int?)null : (int?)null,
+                Flag = source.Flag != null ? Enum.TryParse(source.Flag, out eFlags groupFlag) ? groupFlag : (eFlags?)null : (eFlags?)null,
+                IsInvincible = source.SetInvincible != null ? bool.TryParse(source.SetInvincible, out bool inv) ? inv : (bool?)null : (bool?)null,
+                Model = source.Model != null ? int.TryParse(source.Model, out int grModel) ? grModel : (int?)null : (int?)null,
+                Race = source.Race != null ? Enum.TryParse(source.Race, out eRace grRace) ? grRace : (eRace?)null : (eRace?)null,
+                VisibleSlot = source.VisibleSlot != null ? byte.TryParse(source.VisibleSlot, out byte grSlot) ? grSlot : (byte?)null : (byte?)null
+            };
         }
 
         private static MobGroupInfo CopyGroupInfo(MobGroupInfo copy)
@@ -52,6 +65,18 @@ namespace DOL.MobGroups
                 Race = copy.Race,
                 VisibleSlot = copy.VisibleSlot
             };
+        }
+
+        public string mobGroupInterfactFk
+        {
+            get;
+            private set;
+        }
+
+        public string mobGroupOriginFk
+        {
+            get;
+            private set;
         }
 
         public string InternalId
@@ -90,18 +115,41 @@ namespace DOL.MobGroups
             set;
         }
 
-        public void SetGroupInteractions(GroupMobInteract groupInteract)
+        public void SetGroupInteractions(GroupMobStatusDb groupInteract)
         {
-            this.mobGroupInterfactFk = groupInteract?.InteractId;
-            this.GroupInteractions = groupInteract == null ? null : new MobGroupInfo()
+            this.mobGroupInterfactFk = groupInteract?.GroupStatusId;
+            this.GroupInteractions = GetMobInfoFromSource(groupInteract);
+        }
+
+        public void SetGroupInfo(GroupMobStatusDb status)
+        {
+            this.GroupInfos = GetMobInfoFromSource(status);
+            this.mobGroupOriginFk = status?.GroupStatusId;
+            this.originalGroupInfo = GetMobInfoFromSource(status);
+            this.UpdateGroupInfos();
+        }
+
+        public void UpdateGroupInfos()
+        {          
+            this.NPCs.ForEach(n => n.Flags = this.GroupInfos.Flag.HasValue ? this.GroupInfos.Flag.Value : 0);            
+
+            if (this.GroupInfos.Model.HasValue)
             {
-                Effect = groupInteract.Effect != null ? int.TryParse(groupInteract.Effect, out int grEffect) ? grEffect : (int?)null : (int?)null,
-                Flag = groupInteract.Flag != null ? Enum.TryParse(groupInteract.Flag, out eFlags groupFlag) ? groupFlag : (eFlags?)null : (eFlags?)null,
-                IsInvincible = groupInteract.SetInvincible != null ? bool.TryParse(groupInteract.SetInvincible, out bool inv) ? inv : (bool?)null : (bool?)null,
-                Model = groupInteract.Model != null ? int.TryParse(groupInteract.Model, out int grModel) ? grModel : (int?)null : (int?)null,
-                Race = groupInteract.Race != null ? Enum.TryParse(groupInteract.Race, out eRace grRace) ? grRace : (eRace?)null : (eRace?)null,
-                VisibleSlot = groupInteract.VisibleSlot != null ? byte.TryParse(groupInteract.VisibleSlot, out byte grSlot) ? grSlot : (byte?)null : (byte?)null
-            };
+                this.NPCs.ForEach(n => n.Model = (ushort)this.GroupInfos.Model.Value);
+            }
+
+            if (this.GroupInfos.Race.HasValue)
+            {
+                this.NPCs.ForEach(n => n.Race = (short)this.GroupInfos.Race.Value);
+            }
+           
+            this.NPCs.ForEach(npc => {
+                npc.VisibleActiveWeaponSlots = this.GroupInfos.VisibleSlot.HasValue ? this.GroupInfos.VisibleSlot.Value : (byte)0;
+                foreach (GamePlayer player in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                {
+                    player.Out.SendLivingEquipmentUpdate(npc);
+                }
+            });          
         }
 
         public void ResetGroupInfo()
@@ -138,6 +186,7 @@ namespace DOL.MobGroups
             db.IsInvincible = this.GroupInfos.IsInvincible?.ToString();
             db.ObjectId = this.InternalId;
             db.GroupMobInteract_FK_Id = this.mobGroupInterfactFk;
+            db.GroupMobOrigin_FK_Id = this.mobGroupOriginFk;
             
             if (isNew)
             {
