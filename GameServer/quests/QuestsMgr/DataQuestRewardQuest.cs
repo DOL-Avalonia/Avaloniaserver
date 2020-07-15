@@ -229,6 +229,11 @@ namespace DOL.GS.Quests
 
         public override eStartType StartType => this.startType;
 
+		public override string TargetName => this.CurrentGoal?.TargetObject;
+
+		public override ushort TargetRegion => this.TargetRegions.Count >= this.CurrentGoal.GoalIndex ? this.TargetRegions[this.CurrentGoal.GoalIndex - 1] : (ushort)0;
+
+
         /// <summary>
         /// Split the quest strings into individual step data
         /// It's important to remember that there must be an entry, even if empty, for each column for each step.
@@ -751,12 +756,12 @@ namespace DOL.GS.Quests
 					}
 				}
 			}
-		}		
-       
-		/// <summary>
-		/// Current step of this quest. Only used to determine if quest is completed or active. 0 = complete, 1 = active
-		/// </summary>
-		public int StepCount
+		}
+
+        /// <summary>
+        /// Current step of this quest. Only used to determine if quest is completed or active. 0 = complete, 1 = active
+        /// </summary>
+        public int StepCount
 		{
 			get { return m_dqRewardQ.StepCount; }			
 		}
@@ -1378,7 +1383,7 @@ namespace DOL.GS.Quests
 
         protected override void OnPlayerGiveItem(GamePlayer player, GameObject obj, InventoryItem item)
         {
-            if (item?.OwnerID == null || m_collectItems?.Count == 0 || Step == 0 || m_goalTargetName.Count < newgoals.GoalIndex)
+            if (item?.OwnerID == null || CurrentGoal.QuestItem?.Id_nb?.ToLowerInvariant().Equals(item?.Id_nb?.ToLowerInvariant()) == false || Step == 0 || m_goalTargetName.Count < newgoals.GoalIndex)
             {
                 return;
             }
@@ -1386,10 +1391,7 @@ namespace DOL.GS.Quests
             if (m_goalTargetName[newgoals.GoalIndex - 1] == obj.Name && (TargetRegion == obj.CurrentRegionID || TargetRegion == 0)
                && player.Level >= Level)
             {
-                if (m_collectItems.Count >= Step &&
-                    !string.IsNullOrEmpty(m_collectItems[Step - 1]) &&
-                    item.Id_nb.ToLower().Contains(m_collectItems[Step - 1].ToLower()) &&
-                    ExecuteCustomQuestStep(player, Step, eStepCheckType.GiveItem))
+                if (ExecuteCustomQuestStep(player, Step, eStepCheckType.GiveItem))
                 {
                     if (CurrentGoal.Type == DQRQuestGoal.GoalType.Collect)
                     {                    
@@ -1554,9 +1556,9 @@ namespace DOL.GS.Quests
 						{
 							if (deliverItem == null)
 							{
-								if (_stepItemTemplates != null && _stepItemTemplates.Count >= Step)
+								if (this.CurrentGoal.QuestItem != null)
 								{
-									player.Out.SendMessage("Malheuresement vous ne possedez pas " + _stepItemTemplates[Step - 1] + ".", eChatType.CT_Chat, eChatLoc.CL_SystemWindow);
+									player.Out.SendMessage("Malheuresement vous ne possedez pas " + this.CurrentGoal.QuestItem.Name + ".", eChatType.CT_Chat, eChatLoc.CL_SystemWindow);
 								}
 							}
 							else
@@ -1607,13 +1609,12 @@ namespace DOL.GS.Quests
 
 
 		InventoryItem GetPlayerDeliverItem(GamePlayer player)
-		{
-			if (_stepItemTemplates.Count >= Step)
-			{
-				return player.Inventory.GetFirstItemByID(_stepItemTemplates[Step - 1], eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
-			}
-
-			return null;
+		{			
+			if (CurrentGoal?.QuestItem?.Id_nb == null)
+            {
+				return null;
+            }
+			return player.Inventory.GetFirstItemByID(CurrentGoal.QuestItem.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 		}
 		
 		/// <summary>

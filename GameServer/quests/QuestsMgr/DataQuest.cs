@@ -1060,7 +1060,7 @@ namespace DOL.GS.Quests
         /// <summary>
         /// Target name for the current step
         /// </summary>
-        public string TargetName
+        public virtual string TargetName
         {
             get
             {
@@ -1083,7 +1083,7 @@ namespace DOL.GS.Quests
         /// <summary>
         /// Target region for the current step
         /// </summary>
-        public ushort TargetRegion
+        public virtual ushort TargetRegion
         {
             get
             {

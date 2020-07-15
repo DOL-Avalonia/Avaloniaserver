@@ -2686,6 +2686,20 @@ namespace DOL.GS
 
 				if (quest != null && (quest.TargetName == Name && (quest.TargetRegion == 0 || quest.TargetRegion == CurrentRegionID)))
 				{
+
+					if (quest is DQRewardQ dq)
+                    {
+                        switch (dq.CurrentGoal.Type)
+                        {
+							case DQRQuestGoal.GoalType.DeliverFinish:
+							case DQRQuestGoal.GoalType.InteractFinish:
+								return true;
+
+							default:
+								return false;
+                        }
+                    }
+
 					switch (quest.StepType)
 					{
 						case DataQuest.eStepType.DeliverFinish:
