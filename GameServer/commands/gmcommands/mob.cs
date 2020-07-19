@@ -431,6 +431,7 @@ namespace DOL.GS.Commands
             mob.Realm = 0;
             mob.Name = name;
             mob.Model = model;
+            mob.ModelDb = model;
 
             // Fill the living variables
             if (mob.Brain is IOldAggressiveBrain)
@@ -513,6 +514,7 @@ namespace DOL.GS.Commands
                 mob.Realm = (eRealm)realm;
                 mob.Name = name;
                 mob.Model = model;
+                mob.ModelDb = model;
 
                 // Fill the living variables
                 if (mob.Brain is IOldAggressiveBrain)
@@ -575,6 +577,7 @@ namespace DOL.GS.Commands
                 mob.Realm = (eRealm)Util.Random(1, 3);
                 mob.Name = "rand_" + i;
                 mob.Model = (byte)Util.Random(568, 699);
+                mob.ModelDb = mob.Model;
 
                 // Fill the living variables
                 if (mob.Brain is IOldAggressiveBrain)
@@ -637,6 +640,7 @@ namespace DOL.GS.Commands
             try
             {
                 targetMob.Model = model;
+                targetMob.ModelDb = model;
                 targetMob.SaveIntoDatabase();
                 client.Out.SendMessage("Mob model changed to: " + targetMob.Model, eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
@@ -673,6 +677,7 @@ namespace DOL.GS.Commands
             try
             {
                 targetMob.Model = model;
+                targetMob.ModelDb = model;
                 targetMob.SaveIntoDatabase();
                 client.Out.SendMessage("Mob model changed to: " + targetMob.Model, eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
@@ -702,6 +707,7 @@ namespace DOL.GS.Commands
             {
                 model = Convert.ToUInt16(args[2]);
                 targetMob.Model = model;
+                targetMob.ModelDb = model;
                 targetMob.SaveIntoDatabase();
                 client.Out.SendMessage("Mob model changed to: " + targetMob.Model, eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
@@ -938,6 +944,7 @@ namespace DOL.GS.Commands
         private void peace(GameClient client, GameNPC targetMob, string[] args)
         {
             targetMob.Flags ^= GameNPC.eFlags.PEACE;
+            targetMob.FlagsDb = (uint)targetMob.Flags;
             targetMob.SaveIntoDatabase();
             client.Out.SendMessage("Mob PEACE flag is set to " + ((targetMob.Flags & GameNPC.eFlags.PEACE) != 0), eChatType.CT_System, eChatLoc.CL_SystemWindow);
         }
@@ -1006,6 +1013,7 @@ namespace DOL.GS.Commands
             if (raceID != 0)
             {
                 targetMob.Race = raceID;
+                targetMob.RaceDb = targetMob.Race;
                 targetMob.SaveIntoDatabase();
                 DisplayMessage(client, targetMob.Name + "'s race set to " + raceID);
             }
@@ -1151,6 +1159,7 @@ namespace DOL.GS.Commands
             uint.TryParse(args[2], out flag);
 
             targetMob.Flags = (GameNPC.eFlags)flag;
+            targetMob.FlagsDb = (uint)targetMob.Flags;
             targetMob.SaveIntoDatabase();
             client.Out.SendMessage("Mob flags are set to " + targetMob.Flags.ToString(), eChatType.CT_System, eChatLoc.CL_SystemWindow);
         }
@@ -1158,6 +1167,7 @@ namespace DOL.GS.Commands
         private void ghost(GameClient client, GameNPC targetMob, string[] args)
         {
             targetMob.Flags ^= GameNPC.eFlags.GHOST;
+            targetMob.FlagsDb = (uint)targetMob.Flags;
             targetMob.SaveIntoDatabase();
             client.Out.SendMessage("Mob GHOST flag is set to " + ((targetMob.Flags & GameNPC.eFlags.GHOST) != 0), eChatType.CT_System, eChatLoc.CL_SystemWindow);
         }
@@ -1165,6 +1175,7 @@ namespace DOL.GS.Commands
         private void stealth(GameClient client, GameNPC targetMob, string[] args)
         {
             targetMob.Flags ^= GameNPC.eFlags.STEALTH;
+            targetMob.FlagsDb = (uint)targetMob.Flags;
             targetMob.SaveIntoDatabase();
             client.Out.SendMessage("Mob STEALTH flag is set to " + ((targetMob.Flags & GameNPC.eFlags.STEALTH) != 0), eChatType.CT_System, eChatLoc.CL_SystemWindow);
         }
@@ -1172,6 +1183,7 @@ namespace DOL.GS.Commands
         private void torch(GameClient client, GameNPC targetMob, string[] args)
         {
             targetMob.Flags ^= GameNPC.eFlags.TORCH;
+            targetMob.FlagsDb = (uint)targetMob.Flags;
             targetMob.SaveIntoDatabase();
             client.Out.SendMessage("Mob TORCH flag is set to " + ((targetMob.Flags & GameNPC.eFlags.TORCH) != 0), eChatType.CT_System, eChatLoc.CL_SystemWindow);
         }
@@ -1179,6 +1191,7 @@ namespace DOL.GS.Commands
         private void statue(GameClient client, GameNPC targetMob, string[] args)
         {
             targetMob.Flags ^= GameNPC.eFlags.STATUE;
+            targetMob.FlagsDb = (uint)targetMob.Flags;
             targetMob.SaveIntoDatabase();
 
             if ((targetMob.Flags & GameNPC.eFlags.STATUE) > 0)
@@ -1210,6 +1223,8 @@ namespace DOL.GS.Commands
                 targetMob.MoveTo(targetMob.CurrentRegionID, targetMob.X, targetMob.Y, targetMob.Z + height, targetMob.Heading);
             }
 
+            targetMob.FlagsDb = (uint)targetMob.Flags;
+
             targetMob.SaveIntoDatabase();
 
             client.Out.SendMessage(targetMob.Name + "'s FLYING flag is set to " + ((targetMob.Flags & GameNPC.eFlags.FLYING) != 0), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1218,6 +1233,7 @@ namespace DOL.GS.Commands
         private void swimming(GameClient client, GameNPC targetMob, string[] args)
         {
             targetMob.Flags ^= GameNPC.eFlags.SWIMMING;
+            targetMob.FlagsDb = (uint)targetMob.Flags;
             targetMob.SaveIntoDatabase();
             client.Out.SendMessage("Mob SWIMMING flag is set to " + ((targetMob.Flags & GameNPC.eFlags.SWIMMING) != 0), eChatType.CT_System, eChatLoc.CL_SystemWindow);
         }
@@ -1225,6 +1241,7 @@ namespace DOL.GS.Commands
         private void noname(GameClient client, GameNPC targetMob, string[] args)
         {
             targetMob.Flags ^= GameNPC.eFlags.DONTSHOWNAME;
+            targetMob.FlagsDb = (uint)targetMob.Flags;
             targetMob.SaveIntoDatabase();
             client.Out.SendMessage("Mob DONTSHOWNAME flag is set to " + ((targetMob.Flags & GameNPC.eFlags.DONTSHOWNAME) != 0), eChatType.CT_System, eChatLoc.CL_SystemWindow);
         }
@@ -1232,6 +1249,7 @@ namespace DOL.GS.Commands
         private void notarget(GameClient client, GameNPC targetMob, string[] args)
         {
             targetMob.Flags ^= GameNPC.eFlags.CANTTARGET;
+            targetMob.FlagsDb = (uint)targetMob.Flags;
             targetMob.SaveIntoDatabase();
             client.Out.SendMessage("Mob CANTTARGET flag is set to " + ((targetMob.Flags & GameNPC.eFlags.CANTTARGET) != 0), eChatType.CT_System, eChatLoc.CL_SystemWindow);
         }
@@ -2103,7 +2121,7 @@ namespace DOL.GS.Commands
                         client.Out.SendMessage("Invalid slot, must be a weapon slot (right, left, two, distance)!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         return;
                 }
-
+                targetMob.VisibleWeaponsDb = targetMob.VisibleActiveWeaponSlots;
                 targetMob.SaveIntoDatabase();
                 client.Out.SendMessage("Visible weapon slot set to " + slotname, eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
@@ -2753,6 +2771,11 @@ namespace DOL.GS.Commands
             mob.GuildName = targetMob.GuildName;
             mob.Size = targetMob.Size;
             mob.Race = targetMob.Race;
+
+            mob.RaceDb = targetMob.RaceDb;
+            mob.ModelDb = targetMob.ModelDb;
+            mob.VisibleWeaponsDb = targetMob.VisibleWeaponsDb;
+            mob.FlagsDb = targetMob.FlagsDb;
 
             mob.Inventory = targetMob.Inventory;
             if (mob.Inventory != null)

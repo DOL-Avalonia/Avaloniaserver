@@ -1157,12 +1157,15 @@ namespace DOL.GS.Quests
 							if (slot != eInventorySlot.Invalid)
 							{
 								QuestPlayer.Inventory.AddItem(slot, new GameInventoryItem(CurrentGoal.QuestItem));
+								if (obj as GameNPC != null)
+                                {
+									if (StepTexts.Count >= Step && StepTexts[Step - 1] != null)
+									{
+										QuestPlayer.Out.SendCustomTextWindow(obj.Name + " dit", new string[] { StepTexts[Step - 1] });
+									}
 
-								if (StepTexts.Count >= Step && StepTexts[Step - 1] != null && obj as GameNPC != null)
-								{
-									QuestPlayer.Out.SendCustomTextWindow(obj.Name + " dit", new string[] { StepTexts[Step - 1] });
 									this.UpdateNextTargetNPCIcon(obj.CurrentRegionID);
-								}						
+								}								
 							}
 							else
 							{
@@ -1308,6 +1311,7 @@ namespace DOL.GS.Quests
 
 				if (e == GamePlayerEvent.AcceptQuest 
 					&& (CurrentGoal.Type == DQRQuestGoal.GoalType.InteractDeliver ||
+					CurrentGoal.Type == DQRQuestGoal.GoalType.InteractFinish ||
 					CurrentGoal.Type == DQRQuestGoal.GoalType.DeliverFinish ||
 					CurrentGoal.Type == DQRQuestGoal.GoalType.InteractWhisper) && CurrentGoal.QuestItem != null)
 				{
@@ -1327,7 +1331,7 @@ namespace DOL.GS.Quests
 							UpdateNextTargetNPCIcon(player.CurrentRegionID);
 						}
 					}
-				}
+				}	
 
                 // Player completes a /search command in quest area
                 //if (e == GamePlayerEvent.SearchArea)

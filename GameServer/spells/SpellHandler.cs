@@ -4055,7 +4055,7 @@ namespace DOL.GS.Spells
 				dw.AddKeyValuePair("instant","1");
 			//.Value("damage", spellHandler.GetDelveValueDamage, spellHandler.GetDelveValueDamage != 0)
 			if ((int)Spell.DamageType > 0)
-				dw.AddKeyValuePair("damage_type", (int) Spell.DamageType + 1); // Damagetype not the same as dol
+				dw.AddKeyValuePair("damage_type", Spell.GetDelveDamageType()); // Damagetype not the same as dol
 			//.Value("type1", spellHandler.GetDelveValueType1, spellHandler.GetDelveValueType1 > 0)
 			if (Spell.Level > 0)
 				dw.AddKeyValuePair("level", level);

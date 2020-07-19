@@ -165,6 +165,43 @@ namespace DOL.GS
 		}
 
 		/// <summary>
+		/// Original Race from Database
+		/// </summary>
+		public int RaceDb
+        {
+			get;
+			set;
+        }
+
+		/// <summary>
+		/// Original Model from Database
+		/// </summary>
+		public ushort ModelDb
+        {
+			get;
+			set;
+        }
+
+		/// <summary>
+		/// Original VisibleWeapons from Database
+		/// </summary>
+		public byte VisibleWeaponsDb
+        {
+			get;
+			set;
+        }
+
+		/// <summary>
+		/// Original Flags from Database
+		/// </summary>
+		public uint FlagsDb
+        {
+			get;
+			set;
+        }
+
+
+		/// <summary>
 		/// If this mob is a Member of GroupMob
 		/// </summary>
 		public MobGroup CurrentGroupMob
@@ -2022,6 +2059,11 @@ namespace DOL.GS
 			IsRenaissance = dbMob.IsRenaissance;
 			EventID = dbMob.EventID;
 
+			ModelDb = dbMob.Model;
+			RaceDb = dbMob.Race;
+			VisibleWeaponsDb = dbMob.VisibleWeaponSlots;
+			FlagsDb = dbMob.Flags;
+
 			NPCTemplate = NpcTemplateMgr.GetTemplate(dbMob.NPCTemplateID);
 			// Since AutoSetStats now checks original stats via NPCTemplate, make sure there is one.
 			if (NPCTemplate == null)
@@ -2203,7 +2245,23 @@ namespace DOL.GS
 			mob.Speed = MaxSpeedBase;
 			mob.Region = CurrentRegionID;
 			mob.Realm = (byte)Realm;
-			mob.Model = Model;
+
+			//If mob is part of GroupMob we need to save the changing properties from PropertyDb which contains original value from db or new values from Commands
+			if (this.CurrentGroupMob == null)
+            {
+				mob.Model = Model;
+				mob.Race = Race;
+				mob.Flags = (uint)Flags;
+				mob.VisibleWeaponSlots = this.m_visibleActiveWeaponSlots;
+			}
+            else
+            {
+				mob.Model = this.ModelDb;
+				mob.Flags = this.FlagsDb;
+				mob.Race = this.RaceDb;
+				mob.VisibleWeaponSlots = this.VisibleWeaponsDb;
+			}
+
 			mob.Size = Size;
 			mob.Level = Level;
 			mob.IsRenaissance = IsRenaissance;
@@ -2219,8 +2277,8 @@ namespace DOL.GS
 			mob.Empathy = Empathy;
 			mob.Charisma = Charisma;
 
-			mob.ClassType = this.GetType().ToString();
-			mob.Flags = (uint)Flags;
+			mob.ClassType = this.GetType().ToString();	
+
 			mob.Speed = MaxSpeedBase;
 			mob.RespawnInterval = m_respawnInterval / 1000;
 			mob.HouseNumber = HouseNumber;
@@ -2249,13 +2307,11 @@ namespace DOL.GS
 				mob.NPCTemplateID = -1;
 			}
 
-			mob.Race = Race;
 			mob.BodyType = BodyType;
 			mob.PathID = PathID;
 			mob.MaxDistance = m_maxdistance;
 			mob.IsCloakHoodUp = m_isCloakHoodUp;
-			mob.Gender = (byte)Gender;
-			mob.VisibleWeaponSlots = this.m_visibleActiveWeaponSlots;
+			mob.Gender = (byte)Gender;		
 			mob.PackageID = PackageID;
 			mob.OwnerID = OwnerID;
 
@@ -2602,22 +2658,73 @@ namespace DOL.GS
 		{
 			// Available one ?
 			if (CanShowOneQuest(player))
+			{
 				return eQuestIndicator.Available;
-
+			}
+			// Current Step Finish ?
+			else if (IsCurrentStepFinish(player))
+            {
+				return eQuestIndicator.Pending;
+			}
 			// Finishing one ?
-			if (CanFinishOneQuest(player))
+			else if (CanFinishOneQuest(player))
+            {
 				return eQuestIndicator.Finish;
+			}
 
 			return eQuestIndicator.None;
 		}
 
-		/// <summary>
-		/// Check if the npc can show a quest indicator to a player
-		/// Checks both scripted and data quests
-		/// </summary>
-		/// <param name="player">The player to check</param>
-		/// <returns>true if yes, false if the npc can give any quest</returns>
-		public bool CanShowOneQuest(GamePlayer player)
+		private bool IsCurrentStepFinish(GamePlayer player)
+		{
+			List<AbstractQuest> dqs;
+			lock (((ICollection)player.QuestList).SyncRoot)
+			{
+				dqs = new List<AbstractQuest>(player.QuestList);
+			}
+
+			foreach (AbstractQuest q in dqs)
+			{
+				// Handle Data Quest here.
+
+				DataQuest quest = null;
+				if (q is DataQuest)
+				{
+					quest = (DataQuest)q;
+				}
+
+				if (quest != null && (quest.TargetName == Name && (quest.TargetRegion == 0 || quest.TargetRegion == CurrentRegionID)))
+				{
+
+					if (quest is DQRewardQ dq)
+					{
+						switch (dq.CurrentGoal.Type)
+						{
+							case DQRQuestGoal.GoalType.Interact:
+							case DQRQuestGoal.GoalType.InteractDeliver:
+							case DQRQuestGoal.GoalType.InteractWhisper:
+								return true;
+
+							case DQRQuestGoal.GoalType.Collect:
+								return dq.CurrentGoal.IsAchieved;
+
+							default:
+								return false;
+						}
+					}
+				}
+			}
+
+			return false;
+		}
+
+        /// <summary>
+        /// Check if the npc can show a quest indicator to a player
+        /// Checks both scripted and data quests
+        /// </summary>
+        /// <param name="player">The player to check</param>
+        /// <returns>true if yes, false if the npc can give any quest</returns>
+        public bool CanShowOneQuest(GamePlayer player)
 		{
 			// Scripted quests
 			lock (m_questListToGive.SyncRoot)
@@ -2693,7 +2800,7 @@ namespace DOL.GS
                         {
 							case DQRQuestGoal.GoalType.DeliverFinish:
 							case DQRQuestGoal.GoalType.InteractFinish:
-								return true;
+								return true;		
 
 							default:
 								return false;

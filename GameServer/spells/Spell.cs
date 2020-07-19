@@ -669,6 +669,26 @@ namespace DOL.GS
 			}
 		}
 
+		public int GetDelveDamageType()
+		{
+			switch (SpellType)
+			{
+				case "StyleSpeedDecrease":
+				case "StyleCombatSpeedDebuff": return 0;
+			}
+			switch (DamageType)
+			{
+				case eDamageType.Slash: return 2;
+				case eDamageType.Heat: return 10;
+				case eDamageType.Cold: return 12;
+				case eDamageType.Matter: return 15;
+				case eDamageType.Body: return 16;
+				case eDamageType.Spirit: return 17;
+				case eDamageType.Energy: return 22;
+			}
+			return 0;
+		}
+
 		#endregion
 	}
 	

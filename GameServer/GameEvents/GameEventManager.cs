@@ -614,7 +614,7 @@ namespace DOL.GameEvents
                     if (!MobGroupManager.Instance.Groups[groupMob.GroupId].NPCs.Contains(mob))
                     {
                         MobGroupManager.Instance.Groups[groupMob.GroupId].NPCs.Add(mob);
-                        MobGroupManager.Instance.Groups[groupMob.GroupId].UpdateGroupInfos();
+                        MobGroupManager.Instance.Groups[groupMob.GroupId].ApplyGroupInfos();
                     }
                 }
 

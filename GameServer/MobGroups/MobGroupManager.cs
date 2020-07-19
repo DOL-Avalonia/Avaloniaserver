@@ -138,7 +138,7 @@ namespace DOL.MobGroups
             infos.Add(" - VisibleSlot : " + (mobGroup.GroupInfos.VisibleSlot?.ToString() ?? "-"));
             infos.Add("");
             infos.Add("MobGroup Origin StatusId: " + (mobGroup?.mobGroupOriginFk ?? "-"));
-            infos.Add("MobGroup Interact StatusId:" + (mobGroup?.mobGroupInterfactFk ?? "-"));
+            infos.Add("MobGroup Interact StatusId: " + (mobGroup?.mobGroupInterfactFk ?? "-"));
             infos.Add(" - SlaveGroupId : " + (mobGroup.SlaveGroupId ?? "-"));
             infos.Add("");
             if (mobGroup.GroupInteractions != null)
@@ -237,7 +237,7 @@ namespace DOL.MobGroups
                         }
                     }
                 }
-                Instance.Groups.Foreach(g => g.Value.UpdateGroupInfos());
+                Instance.Groups.Foreach(g => g.Value.ApplyGroupInfos());
             }
 
             return true;

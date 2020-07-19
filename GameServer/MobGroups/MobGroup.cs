@@ -126,25 +126,33 @@ namespace DOL.MobGroups
             this.GroupInfos = GetMobInfoFromSource(status);
             this.mobGroupOriginFk = status?.GroupStatusId;
             this.originalGroupInfo = GetMobInfoFromSource(status);
-            this.UpdateGroupInfos();
+            this.ApplyGroupInfos();
         }
 
-        public void UpdateGroupInfos()
+        public void ApplyGroupInfos()
         {          
-            this.NPCs.ForEach(n => n.Flags = this.GroupInfos.Flag.HasValue ? this.GroupInfos.Flag.Value : 0);            
+            this.NPCs.ForEach(n => n.Flags = this.GroupInfos.Flag.HasValue ? this.GroupInfos.Flag.Value : (eFlags)n.FlagsDb);            
 
             if (this.GroupInfos.Model.HasValue)
             {
                 this.NPCs.ForEach(n => n.Model = (ushort)this.GroupInfos.Model.Value);
+            }
+            else
+            {
+                this.NPCs.ForEach(n => n.Model = n.ModelDb);
             }
 
             if (this.GroupInfos.Race.HasValue)
             {
                 this.NPCs.ForEach(n => n.Race = (short)this.GroupInfos.Race.Value);
             }
+            else
+            {
+                this.NPCs.ForEach(n => n.Race = (short)n.RaceDb);
+            }
            
             this.NPCs.ForEach(npc => {
-                npc.VisibleActiveWeaponSlots = this.GroupInfos.VisibleSlot.HasValue ? this.GroupInfos.VisibleSlot.Value : (byte)0;
+                npc.VisibleActiveWeaponSlots = this.GroupInfos.VisibleSlot.HasValue ? this.GroupInfos.VisibleSlot.Value : npc.VisibleWeaponsDb;
                 foreach (GamePlayer player in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 {
                     player.Out.SendLivingEquipmentUpdate(npc);
@@ -154,7 +162,12 @@ namespace DOL.MobGroups
 
         public void ResetGroupInfo()
         {
-           this.GroupInfos = CopyGroupInfo(this.originalGroupInfo);
+            if (this.originalGroupInfo != null)
+            {
+                this.GroupInfos = CopyGroupInfo(this.originalGroupInfo);
+                this.ApplyGroupInfos();
+                this.SaveToDabatase();
+            }
         }
 
         public void SaveToDabatase()
@@ -181,6 +194,7 @@ namespace DOL.MobGroups
             db.Race = this.GroupInfos.Race?.ToString();
             db.VisibleSlot = this.GroupInfos.VisibleSlot?.ToString();
             db.Effect = this.GroupInfos.Effect?.ToString();
+            db.Model = this.GroupInfos.Model?.ToString();
             db.GroupId = this.GroupId;
             db.SlaveGroupId = this.SlaveGroupId;
             db.IsInvincible = this.GroupInfos.IsInvincible?.ToString();
