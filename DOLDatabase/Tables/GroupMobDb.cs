@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DOLDatabase.Tables
 {
-    [DataTable(TableName ="groupmob")]
+    [DataTable(TableName = "groupmob")]
     public class GroupMobDb
         : DataObject
     {
@@ -22,6 +22,9 @@ namespace DOLDatabase.Tables
         private string m_InteractGroupId;
         private string m_groupMobInteractId;
         private string m_groupMobOrigin_FK_Id;
+        private bool m_isQuestConditionFriendly;
+        private int m_completedQuestId;
+        private int m_completedQuestCount;
 
         [DataElement(AllowDbNull = false, Varchar = 255, Unique = true)]
         public string GroupId
@@ -70,6 +73,27 @@ namespace DOLDatabase.Tables
         {
             get => m_effect;
             set { Dirty = true; m_effect = value; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public bool IsQuestConditionFriendly
+        {
+            get => m_isQuestConditionFriendly;
+            set { Dirty = true; m_isQuestConditionFriendly = value; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public int CompletedQuestID
+        {
+            get => m_completedQuestId;
+            set { Dirty = true; m_completedQuestId = value; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public int ComletedQuestCount
+        {
+            get => m_completedQuestCount;
+            set { Dirty = true; m_completedQuestCount = value; }
         }
 
         [DataElement(AllowDbNull = true, Varchar = 255)]

@@ -311,7 +311,7 @@ namespace DOL.MobGroups
 
             if (!this.Groups.ContainsKey(groupId))
             {
-                log.Error($"Impossible to remove Group beacause inmemory Groups does not contain groupId: { groupId }");
+                log.Error($"Impossible to remove Group because inmemory Groups does not contain groupId: { groupId }");
                 return false;
             }
 

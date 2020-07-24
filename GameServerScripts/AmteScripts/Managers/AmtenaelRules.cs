@@ -12,6 +12,7 @@ using DOL.GS.Scripts;
 using log4net;
 using System.Reflection;
 using DOL.Events;
+using DOL.GS.Quests;
 
 namespace DOL.GS.ServerRules
 {
@@ -122,9 +123,30 @@ namespace DOL.GS.ServerRules
 			if (playerDefender != null && playerDefender.Client.Account.PrivLevel > 1)
 				return Properties.ALLOW_GM_ATTACK;
 
-			//Territory
+
 			if (attackerNpc != null && playerDefender != null)
 			{
+				//GroupMob CompletedQuest
+				if (attackerNpc.CurrentGroupMob != null && attackerNpc.CurrentGroupMob.CompletedQuestID > 0 && attackerNpc.CurrentGroupMob.ComletedQuestCount > 0)
+				{
+					DataQuest finishedQuest = null;
+
+                    foreach (DataQuest q in playerDefender.QuestListFinished.Where(q => q is DataQuest))
+                    {
+						if (q != null && q.Id.Equals(attackerNpc.CurrentGroupMob.CompletedQuestID))
+                        {
+							finishedQuest = q;
+							break;
+                        }
+                    }
+
+					if (finishedQuest != null && finishedQuest.Count >= attackerNpc.CurrentGroupMob.ComletedQuestCount)
+                    {
+						return !attackerNpc.CurrentGroupMob.IsQuestConditionFriendly;
+					}
+                }
+
+				//Territory
 				//Check guilds and ally Guilds
 				if (attackerNpc.IsInTerritory && playerDefender.GuildName != null)
 				{

@@ -25,6 +25,9 @@ namespace DOL.MobGroups
             this.InternalId = db.ObjectId;
             this.GroupId = db.GroupId;
             this.SlaveGroupId = db.SlaveGroupId;
+            this.IsQuestConditionFriendly = db.IsQuestConditionFriendly;
+            this.CompletedQuestID = db.CompletedQuestID;
+            this.ComletedQuestCount = db.ComletedQuestCount;
             this.NPCs = new List<GameNPC>();
             this.GroupInfos = new MobGroupInfo()
             {
@@ -92,6 +95,24 @@ namespace DOL.MobGroups
         }
 
         public string SlaveGroupId
+        {
+            get;
+            set;
+        }
+
+        public bool IsQuestConditionFriendly
+        {
+            get;
+            set;
+        }
+      
+        public int CompletedQuestID
+        {
+            get;
+            set;
+        }
+      
+        public int ComletedQuestCount
         {
             get;
             set;
@@ -201,6 +222,9 @@ namespace DOL.MobGroups
             db.ObjectId = this.InternalId;
             db.GroupMobInteract_FK_Id = this.mobGroupInterfactFk;
             db.GroupMobOrigin_FK_Id = this.mobGroupOriginFk;
+            db.ComletedQuestCount = this.ComletedQuestCount;
+            db.CompletedQuestID = this.CompletedQuestID;
+            db.IsQuestConditionFriendly = this.IsQuestConditionFriendly;
             
             if (isNew)
             {
