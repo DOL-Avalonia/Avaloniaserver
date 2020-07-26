@@ -686,7 +686,7 @@ namespace DOL.GS.Quests
 		/// <summary>
 		/// The amount of times a player has completed this quest
 		/// </summary>
-		public virtual short Count
+		public override short Count
 		{
 			get { return m_charQuest != null ? m_charQuest.Count : (short)0; }
 			set

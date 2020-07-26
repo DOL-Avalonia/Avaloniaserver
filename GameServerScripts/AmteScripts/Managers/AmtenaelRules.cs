@@ -82,12 +82,10 @@ namespace DOL.GS.ServerRules
 				return false;
 			}
 
-			// PEACE NPCs can't be attacked/attack
+
 			var attackerNpc = attacker as GameNPC;
 			var defenderNpc = defender as GameNPC;
-			if (attackerNpc != null && ((attackerNpc.Flags & GameNPC.eFlags.PEACE) != 0) ||
-				(defenderNpc != null && ((defenderNpc.Flags & GameNPC.eFlags.PEACE) != 0)))
-				return false;
+		
 
 			var playerAttacker = attacker as GamePlayer;
 			var playerDefender = defender as GamePlayer;
@@ -112,39 +110,27 @@ namespace DOL.GS.ServerRules
 			{
 				if (quiet == false) MessageToLiving(attacker, "Vous ne pouvez pas vous attaquer vous-même.");
 				return false;
-			}
-
-			if (playerDefender != null && playerAttacker != null &&
-				(attacker.CurrentRegionID == HousingRegionID || defender.CurrentRegionID == HousingRegionID))
-				return false;
+			}	
 
 
 			//GMs can't be attacked
-			if (playerDefender != null && playerDefender.Client.Account.PrivLevel > 1)
-				return Properties.ALLOW_GM_ATTACK;
-
+			if (playerDefender != null && playerDefender.Client.Account.PrivLevel > 1 && !Properties.ALLOW_GM_ATTACK)
+				return false;		
 
 			if (attackerNpc != null && playerDefender != null)
 			{
 				//GroupMob CompletedQuest
-				if (attackerNpc.CurrentGroupMob != null && attackerNpc.CurrentGroupMob.CompletedQuestID > 0 && attackerNpc.CurrentGroupMob.ComletedQuestCount > 0)
-				{
-					DataQuest finishedQuest = null;
-
-                    foreach (DataQuest q in playerDefender.QuestListFinished.Where(q => q is DataQuest))
-                    {
-						if (q != null && q.Id.Equals(attackerNpc.CurrentGroupMob.CompletedQuestID))
-                        {
-							finishedQuest = q;
-							break;
-                        }
-                    }
-
-					if (finishedQuest != null && finishedQuest.Count >= attackerNpc.CurrentGroupMob.ComletedQuestCount)
-                    {
-						return !attackerNpc.CurrentGroupMob.IsQuestConditionFriendly;
-					}
+				if (MobGroups.MobGroup.IsQuestFriendly(attackerNpc, playerDefender))
+                {
+					return false;
                 }
+              
+				// PEACE NPCs can't be attacked/attack
+				if (this.IsPeacefulNPC(attackerNpc, defenderNpc, playerDefender))
+				{
+					return false;
+				}
+				
 
 				//Territory
 				//Check guilds and ally Guilds
@@ -176,7 +162,26 @@ namespace DOL.GS.ServerRules
 					}
 
 				}
-			}
+            }
+
+			if (playerAttacker != null && defenderNpc != null)
+            {
+				if (MobGroups.MobGroup.IsQuestFriendly(defenderNpc, playerAttacker))
+                {
+					return false;
+                }
+
+				// PEACE NPCs can't be attacked/attack
+				if (this.IsPeacefulNPC(attackerNpc, defenderNpc, playerAttacker))
+				{
+					return false;
+				}
+			}		
+
+			//Housing
+			if (playerDefender != null && playerAttacker != null &&
+				(attacker.CurrentRegionID == HousingRegionID || defender.CurrentRegionID == HousingRegionID))
+				return false;
 
 
 			if (!_IsAllowedToAttack_PvpImmunity(attacker, playerAttacker, playerDefender, quiet))
@@ -308,7 +313,14 @@ namespace DOL.GS.ServerRules
 			}
 			// "friendly" NPCs can't be attacked by "friendly" players
 			if (attacker is GameNPC && attacker.Realm != 0 && defender.Realm != 0 && attacker is GameKeepGuard == false)
+            {
+				if (attackerNpc.CurrentGroupMob != null && playerDefender != null && MobGroups.MobGroup.IsQuestAggresive(attackerNpc, playerDefender))
+				{
+					return true;
+                }
+
 				return false;
+			}		
 
 			return true;
 		}
@@ -317,13 +329,38 @@ namespace DOL.GS.ServerRules
 		{
 			if (source == null || target == null)
 				return false;
-			if (target is GameNPC)
+			var targetNpc = target as GameNPC;
+			if (targetNpc != null)
+            {
+				var sourcePlayer = source as GamePlayer;
+				if (sourcePlayer != null && targetNpc.CurrentGroupMob != null)
+                {
+					if (MobGroups.MobGroup.IsQuestAggresive(targetNpc, sourcePlayer))
+                    {
+						return false;
+                    }
+                }				
+
 				if ((((GameNPC)target).Flags & GameNPC.eFlags.PEACE) != 0)
 					return true;
+			}
 
-			if (source is GameNPC)
+			var sourceNpc = source as GameNPC;
+			var targetPlayer = target as GamePlayer;
+			if (sourceNpc != null)
+            {
+				if (sourceNpc.CurrentGroupMob != null && targetPlayer != null)
+                {
+					if (MobGroups.MobGroup.IsQuestAggresive(sourceNpc, targetPlayer))
+					{
+						return false;
+					}
+				}
+
 				if ((((GameNPC)source).Flags & GameNPC.eFlags.PEACE) != 0)
 					return true;
+			}
+			
 			if (RvrManager.Instance.IsInRvr(source) || RvrManager.Instance.IsInRvr(target))
 				return source.Realm == target.Realm;
 
@@ -452,6 +489,31 @@ namespace DOL.GS.ServerRules
 			foreach (string str in otherCheck)
 				if (living.HasAbility(str))
 					return true;
+
+			return false;
+		}
+
+		private bool IsPeacefulNPC(GameNPC attackerNpc, GameNPC defenderNpc, GamePlayer player)
+        {
+			if (attackerNpc != null && (attackerNpc.Flags & GameNPC.eFlags.PEACE) != 0)
+			{
+				if (attackerNpc.CurrentGroupMob != null && MobGroups.MobGroup.IsQuestAggresive(attackerNpc, player))
+                {
+					return false;
+                }
+
+				return true;
+			}
+
+			if (defenderNpc != null && ((defenderNpc.Flags & GameNPC.eFlags.PEACE) != 0))
+			{
+				if (defenderNpc.CurrentGroupMob != null && MobGroups.MobGroup.IsQuestAggresive(defenderNpc, player))
+				{
+					return false;
+				}
+
+				return true;
+			}			
 
 			return false;
 		}

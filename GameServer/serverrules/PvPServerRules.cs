@@ -27,6 +27,7 @@ using DOL.GS;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using System.Collections.Generic;
+using DOL.GS.ServerProperties;
 
 namespace DOL.GS.ServerRules
 {
@@ -357,9 +358,9 @@ namespace DOL.GS.ServerRules
 				return true;
 
 			// clients with priv level > 1 are considered friendly by anyone
-			if (target is GamePlayer && ((GamePlayer)target).Client.Account.PrivLevel > 1) return true;
+			if (target is GamePlayer && ((GamePlayer)target).Client.Account.PrivLevel > 1 && !Properties.ALLOW_GM_ATTACK) return true;
 			// checking as a gm, targets are considered friendly
-			if (source is GamePlayer && ((GamePlayer)source).Client.Account.PrivLevel > 1) return true;
+			if (source is GamePlayer && ((GamePlayer)source).Client.Account.PrivLevel > 1 && !Properties.ALLOW_GM_ATTACK) return true;
 
 			// mobs can heal mobs, players heal players/NPC
 			if (source.Realm == 0 && target.Realm == 0) return true;
@@ -389,13 +390,36 @@ namespace DOL.GS.ServerRules
 				return GameServer.KeepManager.IsEnemy(target as GameKeepComponent, source as GamePlayer);
 
 			//Peace flag NPCs are same realm
-			if (target is GameNPC)
+			if (target is GameNPC targetNpc)
+            {
+				//CheckMobGroup
+				if (source is GamePlayer sourcePlayer)
+                {
+					if (MobGroups.MobGroup.IsQuestFriendly(targetNpc, sourcePlayer))
+                    {
+						return true;
+                    }
+                }
+
 				if ((((GameNPC)target).Flags & GameNPC.eFlags.PEACE) != 0)
 					return true;
+			}				
 
-			if (source is GameNPC)
+			if (source is GameNPC sourceNpc)
+            {
+				//CheckMobGroup
+				if (target is GamePlayer targetPlayer)
+                {
+					if (MobGroups.MobGroup.IsQuestFriendly(sourceNpc, targetPlayer))
+                    {
+						return true;
+                    }
+                }
+
 				if ((((GameNPC)source).Flags & GameNPC.eFlags.PEACE) != 0)
 					return true;
+			}
+			
 
 			if (source is GamePlayer && target is GamePlayer)
 				return true;

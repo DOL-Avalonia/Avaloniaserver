@@ -22,7 +22,8 @@ namespace DOL.commands.gmcommands
 		  "'/GroupMob info <GroupId>' Affiche les infos sur un GroupMob en fournissant son <GroupId>",
 		  "'/GroupMob status <GroupId> set <StatusId> <SlaveGroupId> Affecte un GroupMobStatus<StatusId> à un <GroupId>(master) envers un <GroupId>(slave)'",
 		  "'/GroupMob status origin set <StatusId> <GroupId>' Attribut un Status d'origine à un GroupMob en donnant son <GroupdId> et le <StatusId> souhaité",
-		  "'/GroupMob status create <SpellId|null>(Effect) <FlagsValue|null>(Flags) <true|false|null>(IsInvicible) <id|null>(Model) <value|null>(VisibleWeapon) <id|null>(Race)' - Créer un GroupStatus et renvoie en sortie <StatusId>)")]
+		  "'/GroupMob status create <SpellId|null>(Effect) <FlagsValue|null>(Flags) <true|false|null>(IsInvicible) <id|null>(Model) <value|null>(VisibleWeapon) <id|null>(Race)' - Créer un GroupStatus et renvoie en sortie <StatusId>)",
+		  "'/GroupMob quest <GroupId> <QuestId> <Count> <true|false>' Associer un GroupMob à une Quest en spécifiant le Count(nb de fois) et WillbeFriendly <true|false> pour spécifier son aggrésivité")]
 
 	public class GroupMob
 		  : AbstractCommandHandler, ICommandHandler
@@ -33,7 +34,7 @@ namespace DOL.commands.gmcommands
 			GameNPC target = client.Player.TargetObject as GameNPC;
 			string groupId = null;
 
-			if (target == null && args.Length > 3 && args[1].ToLowerInvariant() != "status")
+			if (target == null && args.Length > 3 && args[1].ToLowerInvariant() != "status" && args[1].ToLowerInvariant() != "quest")
 			{
 				if (args.Length == 4 && args[1].ToLowerInvariant() == "group" && args[2].ToLowerInvariant() == "remove")
 				{
@@ -218,6 +219,44 @@ namespace DOL.commands.gmcommands
 						return;
 					}
 
+					break;
+
+
+				case "quest":
+					if (args.Length != 6)
+                    {
+						DisplaySyntax(client);
+						break;
+                    }
+
+					if (!int.TryParse(args[3], out int questId) || questId <= 0)
+                    {
+						DisplayMessage(client, "QuestId non correct");
+						break;
+                    }
+
+					if (!int.TryParse(args[4], out int questCount) || questCount <= 0)
+					{
+						DisplayMessage(client, "QuestCount non correct");
+						break;
+					}
+
+					if (!bool.TryParse(args[5], out bool isFriendly))
+					{
+						DisplayMessage(client, "isFriendly <true|false> non correct");
+						break;
+					}
+
+					if (!this.isGroupIdAvailable(groupId, client))
+					{
+						return;
+					}
+
+					MobGroupManager.Instance.Groups[groupId].CompletedQuestID = questId;
+					MobGroupManager.Instance.Groups[groupId].ComletedQuestCount = questCount;
+					MobGroupManager.Instance.Groups[groupId].IsQuestConditionFriendly = isFriendly;
+					MobGroupManager.Instance.Groups[groupId].SaveToDabatase();
+					DisplayMessage(client, string.Format("La Quest {0} a bien été associée au GroupMob {1}", questId, groupId));
 					break;
 
 				default:

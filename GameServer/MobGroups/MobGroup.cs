@@ -1,4 +1,5 @@
 ﻿using DOL.GS;
+using DOL.GS.Quests;
 using DOLDatabase.Tables;
 using System;
 using System.Collections.Generic;
@@ -56,6 +57,68 @@ namespace DOL.MobGroups
                 VisibleSlot = source.VisibleSlot != null ? byte.TryParse(source.VisibleSlot, out byte grSlot) ? grSlot : (byte?)null : (byte?)null
             };
         }
+
+        /// <summary>
+        /// Is this npc-player relation allows Friendly interact 
+        /// </summary>
+        /// <param name="npc"></param>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        public static bool IsQuestFriendly(GameNPC npc, GamePlayer player)
+        {
+            if (npc.CurrentGroupMob != null && npc.CurrentGroupMob.CompletedQuestID > 0 && npc.CurrentGroupMob.ComletedQuestCount > 0)
+            {
+                DataQuest finishedQuest = null;
+
+                foreach (DataQuest q in player.QuestListFinished.Where(q => q is DataQuest))
+                {
+                    if (q != null && q.Id.Equals(npc.CurrentGroupMob.CompletedQuestID))
+                    {
+                        finishedQuest = q;
+                        break;
+                    }
+                }
+
+                if (finishedQuest != null && finishedQuest.Count >= npc.CurrentGroupMob.ComletedQuestCount)
+                {
+                    return npc.CurrentGroupMob.IsQuestConditionFriendly;
+                }
+            }
+
+            return false;
+        } 
+
+
+        /// <summary>
+        /// Is NPC aggressive on Quest Assciated Condition
+        /// </summary>
+        /// <param name="npc"></param>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        public static bool IsQuestAggresive(GameNPC npc, GamePlayer player)
+        {
+            if (npc.CurrentGroupMob != null && npc.CurrentGroupMob.CompletedQuestID > 0 && npc.CurrentGroupMob.ComletedQuestCount > 0)
+            {
+                DataQuest finishedQuest = null;
+
+                foreach (DataQuest q in player.QuestListFinished.Where(q => q is DataQuest))
+                {
+                    if (q != null && q.Id.Equals(npc.CurrentGroupMob.CompletedQuestID))
+                    {
+                        finishedQuest = q;
+                        break;
+                    }
+                }
+
+                if (finishedQuest != null && finishedQuest.Count >= npc.CurrentGroupMob.ComletedQuestCount)
+                {
+                    return !npc.CurrentGroupMob.IsQuestConditionFriendly;
+                }
+            }
+
+            return false;
+        }
+
 
         private static MobGroupInfo CopyGroupInfo(MobGroupInfo copy)
         {
@@ -189,7 +252,7 @@ namespace DOL.MobGroups
                 this.ApplyGroupInfos();
                 this.SaveToDabatase();
             }
-        }
+        }      
 
         public void SaveToDabatase()
         {
