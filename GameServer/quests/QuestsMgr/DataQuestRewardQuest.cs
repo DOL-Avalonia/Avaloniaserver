@@ -1171,6 +1171,10 @@ namespace DOL.GS.Quests
 							{
 								QuestPlayer.Out.SendMessage("Vos Sacs sont pleins pour recevoir l'objet de quete", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 							}
+                        }
+                        else
+						{
+							this.UpdateNextTargetNPCIcon(obj.CurrentRegionID);
 						}
 					}                
 
@@ -1583,7 +1587,8 @@ namespace DOL.GS.Quests
 								}
 							}							
   						}
-						if (CurrentGoal.Type == DQRQuestGoal.GoalType.InteractFinish)
+						if (CurrentGoal.Type == DQRQuestGoal.GoalType.InteractFinish
+							|| CurrentGoal.Type == DQRQuestGoal.GoalType.Interact)
 						{
 							AdvanceQuestStep(obj);                            
                         }

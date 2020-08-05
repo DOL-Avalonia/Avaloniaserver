@@ -147,6 +147,7 @@
     <Compile Include="Tables\LanguageZone.cs" />
     <Compile Include="Tables\MobDropTemplate.cs" />
     <Compile Include="Tables\DataQuest.cs" />
+    <Compile Include="Tables\SpawnerTemplate.cs" />
     <Compile Include="Tables\TerritoryDb.cs" />
     <Compile Include="Tables\Zones.cs" />
     <Compile Include="Tables\DOLCharactersBackup.cs" />
