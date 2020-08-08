@@ -33,7 +33,7 @@ namespace DOL.MobGroups
             this.GroupInfos = new MobGroupInfo()
             {
                 Effect = db.Effect != null ? int.TryParse(db.Effect, out int effect) ? effect : (int?)null : (int?)null,
-                Flag = db.Flag != null ? Enum.TryParse(db.Flag, out eFlags fl) ? fl : (eFlags?)null : (eFlags?)null,
+                Flag = db.Flag > 0 ? (eFlags)db.Flag : (eFlags?)null,
                 IsInvincible = db.IsInvincible != null ? bool.TryParse(db.IsInvincible, out bool dbInv) ? dbInv : (bool?)null : (bool?)null,
                 Model = db.Model != null ? int.TryParse(db.Model, out int model) ? model : (int?)null : (int?)null,
                 Race = db.Race != null ? Enum.TryParse(db.Race, out eRace race) ? race : (eRace?)null : (eRace?)null,
@@ -50,7 +50,7 @@ namespace DOL.MobGroups
             return source == null ? null : new MobGroupInfo()
             {
                 Effect = source.Effect != null ? int.TryParse(source.Effect, out int grEffect) ? grEffect : (int?)null : (int?)null,
-                Flag = source.Flag != null ? Enum.TryParse(source.Flag, out eFlags groupFlag) ? groupFlag : (eFlags?)null : (eFlags?)null,
+                Flag = source.Flag > 0 ? (eFlags)source.Flag : (eFlags?)null,
                 IsInvincible = source.SetInvincible != null ? bool.TryParse(source.SetInvincible, out bool inv) ? inv : (bool?)null : (bool?)null,
                 Model = source.Model != null ? int.TryParse(source.Model, out int grModel) ? grModel : (int?)null : (int?)null,
                 Race = source.Race != null ? Enum.TryParse(source.Race, out eRace grRace) ? grRace : (eRace?)null : (eRace?)null,
@@ -120,7 +120,7 @@ namespace DOL.MobGroups
         }
 
 
-        private static MobGroupInfo CopyGroupInfo(MobGroupInfo copy)
+        public static MobGroupInfo CopyGroupInfo(MobGroupInfo copy)
         {
             return copy == null ? null : new MobGroupInfo()
             {
@@ -205,15 +205,15 @@ namespace DOL.MobGroups
             this.GroupInteractions = GetMobInfoFromSource(groupInteract);
         }
 
-        public void SetGroupInfo(GroupMobStatusDb status)
+        public void SetGroupInfo(GroupMobStatusDb status, bool isLoadedFromScript = false)
         {
             this.GroupInfos = GetMobInfoFromSource(status);
             this.mobGroupOriginFk = status?.GroupStatusId;
             this.originalGroupInfo = GetMobInfoFromSource(status);
-            this.ApplyGroupInfos();
+            this.ApplyGroupInfos(isLoadedFromScript);
         }
 
-        public void ApplyGroupInfos()
+        public void ApplyGroupInfos(bool isLoadedFromScript = false)
         {          
             this.NPCs.ForEach(n => n.Flags = this.GroupInfos.Flag.HasValue ? this.GroupInfos.Flag.Value : (eFlags)n.FlagsDb);            
 
@@ -221,7 +221,7 @@ namespace DOL.MobGroups
             {
                 this.NPCs.ForEach(n => n.Model = (ushort)this.GroupInfos.Model.Value);
             }
-            else
+            else if (!isLoadedFromScript)
             {
                 this.NPCs.ForEach(n => n.Model = n.ModelDb);
             }
@@ -230,18 +230,44 @@ namespace DOL.MobGroups
             {
                 this.NPCs.ForEach(n => n.Race = (short)this.GroupInfos.Race.Value);
             }
-            else
+            else if(!isLoadedFromScript)
             {
                 this.NPCs.ForEach(n => n.Race = (short)n.RaceDb);
             }
-           
-            this.NPCs.ForEach(npc => {
-                npc.VisibleActiveWeaponSlots = this.GroupInfos.VisibleSlot.HasValue ? this.GroupInfos.VisibleSlot.Value : npc.VisibleWeaponsDb;
-                foreach (GamePlayer player in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+
+            if (!isLoadedFromScript || this.GroupInfos.VisibleSlot.HasValue)
+            {
+                this.NPCs.ForEach(npc =>
                 {
-                    player.Out.SendLivingEquipmentUpdate(npc);
+                    npc.VisibleActiveWeaponSlots = this.GroupInfos.VisibleSlot.HasValue ? this.GroupInfos.VisibleSlot.Value : npc.VisibleWeaponsDb;
+
+                    foreach (GamePlayer player in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                    {
+                        player.Out.SendLivingEquipmentUpdate(npc);
+                    }
+                });
+            }
+
+            if (this.GroupInfos.Effect.HasValue)
+            {
+                var spell = GameServer.Database.SelectObjects<Database.DBSpell>("SpellID = @SpellID", new Database.QueryParameter("SpellID", this.GroupInfos.Effect.Value))?.FirstOrDefault();
+                ushort effect = (ushort)this.GroupInfos.Effect.Value;
+
+                if (spell != null)
+                {
+                    effect = (ushort)spell.ClientEffect;
                 }
-            });          
+
+                Task.Delay(500).Wait();
+
+                this.NPCs.ForEach(npc =>
+                {
+                    foreach (GamePlayer player in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                    {
+                        player.Out.SendSpellEffectAnimation(npc, npc, effect, 0, false, (byte)5);
+                    }
+                });
+            }
         }
 
         public void ResetGroupInfo()
@@ -252,7 +278,28 @@ namespace DOL.MobGroups
                 this.ApplyGroupInfos();
                 this.SaveToDabatase();
             }
-        }      
+        }     
+        
+        public void ClearGroupInfosAndInterractions()
+        {
+            this.GroupInfos = new MobGroupInfo();
+            this.mobGroupInterfactFk = null;
+            this.mobGroupOriginFk = null;
+            this.ComletedQuestCount = 0;
+            this.CompletedQuestID = 0;
+            this.IsQuestConditionFriendly = false;
+            this.SlaveGroupId = null;
+            this.ApplyGroupInfos();
+            this.SaveToDabatase();
+            
+            if (this.GroupInteractions != null && this.SlaveGroupId != null)
+            {
+                if (MobGroupManager.Instance.Groups.ContainsKey(this.SlaveGroupId))
+                {
+                    MobGroupManager.Instance.Groups[this.SlaveGroupId].ClearGroupInfosAndInterractions();
+                }
+            }            
+        }
 
         public void SaveToDabatase()
         {
@@ -274,7 +321,7 @@ namespace DOL.MobGroups
                 }
             }
 
-            db.Flag = this.GroupInfos.Flag?.ToString();
+            db.Flag = this.GroupInfos.Flag.HasValue ? (int)this.GroupInfos.Flag.Value : 0;
             db.Race = this.GroupInfos.Race?.ToString();
             db.VisibleSlot = this.GroupInfos.VisibleSlot?.ToString();
             db.Effect = this.GroupInfos.Effect?.ToString();

@@ -155,6 +155,15 @@ namespace DOL.GS.Spells
                     PlayerReceivingMessages = ((m_caster as GamePet).Brain as IControlledBrain).GetPlayerOwner();
             if (PlayerReceivingMessages == null) 
                 return;
+
+			if (Caster is GamePlayer && ad.Target is GameNPC npc)
+            {
+				if (npc.CurrentGroupMob != null && npc.CurrentGroupMob.GroupInfos.IsInvincible == true)
+                {
+					ad.Damage = 0;
+					ad.CriticalDamage = 0;
+                }
+            }
 				
             if (Spell.Name.StartsWith("Proc"))
             {

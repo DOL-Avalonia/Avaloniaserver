@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace DOLDatabase.Tables
 {
+    [DataTable(TableName = "SpawnerTemplate")]
     public class SpawnerTemplate
         : DataObject
     {

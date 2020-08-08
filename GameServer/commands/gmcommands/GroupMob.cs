@@ -23,7 +23,8 @@ namespace DOL.commands.gmcommands
 		  "'/GroupMob status <GroupId> set <StatusId> <SlaveGroupId> Affecte un GroupMobStatus<StatusId> à un <GroupId>(master) envers un <GroupId>(slave)'",
 		  "'/GroupMob status origin set <StatusId> <GroupId>' Attribut un Status d'origine à un GroupMob en donnant son <GroupdId> et le <StatusId> souhaité",
 		  "'/GroupMob status create <SpellId|null>(Effect) <FlagsValue|null>(Flags) <true|false|null>(IsInvicible) <id|null>(Model) <value|null>(VisibleWeapon) <id|null>(Race)' - Créer un GroupStatus et renvoie en sortie <StatusId>)",
-		  "'/GroupMob quest <GroupId> <QuestId> <Count> <true|false>' Associer un GroupMob à une Quest en spécifiant le Count(nb de fois) et WillbeFriendly <true|false> pour spécifier son aggrésivité")]
+		  "'/GroupMob quest <GroupId> <QuestId> <Count> <true|false>' Associer un GroupMob à une Quest en spécifiant le Count(nb de fois) et WillbeFriendly <true|false> pour spécifier son aggrésivité",
+		  "'/GroupMob status reset <GroupId>'  Reset le status ainsi que ses interractions")]
 
 	public class GroupMob
 		  : AbstractCommandHandler, ICommandHandler
@@ -39,7 +40,7 @@ namespace DOL.commands.gmcommands
 				if (args.Length == 4 && args[1].ToLowerInvariant() == "group" && args[2].ToLowerInvariant() == "remove")
 				{
 					groupId = args[3];
-					bool allRemoved = MobGroups.MobGroupManager.Instance.RemoveGroupsAndMobs(groupId);
+					bool allRemoved = MobGroupManager.Instance.RemoveGroupsAndMobs(groupId);
 
 					if (allRemoved)
 					{
@@ -119,14 +120,14 @@ namespace DOL.commands.gmcommands
 
 				case "status":
 
-					if (args.Length < 6)
-                    {
-						DisplaySyntax(client);
-						return;
-					}
-
 					if (args[3].ToLowerInvariant() == "set")
                     {
+						if (args.Length < 6)
+						{
+							DisplaySyntax(client);
+							return;
+						}
+
 						string groupStatusId = args[4];
 						string slaveGroupId = args[5];
 						
@@ -152,8 +153,8 @@ namespace DOL.commands.gmcommands
 							client.Out.SendMessage("Le GroupStatus: " + groupStatusId + " a été attribué au MobGroup " + groupId, GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
 							return;
 						}
-                        else
-                        {
+						else
+						{
 							if (!this.isGroupIdAvailable(groupId, client))
                             {
 								return;
@@ -198,7 +199,7 @@ namespace DOL.commands.gmcommands
 
 						var groupStatus = new GroupMobStatusDb();
 						groupStatus.Effect = effect?.ToString();
-						groupStatus.Flag = flag?.ToString();
+						groupStatus.Flag = flag.HasValue ? (int)flag.Value : 0;
 						groupStatus.GroupStatusId = Guid.NewGuid().ToString().Substring(0,8);
 						groupStatus.Model = model;
 						groupStatus.Race = race?.ToString();
@@ -216,6 +217,26 @@ namespace DOL.commands.gmcommands
 						}
 
 						client.Out.SendMessage("Le GroupStatus a été créé avec le GroupStatusId: " + groupStatus.GroupStatusId, GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
+						return;
+					}
+					else if (args[2].ToLowerInvariant() == "reset")
+                    {
+						if (args.Length != 4)
+						{
+							DisplaySyntax(client);
+							return;
+						}
+
+						groupId = args[3];
+
+						if (!this.isGroupIdAvailable(groupId, client))
+                        {
+							break;
+                        }
+
+						MobGroupManager.Instance.Groups[groupId].ClearGroupInfosAndInterractions();
+						string slave = MobGroupManager.Instance.Groups[groupId].SlaveGroupId != null ? string.Format(" ainsi que son Group Slave: {0}", MobGroupManager.Instance.Groups[groupId].SlaveGroupId) : ".";
+						client.Out.SendMessage(string.Format("Le Group: {0} a été reset{1}", groupId, slave) , GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
 						return;
 					}
 
