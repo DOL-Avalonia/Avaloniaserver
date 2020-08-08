@@ -19,6 +19,9 @@ namespace DOLDatabase.Tables
         private int m_npcTemplate4;
         private bool m_isAggroType;
         private int m_percentLifeAddsActivity;
+        private string m_inactiveStatusId;
+        private string m_activeStatusId;
+        private int m_addsRespawnCount;
 
         [DataElement(AllowDbNull = false, Varchar = 255, Index = true)]
         public string MobID
@@ -55,6 +58,27 @@ namespace DOLDatabase.Tables
             set { Dirty = true; m_npcTemplate4 = value; }
         }
 
+        [DataElement(AllowDbNull = true, Varchar = 255)]
+        public string InactiveStatusId
+        {
+            get => m_inactiveStatusId;
+            set { Dirty = true; m_inactiveStatusId = value; }
+        }
+
+        [DataElement(AllowDbNull = true, Varchar = 255)]
+        public string ActiveStatusId
+        {
+            get => m_activeStatusId;
+            set { Dirty = true; m_activeStatusId = value; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public int AddsRespawnCount
+        {
+            get => m_addsRespawnCount;
+            set { Dirty = true; m_addsRespawnCount = value; }
+        }
+
         [DataElement(AllowDbNull = false)]
         public bool IsAggroType
         {
@@ -67,6 +91,6 @@ namespace DOLDatabase.Tables
         {
             get => m_percentLifeAddsActivity;
             set { Dirty = true; m_percentLifeAddsActivity = value; }
-        }       
+        }  
     }
 }

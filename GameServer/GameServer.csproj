@@ -376,6 +376,7 @@
     <Compile Include="events\gameobjects\InterruptedEventArgs.cs" />
     <Compile Include="events\gameobjects\NextCraftingTierReachedEventArgs.cs" />
     <Compile Include="events\gameobjects\SwitchedTargetEventArgs.cs" />
+    <Compile Include="events\GroupMob\GroupMobEvent.cs" />
     <Compile Include="events\IDOLEventHandler.cs" />
     <Compile Include="events\server\GameServerCoffreLoadedAttribute.cs" />
     <Compile Include="events\server\GameEventLoadedAttribute.cs" />

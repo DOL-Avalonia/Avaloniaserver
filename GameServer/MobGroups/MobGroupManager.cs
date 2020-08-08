@@ -1,5 +1,7 @@
 ﻿using DOL.Database;
+using DOL.Events;
 using DOL.GS;
+using DOL.GS.GameEvents;
 using DOLDatabase.Tables;
 using log4net;
 using System;
@@ -50,6 +52,9 @@ namespace DOL.MobGroups
 
                 //Reset GroupInfo
                 this.Groups[npc.CurrentGroupMob.GroupId].ResetGroupInfo();
+
+                //Notify
+                GameEventMgr.Notify(GroupMobEvent.MobGroupDead, this.Groups[npc.CurrentGroupMob.GroupId]);
             }
 
             return allDead;
@@ -222,21 +227,18 @@ namespace DOL.MobGroups
             this.Groups[groupId].NPCs.Add(npc);
             npc.CurrentGroupMob = this.Groups[groupId];            
 
-            if (isnew)
+            if (isnew && !isLoadedFromScript)
             {
                 var newGroup = new GroupMobDb() { GroupId = groupId };
                 GameServer.Database.AddObject(newGroup);
                 this.Groups[groupId].InternalId = newGroup.ObjectId;
-
-                if (!isLoadedFromScript)
+                
+                GameServer.Database.AddObject(new GroupMobXMobs()
                 {
-                    GameServer.Database.AddObject(new GroupMobXMobs()
-                    {
-                        GroupId = groupId,
-                        MobID = npc.InternalID,
-                        RegionID = npc.CurrentRegionID
-                    });
-                }
+                    GroupId = groupId,
+                    MobID = npc.InternalID,
+                    RegionID = npc.CurrentRegionID
+                });                
             }
             else if (!isLoadedFromScript)
             {
