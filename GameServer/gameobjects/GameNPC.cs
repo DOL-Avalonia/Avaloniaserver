@@ -164,6 +164,12 @@ namespace DOL.GS
 			set;
 		}
 
+		public int ExperienceEventFactor
+		{
+			get;
+			set;
+		} = 1;
+
 		/// <summary>
 		/// Original Race from Database
 		/// </summary>

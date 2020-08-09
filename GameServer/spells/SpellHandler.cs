@@ -4105,8 +4105,21 @@ namespace DOL.GS.Spells
 			if (GetSpellTargetType() > 0)
 				dw.AddKeyValuePair("target", GetSpellTargetType());
 			//.Value("frequency", spellHandler.GetDelveValueFrequency, spellHandler.GetDelveValueFrequency != 0)
+
+			string description = string.Empty;
 			if (!string.IsNullOrEmpty(Spell.Description))
-				dw.AddKeyValuePair("description_string", Spell.Description);
+				description = Spell.Description;
+
+			if (Spell.Damage > 0)
+            {
+				description += string.Format(" Value: ({0})", Spell.Damage);
+            }else if (Spell.Value > 0)
+            {
+				description += string.Format(" Value: ({0})", Spell.Value);
+            }
+
+
+			dw.AddKeyValuePair("description_string", description);
 			if (Spell.IsAoE)
 				dw.AddKeyValuePair("radius", Spell.Radius);
 			if (Spell.IsConcentration)

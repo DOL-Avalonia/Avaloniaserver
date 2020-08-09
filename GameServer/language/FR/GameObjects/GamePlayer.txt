@@ -109,6 +109,7 @@ GameObjects.GamePlayer.GainExperience.TalkToTrainer:	            Parlez à votre
 GameObjects.GamePlayer.GainExperience.YouGet:			            Vous obtenez {0} points d'expérience.
 GameObjects.GamePlayer.GainExperience.BonusRenaissance:             dont {0} points bonus de Renaissance
 GameObjects.GamePlayer.GainExperience.BonusTerritory:               dont {0} points bonus de Territoires
+GameObjects.GamePlayer.GainExperience.BonusGameEvent:               dont {0} points bonus d'Evenements
 
 GameObjects.GamePlayer.GainRealmPoints.Earned:			            {0} a gagné 1,000,000 de points de royaume dans {1}
 GameObjects.GamePlayer.GainRealmPoints.GainBonus:		            Vous gagnez un bonus de +{0} dans toutes vos spécialisations !

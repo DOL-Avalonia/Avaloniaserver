@@ -20,8 +20,8 @@ namespace DOL.GS.Commands
 		"'/GMEvent infolight' Affiche les informations sur les Events, plus succin",
 		"'/GMEvent start <id>' Lance l'event avec son <id>",
 		"'/GMEvent reset <id>' Reset l'event avec son <id>, reset également les events qui ont lancés cet event",
-		"'/GMEvent add <eventId>' Ajoute la cible (mob ou coffre) à l'event et le fait disparaitre du monde",
-		"'/GMEvent add <mob|coffre> <name> <region> <eventId>'Ajoute un <mob|coffre> par son nom et sa region à un event",	
+		"'/GMEvent add <eventId> <xpFactor>' Ajoute la cible (mob ou coffre) à l'event et le fait disparaitre du monde, <xpFactor> optionnel pour les mob (1 par défaut si omis)",
+		"'/GMEvent add <mob|coffre> <name> <region> <eventId> <xpFactor>'Ajoute un <mob|coffre> par son nom et sa region à un event, <xpFactor> optionnel pour les mob (1 par défaut si omis)",	
 		"'/GMEvent respawn <mob|coffre> <name> <eventId> <true|false>'Change la valeur de CanRespawn du <mob|coffre> par son <name> dans un event par son <eventId> <true|false>",		
 		"'/GMEvent starteffect <mob|coffre> <name> <eventId> <spellId>'Change la valeur starteffectId du <mob|coffre> par son <name> dans un event <eventId> en spécifiant le <spellId>",
 		"'/GMEvent endeffect <mob|coffre> <name> <eventId> <spellId>'Change la valeur endeffectId du <mob|coffre> par son <name> dans un event <eventId> en spécifiant le <spellId>",
@@ -74,7 +74,9 @@ namespace DOL.GS.Commands
 
 					case "add":
 
-						if (args.Length == 6) 
+						int xpFactor = 1;
+
+						if (args.Length >= 6) 
 						{
 							name = args[3];
 							ushort region = 0;						
@@ -95,11 +97,16 @@ namespace DOL.GS.Commands
 
 							if (args[2] == "mob")
 							{
-								TryToAddMobToEvent(client, name, region, id, true);
+								if (args.Length == 7)
+								{
+									int.TryParse(args[6], out xpFactor);
+								}
+
+								TryToAddMobToEvent(client, name, region, id, true, xpFactor);
 							}
 							else if (args[2] == "coffre")
 							{
-								TryToAddMobToEvent(client, name, region, id, false);
+								TryToAddMobToEvent(client, name, region, id, false, 1);
 							}
 							else
 							{
@@ -110,7 +117,13 @@ namespace DOL.GS.Commands
 						{
 							if (client.Player.TargetObject is GameNPC npc && id != null)
 							{
-								if (!AddItemToEvent(npc, id, false))
+
+								if (args.Length == 4)
+								{
+									int.TryParse(args[3], out xpFactor);
+								}
+
+								if (!AddItemToEvent(npc, id, false, xpFactor))
 								{
 									client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Event.EventNotFound", id), eChatType.CT_Chat, eChatLoc.CL_SystemWindow);
 								}
@@ -121,7 +134,7 @@ namespace DOL.GS.Commands
 							}
 							else if (client.Player.TargetObject is GameStaticItem st && st.IsCoffre && id != null)
 							{
-								if (!AddItemToEvent(st, id, true))
+								if (!AddItemToEvent(st, id, true, 1))
 								{
 									client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Event.EventNotFound", id), eChatType.CT_Chat, eChatLoc.CL_SystemWindow);
 								}
@@ -773,7 +786,7 @@ namespace DOL.GS.Commands
 			return true;
 		}
 
-		private void TryToAddMobToEvent(GameClient client, string name, ushort region, string id, bool isMob)
+		private void TryToAddMobToEvent(GameClient client, string name, ushort region, string id, bool isMob, int xpMultiplicator)
 		{
 			var ev = GetEventById(client, id);
 
@@ -796,6 +809,7 @@ namespace DOL.GS.Commands
 				return;
 			}
 
+
 			if (isMob && obj is GameNPC npc)
 			{
 				if (npc == null)
@@ -805,6 +819,7 @@ namespace DOL.GS.Commands
 				}
 
 				npc.EventID = id;
+				npc.ExperienceEventFactor = xpMultiplicator;
 				GameEventManager.Instance.PreloadedMobs.Add(npc);
 			}
 			else
@@ -828,7 +843,7 @@ namespace DOL.GS.Commands
 			client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Event.ItemAdded", name, id), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 		}
 
-		private bool AddItemToEvent(GameObject item, string id, bool isCoffre)
+		private bool AddItemToEvent(GameObject item, string id, bool isCoffre, int xpMultiplicator)
 		{
 			var ev = GameEventManager.Instance.Events.FirstOrDefault(e => e.ID.Equals(id));
 
@@ -854,6 +869,7 @@ namespace DOL.GS.Commands
 			{
 				var mob = (GameNPC)item;
 				mob.EventID = id;
+				mob.ExperienceEventFactor = xpMultiplicator;
 				mob.SaveIntoDatabase();
 
 				if (!ev.Mobs.Contains(mob))

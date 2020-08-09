@@ -2581,7 +2581,7 @@ namespace DOL.GS.Commands
 									client,
 									LanguageMgr.GetTranslation(
 										client.Account.Language,
-										"Commands.Players.Guild.Alliance.NoMember")
+										"Commands.Players.Guild.AllianceNotMember")
 									);
 								return;
 							}
@@ -3239,7 +3239,7 @@ namespace DOL.GS.Commands
 
 			if (player.Guild == null)
 			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Commands.Players.Guild.NotMember"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Commands.Players.Guild.AllianceNotMember"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
 			}
 

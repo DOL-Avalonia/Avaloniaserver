@@ -16,6 +16,7 @@ namespace DOLDatabase.Tables
         private string m_eventID;
         private ushort m_region;
         private string m_name;
+        private int m_experienceFactor;
 
         [DataElement(AllowDbNull = false, Varchar = 255, Index = true)]
         public string EventID
@@ -153,6 +154,13 @@ namespace DOLDatabase.Tables
                 m_region = value;
                 Dirty = true;
             }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public int ExperienceFactor
+        {
+            get => m_experienceFactor;
+            set { Dirty = true; m_experienceFactor = value; }
         }
     }
 }

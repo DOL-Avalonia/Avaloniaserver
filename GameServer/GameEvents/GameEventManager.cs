@@ -169,6 +169,7 @@ namespace DOL.GameEvents
                             if (mob != null)
                             {
                                 mob.CanRespawnWithinEvent = mobInfo.CanRespawn;
+                                mob.ExperienceEventFactor = mobInfo.ExperienceFactor;
                                 newEvent.Mobs.Add(mob);
                                 Instance.PreloadedMobs.Remove(mob);
                                 mobCount++;
@@ -282,6 +283,7 @@ namespace DOL.GameEvents
                     ItemID = obj.InternalID,
                     Name = obj.Name,
                     IsMob = true,
+                    ExperienceFactor = obj.ExperienceEventFactor,
                     Region = obj.CurrentRegionID,
                     CanRespawn = true
                 };

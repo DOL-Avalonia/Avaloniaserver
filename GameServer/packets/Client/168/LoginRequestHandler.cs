@@ -194,7 +194,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                                                (client.ClientType), client.ClientAddons.ToString("G")));
                     // check client already connected
                     GameClient findclient = WorldMgr.GetClientByAccountName(userName, true);
-                    if (findclient != null && !ServerProperties.Properties.ALLOW_DUAL_LOGINS)
+                    if (findclient != null)
                     {
                         client.IsConnected = false;
 

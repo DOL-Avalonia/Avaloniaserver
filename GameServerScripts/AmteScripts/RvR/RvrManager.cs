@@ -42,8 +42,8 @@ namespace AmteScripts.Managers
         const string RvRDivineHIB = "RvR-Divine-HIB";
         const string RvRDivineMID = "RvR-Divine-MID";
 
-        private static readonly TimeSpan _startTime = new TimeSpan(20, 0, 0); //20H
-        private static readonly TimeSpan _endTime = new TimeSpan(2, 0, 0).Add(TimeSpan.FromDays(1)); //2h du mat
+        private static DateTime _startTime = DateTime.Today.AddHours(20D); //20H00
+        private static DateTime _endTime = _startTime.Add(TimeSpan.FromHours(6)); //2H00 + 1
 		private const int _checkInterval = 30 * 1000; // 30 seconds
 		private static readonly GameLocation _stuckSpawn = new GameLocation("", 51, 434303, 493165, 3088, 1069);
         private Dictionary<ushort, IList<string>> RvrStats = new Dictionary<ushort, IList<string>>();
@@ -267,7 +267,7 @@ namespace AmteScripts.Managers
 			if (!_isOpen)
 			{
             	_regions.ForEach(id => WorldMgr.GetClientsOfRegion(id).Foreach(RemovePlayer));
-				if (DateTime.Now.TimeOfDay >= _startTime && DateTime.Now.TimeOfDay < _endTime)
+				if (DateTime.Now >= _startTime && DateTime.Now < _endTime)
             		Open(false);
 			}
 			else
@@ -275,10 +275,17 @@ namespace AmteScripts.Managers
                 _regions.ForEach(id => WorldMgr.GetClientsOfRegion(id).Where(cl => cl.Player.Guild == null).Foreach(cl => RemovePlayer(cl.Player)));
                 if (!_isForcedOpen)
 				{
-					if ((DateTime.Now.TimeOfDay < _startTime || DateTime.Now.TimeOfDay > _endTime) && !Close())
-                        _regions.ForEach(id => WorldMgr.GetClientsOfRegion(id).Foreach(RemovePlayer));
+					if ((DateTime.Now < _startTime || DateTime.Now > _endTime) && !Close())
+                        _regions.ForEach(id => WorldMgr.GetClientsOfRegion(id).Foreach(RemovePlayer));                  
 				}
 			}
+
+            if (DateTime.Now > _endTime)
+            {
+                _startTime = _startTime.AddHours(24D);
+                _endTime = _endTime.AddHours(24D);
+            }
+
 			return _checkInterval;
 		}
 
