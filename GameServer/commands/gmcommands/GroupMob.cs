@@ -17,6 +17,7 @@ namespace DOL.commands.gmcommands
 		  ePrivLevel.GM,
 		  "Commandes GroupMob",
 		  "'/GroupMob add <groupId>' Ajoute le mob en target au group donné (créer le groupe si besoin)",
+		  "'/GroupMob add <groupId> <spawnerId>' Ajoute le group <groupId> au SpawnerId (créer le Spawner si besoin)",
 		  "'/GroupMob remove <groupId>' Supprime le mob en target de son groupe",
 		  "'/GroupMob group remove <groupId>' Supprime le groupe et tous les mobs associés à celui-ci",
 		  "'/GroupMob info <GroupId>' Affiche les infos sur un GroupMob en fournissant son <GroupId>",
@@ -29,13 +30,13 @@ namespace DOL.commands.gmcommands
 	public class GroupMob
 		  : AbstractCommandHandler, ICommandHandler
 	{
-		public async void OnCommand(GameClient client, string[] args)
+		public void OnCommand(GameClient client, string[] args)
 		{
 
 			GameNPC target = client.Player.TargetObject as GameNPC;
 			string groupId = null;
 
-			if (target == null && args.Length > 3 && args[1].ToLowerInvariant() != "status" && args[1].ToLowerInvariant() != "quest")
+			if (target == null && args.Length > 3 && args[1].ToLowerInvariant() != "status" && args[1].ToLowerInvariant() != "quest" && args[1].ToLowerInvariant() != "add")
 			{
 				if (args.Length == 4 && args[1].ToLowerInvariant() == "group" && args[2].ToLowerInvariant() == "remove")
 				{
@@ -52,7 +53,7 @@ namespace DOL.commands.gmcommands
 					}
 				}
 				else
-				{
+				{				
 					client.Out.SendMessage("La target doit etre un mob", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
 					this.DisplaySyntax(client);
 				}
@@ -78,16 +79,88 @@ namespace DOL.commands.gmcommands
 			{
 				case "add":
 
-					bool added = MobGroupManager.Instance.AddMobToGroup(target, groupId);
-					if (added)
-					{
-						client.Out.SendMessage($"le mob {target.Name} a été ajouté au groupe {groupId}", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
-					}
-					else
-					{
-						client.Out.SendMessage($"Impossible d'ajouter {target.Name} au groupe {groupId}", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
-					}
-					break;
+					if (args.Length == 3)
+                    {
+						bool added = MobGroupManager.Instance.AddMobToGroup(target, groupId);
+						if (added)
+						{
+							client.Out.SendMessage($"le mob {target.Name} a été ajouté au groupe {groupId}", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
+						}
+						else
+						{
+							client.Out.SendMessage($"Impossible d'ajouter {target.Name} au groupe {groupId}", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
+						}
+
+					}else if (args.Length == 4)
+                    {
+						string spawnerId = args[3];
+
+						if (!MobGroupManager.Instance.Groups.ContainsKey(groupId))
+						{
+							client.Out.SendMessage($"Le groupe {groupId} n'existe pas.", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
+							return;
+						}
+
+						if (string.IsNullOrEmpty(spawnerId))
+                        {
+							client.Out.SendMessage($"Le SpawnderId doit etre défini.", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
+							return;
+						}
+
+						var spawner = GameServer.Database.SelectObjects<SpawnerTemplate>("MobID = @MobID", new QueryParameter("MobID", spawnerId)).FirstOrDefault();
+
+						if (spawner == null)
+                        {
+							spawner = new SpawnerTemplate();
+							spawner.AddsRespawnCount = 0;
+							spawner.IsAggroType = true;
+							spawner.NpcTemplate1 = -1;
+							spawner.NpcTemplate2 = -1;
+							spawner.NpcTemplate3 = -1;
+							spawner.NpcTemplate4 = -1;
+							spawner.PercentLifeAddsActivity = 0;
+							spawner.MasterGroupId = groupId;
+							spawner.AddsRespawnCount = 0;
+							spawner.PercentLifeAddsActivity = 0;
+							spawner.MobID = spawnerId;
+							GameServer.Database.AddObject(spawner);
+
+							client.Out.SendMessage($"Le SpawnerTemplate { spawner.MobID } a été sauvegardé", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
+                        }
+                        else
+                        {
+							spawner.MasterGroupId = groupId;
+							GameServer.Database.SaveObject(spawner);
+						}
+
+						string spawnKey = "spwn_" + spawner.ObjectId.Substring(0, 8);
+
+						if (!MobGroupManager.Instance.Groups.ContainsKey(spawnKey))
+                        {
+							client.Out.SendMessage($"Le GroupMob { spawnKey } n'a pas été trouvé en mémoire.", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
+							return;
+						}
+
+						//Add to world will remove mobs from the world (see spawner class)
+						MobGroupManager.Instance.Groups[spawnKey].NPCs.ForEach(n =>
+						{
+							if (n.InternalID.Equals(spawner.MobID))
+                            {
+								var mob = GameServer.Database.FindObjectByKey<Mob>(n.InternalID);
+
+								if (mob != null)
+								{
+									n.RemoveFromWorld();
+									n.LoadFromDatabase(mob);
+									n.AddToWorld();
+								}
+								client.Out.SendMessage($"Le SpawnerTemplate { spawner.MobID } a été correctement sauvegardé", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
+							}							
+						});
+					}				
+
+				break;
+				
 
 				case "remove":
 
@@ -148,7 +221,7 @@ namespace DOL.commands.gmcommands
 								return;
 							}
 
-							MobGroupManager.Instance.Groups[groupId].SetGroupInfo(status);
+							MobGroupManager.Instance.Groups[groupId].SetGroupInfo(status, isOriginalStatus: true);
 							MobGroupManager.Instance.Groups[groupId].SaveToDabatase();
 							client.Out.SendMessage("Le GroupStatus: " + groupStatusId + " a été attribué au MobGroup " + groupId, GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
 							return;

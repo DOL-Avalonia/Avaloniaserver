@@ -1,4 +1,5 @@
-﻿using DOL.GS;
+﻿using DOL.Database;
+using DOL.GS;
 using DOL.GS.Quests;
 using DOLDatabase.Tables;
 using System;
@@ -13,12 +14,15 @@ namespace DOL.MobGroups
     public class MobGroup
     {
         private MobGroupInfo originalGroupInfo;
+        private bool isLoadedFromScript;
 
-        public MobGroup(string id)
+        public MobGroup(string id, bool isLoadedFromScript)
         {
             this.GroupId = id;
+            this.isLoadedFromScript = isLoadedFromScript;
             this.NPCs = new List<GameNPC>();
             this.GroupInfos = new MobGroupInfo();
+            this.HasOriginalStatus = false;
         }
        
         public MobGroup(GroupMobDb db, GroupMobStatusDb groupInteract, GroupMobStatusDb originalStatus)
@@ -43,6 +47,7 @@ namespace DOL.MobGroups
             this.mobGroupOriginFk = originalStatus?.GroupStatusId;
             this.originalGroupInfo = GetMobInfoFromSource(originalStatus);
             this.SetGroupInteractions(groupInteract);
+            this.HasOriginalStatus = IsStatusOriginal();
         }
 
         private static MobGroupInfo GetMobInfoFromSource(GroupMobStatusDb source)
@@ -133,6 +138,46 @@ namespace DOL.MobGroups
             };
         }
 
+        public bool IsStatusOriginal()
+        {
+            if (this.originalGroupInfo == null)
+            {
+                return false;
+            }
+
+            if (this.GroupInfos.Effect != this.originalGroupInfo.Effect)
+            {
+                return false;
+            }
+
+            if (this.GroupInfos.Flag != this.originalGroupInfo.Flag)
+            {
+                return false;
+            }
+
+            if (this.GroupInfos.IsInvincible != this.originalGroupInfo.IsInvincible)
+            {
+                return false;
+            }
+
+            if (this.GroupInfos.Model != this.originalGroupInfo.Model)
+            {
+                return false;
+            }
+
+            if (this.GroupInfos.Race != this.originalGroupInfo.Race)
+            {
+                return false;
+            }
+
+            if (this.GroupInfos.VisibleSlot != this.originalGroupInfo.VisibleSlot)
+            {
+                return false;
+            }           
+
+            return true;
+        }
+
         public string mobGroupInterfactFk
         {
             get;
@@ -181,6 +226,12 @@ namespace DOL.MobGroups
             set;
         }
 
+        public bool HasOriginalStatus
+        {
+            get;
+            set;
+        }
+
         public MobGroupInfo GroupInfos
         {
             get;
@@ -205,10 +256,11 @@ namespace DOL.MobGroups
             this.GroupInteractions = GetMobInfoFromSource(groupInteract);
         }
 
-        public void SetGroupInfo(GroupMobStatusDb status, bool isLoadedFromScript = false)
+        public void SetGroupInfo(GroupMobStatusDb status, bool isOriginalStatus, bool isLoadedFromScript = false)
         {
             this.GroupInfos = GetMobInfoFromSource(status);
             this.mobGroupOriginFk = status?.GroupStatusId;
+            this.HasOriginalStatus = isOriginalStatus;
             this.originalGroupInfo = GetMobInfoFromSource(status);
             this.ApplyGroupInfos(isLoadedFromScript);
         }
@@ -270,13 +322,18 @@ namespace DOL.MobGroups
             }
         }
 
-        public void ResetGroupInfo()
+        public void ResetGroupInfo(bool force = false)
         {
-            if (this.originalGroupInfo != null)
+            if (this.originalGroupInfo != null && (force || !this.HasOriginalStatus))
             {
                 this.GroupInfos = CopyGroupInfo(this.originalGroupInfo);
+                this.HasOriginalStatus = true;
                 this.ApplyGroupInfos();
-                this.SaveToDabatase();
+
+                if (!isLoadedFromScript)
+                {
+                    this.SaveToDabatase();
+                }
             }
         }     
         
@@ -288,6 +345,7 @@ namespace DOL.MobGroups
             this.ComletedQuestCount = 0;
             this.CompletedQuestID = 0;
             this.IsQuestConditionFriendly = false;
+            this.HasOriginalStatus = true;
             this.SlaveGroupId = null;
             this.ApplyGroupInfos();
             this.SaveToDabatase();
@@ -299,6 +357,25 @@ namespace DOL.MobGroups
                     MobGroupManager.Instance.Groups[this.SlaveGroupId].ClearGroupInfosAndInterractions();
                 }
             }            
+        }
+
+        public void ReloadMobsFromDatabase()
+        {
+            foreach (var npc in this.NPCs)
+            {
+                if (npc.InternalID != null)
+                {
+                    var mob = GameServer.Database.FindObjectByKey<Mob>(npc.InternalID);
+
+                    if (mob != null)
+                    {
+                        npc.LoadFromDatabase(mob);
+                        npc.AddToWorld();
+                    }
+                }
+            }
+
+            this.ApplyGroupInfos();
         }
 
         public void SaveToDabatase()

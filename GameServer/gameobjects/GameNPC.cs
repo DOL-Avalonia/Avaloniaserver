@@ -4411,6 +4411,11 @@ namespace DOL.GS
 				}
 			}
 
+			Delete();
+
+			// remove temp properties
+			TempProperties.removeAllProperties();
+
 			//Check if killed mob starts event
 			if (this.CurrentGroupMob != null)
 			{
@@ -4427,10 +4432,7 @@ namespace DOL.GS
 				}
 			}
 
-			Delete();
 
-			// remove temp properties
-			TempProperties.removeAllProperties();
 
 			if (!(this is GamePet) && (this.EventID == null || (CanRespawnWithinEvent && !isStoppingEvent)))
 				StartRespawn();

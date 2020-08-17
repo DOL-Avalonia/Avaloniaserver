@@ -23,9 +23,15 @@ namespace DOL.MobGroups
         private MobGroupManager()
         {
             this.Groups = new Dictionary<string, MobGroup>();
+            this.GroupsToRemoveOnServerLoad = new List<string>();
         }
 
         public Dictionary<string, MobGroup> Groups
+        {
+            get;
+        }
+
+        public List<string> GroupsToRemoveOnServerLoad
         {
             get;
         }
@@ -207,6 +213,19 @@ namespace DOL.MobGroups
                 Instance.Groups.Foreach(g => g.Value.ApplyGroupInfos());
             }
 
+            //remove npc from spawner interractions
+            foreach (var groupId in this.GroupsToRemoveOnServerLoad)
+            {
+                if (this.Groups.ContainsKey(groupId))
+                {
+                    foreach (var npc in this.Groups[groupId].NPCs)
+                    {
+                        npc.RemoveFromWorld();
+                        npc.Delete();
+                    }
+                }
+            }
+
             return true;
         }
 
@@ -220,7 +239,7 @@ namespace DOL.MobGroups
             bool isnew = false;
             if (!this.Groups.ContainsKey(groupId))
             {
-                this.Groups.Add(groupId, new MobGroup(groupId));
+                this.Groups.Add(groupId, new MobGroup(groupId, isLoadedFromScript));
                 isnew = true;
             }
 

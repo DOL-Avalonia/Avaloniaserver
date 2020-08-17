@@ -22,6 +22,7 @@ namespace DOLDatabase.Tables
         private string m_inactiveStatusId;
         private string m_activeStatusId;
         private int m_addsRespawnCount;
+        private string m_masterGroupId;
 
         [DataElement(AllowDbNull = false, Varchar = 255, Index = true)]
         public string MobID
@@ -56,6 +57,13 @@ namespace DOLDatabase.Tables
         {
             get => m_npcTemplate4;
             set { Dirty = true; m_npcTemplate4 = value; }
+        }
+
+        [DataElement(AllowDbNull = true, Varchar = 255)]
+        public string MasterGroupId
+        {
+            get => m_masterGroupId;
+            set { Dirty = true; m_masterGroupId = value; }
         }
 
         [DataElement(AllowDbNull = true, Varchar = 255)]
