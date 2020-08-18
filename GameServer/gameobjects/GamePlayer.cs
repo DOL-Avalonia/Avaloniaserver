@@ -972,7 +972,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="forced">true if Quit can not be prevented!</param>
 		public virtual bool Quit(bool forced)
-		{
+		{	
 			if (!forced)
 			{
 				if (!IsAlive)
@@ -1009,7 +1009,7 @@ namespace DOL.GS
 					{
 						Out.SendMessage(stats, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					}
-				}
+				}			
 
 				if (!IsSitting)
 				{
@@ -1039,6 +1039,12 @@ namespace DOL.GS
 				//Cleanup stuff
 				Delete();
 			}
+
+			if (PlayerAfkMessage != null)
+			{
+				ResetAFK(true);
+			}
+
 			return true;
 		}
 
@@ -5891,6 +5897,11 @@ namespace DOL.GS
 				return;
 			}
 
+			if (this.PlayerAfkMessage != null)
+            {
+				this.ResetAFK(false);
+            }
+
 			if (IsStunned)
 			{
 				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.StartAttack.CantAttackStunned"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
@@ -8961,7 +8972,12 @@ namespace DOL.GS
 			{
 				Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.UseSlot.CantFire"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
-			}
+			}			
+
+			if (PlayerAfkMessage != null)
+            {
+				this.ResetAFK(false);
+            }
 
 			lock (Inventory)
 			{
@@ -8999,6 +9015,16 @@ namespace DOL.GS
 				if (useItem.Item_Type != Slot.RANGED && (slot != Slot.HORSE || type != 0))
 				{
 					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.UseSlot.AttemptToUse", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+
+				//prevent magical item use in not authorized zones
+				if (useItem.Object_Type == (int)eObjectType.Magical)
+                {
+					if (this.isInBG || this.CurrentRegion.IsRvR || !this.CurrentZone.AllowMagicalItem)
+                    {
+						Out.SendMessage("Vous ne pouvez pas utiliser cela ici !", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						return;
+					}
 				}
 
 				#region Non-backpack/vault slots
@@ -11464,9 +11490,7 @@ namespace DOL.GS
 
             if (this.PlayerAfkMessage != null)
             {
-                this.PlayerAfkMessage = null;
-                ResetAfkTimers();
-                Out.SendMessage("Vous n'etes désormais plus afk", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				this.ResetAFK(false);
             }
 
 			if (IsCastingRealmAbility)
@@ -12297,9 +12321,9 @@ namespace DOL.GS
 				lock (Inventory)
 				{
 					InventoryItem item = Inventory.GetItem(slot_pos);
-					if (!item.IsDropable)
+					if (!item.IsDropable || !CurrentZone.AllowMagicalItem || this.CurrentRegion.IsRvR || this.isInBG)
 					{
-						Out.SendMessage(item.GetName(0, true) + " can not be dropped!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						Out.SendMessage(item.GetName(0, true) + " ne peux pas etre déposé ici !", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						return false;
 					}
 
@@ -14635,7 +14659,10 @@ namespace DOL.GS
 			}
 		}
 
-        public void ResetAfkTimers()
+		/// <summary>
+		/// Internal Method use ResetAFK Instead
+		/// </summary>
+        private void ResetAfkTimers()
         {
             AfkXpTimer.Stop();
             AfkXpTimer.Elapsed -= (object sender, ElapsedEventArgs e) => this.OnAfkXpTick();
@@ -14643,6 +14670,15 @@ namespace DOL.GS
             KickoutTimer.Elapsed -= (object sender, ElapsedEventArgs e) => this.OnAfkTimerTimeout();
             KickoutTimer.Close();
         }
+
+		public void ResetAFK(bool isSilent)
+        {
+			this.PlayerAfkMessage = null;
+			this.ResetAfkTimers();
+
+			if (!isSilent)
+				this.Out.SendMessage("Vous n'etes désormais plus afk", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+		}
 
         public void InitAfkTimers()
         {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DOL.GS;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,12 @@ namespace DOL.Vol
         public byte Level { get; set ; }
 
         public bool IsAllowToVolInThisArea { get; set; }
+
+        public bool IsStealthed { get; }
+
+        public string GuildID { get; set; }
+
+        public Group Group { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public int GetBaseSpecLevel(string keyname)
         {

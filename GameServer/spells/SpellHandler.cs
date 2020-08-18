@@ -394,6 +394,12 @@ namespace DOL.GS.Spells
 
 		public virtual bool CastSpell(GameLiving targetObject)
 		{
+			//Disactivate AFK
+			if (Caster is GamePlayer pl && pl.PlayerAfkMessage != null)
+            {
+				pl.ResetAFK(false);
+			}
+
             // Scale spells that are cast by pets
             if (Caster is GamePet && !(Caster is NecromancerPet) && ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL > 0)
             {

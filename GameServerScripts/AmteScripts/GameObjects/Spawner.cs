@@ -260,13 +260,12 @@ namespace DOL.GS
                 }
             }
             bool isXOffset = false;
-            bool isPositiveOffset = false;
+            bool isPositiveOffset = true;
             List<GameNPC> npcs = new List<GameNPC>();
             if (npc1 != null)
             {
                 npc1.LoadTemplate(template1);
                 SetPositionAndLoad(npc1, isXOffset, isPositiveOffset);
-                isXOffset = !isXOffset;
                 isPositiveOffset = !isPositiveOffset;
                 npcs.Add(npc1);
             }
@@ -284,7 +283,6 @@ namespace DOL.GS
             {
                 npc3.LoadTemplate(template3);
                 SetPositionAndLoad(npc3, isXOffset, isPositiveOffset);
-                isXOffset = !isXOffset;
                 isPositiveOffset = !isPositiveOffset;
                 npcs.Add(npc3);
             }           
@@ -489,7 +487,7 @@ namespace DOL.GS
                     {
                         Flag = (int)f,
                         SetInvincible = true.ToString(),
-                        GroupStatusId = this.inactiveGroupStatusAddsKey
+                        GroupStatusId = this.InactiveGroupStatusAddsKey
                     };
                     GameServer.Database.AddObject(inactiveStatus);
                 }               
@@ -501,10 +499,7 @@ namespace DOL.GS
 
         public override bool AddToWorld()
         {
-            base.AddToWorld();          
-
-            //Handle repop by clearing npctemplate pops       
-            this.ClearNPCTemplatesOldMobs();
+            base.AddToWorld();    
 
             if (this.isAddsGroupMasterGroup)
             {
@@ -530,6 +525,11 @@ namespace DOL.GS
                 {
                     MobGroupManager.Instance.Groups[this.SpawnerGroupId].ResetGroupInfo(true);
                 }
+            }
+            else
+            {
+                //Handle repop by clearing npctemplate pops       
+                this.ClearNPCTemplatesOldMobs();
             }          
 
             //reset adds currentCount respawn
@@ -591,7 +591,7 @@ namespace DOL.GS
                     {
                         SetInvincible = false.ToString(),
                         Flag = 0,
-                        GroupStatusId = this.activeGroupStatusAddsKey
+                        GroupStatusId = this.ActiveGroupStatusAddsKey
                     };
                     GameServer.Database.AddObject(activeStatus);
                 }

@@ -17,7 +17,7 @@ namespace DOL.commands.gmcommands
 		  ePrivLevel.GM,
 		  "Commandes GroupMob",
 		  "'/GroupMob add <groupId>' Ajoute le mob en target au group donné (créer le groupe si besoin)",
-		  "'/GroupMob add <groupId> <spawnerId>' Ajoute le group <groupId> au SpawnerId (créer le Spawner si besoin)",
+		  "'/GroupMob add <groupId> spawner' Ajoute le group <groupId> au Spawner en target (créer le SpawnerTemplate si besoin)",
 		  "'/GroupMob remove <groupId>' Supprime le mob en target de son groupe",
 		  "'/GroupMob group remove <groupId>' Supprime le groupe et tous les mobs associés à celui-ci",
 		  "'/GroupMob info <GroupId>' Affiche les infos sur un GroupMob en fournissant son <GroupId>",
@@ -79,7 +79,7 @@ namespace DOL.commands.gmcommands
 			{
 				case "add":
 
-					if (args.Length == 3)
+					if (args.Length == 3 && target != null)
                     {
 						bool added = MobGroupManager.Instance.AddMobToGroup(target, groupId);
 						if (added)
@@ -91,9 +91,10 @@ namespace DOL.commands.gmcommands
 							client.Out.SendMessage($"Impossible d'ajouter {target.Name} au groupe {groupId}", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
 						}
 
-					}else if (args.Length == 4)
+					}
+					else if (args.Length == 4 && target != null && args[3].ToLowerInvariant() == "spawner")
                     {
-						string spawnerId = args[3];
+						string spawnerId = target.InternalID;
 
 						if (!MobGroupManager.Instance.Groups.ContainsKey(groupId))
 						{
@@ -136,9 +137,9 @@ namespace DOL.commands.gmcommands
 						string spawnKey = "spwn_" + spawner.ObjectId.Substring(0, 8);
 
 						if (!MobGroupManager.Instance.Groups.ContainsKey(spawnKey))
-                        {
-							client.Out.SendMessage($"Le GroupMob { spawnKey } n'a pas été trouvé en mémoire.", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
-							return;
+                        {	
+							MobGroupManager.Instance.AddMobToGroup(target, spawnKey, false);
+							client.Out.SendMessage($"Le MobGroup du Spawner a été créé avec le GroupId { spawnKey }", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
 						}
 
 						//Add to world will remove mobs from the world (see spawner class)
@@ -181,6 +182,7 @@ namespace DOL.commands.gmcommands
 					if (!MobGroupManager.Instance.Groups.ContainsKey(groupId))
                     {
 						client.Out.SendMessage($"Le groupe {groupId} n'existe pas.", GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_ChatWindow);
+						return;
 					}
 
 					IList<string> infos = MobGroupManager.Instance.GetInfos(MobGroupManager.Instance.Groups[groupId]);

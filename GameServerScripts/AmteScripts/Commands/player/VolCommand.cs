@@ -82,6 +82,21 @@ namespace DOL.GS.Commands
 				return false;
 			}
 
+			if (!stealer.IsStealthed)
+            {
+				return false;
+            }
+
+			if (stealer.GuildID == target.GuildID && stealer.GuildID != string.Empty)
+            {
+				return false;
+            }
+
+			if (stealer.Group != null && stealer.Group.IsInTheGroup(target as GameLiving))
+            {
+				return false;
+            }
+
 			if (stealer.Level < 25 || target.Level < 20)
 			{
 				return false;
