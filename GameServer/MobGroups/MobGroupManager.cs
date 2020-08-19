@@ -74,7 +74,8 @@ namespace DOL.MobGroups
 
                 slave.GroupInfos = MobGroup.CopyGroupInfo(master.GroupInteractions);
                 slave.SaveToDabatase();
-                slave.ApplyGroupInfos(slave.GroupId.StartsWith("spwn_add_"));                
+                slave.ApplyGroupInfos(slave.GroupId.StartsWith("spwn_add_"));
+                slave.HasOriginalStatus = false;
             }
         }
 
