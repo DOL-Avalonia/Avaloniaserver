@@ -652,6 +652,7 @@ namespace DOL.GS
                     else
                     {
                         ItemUnique unique = new ItemUnique(itemToCraft);
+                        unique.IsTradable = true;
                         GameServer.Database.AddObject(unique);
                         newItem = GameInventoryItem.Create(unique);
                         newItem.Quality = GetQuality(player, recipe);

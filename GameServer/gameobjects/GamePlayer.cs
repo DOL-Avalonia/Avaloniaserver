@@ -950,21 +950,25 @@ namespace DOL.GS
 				DBCharacter.Ypos =  BindYpos;
 				DBCharacter.Zpos = BindZpos;
 				DBCharacter.Direction = BindHeading;
-			}
+			}		
 			
-			//check for battleground caps
-			Battleground bg = GameServer.KeepManager.GetBattleground(CurrentRegionID);
-			if (bg != null)
-			{
-				if (Level > bg.MaxLevel || RealmLevel >= bg.MaxRealmLevel)
+			if (!this.CurrentRegion.IsRvR)
+            {
+				//check for battleground caps
+				Battleground bg = GameServer.KeepManager.GetBattleground(CurrentRegionID);
+				if (bg != null)
 				{
-					// Only kick players out
-					if (Client.Account.PrivLevel == (int)ePrivLevel.Player)
+					if (Level > bg.MaxLevel || RealmLevel >= bg.MaxRealmLevel)
 					{
-						GameServer.KeepManager.ExitBattleground(this);
+						// Only kick players out
+						if (Client.Account.PrivLevel == (int)ePrivLevel.Player)
+						{
+							GameServer.KeepManager.ExitBattleground(this);
+						}
 					}
 				}
 			}
+			
 
 			// cancel all effects until saving of running effects is done
 			try
@@ -1481,6 +1485,7 @@ namespace DOL.GS
 							relX = 8192 + 15780;
 							relY = 8192 + 22727;
 							relZ = 7060;
+							relHeading = 2048;
 						}
 						else if (Realm == eRealm.Midgard)
 						{
@@ -1488,15 +1493,18 @@ namespace DOL.GS
 							relX = 8192 + 24664;
 							relY = 8192 + 21402;
 							relZ = 8759;
+							relHeading = 2048;
 						}
 						else
 						{
-							relRegion = 10; // City of Camelot
-							relX = 8192 + 26315;
-							relY = 8192 + 21177;
-							relZ = 8256;
+							//EMBLEME (X : 434444 Y : 493161 Z : 3088 Heading : 1119 region : 51)
+							relRegion = 51; 
+							relX = 434444;
+							relY = 493161;
+							relZ = 3088;
+							relHeading = 1119;
 						}
-						relHeading = 2048;
+
 						break;
 					}
 				case eReleaseType.RvR:
@@ -4323,12 +4331,12 @@ namespace DOL.GS
 				//Zone Bonus Support factor
 				if (ServerProperties.Properties.ENABLE_ZONE_BONUSES)
 				{
-					int zoneBonus = (int)amount * ZoneBonus.GetRPBonus(this);
+					int zoneBonus = (int)(amount * ZoneBonus.GetRPBonus(this) * ServerProperties.Properties.RP_RATE);
 					if (zoneBonus > 0)
 					{
-						Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)(zoneBonus * ServerProperties.Properties.RP_RATE), ZoneBonus.eZoneBonusType.RP),
+						Out.SendMessage(ZoneBonus.GetBonusMessage(this, zoneBonus, ZoneBonus.eZoneBonusType.RP),
 						                eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-						GainRealmPoints((long)(zoneBonus * ServerProperties.Properties.RP_RATE), false, false, false);
+						GainRealmPoints((long)(zoneBonus), false, false, false);
 					}
 				}
 

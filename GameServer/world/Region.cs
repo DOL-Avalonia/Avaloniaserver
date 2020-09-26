@@ -652,7 +652,7 @@ namespace DOL.GS
         public virtual void LoadFromDatabase(Mob[] mobObjs, ref long mobCount, ref long merchantCount, ref long itemCount, ref long bindCount)
         {
 #if DEBUG
-            var regiontoLoad = new ushort[] { 51, 330 };
+            var regiontoLoad = new ushort[] { 51, 330, 238, 240, 241 };
             if (!regiontoLoad.Contains(ID))
                 return;
 #endif

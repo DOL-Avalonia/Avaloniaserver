@@ -641,7 +641,7 @@ namespace DOL.GS.ServerRules
 					}
 					totalDamage += de.Value;
 				}
-#if RELEASE
+
 				if (dealNoXP)
 				{
 					foreach (var de in killedPlayer.XPGainers)
@@ -652,7 +652,7 @@ namespace DOL.GS.ServerRules
 					}
 					return;
 				}
-#endif
+
 
 				long playerExpValue = killedPlayer.ExperienceValue;
 				playerExpValue = (long)(playerExpValue * Properties.XP_RATE);

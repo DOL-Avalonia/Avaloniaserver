@@ -187,14 +187,15 @@ namespace DOL.GS.ServerRules
 					foreach (GameClient cln in WorldMgr.GetAllClients())
 					{
 						if (cln == null || client == cln) continue;
-						if (cln.TcpEndpointAddress == client.TcpEndpointAddress)
+						if (cln.TcpEndpointAddress == client.TcpEndpointAddress
+							|| cln.Account.ObjectId == username)
 						{
 							if (cln.Account != null && cln.Account.PrivLevel > 1)
 							{
 								break;
 							}
 							client.IsConnected = false;
-							client.Out.SendLoginDenied(eLoginError.AccountAlreadyLoggedIntoOtherServer);
+							client.Out.SendLoginDenied(eLoginError.AccountAlreadyLoggedIn);
 							log.Debug("IsAllowedToConnect deny access; dual login not allowed");
 							return false;
 						}
