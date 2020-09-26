@@ -19,7 +19,7 @@ namespace DOL.GS.SkillHandler
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		// On peut voler toutes les minutes
-		public const int DISABLE_DURATION = 1 * 60 * 1000;
+		public static int DISABLE_DURATION = ServerProperties.Properties.VOL_DELAY * 60 * 1000;
 		public const string DISABLE_PROPERTY = "vol_disable_save";
 
 		public void Execute(Ability Ab, GamePlayer player)

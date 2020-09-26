@@ -182,7 +182,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			if (timediff > 0)
 			{
 				distance = client.Player.LastPositionUpdatePoint.GetDistanceTo(new Point3D(newPlayerX, newPlayerY, newPlayerZ));
-				coordsPerSec = distance * 1000 / timediff;
+				coordsPerSec = distance * 1000 / timediff; 
 
 				if (distance < 100 && client.Player.LastPositionUpdatePoint.Z > 0)
 				{
@@ -205,7 +205,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			{
 				tolerance += client.Player.MaxSpeed;
 			}
-
+         
 			if (client.Player.IsJumping)
 			{
 				coordsPerSec = 0;
@@ -213,23 +213,27 @@ namespace DOL.GS.PacketHandler.Client.v168
 				client.Player.IsJumping = false;
 			}
 
+
 			if (!client.Player.IsAllowedToFly && (coordsPerSec > tolerance || jumpDetect > ServerProperties.Properties.JUMP_TOLERANCE))
 			{
-				bool isHackDetected = true;
+				//!Redondant so disabled!
+				//	bool isHackDetected = true;
 
-				if (coordsPerSec > tolerance)
-				{
-					// check to see if CPS time tolerance is exceeded
-					int lastCPSTick = client.Player.TempProperties.getProperty<int>(LASTCPSTICK, 0);
 
-					if (environmentTick - lastCPSTick > ServerProperties.Properties.CPS_TIME_TOLERANCE)
-					{
-						isHackDetected = false;
-					}
-				}
 
-				if (isHackDetected)
-				{
+				//if (coordsPerSec > tolerance)
+				//{
+				//	// check to see if CPS time tolerance is exceeded
+				//	int lastCPSTick = client.Player.TempProperties.getProperty<int>(LASTCPSTICK, 0);
+
+				//	if (environmentTick - lastCPSTick > ServerProperties.Properties.CPS_TIME_TOLERANCE)
+				//	{
+				//		isHackDetected = false;
+				//	}
+				//}
+
+				//if (isHackDetected)
+				//{
 					StringBuilder builder = new StringBuilder();
 					builder.Append("MOVEHACK_DETECT");
 					builder.Append(": CharName=");
@@ -248,53 +252,34 @@ namespace DOL.GS.PacketHandler.Client.v168
 					{
 						GameServer.Instance.LogCheatAction(builder.ToString());
 
-						if (ServerProperties.Properties.ENABLE_MOVEDETECT)
+						if (ServerProperties.Properties.BAN_HACKERS)
 						{
-							if (ServerProperties.Properties.BAN_HACKERS && false) // banning disabled until this technique is proven accurate
-							{
-								DBBannedAccount b = new DBBannedAccount();
-								b.Author = "SERVER";
-								b.Ip = client.TcpEndpointAddress;
-								b.Account = client.Account.Name;
-								b.DateBan = DateTime.Now;
-								b.Type = "B";
-								b.Reason = string.Format("Autoban MOVEHACK:(CPS:{0}, JT:{1}) on player:{2}", coordsPerSec, jumpDetect, client.Player.Name);
-								GameServer.Database.AddObject(b);
-								GameServer.Database.SaveObject(b);
+							DBBannedAccount b = new DBBannedAccount();
+							b.Author = "SERVER";
+							b.Ip = client.TcpEndpointAddress;
+							b.Account = client.Account.Name;
+							b.DateBan = DateTime.Now;
+							b.Type = "B";
+							b.Reason = string.Format("Autoban MOVEHACK:(CPS:{0}, JT:{1}) on player:{2}", coordsPerSec, jumpDetect, client.Player.Name);
+							GameServer.Database.AddObject(b);
 
-								string message = "";
+							string message = "";
 								
-								message = "You have been auto kicked and banned due to movement hack detection!";
-								for (int i = 0; i < 8; i++)
-								{
-									client.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_SystemWindow);
-									client.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_ChatWindow);
-								}
-
-								client.Out.SendPlayerQuit(true);
-								client.Player.SaveIntoDatabase();
-								client.Player.Quit(true);
-							}
-							else
+							message = "You have been auto kicked and banned due to movement hack detection!";
+							for (int i = 0; i < 8; i++)
 							{
-								string message = "";
-								
-								message = "You have been auto kicked due to movement hack detection!";
-								for (int i = 0; i < 8; i++)
-								{
-									client.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_SystemWindow);
-									client.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_ChatWindow);
-								}
-
-								client.Out.SendPlayerQuit(true);
-								client.Player.SaveIntoDatabase();
-								client.Player.Quit(true);
+								client.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_SystemWindow);
+								client.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_ChatWindow);
 							}
+
+							client.Out.SendPlayerQuit(true);
+							client.Player.SaveIntoDatabase();
+							client.Player.Quit(true);
 							client.Disconnect();
 							return;
 						}
 					}
-				}
+			//	}
 
 				client.Player.TempProperties.setProperty(LASTCPSTICK, environmentTick);
 			}			

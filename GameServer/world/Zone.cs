@@ -1203,7 +1203,7 @@ namespace DOL.GS
         public int BonusExperience { get; set; } = 0;
 
         /// <summary>
-        /// Bonus RP Gained (%)
+        /// Bonus RP Factor
         /// </summary>
         public int BonusRealmpoints { get; set; } = 0;
 

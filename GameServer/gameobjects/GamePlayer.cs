@@ -58,7 +58,9 @@ namespace DOL.GS
 
         private Timer afkXpTimer;
 
-        private Timer kickoutTimer;
+		private Timer afkDelayTimer;
+
+		private Timer kickoutTimer;
 
 		/// <summary>
 		/// This is our gameclient!
@@ -145,9 +147,20 @@ namespace DOL.GS
             get => this.afkXpTimer ?? (this.afkXpTimer = new Timer());
         }
 
-        public Timer KickoutTimer
+		public Timer AfkDelayTimer
+		{
+			get => this.afkDelayTimer ?? (this.afkDelayTimer = new Timer());
+		}
+
+		public Timer KickoutTimer
         {
             get => this.kickoutTimer ?? (this.kickoutTimer = new Timer());
+        }
+
+		public bool IsAfkDelayElapsed
+        {
+			get;
+			private set;
         }
 
 		/// <summary>
@@ -4307,10 +4320,10 @@ namespace DOL.GS
 				if (modifier != -1)
 					amount = (long)(amount * modifier);
 
-				//[StephenxPimente]: Zone Bonus Support
+				//Zone Bonus Support factor
 				if (ServerProperties.Properties.ENABLE_ZONE_BONUSES)
 				{
-					int zoneBonus = (((int)amount * ZoneBonus.GetRPBonus(this)) / 100);
+					int zoneBonus = (int)amount * ZoneBonus.GetRPBonus(this);
 					if (zoneBonus > 0)
 					{
 						Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)(zoneBonus * ServerProperties.Properties.RP_RATE), ZoneBonus.eZoneBonusType.RP),
@@ -14680,32 +14693,41 @@ namespace DOL.GS
 				this.Out.SendMessage("Vous n'etes désormais plus afk", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 		}
 
-        public void InitAfkTimers()
-        {
-            //Kickout timer
-            int kickoutMilliseconds = Properties.AFK_TIMEOUT * 60 * 1000;
+        public void InitAfkTimers()		
+		{
+			//Delay Timer
+			this.AfkDelayTimer.AutoReset = true;
+			this.AfkDelayTimer.Interval = 30 * 1000; //30s
+			this.AfkDelayTimer.Stop();
+			this.AfkDelayTimer.Elapsed += (object send, ElapsedEventArgs e) => this.IsAfkDelayElapsed = true;
+			this.AfkDelayTimer.Start();
+			this.IsAfkDelayElapsed = false;
 
-            if (kickoutMilliseconds < 0)
-            {
-                kickoutMilliseconds = int.MaxValue;
-            }
+			//Kickout timer
+			int kickoutMilliseconds = Properties.AFK_TIMEOUT * 60 * 1000;
 
-            KickoutTimer.AutoReset = false;
-            KickoutTimer.Interval = kickoutMilliseconds;
-            KickoutTimer.Elapsed += (object sender, ElapsedEventArgs e) => this.OnAfkTimerTimeout();
-            KickoutTimer.Start();
+			if (kickoutMilliseconds < 0)
+			{
+				kickoutMilliseconds = int.MaxValue;
+			}
 
-            //xp timer
-            int experienceMilliseconds = Properties.AFK_XP_INTERVAL * 60 * 1000;
+			KickoutTimer.AutoReset = false;
+			kickoutTimer.Stop();
+			KickoutTimer.Interval = kickoutMilliseconds;
+			KickoutTimer.Elapsed += (object sender, ElapsedEventArgs e) => this.OnAfkTimerTimeout();
+			KickoutTimer.Start();
 
-            if (experienceMilliseconds < 0)
-            {
-                experienceMilliseconds = int.MaxValue;
-            }
-            AfkXpTimer.Stop();
-            AfkXpTimer.Interval = experienceMilliseconds;
-            AfkXpTimer.Elapsed += (object sender, ElapsedEventArgs e) => OnAfkXpTick();
-            AfkXpTimer.Start();
+			//xp timer
+			int experienceMilliseconds = Properties.AFK_XP_INTERVAL * 60 * 1000;
+
+			if (experienceMilliseconds < 0)
+			{
+				experienceMilliseconds = int.MaxValue;
+			}
+			AfkXpTimer.Stop();
+			AfkXpTimer.Interval = experienceMilliseconds;
+			AfkXpTimer.Elapsed += (object sender, ElapsedEventArgs e) => OnAfkXpTick();
+			AfkXpTimer.Start();			
         }
 
         public void OnAfkXpTick()
@@ -16309,6 +16331,7 @@ namespace DOL.GS
         private GamePlayer(ICharacterClass charClass) : base()
         {
             m_characterClass = charClass;
+			this.IsAfkDelayElapsed = true;
         }
 
 		/// <summary>
@@ -16325,6 +16348,7 @@ namespace DOL.GS
 			m_rangeAttackTarget = new WeakRef(null);
 			m_client = client;
 			m_dbCharacter = dbChar;
+			this.IsAfkDelayElapsed = true;
 			m_controlledHorse = new ControlledHorse(this);
 			m_buff1Bonus = new PropertyIndexer((int)eProperty.MaxProperty); // set up a fixed indexer for players
 			m_buff2Bonus = new PropertyIndexer((int)eProperty.MaxProperty);

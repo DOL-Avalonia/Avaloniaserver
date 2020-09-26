@@ -987,6 +987,9 @@ namespace DOL.GS.ServerProperties
         [ServerProperty("rates", "rp_worth_seconds", "Realm Points Worth Seconds - Edit this to change how many seconds until a player is worth RPs again after being killed ", 300)]
         public static int RP_WORTH_SECONDS { get; set; }
 
+        [ServerProperty("vol", "vol_delay", "Define Delay in minutes between each Vol.", 4)]
+        public static int VOL_DELAY { get; set; }
+
         /// <summary>
         /// Health Regen Rate
         /// </summary>
