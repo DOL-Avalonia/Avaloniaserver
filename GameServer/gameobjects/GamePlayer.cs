@@ -1478,35 +1478,16 @@ namespace DOL.GS
 					}
 					
 				case eReleaseType.City:
-					{
-						if (Realm == eRealm.Hibernia)
-						{
-							relRegion = 201; // Tir Na Nog
-							relX = 8192 + 15780;
-							relY = 8192 + 22727;
-							relZ = 7060;
-							relHeading = 2048;
-						}
-						else if (Realm == eRealm.Midgard)
-						{
-							relRegion = 101; // Jordheim
-							relX = 8192 + 24664;
-							relY = 8192 + 21402;
-							relZ = 8759;
-							relHeading = 2048;
-						}
-						else
-						{
-							//EMBLEME (X : 434444 Y : 493161 Z : 3088 Heading : 1119 region : 51)
-							relRegion = 51; 
-							relX = 434444;
-							relY = 493161;
-							relZ = 3088;
-							relHeading = 1119;
-						}
-
+					{					
+						//EMBLEME (X : 434444 Y : 493161 Z : 3088 Heading : 1119 region : 51)
+						relRegion = 51; 
+						relX = 434444;
+						relY = 493161;
+						relZ = 3088;
+						relHeading = 1119;	
 						break;
 					}
+
 				case eReleaseType.RvR:
 					{
 						foreach (AbstractGameKeep keep in GameServer.KeepManager.GetKeepsOfRegion(CurrentRegionID))
@@ -4329,7 +4310,7 @@ namespace DOL.GS
 					amount = (long)(amount * modifier);
 
 				//Zone Bonus Support factor
-				if (ServerProperties.Properties.ENABLE_ZONE_BONUSES)
+				if (Properties.ENABLE_ZONE_BONUSES)
 				{
 					int zoneBonus = (int)(amount * ZoneBonus.GetRPBonus(this) * ServerProperties.Properties.RP_RATE);
 					if (zoneBonus > 0)
@@ -4339,6 +4320,26 @@ namespace DOL.GS
 						GainRealmPoints((long)(zoneBonus), false, false, false);
 					}
 				}
+
+				//Zone Bonus Support factor
+				if (Properties.ENABLE_AREA_BONUSES)
+                {
+					//Area RP Bonus
+					int areapoints = 0;
+					foreach (var area in this.CurrentAreas)
+					{
+						areapoints += area.RealmPoints;
+					}
+
+					int areaBonus = (int)(amount * areapoints * ServerProperties.Properties.RP_RATE);
+					if (areaBonus > 0)
+					{
+						Out.SendMessage(string.Format("Vous obtenez {0} points de royaume de bonus grâce aux bonus d'area", areaBonus),
+										eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+						GainRealmPoints((long)(areaBonus), false, false, false);
+					}
+				}	
+			
 
 				//[Freya] Nidel: ToA Rp Bonus
 				long rpBonus = GetModified(eProperty.RealmPoints);

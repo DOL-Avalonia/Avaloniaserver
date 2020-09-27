@@ -82,6 +82,8 @@ namespace DOL.GS
         /// </summary>
         public ushort ID { get; set; }
 
+        public int RealmPoints { get; set; }
+
         public virtual LanguageDataObject.eTranslationIdentifier TranslationIdentifier => LanguageDataObject.eTranslationIdentifier.eArea;
 
         /// <summary>

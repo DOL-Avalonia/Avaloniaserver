@@ -26,8 +26,8 @@ namespace DOL.Territory
         private readonly string BOSS_CLASS = "DOL.GS.Scripts.TerritoryBoss";    
         private readonly string GUARD_CLASS = "DOL.GS.Scripts.TerritoryGuard";
         private readonly string GUARD_BASIC_TEMPLATE = "gvg_guard_Basique";
-        private readonly byte DAILY_TAX = 16;
-        private readonly byte DAILY_MERIT_POINTS = 41;
+        private static readonly int DAILY_TAX = GS.ServerProperties.Properties.DAILY_TAX;
+        private static readonly int DAILY_MERIT_POINTS = GS.ServerProperties.Properties.DAILY_MERIT_POINTS;
 
         public static TerritoryManager Instance => instance ?? (instance = new TerritoryManager());
 

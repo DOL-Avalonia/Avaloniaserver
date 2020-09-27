@@ -35,6 +35,8 @@ namespace DOL.GS
         /// </summary>
         ushort ID { get; set; }
 
+        int RealmPoints { get; set; }
+
         void UnRegisterPlayerEnter(DOLEventHandler callback);
 
         void UnRegisterPlayerLeave(DOLEventHandler callback);

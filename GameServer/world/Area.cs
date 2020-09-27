@@ -140,6 +140,7 @@ namespace DOL.GS
                 Width = area.Radius;
                 Height = area.Radius;
                 this.CanVol = area.AllowVol;
+                RealmPoints = area.RealmPoints;
             }
         }
 
@@ -275,6 +276,7 @@ namespace DOL.GS
                 Y = area.Y;
                 Z = area.Z;
                 Radius = area.Radius;
+                RealmPoints = area.RealmPoints;
                 m_RadiusRadius = area.Radius * area.Radius;
                 this.CanVol = area.AllowVol;
             }
@@ -453,6 +455,7 @@ namespace DOL.GS
                 Y = area.Y;
                 Radius = area.Radius;
                 StringPoints = area.Points;
+                RealmPoints = area.RealmPoints;
                 this.CanVol = area.AllowVol;
             }
         }

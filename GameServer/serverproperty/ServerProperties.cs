@@ -706,6 +706,12 @@ namespace DOL.GS.ServerProperties
         public static bool ENABLE_ZONE_BONUSES { get; set; }
 
         /// <summary>
+        /// Should we enable Area Bonuses?
+        /// </summary>
+        [ServerProperty("world", "enable_area_bonuses", "Are Area Bonuses Enabled?", false)]
+        public static bool ENABLE_AREA_BONUSES { get; set; }
+
+        /// <summary>
         /// List of ZoneId where personnal mount is allowed
         /// </summary>
         [ServerProperty("world", "allow_personnal_mount_in_regions", "CSV Regions where player mount is allowed", "")]
@@ -1990,6 +1996,12 @@ namespace DOL.GS.ServerProperties
         [ServerProperty("craft", "crafting_speed", "Crafting Speed Modifier - Edit this to change the speed at which you craft e.g 1.5 is 50% faster 2.0 is twice as fast (100%) 0.5 is half the speed (50%)", 1.0)]
         public static double CRAFTING_SPEED { get; set; }
 
+        [ServerProperty("territory", "daily_tax ", "Territory Daily Gold Tax", 9)]
+        public static int DAILY_TAX { get; internal set; }
+
+        [ServerProperty("territory", "daily_merit_points ", "Territory Daily Merit Points", 19)]
+        public static int DAILY_MERIT_POINTS { get; internal set; }        
+
         /// <summary>
         /// Crafting skill gain bonus in capital cities
         /// </summary>
@@ -2115,6 +2127,8 @@ namespace DOL.GS.ServerProperties
                 return result;
             }
         }
+
+
 
         /// <summary>
         /// This method loads the property from the database and returns
