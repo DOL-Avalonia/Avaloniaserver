@@ -2383,11 +2383,24 @@ namespace DOL.Database
             }
         }
 
+        [DataElement(AllowDbNull = false)]
+        public int Reputation
+        {
+            get { return m_reputation; }
+
+            set 
+            { 
+                Dirty = true;
+                m_reputation = value;
+            }
+        }
+
         /// <summary>
         /// List of Custom Params for this Character
         /// </summary>
         [Relation(LocalField = "DOLCharacters_ID", RemoteField = "DOLCharactersObjectId", AutoLoad = true, AutoDelete = true)]
         public DOLCharactersXCustomParam[] CustomParams;
+        private int m_reputation;
     }
 
     /// <summary>

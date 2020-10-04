@@ -26,6 +26,7 @@ using System.Text;
 using System.Timers;
 using DOL.AI.Brain;
 using DOL.Database;
+using DOL.events.gameobjects;
 using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.Housing;
@@ -1357,6 +1358,10 @@ namespace DOL.GS
 			/// Release to players house
 			/// </summary>
 			House,
+			/// <summary>
+			/// Release To Jail
+			/// </summary>
+			Jail
 		}
 
 		/// <summary>
@@ -1717,8 +1722,12 @@ namespace DOL.GS
 
 			//Call MoveTo after new GameGravestone(this...
 			//or the GraveStone will be located at the player's bindpoint
-			
-			MoveTo(relRegion, relX, relY, relZ, relHeading);
+
+			if (m_releaseType != eReleaseType.Jail)
+            {
+				MoveTo(relRegion, relX, relY, relZ, relHeading);
+			}
+
 			//It is enough if we revive the player on this client only here
 			//because for other players the player will be removed in the MoveTo
 			//method and added back again (if in view) with full health ... so no
@@ -1751,6 +1760,12 @@ namespace DOL.GS
 					loc.Heading = Heading;
 					loc.RegionID = CurrentRegionID;
 				}
+			}
+			
+			if (m_releaseType == eReleaseType.Jail)
+            {
+				GameEventMgr.Notify(GamePlayerEvent.SendToJail, new SendToJailEventArgs() { GamePlayer = this, Cost = 10, Sortie = DateTime.Now + TimeSpan.FromMinutes(1) });
+				this.Reputation = 0;
 			}
 		}
 
@@ -13074,7 +13089,8 @@ namespace DOL.GS
 			m_Mithril = DBCharacter.Mithril;
 			
 			Model = (ushort)DBCharacter.CurrentModel;
-			IsRenaissance = DBCharacter.IsRenaissance;		
+			IsRenaissance = DBCharacter.IsRenaissance;
+			Reputation = DBCharacter.Reputation;
 
 			m_customFaceAttributes[(int)eCharFacePart.EyeSize] = DBCharacter.EyeSize;
 			m_customFaceAttributes[(int)eCharFacePart.LipSize] = DBCharacter.LipSize;
@@ -13259,6 +13275,7 @@ namespace DOL.GS
 				DBCharacter.PlayedTime = PlayedTime;  //We have to set the PlayedTime on the character before setting the LastPlayed
 				DBCharacter.LastPlayed = DateTime.Now;
                 DBCharacter.IsRenaissance = IsRenaissance;
+				DBCharacter.Reputation = Reputation;
 
 				DBCharacter.ActiveWeaponSlot = (byte)((byte)ActiveWeaponSlot | (byte)ActiveQuiverSlot);
 				if (m_stuckFlag)
@@ -14985,11 +15002,17 @@ namespace DOL.GS
             set;
         }
 
-		/// <summary>
-		/// Create a shade effect for this player.
-		/// </summary>
-		/// <returns></returns>
-		protected virtual ShadeEffect CreateShadeEffect()
+        public int Reputation
+		{ 
+			get;
+			set;
+		}
+
+        /// <summary>
+        /// Create a shade effect for this player.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual ShadeEffect CreateShadeEffect()
 		{
 			return CharacterClass.CreateShadeEffect();
 		}

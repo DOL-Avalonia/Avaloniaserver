@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DOL.Database;
+using DOL.events.gameobjects;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 
@@ -59,9 +61,19 @@ namespace DOL.GS.Scripts
             GameEventMgr.AddHandler(GamePlayerEvent.GameEntered, new DOLEventHandler(PlayerEnter));
             GameEventMgr.AddHandler(prisHRP, AreaEvent.PlayerLeave, PlayerEvade);
             GameEventMgr.AddHandler(prisRP, AreaEvent.PlayerLeave, PlayerEvade);
+            GameEventMgr.AddHandler(GamePlayerEvent.SendToJail, SendToJail);
         }
 
-		private static void PlayerEnter(DOLEvent e, object sender, EventArgs args)
+        private static void SendToJail(DOLEvent e, object sender, EventArgs arguments)
+        {
+            var args = arguments as SendToJailEventArgs;
+            if (args != null)
+            {
+                EmprisonnerRP(args.GamePlayer, args.Cost, args.Sortie, "les gardes", "Hors la loi");
+            }
+        }
+
+        private static void PlayerEnter(DOLEvent e, object sender, EventArgs args)
 		{
             GamePlayer player = sender as GamePlayer;
             if (player == null) return;
@@ -317,6 +329,18 @@ namespace DOL.GS.Scripts
 
 			player.MaxSpeedBase = 191;
 			player.Out.SendUpdateMaxSpeed();
+
+            var deaths = GameServer.Database.SelectObjects<DBDeathLog>("KilledId = @id AND ExitFromJail = 0 AND IsWanted = 1", new QueryParameter("id", player.InternalID));
+
+            if (deaths != null)
+            {
+                var death = deaths.FirstOrDefault();
+                if (death != null)
+                {
+                    death.ExitFromJail = true;
+                    GameServer.Database.SaveObject(death);
+                }               
+            }
 
             if (Prisonnier.RP) player.MoveTo(Sortie_RegionID, Sortie_X, Sortie_Y, Sortie_Z, Sortie_Heading);
             else player.MoveTo(SortieHRP_RegionID, SortieHRP_X, SortieHRP_Y, SortieHRP_Z, SortieHRP_Heading);

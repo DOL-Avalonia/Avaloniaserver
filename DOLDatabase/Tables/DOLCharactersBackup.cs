@@ -173,6 +173,7 @@ namespace DOL.Database
             Xpos = character.Xpos;
             Ypos = character.Ypos;
             Zpos = character.Zpos;
+            Reputation = character.Reputation;
 
             // Copy Custom Params
             CustomParams = character.CustomParams != null

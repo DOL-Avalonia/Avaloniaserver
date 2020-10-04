@@ -216,5 +216,7 @@ namespace DOL.Events
         /// The KillsLegionChanged event is fired when KillsLegion properties changes.
         /// </summary>
         public static readonly GamePlayerEvent KillsLegionChanged = new GamePlayerEvent("GamePlayer.KillsLegionChanged");
+
+        public static readonly GamePlayerEvent SendToJail = new GamePlayerEvent("GamePlayer.SendToJail");
     }
 }

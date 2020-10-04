@@ -196,6 +196,12 @@ namespace DOL.GS.PacketHandler.Client.v168
                     GameClient findclient = WorldMgr.GetClientByAccountName(userName, true);
                     if (findclient != null)
                     {
+#if DEBUG
+                        if (ServerProperties.Properties.ALLOW_DUAL_LOGINS)
+                        {
+                            return;
+                        }
+#endif
                         client.IsConnected = false;
 
                         if (findclient.ClientState == GameClient.eClientState.Connecting)

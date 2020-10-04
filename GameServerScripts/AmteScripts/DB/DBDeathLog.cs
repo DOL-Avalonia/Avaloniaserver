@@ -12,7 +12,14 @@ namespace DOL.Database
         {
             private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-            public DBDeathLog(GameObject killed, GameObject killer)
+            private bool exitFromJail;
+
+            public DBDeathLog()
+            {
+
+            }
+
+            public DBDeathLog(GameObject killed, GameObject killer, bool isWanted)
             {
 				Killer = "(null)";
 				KillerClass = "(null)";
@@ -27,6 +34,8 @@ namespace DOL.Database
                 Y = killed.Y;
                 Region = killed.CurrentRegionID;
                 DeathDate = DateTime.Now;
+                IsWanted = isWanted;
+                KilledId = killed.InternalID;
             }
 
             [PrimaryKey(AutoIncrement = true)]
@@ -41,23 +50,33 @@ namespace DOL.Database
             [DataElement(AllowDbNull = false)]
             public String Killed { get; set; }
 
-            [DataElement(AllowDbNull = false)]
+            [DataElement(AllowDbNull = false, Index = true)]
+            public String KilledId { get; set; }
+
+
+        [DataElement(AllowDbNull = false)]
             public String KilledClass { get; set; }
 
-            [DataElement(AllowDbNull = false, Index = true)]
+            [DataElement(AllowDbNull = false)]
             public int X { get; set; }
 
-            [DataElement(AllowDbNull = false, Index = true)]
+            [DataElement(AllowDbNull = false)]
             public int Y { get; set; }
 
-            [DataElement(AllowDbNull = false, Index = true)]
+            [DataElement(AllowDbNull = false)]
             public int Region { get; set; }
 
-            [DataElement(AllowDbNull = false, Index = true)]
+            [DataElement(AllowDbNull = false)]
             public DateTime DeathDate { get; set; }
 
-            #region Init
-            private static bool Loaded = false;
+            [DataElement(AllowDbNull = false)]
+            public bool IsWanted { get; set; }
+
+            [DataElement(AllowDbNull = false)]
+            public bool ExitFromJail { get { return exitFromJail; } set { Dirty = true; exitFromJail = value; } }
+
+        #region Init
+        private static bool Loaded = false;
 
             [ScriptLoadedEvent]
             public static void OnScriptsCompiled(DOLEvent e, object sender, EventArgs args)

@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using DOL.Database;
 using DOL.Events;
+using DOL.GS.Scripts;
 using log4net;
 
 
@@ -28,8 +29,21 @@ namespace DOL.GS.GameEvents
 
         public static void LivingKillEnnemy(DOLEvent e, object sender, EventArgs args)
         {
-            GameServer.Database.AddObject(new DBDeathLog((GameObject)sender, ((DyingEventArgs)args).Killer));
-        }
+            var dyingArgs = args as DyingEventArgs;
+            if (dyingArgs != null)
+            {
+                var killer = dyingArgs.Killer;
+                var killed = sender as GamePlayer;
+                //Player isWanted when Killed by Guard
+                if (killed != null)
+                {
+                    bool isWanted = killer is GuardNPC || killed.Reputation < 0;
+                    if (killer is GamePlayer || isWanted)
+                    {
+                        GameServer.Database.AddObject(new DBDeathLog((GameObject)sender, killer, isWanted));
+                    }
+                }
+            }
+        }            
     }
-
 }
