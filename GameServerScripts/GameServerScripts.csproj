@@ -127,6 +127,7 @@
     <Compile Include="Amtescripts\GameObjects\TextNPC\EchangeurPlayerItemsCount.cs" />
     <Compile Include="Amtescripts\GameObjects\TextNPC\RequireItemInfo.cs" />
     <Compile Include="Amtescripts\GvG\GuildCaptainGuard.cs" />
+    <Compile Include="Amtescripts\Managers\DeathCheck.cs" />
     <Compile Include="Amtescripts\PvP\PvpManager.cs" />
     <Compile Include="Amtescripts\PvP\TeleporterPvP.cs" />
     <Compile Include="Amtescripts\RvR\LordRvR.cs" />

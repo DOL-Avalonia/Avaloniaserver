@@ -300,6 +300,13 @@ namespace DOL.GS.Commands
 		{
 			GamePlayer stealer = (GamePlayer)Timer.Properties.getProperty<object>(PLAYER_STEALER, null);
 			GamePlayer target = (GamePlayer)Timer.Properties.getProperty<object>(TARGET_STOLE, null);
+			
+			if (target.IsMezzed)
+			{
+				stealer.Reputation--;
+				stealer.Out.SendMessage("Vous perdez 1 points de réputation pour avoir tenté de voler un joueur endormi.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				stealer.SaveIntoDatabase();
+			}
 
 			VolResult result = Vol(stealer, target);
 			if (result.Status == VolResultStatus.STEALTHLOST)
@@ -319,7 +326,6 @@ namespace DOL.GS.Commands
 			}
 
 			CancelVol(stealer, Timer);
-
 
 			return 0;
 		}

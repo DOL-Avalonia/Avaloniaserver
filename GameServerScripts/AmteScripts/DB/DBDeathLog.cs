@@ -27,6 +27,11 @@ namespace DOL.Database
                 {
                     Killer = killer.Name;
                     KillerClass = killer.GetType().ToString();
+                    
+                    if (killer is GamePlayer)
+                    {
+                        KillerId = killer.InternalID;
+                    }                    
                 }
                 Killed = killed.Name;
                 KilledClass = killed.GetType().ToString();
@@ -50,6 +55,9 @@ namespace DOL.Database
             [DataElement(AllowDbNull = false)]
             public String Killed { get; set; }
 
+            [DataElement(AllowDbNull = false)]
+            public String KillerId { get; set; }
+
             [DataElement(AllowDbNull = false, Index = true)]
             public String KilledId { get; set; }
 
@@ -66,7 +74,7 @@ namespace DOL.Database
             [DataElement(AllowDbNull = false)]
             public int Region { get; set; }
 
-            [DataElement(AllowDbNull = false)]
+            [DataElement(AllowDbNull = false, Index = true)]
             public DateTime DeathDate { get; set; }
 
             [DataElement(AllowDbNull = false)]

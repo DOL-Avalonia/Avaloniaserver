@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using DOL.Database;
 using DOL.events.gameobjects;
 using DOL.Events;
 using DOL.GS.PacketHandler;
+using log4net;
 
 namespace DOL.GS.Scripts
 {
@@ -13,6 +15,7 @@ namespace DOL.GS.Scripts
 	/// </summary>
 	public static class JailMgr
 	{
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         public const ushort Radius = 300; //Taille de la prison
 	    
 		// Réglages prison
@@ -69,7 +72,47 @@ namespace DOL.GS.Scripts
             var args = arguments as SendToJailEventArgs;
             if (args != null)
             {
-                EmprisonnerRP(args.GamePlayer, args.Cost, args.Sortie, "les gardes", "Hors la loi");
+                int cost = 0;
+                TimeSpan time;
+                string reason = null;
+
+                if (args.OriginalReputation == -1)
+                {
+                    cost = 450;
+                    time = TimeSpan.FromHours(24);
+                    reason = "Hors-la-loi";
+                }
+                else if (args.OriginalReputation == -2)
+                {
+                    cost = 900;
+                    time = TimeSpan.FromHours(42);
+                    reason = "Bandit";
+                }
+                else if (args.OriginalReputation == -3)
+                {
+                    cost = 1800;
+                    time = TimeSpan.FromHours(72);
+                    reason = "Bandit-Lieutenant";
+                }
+                else if (args.OriginalReputation == -4)
+                {
+                    cost = 3600;
+                    time = TimeSpan.FromHours(120);
+                    reason = "Consiglière";
+                }
+                else if (args.OriginalReputation <= -5)
+                {
+                    cost = 7200;
+                    time = TimeSpan.FromHours(168);
+                    reason = "Parrain";
+                }
+                else
+                {
+                    log.Warn(string.Format("Cannot send Player {0} from Acount {1} to Jail because reputation is not correct. Value: {2}", args.GamePlayer.Name, args.GamePlayer.AccountName, args.GamePlayer.Reputation));
+                    return;
+                }
+
+                EmprisonnerRP(args.GamePlayer, cost, DateTime.Now + time, "les gardes", reason);
             }
         }
 
@@ -451,5 +494,7 @@ namespace DOL.GS.Scripts
         {
 			return player.TempProperties.getProperty<Prisoner>("JailMgr", null) != null;
         }
+
+       
 	}
 }

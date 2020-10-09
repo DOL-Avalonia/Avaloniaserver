@@ -11,7 +11,6 @@ namespace DOL.events.gameobjects
         : EventArgs
     {
         public GamePlayer GamePlayer { get; set; }
-        public int Cost { get; set; }
-        public DateTime Sortie { get; set; }     
+        public int OriginalReputation { get; set; }       
     }
 }

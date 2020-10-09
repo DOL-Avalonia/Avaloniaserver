@@ -1764,7 +1764,7 @@ namespace DOL.GS
 			
 			if (m_releaseType == eReleaseType.Jail)
             {
-				GameEventMgr.Notify(GamePlayerEvent.SendToJail, new SendToJailEventArgs() { GamePlayer = this, Cost = 10, Sortie = DateTime.Now + TimeSpan.FromMinutes(1) });
+				GameEventMgr.Notify(GamePlayerEvent.SendToJail, new SendToJailEventArgs() { GamePlayer = this, OriginalReputation = this.Reputation });
 				this.Reputation = 0;
 			}
 		}

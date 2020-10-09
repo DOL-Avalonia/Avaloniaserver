@@ -2,6 +2,7 @@ using System;
 using System.Text;
 using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
+using GameServerScripts.Amtescripts.Managers;
 
 namespace DOL.GS.Scripts
 {
@@ -29,15 +30,21 @@ namespace DOL.GS.Scripts
 
 		public override bool WhisperReceive(GameLiving source, string text)
 		{
-			var player = source as AmtePlayer;
-			if (!base.WhisperReceive(source, text) || player == null || BlacklistMgr.IsBlacklisted(player))
+			var player = source as GamePlayer;
+			if (!base.WhisperReceive(source, text) || player == null)  //|| BlacklistMgr.IsBlacklisted(player))
 				return false;
 
 			switch (text)
 			{
 				case "Signaler":
-					if (BlacklistMgr.ReportPlayer(player))
-						player.Out.SendMessage("La personne qui vous a tué a été signalé !", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+
+					int reported = DeathCheck.Instance.ReportPlayer(player);
+					//if (BlacklistMgr.ReportPlayer(player)) Old Way not used anymore
+					if (reported > 0)
+					{
+						string words = reported == 1 ? "La personne qui vous a tué a été signalé !" : "Les " + reported  + " personnes qui vont ont tués ont été signalés !";
+						player.Out.SendMessage(words, eChatType.CT_System, eChatLoc.CL_PopupWindow);
+					}
 					else
 						player.Out.SendMessage("C'est trop tard pour signaler votre tueur !", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 					break;
@@ -45,8 +52,8 @@ namespace DOL.GS.Scripts
 				case "Voir":
 					StringBuilder sb = new StringBuilder();
 					sb.AppendLine("Les personnes suivantes sont sur la liste noire:");
-					BlacklistMgr.GetBlacklistedNames().ForEach(s => sb.AppendLine(s));
-					player.Out.SendMessage(sb.ToString(), eChatType.CT_System, eChatLoc.CL_PopupWindow);
+					//BlacklistMgr.GetBlacklistedNames().ForEach(s => sb.AppendLine(s));
+					//player.Out.SendMessage(sb.ToString(), eChatType.CT_System, eChatLoc.CL_PopupWindow);
 					break;
 			}
 			return true;

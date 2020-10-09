@@ -1,8 +1,10 @@
 using System;
 using System.Reflection;
+using AmteScripts.Managers;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.Scripts;
+using GameServerScripts.Amtescripts.Managers;
 using log4net;
 
 
@@ -34,13 +36,38 @@ namespace DOL.GS.GameEvents
             {
                 var killer = dyingArgs.Killer;
                 var killed = sender as GamePlayer;
+                var killerPlayer = killer as GamePlayer;
                 //Player isWanted when Killed by Guard
                 if (killed != null)
                 {
+                    //If killer is GM, let go
+                    if (killerPlayer != null && killerPlayer.Client.Account.PrivLevel > 1)
+                    {
+                        return;
+                    }
+
+                    //Allow kills and do not log in PvP zones etc..
+                    if (killed.isInBG || 
+                        killed.CurrentRegion.IsRvR ||
+                        PvpManager.Instance.IsPvPRegion(killed.CurrentRegion.ID) ||
+                        Territory.TerritoryManager.Instance.IsTerritoryArea(killed.CurrentAreas))
+                    {
+                        return;
+                    }
+
                     bool isWanted = killer is GuardNPC || killed.Reputation < 0;
                     if (killer is GamePlayer || isWanted)
                     {
                         GameServer.Database.AddObject(new DBDeathLog((GameObject)sender, killer, isWanted));
+                        if (killerPlayer != null)
+                        {
+                            if (DeathCheck.Instance.IsChainKiller(killerPlayer, killed))
+                            {
+                                killerPlayer.Reputation -= 2;
+                                killerPlayer.SaveIntoDatabase();
+                                killerPlayer.Out.SendMessage("Vous avez perdu 2 points de réputations pour cause d'assassinats multiples.", PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
+                            }
+                        }
                     }
                 }
             }
