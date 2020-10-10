@@ -112,7 +112,7 @@ namespace DOL.GS.Scripts
                     return;
                 }
 
-                EmprisonnerRP(args.GamePlayer, cost, DateTime.Now + time, "les gardes", reason);
+                EmprisonnerRP(args.GamePlayer, cost, DateTime.Now + time, "les gardes", reason, true);
             }
         }
 
@@ -129,6 +129,7 @@ namespace DOL.GS.Scripts
             }
             Prisonniers.Add(player);
             PlayerXPrisoner.Add(player, prison);
+            player.Reputation = 0;
 
             if (prison.RP) player.MoveTo(Prison_RegionID, Prison_X, Prison_Y, Prison_Z, Prison_Heading);
             else player.MoveTo(PrisonHRP_RegionID, PrisonHRP_X, PrisonHRP_Y, PrisonHRP_Z, PrisonHRP_Heading);
@@ -218,7 +219,7 @@ namespace DOL.GS.Scripts
 		/// <param name="GM"></param>
 		/// <param name="JailRP"></param>
 		/// <param name="raison"></param>
-		private static void Emprisonner(GamePlayer player, int cost, DateTime sortie, string GM, bool JailRP, string raison)
+		private static void Emprisonner(GamePlayer player, int cost, DateTime sortie, string GM, bool JailRP, string raison, bool isOutLaw)
 		{
             //On vérifie le tps
             long time = (sortie.Ticks - DateTime.Now.Ticks) / 10000;
@@ -231,7 +232,8 @@ namespace DOL.GS.Scripts
 			                              Cost = cost,
 			                              Sortie = sortie,
 			                              RP = JailRP,
-			                              Raison = raison
+			                              Raison = raison,
+                                          IsOutLaw = isOutLaw
 			                      };
 		    GameServer.Database.AddObject(prisoner);
 			if (JailRP)
@@ -241,6 +243,7 @@ namespace DOL.GS.Scripts
 			player.Bind(true);
 			player.MaxSpeedBase = 50;
 			player.Out.SendUpdateMaxSpeed();
+            player.Reputation = 0;
             player.SaveIntoDatabase();
 			Prisonniers.Add(player);
 		    PlayerXPrisoner.Add(player, prisoner);
@@ -322,6 +325,7 @@ namespace DOL.GS.Scripts
                 perso.BindHeading = PrisonHRP_Heading;
                 perso.BindRegion = PrisonHRP_RegionID;
             }
+            perso.Reputation = 0;
             perso.MaxSpeed = 50;
             GameServer.Database.SaveObject(perso);
 
@@ -331,16 +335,16 @@ namespace DOL.GS.Scripts
         /// <summary>
         /// Emprisonner un joueur connecté dans la prison RP
         /// </summary>
-        public static void EmprisonnerRP(GamePlayer player, int cost, DateTime sortie, string GM, string raison) 
+        public static void EmprisonnerRP(GamePlayer player, int cost, DateTime sortie, string GM, string raison, bool isOutLaw) 
 		{
-            Emprisonner(player, cost, sortie, GM, true, raison);
+            Emprisonner(player, cost, sortie, GM, true, raison, isOutLaw);
 		}
         /// <summary>
         /// Emprisonner un joueur connecté dans la prison HRP
         /// </summary>
         public static void EmprisonnerHRP(GamePlayer player, DateTime sortie, string GM, string raison) 
 		{
-            Emprisonner(player, 0, sortie, GM, false, raison);
+            Emprisonner(player, 0, sortie, GM, false, raison, false);
 		}
 
         /// <summary>
@@ -372,7 +376,7 @@ namespace DOL.GS.Scripts
 
 			player.MaxSpeedBase = 191;
 			player.Out.SendUpdateMaxSpeed();
-
+            player.Reputation = 0;
             var deaths = GameServer.Database.SelectObjects<DBDeathLog>("KilledId = @id AND ExitFromJail = 0 AND IsWanted = 1", new QueryParameter("id", player.InternalID));
 
             if (deaths != null)

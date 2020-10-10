@@ -23,15 +23,11 @@ namespace DOL.Database
             {
 				Killer = "(null)";
 				KillerClass = "(null)";
-				if (killer != null)
+                if (killer != null)
                 {
                     Killer = killer.Name;
                     KillerClass = killer.GetType().ToString();
-                    
-                    if (killer is GamePlayer)
-                    {
-                        KillerId = killer.InternalID;
-                    }                    
+                    KillerId = killer.InternalID;
                 }
                 Killed = killed.Name;
                 KilledClass = killed.GetType().ToString();

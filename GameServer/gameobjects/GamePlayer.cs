@@ -188,6 +188,12 @@ namespace DOL.GS
 			set { m_isInBG = value; }
 		}
 
+		public bool IsInPvP
+        {
+			get;
+			set;
+        }
+
 		/// <summary>
 		/// Current warmap page
 		/// </summary>
@@ -1872,6 +1878,10 @@ namespace DOL.GS
 		/// Property that saves condition lost on last death
 		/// </summary>
 		public const string DEATH_CONSTITUTION_LOSS_PROPERTY = "death_con_loss";
+		/// <summary>
+		/// Property that save mezzed state from other player to determine if player was mezz
+		/// </summary>
+		public const string PLAYER_MEZZED_BY_OTHER_PLAYER_ID = "player_mezzed_by_other_player";
 		#endregion
 
 		#region Praying
@@ -16364,7 +16374,8 @@ namespace DOL.GS
         {
             m_characterClass = charClass;
 			this.IsAfkDelayElapsed = true;
-        }
+			this.IsAllowToVolInThisArea = true;
+		}
 
 		/// <summary>
 		/// Creates a new player
@@ -16381,6 +16392,7 @@ namespace DOL.GS
 			m_client = client;
 			m_dbCharacter = dbChar;
 			this.IsAfkDelayElapsed = true;
+			this.IsAllowToVolInThisArea = true;
 			m_controlledHorse = new ControlledHorse(this);
 			m_buff1Bonus = new PropertyIndexer((int)eProperty.MaxProperty); // set up a fixed indexer for players
 			m_buff2Bonus = new PropertyIndexer((int)eProperty.MaxProperty);

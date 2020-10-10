@@ -137,6 +137,9 @@ namespace DOL.GS.ServerProperties
         [ServerProperty("system", "load_housing_npc", "Should the server load Housing npc, values True,False", true)]
         public static bool LOAD_HOUSING_NPC { get; set; }
 
+        [ServerProperty("system", "reward_outlaw_head_gold", "The price in golds for the head of an outlaw", 50)]
+        public static int REWARD_OUTLAW_HEAD_GOLD { get; set; }
+
         /// <summary>
         /// Disable Bug Reports
         /// </summary>

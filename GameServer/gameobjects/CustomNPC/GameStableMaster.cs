@@ -57,6 +57,12 @@ namespace DOL.GS
             {
                 GamePlayer player = (GamePlayer)source;
 
+                if (player.Reputation < 0)
+                {
+                    player.Out.SendMessage("Je ne reçois rien de la part des hors-la-loi", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                    return false;
+                }
+
                 if (item.Item_Type == 40 && isItemInMerchantList(item))
                 {
                     PathPoint path = MovementMgr.LoadPath(item.Id_nb);

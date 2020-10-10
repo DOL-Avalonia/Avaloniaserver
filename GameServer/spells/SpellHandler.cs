@@ -950,7 +950,7 @@ namespace DOL.GS.Spells
 			if (!(Caster is GamePlayer))
 			{
 				Caster.Notify(GameLivingEvent.CastSucceeded, this, new PetSpellEventArgs(Spell, SpellLine, selectedTarget));
-			}
+            }
 
 			return true;
 		}

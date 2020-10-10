@@ -3,6 +3,7 @@ using System.Reflection;
 using AmteScripts.Managers;
 using DOL.Database;
 using DOL.Events;
+using DOL.GS.PacketHandler;
 using DOL.GS.Scripts;
 using GameServerScripts.Amtescripts.Managers;
 using log4net;
@@ -46,18 +47,19 @@ namespace DOL.GS.GameEvents
                         return;
                     }
 
-                    //Allow kills and do not log in PvP zones etc..
-                    if (killed.isInBG || 
-                        killed.CurrentRegion.IsRvR ||
-                        PvpManager.Instance.IsPvPRegion(killed.CurrentRegion.ID) ||
-                        Territory.TerritoryManager.Instance.IsTerritoryArea(killed.CurrentAreas))
+                    if (IsKillAllowed(killed))
                     {
                         return;
-                    }
+                    }                 
 
-                    bool isWanted = killer is GuardNPC || killed.Reputation < 0;
-                    if (killer is GamePlayer || isWanted)
+                    bool isWanted = killed.Reputation < 0;
+                    bool isLegitimeKiller = killer is GuardNPC || killerPlayer != null;
+
+                    //Log interplayer kills & Killed by Guard
+                    //Dot not log killed by npcs
+                    if (isLegitimeKiller)
                     {
+                        //Log Death
                         GameServer.Database.AddObject(new DBDeathLog((GameObject)sender, killer, isWanted));
                         if (killerPlayer != null)
                         {
@@ -70,7 +72,53 @@ namespace DOL.GS.GameEvents
                         }
                     }
                 }
+                else
+                {
+                    //Check if Guard was killed
+                    if (sender is GuardNPC && killerPlayer != null && !IsKillAllowed(killerPlayer))
+                    {
+                        if (killerPlayer.Group != null)
+                        {
+                            foreach (GamePlayer player in killerPlayer.Group.GetMembersInTheGroup())
+                            {
+                                GuardKillLostReputation(player);
+                            }
+                        }
+                        else
+                        {
+                            GuardKillLostReputation(killerPlayer);
+                        }
+                    }
+                }
             }
-        }            
+        }    
+        
+        private static void GuardKillLostReputation(GamePlayer player)
+        {
+            if (player.Client.Account.PrivLevel > 1)
+            {
+                player.Reputation--;
+                player.SaveIntoDatabase();
+                player.Out.SendMessage("Vous avez perdu 1 points de réputation pour cause d'assassinat de garde", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            }
+        }
+
+        /// <summary>
+        /// Is kill allowed ? Allow kills in PvP zones etc..
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
+        private static bool IsKillAllowed(GamePlayer player)
+        {
+            if (player.isInBG ||
+                player.CurrentRegion.IsRvR ||
+                PvpManager.Instance.IsPvPRegion(player.CurrentRegion.ID) ||
+                Territory.TerritoryManager.Instance.IsTerritoryArea(player.CurrentAreas))
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 }

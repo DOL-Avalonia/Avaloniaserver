@@ -330,9 +330,10 @@ namespace DOL.GS.ServerRules
 			if (source == null || target == null)
 				return false;
 			var targetNpc = target as GameNPC;
+			var sourcePlayer = source as GamePlayer;
+
 			if (targetNpc != null)
             {
-				var sourcePlayer = source as GamePlayer;
 				if (sourcePlayer != null && targetNpc.CurrentGroupMob != null)
                 {
 					if (MobGroups.MobGroup.IsQuestAggresive(targetNpc, sourcePlayer))
@@ -349,6 +350,11 @@ namespace DOL.GS.ServerRules
 			var targetPlayer = target as GamePlayer;
 			if (sourceNpc != null)
             {
+				if (source is GuardNPC && targetPlayer != null && targetPlayer.Reputation >= 0)
+				{
+					return true;
+				}
+
 				if (sourceNpc.CurrentGroupMob != null && targetPlayer != null)
                 {
 					if (MobGroups.MobGroup.IsQuestAggresive(sourceNpc, targetPlayer))

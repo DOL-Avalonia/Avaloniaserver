@@ -230,23 +230,33 @@ namespace DOL.GS.Scripts
 		{
 			if (victim == killer)
 				return;
-			var inBL = IsBlacklisted(victim);
-			ItemUnique iu = new ItemUnique(HeadTemplate)
+			//old system
+			//var inBL = IsBlacklisted(victim);
+
+			if (victim.isInBG || victim.IsInPvP || victim.CurrentRegion.IsRvR || Territory.TerritoryManager.Instance.IsTerritoryArea(victim.CurrentAreas))
+            {
+				return;
+            }
+
+			if (victim.Reputation < 0)
+            {
+				ItemUnique iu = new ItemUnique(HeadTemplate)
 				{
 					Name = "Tête de " + victim.Name,
 					MessageArticle = victim.InternalID,
-					CanDropAsLoot = inBL,
+					CanDropAsLoot = true,
 					MaxCondition = (int)DateTime.Now.Subtract(new DateTime(2000, 1, 1)).TotalSeconds
 				};
-			GameServer.Database.AddObject(iu);
-			if (killer.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, GameInventoryItem.Create(iu)))
-				killer.SendMessage("Vous avez récupérer la tête de " + victim.Name + ".", eChatType.CT_Loot);
-			else
-				killer.SendMessage("Vous n'avez pas pu récupérer la tête de " + victim.Name + ", votre inventaire est plein !", eChatType.CT_Loot);
-
-			if (inBL)
-				KillBlacklisted(victim, killer);
-			GuardsCheck(victim, killer);
+				GameServer.Database.AddObject(iu);
+				if (killer.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, GameInventoryItem.Create(iu)))
+					killer.SendMessage("Vous avez récupérer la tête de " + victim.Name + ".", eChatType.CT_Loot);
+				else
+					killer.SendMessage("Vous n'avez pas pu récupérer la tête de " + victim.Name + ", votre inventaire est plein !", eChatType.CT_Loot);
+			}
+			//old system
+			//if (inBL)
+			//	KillBlacklisted(victim, killer);
+			//GuardsCheck(victim, killer);
 		}
 		#endregion
 

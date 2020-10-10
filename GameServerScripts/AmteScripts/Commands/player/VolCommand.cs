@@ -300,12 +300,25 @@ namespace DOL.GS.Commands
 		{
 			GamePlayer stealer = (GamePlayer)Timer.Properties.getProperty<object>(PLAYER_STEALER, null);
 			GamePlayer target = (GamePlayer)Timer.Properties.getProperty<object>(TARGET_STOLE, null);
-			
-			if (target.IsMezzed)
+			var mezzerId = target.TempProperties.getProperty<string>(GamePlayer.PLAYER_MEZZED_BY_OTHER_PLAYER_ID, null);
+			if (mezzerId != null)
 			{
 				stealer.Reputation--;
-				stealer.Out.SendMessage("Vous perdez 1 points de réputation pour avoir tenté de voler un joueur endormi.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				stealer.Out.SendMessage("Vous perdez 1 point de réputation pour avoir tenté de voler un joueur endormi.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				stealer.SaveIntoDatabase();
+
+				Random rand = new Random(DateTime.UtcNow.Millisecond);
+				if (rand.Next() > 50)
+                {
+					var mezzerClient = WorldMgr.GetClientByPlayerID(mezzerId, true, true);
+
+					if (mezzerClient != null)
+					{
+						mezzerClient.Player.Reputation--;
+						mezzerClient.Out.SendMessage("Vous perdez 1 point de réputation pour avoir contribué à un vol en endormant un joueur.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						mezzerClient.Player.SaveIntoDatabase();
+                    }                 
+				}
 			}
 
 			VolResult result = Vol(stealer, target);
@@ -323,6 +336,14 @@ namespace DOL.GS.Commands
 			else
 			{
 				PerformVolAction(stealer, target, result);
+			}
+
+			Random newRand = new Random(DateTime.UtcNow.Millisecond);
+			if (newRand.Next() > 30)
+			{
+				stealer.Reputation--;
+				stealer.Out.SendMessage("Vous perdez 1 point de réputation pour avoir tenté de voler un joueur.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				stealer.SaveIntoDatabase();
 			}
 
 			CancelVol(stealer, Timer);

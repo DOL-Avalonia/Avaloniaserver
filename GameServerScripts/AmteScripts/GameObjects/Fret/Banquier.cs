@@ -72,6 +72,14 @@ namespace DOL.GS.Scripts
 		{
 			if (!(source is GamePlayer)) return false;
 			GamePlayer player = source as GamePlayer;
+
+			if (player != null && player.Reputation < 0)
+			{
+				TurnTo(player, 5000);
+				player.Out.SendMessage("Je ne traite pas avec les hors-la-loi", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+
 			if (!item.Id_nb.StartsWith("BANQUE_CHEQUE")) return false;
 
             if (player.Inventory.RemoveCountFromStack(item, item.Count))
@@ -85,7 +93,15 @@ namespace DOL.GS.Scripts
 		public override bool Interact(GamePlayer player)
 		{
 			if(!base.Interact (player)) return false;
-            DBBanque bank = GameServer.Database.FindObjectByKey<DBBanque>(player.InternalID);
+
+			if (player.Reputation < 0)
+			{
+				TurnTo(player, 5000);
+				player.Out.SendMessage("Je ne traite pas avec les hors-la-loi.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+
+			DBBanque bank = GameServer.Database.FindObjectByKey<DBBanque>(player.InternalID);
             if (bank == null)
 			{
 				player.Out.SendMessage("Bonjour, vous n'avez pas encore de compte.\r\nPour créer un compte il suffit de me donner de l'argent ou un chèque, le compte sera créé automatiquement !", eChatType.CT_System, eChatLoc.CL_PopupWindow);
@@ -115,7 +131,15 @@ namespace DOL.GS.Scripts
 			GamePlayer player = source as GamePlayer;
 			if (player == null)
 				return true;
-            DBBanque bank = GameServer.Database.FindObjectByKey<DBBanque>(player.InternalID);
+
+			if (player.Reputation < 0)
+			{
+				TurnTo(player, 5000);
+				player.Out.SendMessage("Je ne traite pas avec les hors-la-loi", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return true;
+			}
+
+			DBBanque bank = GameServer.Database.FindObjectByKey<DBBanque>(player.InternalID);
             if (bank == null)
 			{
 				player.Out.SendMessage("Bonjour, vous n'avez pas encore de compte.\r\nPour créer un compte il suffit de me donner de l'argent, le compte sera créé automatiquement !", eChatType.CT_System, eChatLoc.CL_PopupWindow);

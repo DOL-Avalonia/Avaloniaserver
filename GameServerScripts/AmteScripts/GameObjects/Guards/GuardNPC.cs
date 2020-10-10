@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using DOL.AI.Brain;
+using DOL.Database;
 using DOL.GS.PacketHandler;
 using GameServerScripts.Amtescripts.Managers;
 
@@ -20,10 +23,10 @@ namespace DOL.GS.Scripts
 
 		public override bool Interact(GamePlayer player)
 		{
-			if (!base.Interact(player) || BlacklistMgr.IsBlacklisted((AmtePlayer)player))
+			if (!base.Interact(player))
 				return false;
 
-			player.Out.SendMessage("Bonjour, que voulez-vous ?\n\n[Signaler] mon tueur !\n[Voir] la liste noire.",
+			player.Out.SendMessage("Bonjour, que voulez-vous ?\n\n[Signaler] mon tueur !\n\n[Voir] la liste noire.",
 				eChatType.CT_System, eChatLoc.CL_PopupWindow);
 			return true;
 		}
@@ -51,9 +54,18 @@ namespace DOL.GS.Scripts
 
 				case "Voir":
 					StringBuilder sb = new StringBuilder();
+					var names = this.GetOutlawsName();
+
+					if (names == null)
+                    {
+						sb.AppendLine("Personne n'est recherchée actuellement.");
+						player.Out.SendMessage(sb.ToString(), eChatType.CT_System, eChatLoc.CL_PopupWindow);
+						break;
+                    }
+
 					sb.AppendLine("Les personnes suivantes sont sur la liste noire:");
-					//BlacklistMgr.GetBlacklistedNames().ForEach(s => sb.AppendLine(s));
-					//player.Out.SendMessage(sb.ToString(), eChatType.CT_System, eChatLoc.CL_PopupWindow);
+					names.ForEach(s => sb.AppendLine(s));
+					player.Out.SendMessage(sb.ToString(), eChatType.CT_System, eChatLoc.CL_PopupWindow);
 					break;
 			}
 			return true;
@@ -80,7 +92,9 @@ namespace DOL.GS.Scripts
 			if (!player.Inventory.RemoveCountFromStack(item, 1))
 				return false;
 
-			BlacklistMgr.GuardReportBL(player, item.IUWrapper.MessageArticle);
+			//old system
+			//BlacklistMgr.GuardReportBL(player, item.IUWrapper.MessageArticle);
+			player.ReceiveMoney(this, Money.GetGold(ServerProperties.Properties.REWARD_OUTLAW_HEAD_GOLD));
 			player.Out.SendMessage("Merci de votre précieuse aide !", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 
 			return true;
@@ -89,6 +103,18 @@ namespace DOL.GS.Scripts
 		public override void WalkToSpawn(short speed)
 		{
 			base.WalkToSpawn(MaxSpeed);
+		}
+
+		public IEnumerable<string> GetOutlawsName()
+		{
+			var outlaws = GameServer.Database.SelectObjects<DOLCharacters>("Reputation < @rep", new QueryParameter("rep", 0));
+
+			if (outlaws == null || !outlaws.Any())
+			{
+				return null;
+			}
+
+			return outlaws.Select(c => c.Name);
 		}
 	}
 
