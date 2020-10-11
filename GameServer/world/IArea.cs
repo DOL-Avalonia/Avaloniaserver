@@ -37,6 +37,8 @@ namespace DOL.GS
 
         int RealmPoints { get; set; }
 
+        bool IsPvP { get; set; }
+
         void UnRegisterPlayerEnter(DOLEventHandler callback);
 
         void UnRegisterPlayerLeave(DOLEventHandler callback);

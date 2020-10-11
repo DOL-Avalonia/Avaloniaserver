@@ -92,8 +92,10 @@ namespace DOL.AI.Brain
 			if (target is AmtePlayer)
 			{
 				var player = (AmtePlayer)target;
-				if (BlacklistMgr.IsBlacklisted(player))
-					return 100;
+				if (player.Reputation < 0)
+                {
+                    return 100;
+                }
 				return GuardsMgr.CalculateAggro(player);
 			}
         	if (target.Realm == 0)

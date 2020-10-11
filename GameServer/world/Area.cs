@@ -35,12 +35,13 @@ namespace DOL.GS
                 : base()
             { }
 
-            public Square(string desc, int x, int y, int width, int height) : base(desc)
+            public Square(string desc, int x, int y, int width, int height, bool isPvp) : base(desc)
             {
                 X = x;
                 Y = y;
                 Height = height;
                 Width = width;
+                IsPvP = isPvp;
             }
 
             /// <summary>
@@ -141,6 +142,7 @@ namespace DOL.GS
                 Height = area.Radius;
                 this.CanVol = area.AllowVol;
                 RealmPoints = area.RealmPoints;
+                this.IsPvP = area.IsPvP;
             }
         }
 
@@ -279,6 +281,7 @@ namespace DOL.GS
                 RealmPoints = area.RealmPoints;
                 m_RadiusRadius = area.Radius * area.Radius;
                 this.CanVol = area.AllowVol;
+                this.IsPvP = area.IsPvP;
             }
         }
 
@@ -457,6 +460,7 @@ namespace DOL.GS
                 StringPoints = area.Points;
                 RealmPoints = area.RealmPoints;
                 this.CanVol = area.AllowVol;
+                this.IsPvP = area.IsPvP;
             }
         }
 

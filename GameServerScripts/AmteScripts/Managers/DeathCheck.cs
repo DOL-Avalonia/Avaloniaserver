@@ -28,9 +28,9 @@ namespace GameServerScripts.Amtescripts.Managers
 
         public int ReportPlayer(GamePlayer player)
         {
-            var deaths = GameServer.Database.SelectObjects<DBDeathLog>("KilledId = @killed AND isWanted = 0 AND DeathDate > SUBTIME(NOW(), '12:0:0') AND ExitFromJail = 0", new QueryParameter("killed", player.InternalID));
+            var deaths = GameServer.Database.SelectObjects<DBDeathLog>("KilledId = @killed AND isWanted = 0 AND DeathDate > SUBTIME(NOW(), '3:0:0') AND ExitFromJail = 0", new QueryParameter("killed", player.InternalID));
 
-            if (deaths == null || !deaths.Any())
+            if (deaths == null || !deaths.Any() || deaths.Count == 1)
             {
                 return 0;
             }
@@ -69,12 +69,12 @@ namespace GameServerScripts.Amtescripts.Managers
 
         public bool IsChainKiller(GamePlayer killer, GamePlayer killed)
         {
-            var deaths = GameServer.Database.SelectObjects<DBDeathLog>("KillerId = @KillerId AND KilledId = @KilledId AND DeathDate > SUBTIME(NOW(), '0:20:0')", new QueryParameter[] {
+            var deaths = GameServer.Database.SelectObjects<DBDeathLog>("KillerId = @KillerId AND KilledId = @KilledId AND DeathDate > SUBTIME(NOW(), '0:10:0')", new QueryParameter[] {
                     new QueryParameter("KillerId", killer.InternalID),
                     new QueryParameter("KilledId", killed.InternalID)
                 });
 
-            if (deaths == null || !deaths.Any())
+            if (deaths == null || !deaths.Any() || deaths.Count == 1)
             {
                 return false;
             }

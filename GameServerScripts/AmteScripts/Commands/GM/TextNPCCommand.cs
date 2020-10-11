@@ -655,15 +655,12 @@ namespace DOL.GS.Scripts
                     {
                         var min = float.Parse(args[2].Replace('.', ','));
                         var max = float.Parse(args[3].Replace('.', ','));
-                        npc.TextNPCData.Condition.Reput_min = min;
-                        npc.TextNPCData.Condition.Reput_max = max;
                         npc.TextNPCData.SaveIntoDatabase();
                     }
                     catch
                     {
                         player.Out.SendMessage("La réputation max ou min n'est pas valide.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     }
-                    player.Out.SendMessage("La réputation est maintenant comprise entre " + npc.TextNPCData.Condition.Reput_min + " et " + npc.TextNPCData.Condition.Reput_max + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     break;
                 #endregion
 
@@ -680,9 +677,7 @@ namespace DOL.GS.Scripts
                                 {
                                     "Conditions du pnj " + ((GameNPC) npc).Name + ":",
                                     "+ Heure      min: " + npc.TextNPCData.Condition.Heure_min + " max:" +
-                                    npc.TextNPCData.Condition.Heure_max,
-                                    "+ Réputation min: " + npc.TextNPCData.Condition.Reput_min + " max:" +
-                                    npc.TextNPCData.Condition.Reput_max
+                                    npc.TextNPCData.Condition.Heure_max                                  
                                 };
                         if (npc.TextNPCData.Condition.Level_min != 1 || npc.TextNPCData.Condition.Level_max != 50)
                             lines.Add("+ Level      min: " + npc.TextNPCData.Condition.Level_min + " max: " + npc.TextNPCData.Condition.Level_max);

@@ -16,9 +16,9 @@ namespace DOL.GS.Scripts
 
 	public class GuardNPC : AmteMob, IGuardNPC
     {
-        public GuardNPC()
+		public GuardNPC()
         {
-            SetOwnBrain(new GuardNPCBrain());
+			SetOwnBrain(new GuardNPCBrain());
         }
 
 		public override bool Interact(GamePlayer player)
@@ -73,9 +73,9 @@ namespace DOL.GS.Scripts
 
 		public override bool ReceiveItem(GameLiving source, Database.InventoryItem item)
 		{
-			if (!(source is AmtePlayer) || item == null || !item.Id_nb.StartsWith(BlacklistMgr.HeadTemplate.Id_nb))
+			var player = source as AmtePlayer;
+			if (player == null || item == null || !item.Id_nb.StartsWith(player.HeadTemplate.Id_nb))
 				return false;
-			var player = (AmtePlayer)source;
 
 			if (!item.CanDropAsLoot)
 			{
@@ -92,10 +92,9 @@ namespace DOL.GS.Scripts
 			if (!player.Inventory.RemoveCountFromStack(item, 1))
 				return false;
 
-			//old system
-			//BlacklistMgr.GuardReportBL(player, item.IUWrapper.MessageArticle);
-			player.ReceiveMoney(this, Money.GetGold(ServerProperties.Properties.REWARD_OUTLAW_HEAD_GOLD));
-			player.Out.SendMessage("Merci de votre précieuse aide !", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+			var prime = Money.GetMoney(0,0,ServerProperties.Properties.REWARD_OUTLAW_HEAD_GOLD,0,0);
+			player.AddMoney(prime);
+			player.Out.SendMessage("Merci de votre précieuse aide, voici " + ServerProperties.Properties.REWARD_OUTLAW_HEAD_GOLD + " pièces d'or pour vous !", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 
 			return true;
 		}
@@ -115,10 +114,10 @@ namespace DOL.GS.Scripts
 			}
 
 			return outlaws.Select(c => c.Name);
-		}
-	}
+		}   
+    }
 
-	public class GuardTextNPC : TextNPC, IGuardNPC
+    public class GuardTextNPC : TextNPC, IGuardNPC
     {
         public GuardTextNPC()
         {

@@ -112,6 +112,22 @@ namespace DOL.GS.Scripts
                     return;
                 }
 
+                //clear Deathlogs
+                var ids = GameServer.Database.SelectObjects<DBDeathLog>("KillerId = @KillerId", new QueryParameter("KillerId", args.GamePlayer.InternalID));
+
+                if (ids != null)
+                {
+                    foreach (var id in ids.Select(d => d.Id))
+                    {
+                        var log = GameServer.Database.FindObjectByKey<DBDeathLog>(id);
+
+                        if (log != null)
+                        {
+                            GameServer.Database.DeleteObject(log);
+                        }
+                    }
+                }            
+
                 EmprisonnerRP(args.GamePlayer, cost, DateTime.Now + time, "les gardes", reason, true);
             }
         }

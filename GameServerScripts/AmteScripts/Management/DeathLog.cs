@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Reflection;
 using AmteScripts.Managers;
 using DOL.Database;
@@ -47,12 +48,13 @@ namespace DOL.GS.GameEvents
                         return;
                     }
 
-                    if (IsKillAllowed(killed))
+                    bool isWanted = killed.Reputation < 0;
+
+                    if (IsKillAllowedArea(killed))
                     {
                         return;
-                    }                 
+                    } 
 
-                    bool isWanted = killed.Reputation < 0;
                     bool isLegitimeKiller = killer is GuardNPC || killerPlayer != null;
 
                     //Log interplayer kills & Killed by Guard
@@ -61,13 +63,13 @@ namespace DOL.GS.GameEvents
                     {
                         //Log Death
                         GameServer.Database.AddObject(new DBDeathLog((GameObject)sender, killer, isWanted));
-                        if (killerPlayer != null)
+                        if (killerPlayer != null && !isWanted)
                         {
                             if (DeathCheck.Instance.IsChainKiller(killerPlayer, killed))
                             {
-                                killerPlayer.Reputation -= 2;
+                                killerPlayer.Reputation -= 1;
                                 killerPlayer.SaveIntoDatabase();
-                                killerPlayer.Out.SendMessage("Vous avez perdu 2 points de réputations pour cause d'assassinats multiples.", PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
+                                killerPlayer.Out.SendMessage("Vous avez perdu 1 point de réputation pour cause d'assassinats multiples.", PacketHandler.eChatType.CT_System, PacketHandler.eChatLoc.CL_SystemWindow);
                             }
                         }
                     }
@@ -75,7 +77,7 @@ namespace DOL.GS.GameEvents
                 else
                 {
                     //Check if Guard was killed
-                    if (sender is GuardNPC && killerPlayer != null && !IsKillAllowed(killerPlayer))
+                    if (sender is GuardNPC && killerPlayer != null && !IsKillAllowedArea(killerPlayer))
                     {
                         if (killerPlayer.Group != null)
                         {
@@ -95,7 +97,7 @@ namespace DOL.GS.GameEvents
         
         private static void GuardKillLostReputation(GamePlayer player)
         {
-            if (player.Client.Account.PrivLevel > 1)
+            if (player.Client.Account.PrivLevel == 1)
             {
                 player.Reputation--;
                 player.SaveIntoDatabase();
@@ -108,12 +110,12 @@ namespace DOL.GS.GameEvents
         /// </summary>
         /// <param name="player"></param>
         /// <returns></returns>
-        private static bool IsKillAllowed(GamePlayer player)
+        private static bool IsKillAllowedArea(GamePlayer player)
         {
             if (player.isInBG ||
                 player.CurrentRegion.IsRvR ||
                 PvpManager.Instance.IsPvPRegion(player.CurrentRegion.ID) ||
-                Territory.TerritoryManager.Instance.IsTerritoryArea(player.CurrentAreas))
+                player.CurrentAreas.Any(a => a.IsPvP))
             {
                 return true;
             }
