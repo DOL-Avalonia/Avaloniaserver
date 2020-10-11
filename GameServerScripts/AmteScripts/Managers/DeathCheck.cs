@@ -30,7 +30,7 @@ namespace GameServerScripts.Amtescripts.Managers
         {
             var deaths = GameServer.Database.SelectObjects<DBDeathLog>("KilledId = @killed AND isWanted = 0 AND DeathDate > SUBTIME(NOW(), '3:0:0') AND ExitFromJail = 0", new QueryParameter("killed", player.InternalID));
 
-            if (deaths == null || !deaths.Any() || deaths.Count == 1)
+            if (deaths == null || !deaths.Any())
             {
                 return 0;
             }
