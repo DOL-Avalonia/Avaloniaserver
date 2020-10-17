@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DOL.Bonus
 {
@@ -34,7 +35,7 @@ namespace DOL.Bonus
         {
             if (raw == null)
             {
-                return null;
+                return Enumerable.Empty<BonusCondition>();
             }
 
             try
@@ -44,7 +45,7 @@ namespace DOL.Bonus
             }
             catch
             {
-                return null;
+                return Enumerable.Empty<BonusCondition>();
             }
         }
 
