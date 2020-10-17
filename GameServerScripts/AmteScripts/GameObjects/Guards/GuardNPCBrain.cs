@@ -29,6 +29,9 @@ namespace DOL.AI.Brain
 				if (!pl.IsAlive || pl.ObjectState != GameObject.eObjectState.Active || !GameServer.ServerRules.IsAllowedToAttack(Body, pl, true))
 					continue;
 
+                if (pl.IsStealthed)
+                    pl.Stealth(false);
+
                 //Check Reputation
                 if (pl.Reputation < 0)
                 {
@@ -37,9 +40,6 @@ namespace DOL.AI.Brain
                     BringReinforcements(pl);
                     continue;
                 }
-
-				if (pl.IsStealthed)
-					pl.Stealth(false);
 
 				int aggro = CalculateAggroLevelToTarget(pl);
 				if (aggro <= 0)

@@ -406,6 +406,7 @@
     <Compile Include="gameobjects\CustomNPC\StaticMob.cs" />
     <Compile Include="gameobjects\FeuDeCamp.cs" />
     <Compile Include="gameobjects\MoneyEventNPC.cs" />
+    <Compile Include="gameobjects\OutlawMerchant.cs" />
     <Compile Include="gameutils\FeuxCamp\FeuxCampMgr.cs" />
     <Compile Include="gameobjects\GameInventoryObject.cs" />
     <Compile Include="gameobjects\GameMythirian.cs" />
@@ -424,6 +425,7 @@
     <Compile Include="gameutils\InventoryLogging.cs" />
     <Compile Include="gameutils\MarketCache.cs" />
     <Compile Include="gameutils\NPCGender.cs" />
+    <Compile Include="gameutils\OutlawTradeItems.cs" />
     <Compile Include="gameutils\Params\CustomParamsExtensions.cs" />
     <Compile Include="gameutils\Params\ICustomParamsValuable.cs" />
     <Compile Include="gameutils\ReaderWriterCollections\ReaderWriterDictionary.cs" />
