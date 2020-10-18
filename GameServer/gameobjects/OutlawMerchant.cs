@@ -13,23 +13,21 @@ namespace DOL.GS
 
         public override bool Interact(GamePlayer player)
         {
-            if (player.Reputation >= 0)
+            if (player.Reputation >= 0 && player.Client.Account.PrivLevel == 1)
             {
                 this.TurnTo(player, 5000);
                 player.Out.SendMessage("...", PacketHandler.eChatType.CT_Chat, PacketHandler.eChatLoc.CL_PopupWindow);
                 return true;
             }
-            return base.Interact(player);
-        }
 
-        public override bool WhisperReceive(GameLiving source, string text)
-        {
-            return base.WhisperReceive(source, text);
+            TurnTo(player, 10000);
+            SendMerchantWindow(player);
+            return true;
         }
 
         public override void OnPlayerSell(GamePlayer player, InventoryItem item)
         {
-            if (player.Reputation >= 0)
+            if (player.Reputation >= 0 && player.Client.Account.PrivLevel == 1)
             {
                 this.TurnTo(player, 5000);
                 player.Out.SendMessage("...", PacketHandler.eChatType.CT_Chat, PacketHandler.eChatLoc.CL_PopupWindow);
@@ -41,7 +39,7 @@ namespace DOL.GS
 
         public override void OnPlayerBuy(GamePlayer player, int item_slot, int number)
         {
-            if (player.Reputation >= 0)
+            if (player.Reputation >= 0 && player.Client.Account.PrivLevel == 1)
             {
                 this.TurnTo(player, 5000);
                 player.Out.SendMessage("...", PacketHandler.eChatType.CT_Chat, PacketHandler.eChatLoc.CL_PopupWindow);

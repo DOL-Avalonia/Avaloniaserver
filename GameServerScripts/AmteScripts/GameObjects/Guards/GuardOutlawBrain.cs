@@ -25,21 +25,19 @@ namespace DOL.AI.Brain
                     pl.Stealth(false);
 
                 //Check Reputation
-                if (pl.Reputation >= 0)
+                if (pl.Reputation >= 0 && pl.Client.Account.PrivLevel == 1)
                 {
                     //Full aggression against Non outlaws
                     AddToAggroList(pl, 1);
                     BringReinforcements(pl);
                     continue;
-                }
-
-                int aggro = CalculateAggroLevelToTarget(pl);
-                if (aggro <= 0)
-                    continue;
-                AddToAggroList(pl, aggro);
-                if (pl.Level > Body.Level - 20 || (pl.Group != null && pl.Group.MemberCount >= 2))
-                    BringReinforcements(pl);
+                }                
             }
+        }
+
+        protected override void CheckNPCAggro()
+        {
+            base.CheckNPCAggro();
         }
     }
 }

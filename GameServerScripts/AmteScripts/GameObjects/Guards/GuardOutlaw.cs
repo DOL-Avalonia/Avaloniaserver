@@ -13,13 +13,13 @@ namespace DOL.GS.Scripts
         public GuardOutlaw()
             : base()
         {
-            this.SetOwnBrain(new GuardNPCBrain());
+            this.SetOwnBrain(new GuardOutlawBrain());
         }
 
         public GuardOutlaw(INpcTemplate template)
            : base(template)
         {
-            this.SetOwnBrain(new GuardNPCBrain());
+            this.SetOwnBrain(new GuardOutlawBrain());
         }
     }
 }

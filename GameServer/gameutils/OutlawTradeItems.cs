@@ -33,7 +33,8 @@ namespace DOL.GS
                     var itemList = GameServer.Database.SelectObjects<MerchantItem>("`ItemListID` = @ItemListID AND `PageNumber` = @PageNumber", new[] { new QueryParameter("@ItemListID", m_itemsListID), new QueryParameter("@PageNumber", page) });
                     foreach (MerchantItem merchantitem in itemList)
                     {
-                        ItemTemplate item = GameServer.Database.FindObjectByKey<ItemTemplate>(merchantitem.ItemTemplateID);
+                        //Force query to execute without precache
+                        ItemTemplate item = GameServer.Database.SelectObjects<ItemTemplate>("Id_nb = @Id_nb", new QueryParameter("Id_nb", merchantitem.ItemTemplateID))?.FirstOrDefault();
                         if (item != null)
                         {
                             ItemTemplate slotItem = (ItemTemplate)itemsInPage[merchantitem.SlotPosition];
@@ -90,7 +91,7 @@ namespace DOL.GS
                     var itemList = GameServer.Database.SelectObjects<MerchantItem>("`ItemListID` = @ItemListID", new QueryParameter("@ItemListID", m_itemsListID));
                     foreach (MerchantItem merchantitem in itemList)
                     {
-                        ItemTemplate item = GameServer.Database.FindObjectByKey<ItemTemplate>(merchantitem.ItemTemplateID);
+                        ItemTemplate item = GameServer.Database.SelectObjects<ItemTemplate>("Id_nb = @Id_nb", new QueryParameter("Id_nb", merchantitem.ItemTemplateID))?.FirstOrDefault();
                         if (item != null)
                         {
                             ItemTemplate slotItem = (ItemTemplate)allItems[merchantitem.SlotPosition];
@@ -155,7 +156,8 @@ namespace DOL.GS
                                                                                      new[] { new QueryParameter("@ItemListID", m_itemsListID), new QueryParameter("@PageNumber", page), new QueryParameter("@SlotPosition", (int)slot) }).FirstOrDefault();
                     if (itemToFind != null)
                     {
-                        item = GameServer.Database.FindObjectByKey<ItemTemplate>(itemToFind.ItemTemplateID);
+                        //Prevent precache by calling SelectObjects
+                        item = GameServer.Database.SelectObjects<ItemTemplate>("Id_nb = @Id_nb", new QueryParameter("Id_nb", itemToFind.ItemTemplateID))?.FirstOrDefault();
 
                         if (item != null)
                         {

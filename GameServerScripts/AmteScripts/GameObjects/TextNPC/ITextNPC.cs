@@ -34,6 +34,7 @@ namespace DOL.GS.Scripts
         public int PhraseInterval { get; set; }
         public TextNPCCondition Condition { get; private set; }
         public DBTextNPC TextDB { get; set; }
+        bool? IsOutlawFriendly { get; set; }
 
         public Dictionary<string, EchangeurInfo> PlayerReferences;
 
@@ -55,7 +56,27 @@ namespace DOL.GS.Scripts
             if (string.IsNullOrEmpty(Interact_Text) || !CheckAccess(player))
                 return false;
 
-            _body.TurnTo(player);
+            _body.TurnTo(player);        
+
+            if (this.IsOutlawFriendly.HasValue)
+            {
+                if (this.IsOutlawFriendly.Value)
+                {
+                    if (player.Reputation >= 0 && player.Client.Account.PrivLevel == 1)
+                    {
+                        player.Out.SendMessage("...", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                        return true;
+                    }
+                }
+                else
+                {
+                    if (player.Reputation <= 0 && player.Client.Account.PrivLevel == 1)
+                    {
+                        player.Out.SendMessage("...", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                        return true;
+                    }
+                }
+            }
 
             //Message
             string text = string.Format(Interact_Text, player.Name, player.LastName, player.GuildName, player.CharacterClass.Name, player.RaceName);
@@ -84,6 +105,25 @@ namespace DOL.GS.Scripts
                 return false;
 
             _body.TurnTo(player, 10000);
+
+
+            if (this.IsOutlawFriendly.HasValue)
+            {
+                if (this.IsOutlawFriendly.Value)
+                {
+                    if (player.Reputation >= 0 && player.Client.Account.PrivLevel == 1)
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    if (player.Reputation <= 0 && player.Client.Account.PrivLevel == 1)
+                    {
+                        return true;
+                    }
+                }
+            }
 
             //Message
             if (Reponses != null && Reponses.ContainsKey(str))
@@ -115,6 +155,27 @@ namespace DOL.GS.Scripts
             GamePlayer player = source as GamePlayer;
             if (!CheckAccess(player)) return false;
             _body.TurnTo(player);
+
+
+            if (this.IsOutlawFriendly.HasValue)
+            {
+                if (this.IsOutlawFriendly.Value)
+                {
+                    if (player.Reputation >= 0 && player.Client.Account.PrivLevel == 1)
+                    {
+                        player.Out.SendMessage("Je n'échange rien avec des personnes comme vous.", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (player.Reputation <= 0 && player.Client.Account.PrivLevel == 1)
+                    {
+                        player.Out.SendMessage("Je n'échange rien avec des personnes comme vous.", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                        return false;
+                    }
+                }
+            }
 
             DBEchangeur EchItem = EchangeurDB[item.Id_nb];
             if (EchItem.ItemRecvCount > item.Count)
@@ -483,6 +544,26 @@ namespace DOL.GS.Scripts
             //Chargement des textes
             TextDB = data;
             Interact_Text = TextDB.Text;
+
+            //Set this value only when OR Exclusive
+            if (data.IsOutlawFriendly ^ data.IsRegularFriendly)
+            {
+                if (data.IsRegularFriendly)
+                {
+                    IsOutlawFriendly = false;
+                }
+
+                if (data.IsOutlawFriendly)
+                {
+                    IsOutlawFriendly = true;
+                }
+            }
+            else if (data.IsOutlawFriendly && data.IsRegularFriendly)
+            {
+                log.Error("Cannot load IsOutlawFriendly Status because both values are set. Update database (DbTextNPC) for id: " + data.ObjectId + " npc: " + data.MobName);
+            }
+
+
             var table = new Dictionary<string, string>();
             if (TextDB.Reponse != "")
             {
