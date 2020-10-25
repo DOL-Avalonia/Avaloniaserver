@@ -479,6 +479,21 @@ namespace DOL.GS.Quests
 						_stepItemTemplates.Add(str);
 					}
 				}
+
+				if (!string.IsNullOrEmpty(m_dqRewardQ.Reputation))
+                {
+					if (int.TryParse(m_dqRewardQ.Reputation, out int parsed))
+                    {
+						if (parsed < 0)
+                        {
+							this.Reputation = parsed;
+                        }
+                        else
+                        {
+							this.Reputation = 0;
+                        }
+                    }
+                }
 			}			
 			
 			catch (Exception ex)
@@ -737,7 +752,18 @@ namespace DOL.GS.Quests
 		{
 			get	{ return m_yOffset; }
 		}
-				
+
+		public int? Reputation
+        {
+			get;
+			private set;
+        }
+
+		public int RewardReputation
+		{
+			get { return m_dqRewardQ.RewardReputation; }
+		}
+
 		/// <summary>
 		/// Current step of this quest. Only used to determine if quest is completed or active. 0 = complete, 1 = active
 		/// </summary>
@@ -858,6 +884,18 @@ namespace DOL.GS.Quests
 						return false;
 					}
 				}
+
+				if (this.Reputation.HasValue)
+                {
+					if (this.Reputation.Value < 0 && player.Reputation >= 0)
+                    {
+						return false;
+                    }
+					else if (this.Reputation.Value == 0 && player.Reputation < 0)
+                    {
+						return false;
+                    }
+                }
 			}
 
 			return true;
@@ -1041,8 +1079,8 @@ namespace DOL.GS.Quests
 		protected long RewardBP
 		{
 			get { return m_dqRewardQ.RewardBP; }
-		}
-		
+		}	
+
 		/// <summary>
 		/// Executes a custom class attached to this quest. Not supported yet
 		/// </summary>
@@ -1838,6 +1876,11 @@ namespace DOL.GS.Quests
 
                         _questPlayer.GainRealmPoints(RewardRP);
 					}
+
+					if (RewardReputation > 0)
+                    {
+						_questPlayer.RecoverReputation(RewardReputation);
+                    }
 
 					foreach (ItemTemplate item in m_finalRewards)
 					{

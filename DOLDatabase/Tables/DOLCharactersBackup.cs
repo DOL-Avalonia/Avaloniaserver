@@ -174,6 +174,7 @@ namespace DOL.Database
             Ypos = character.Ypos;
             Zpos = character.Zpos;
             Reputation = character.Reputation;
+            OutlawTimeStamp = character.OutlawTimeStamp;
 
             // Copy Custom Params
             CustomParams = character.CustomParams != null

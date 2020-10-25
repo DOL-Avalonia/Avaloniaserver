@@ -342,6 +342,7 @@ namespace DOL.GS.Scripts
                 perso.BindRegion = PrisonHRP_RegionID;
             }
             perso.Reputation = 0;
+            perso.OutlawTimeStamp = 0;
             perso.MaxSpeed = 50;
             GameServer.Database.SaveObject(perso);
 

@@ -73,6 +73,8 @@ namespace DOL.Database
 		private string m_zoneID;
         private string m_allowedRaces;
         private bool m_isRenaissance;
+        private string m_reputation;
+        private int m_rewardReputation;
 
         public DBDQRewardQ()
 		{
@@ -555,5 +557,20 @@ namespace DOL.Database
 			get { return m_zoneID; }
 			set { m_zoneID = value; Dirty = true; }
 		}		
+
+
+		[DataElement(AllowDbNull = true)]
+		public string Reputation
+        {
+			get { return m_reputation; }
+			set { Dirty = true; m_reputation = value; }
+        }
+
+		[DataElement(AllowDbNull = false)]
+		public int RewardReputation
+        {
+			get { return m_rewardReputation; }
+			set { Dirty = true; m_rewardReputation = value; }
+        }
 	}
 }

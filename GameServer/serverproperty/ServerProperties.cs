@@ -140,6 +140,16 @@ namespace DOL.GS.ServerProperties
         [ServerProperty("system", "reward_outlaw_head_gold", "The price in golds for the head of an outlaw", 50)]
         public static int REWARD_OUTLAW_HEAD_GOLD { get; set; }
 
+
+        [ServerProperty("system", "is_reputation_recovery_activated", "Is Reputation recovery interval activated", true)]
+        public static bool IS_REPUTATION_RECOVERY_ACTIVATED { get; set; }
+
+        [ServerProperty("system", "reputation_days_interval_recovery", "The Number of days interval before recover reputation points", 5)]
+        public static int REPUTATION_DAYS_INTERVAL { get; set; }
+
+        [ServerProperty("system", "reputation_points_recovery", "The Number points to recover when days interval is activated", 1)]
+        public static int REPUTATION_POINTS_RECOVERY { get; set; }
+
         /// <summary>
         /// Disable Bug Reports
         /// </summary>

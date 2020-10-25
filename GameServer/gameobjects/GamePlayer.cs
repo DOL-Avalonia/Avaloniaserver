@@ -55,13 +55,17 @@ namespace DOL.GS
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+		private static long reputationDaysDurationInSeconds = Properties.REPUTATION_DAYS_INTERVAL * 86400;
+
 		private readonly object m_LockObject = new object();
 
-        private Timer afkXpTimer;
+		private Timer afkXpTimer;
 
 		private Timer afkDelayTimer;
 
 		private Timer kickoutTimer;
+
+		private Timer reputationRecoveryTimer;
 
 		/// <summary>
 		/// This is our gameclient!
@@ -917,6 +921,12 @@ namespace DOL.GS
 				QuestActionTimer.Stop();
 				QuestActionTimer = null;
 			}
+
+			if (reputationRecoveryTimer != null)
+            {
+				reputationRecoveryTimer.Stop();
+				reputationRecoveryTimer = null;
+            }
 
 			if (Group != null)
 				Group.RemoveMember(this);
@@ -13100,7 +13110,14 @@ namespace DOL.GS
 			
 			Model = (ushort)DBCharacter.CurrentModel;
 			IsRenaissance = DBCharacter.IsRenaissance;
+			OutlawTimeStamp = DBCharacter.OutlawTimeStamp;
 			Reputation = DBCharacter.Reputation;
+
+			//update previous version by setting timestamp
+			if (Reputation < 0 && OutlawTimeStamp == 0)
+            {
+				OutlawTimeStamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+            }			
 
 			m_customFaceAttributes[(int)eCharFacePart.EyeSize] = DBCharacter.EyeSize;
 			m_customFaceAttributes[(int)eCharFacePart.LipSize] = DBCharacter.LipSize;
@@ -13286,6 +13303,7 @@ namespace DOL.GS
 				DBCharacter.LastPlayed = DateTime.Now;
                 DBCharacter.IsRenaissance = IsRenaissance;
 				DBCharacter.Reputation = Reputation;
+				DBCharacter.OutlawTimeStamp = OutlawTimeStamp;
 
 				DBCharacter.ActiveWeaponSlot = (byte)((byte)ActiveWeaponSlot | (byte)ActiveQuiverSlot);
 				if (m_stuckFlag)
@@ -15012,10 +15030,46 @@ namespace DOL.GS
             set;
         }
 
-        public int Reputation
-		{ 
+		public long OutlawTimeStamp
+        {
 			get;
 			set;
+        }
+
+
+		public int Reputation
+		{ 
+			get { return m_reputation; }
+
+            set
+            {
+				bool changed = m_reputation != value;
+				m_reputation = value;
+
+				if (m_reputation >= 0)
+                {
+					this.OutlawTimeStamp = 0;
+                }             
+
+				if (this.CurrentRegionID != 0)
+				{       //refresh npc quests according to new reputation
+					foreach (GameNPC mob in WorldMgr.GetRegion(this.CurrentRegionID)?.Objects?.Where(o => o != null && o is GameNPC))
+					{
+						this.Out.SendNPCsQuestEffect(mob, mob.GetQuestIndicator(this));
+					}
+				}
+
+				if (Properties.IS_REPUTATION_RECOVERY_ACTIVATED && m_reputation < 0 && OutlawTimeStamp == 0)
+                {
+					OutlawTimeStamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+					this.ConfigureReputationTimer();
+                }
+
+				if (changed)
+                {
+					this.SaveIntoDatabase();
+				}
+			}
 		}
 
         /// <summary>
@@ -16323,6 +16377,8 @@ namespace DOL.GS
 
 		#region Minotaur Relics
 		protected MinotaurRelic m_minoRelic = null;
+        private int m_reputation;
+	
 
 		/// <summary>
 		/// sets or sets the Minotaur Relic of this Player
@@ -16375,6 +16431,7 @@ namespace DOL.GS
             m_characterClass = charClass;
 			this.IsAfkDelayElapsed = true;
 			this.IsAllowToVolInThisArea = true;
+			this.ConfigureReputationTimer();
 		}
 
 		/// <summary>
@@ -16418,6 +16475,7 @@ namespace DOL.GS
 			LoadFromDatabase(dbChar);
 
 			CreateStatistics();
+			this.ConfigureReputationTimer();
 		}
 
 		/// <summary>
@@ -16615,5 +16673,83 @@ namespace DOL.GS
 			}
 		}
 		#endregion
+
+
+		public long GetRemainingIntervalReputationTime()
+        {
+			if (this.OutlawTimeStamp == 0)
+            {
+				return reputationDaysDurationInSeconds;
+            }
+
+			long now = DateTimeOffset.Now.ToUnixTimeSeconds();
+			long ellapsed = now - this.OutlawTimeStamp;
+
+			if (ellapsed > 0 && ellapsed >= reputationDaysDurationInSeconds)
+            {
+				//time over
+				return 0;
+            }
+			else if (ellapsed > 0 && ellapsed < reputationDaysDurationInSeconds)
+            {
+				return reputationDaysDurationInSeconds - ellapsed;
+            }
+
+			return 0;
+        }
+	
+		private void ConfigureReputationTimer()
+        {
+			if (this.Reputation < 0 && Properties.IS_REPUTATION_RECOVERY_ACTIVATED && Properties.REPUTATION_DAYS_INTERVAL > 0 && Properties.REPUTATION_POINTS_RECOVERY > 0)
+            {
+				long remainingTime = this.GetRemainingIntervalReputationTime();
+
+				if (remainingTime <= 0)
+                {
+					this.RecoverReputation(Properties.REPUTATION_POINTS_RECOVERY);
+					remainingTime = reputationDaysDurationInSeconds;
+				}            
+
+				if (this.reputationRecoveryTimer == null)
+                {
+					//Number of days expressed in ms	
+					this.reputationRecoveryTimer = new Timer(remainingTime * 1000);
+					this.reputationRecoveryTimer.Elapsed += this.HandleReputationTimerElapsed;
+					this.reputationRecoveryTimer.AutoReset = false;
+					this.reputationRecoveryTimer.Start();
+                }
+                else
+                {					
+					this.reputationRecoveryTimer.Stop();
+					this.reputationRecoveryTimer.Interval = remainingTime * 1000;
+					this.reputationRecoveryTimer.Start();
+				}            
+            }			
+		}
+
+        private void HandleReputationTimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            this.RecoverReputation(Properties.REPUTATION_POINTS_RECOVERY);
+            if (Reputation < 0)
+            {
+                this.OutlawTimeStamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+                this.reputationRecoveryTimer.Interval = reputationDaysDurationInSeconds * 1000;
+                this.reputationRecoveryTimer.Start();
+            }
+        }
+
+        public void RecoverReputation(int amount)
+        {
+			if (Reputation + amount >= 0)
+			{
+				Reputation = 0;	
+				Out.SendMessage("Votre réputation est désormais de 0.", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+			}
+			else
+			{
+				Reputation += amount;
+				Out.SendMessage(string.Format("Vous gagnez {0} " + (amount > 1 ? "points" : "point") + " de réputation. Vous avez désormais {1} points", amount, Reputation), eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+			}
+		}		
 	}
 }

@@ -2395,12 +2395,25 @@ namespace DOL.Database
             }
         }
 
+        [DataElement(AllowDbNull = false)]
+        public long OutlawTimeStamp
+        {
+            get { return m_outlawTimeStamp;  }
+
+            set 
+            { 
+                Dirty = true;
+                m_outlawTimeStamp = value; 
+            }
+        }
+
         /// <summary>
         /// List of Custom Params for this Character
         /// </summary>
         [Relation(LocalField = "DOLCharacters_ID", RemoteField = "DOLCharactersObjectId", AutoLoad = true, AutoDelete = true)]
         public DOLCharactersXCustomParam[] CustomParams;
         private int m_reputation;
+        private long m_outlawTimeStamp;
     }
 
     /// <summary>
