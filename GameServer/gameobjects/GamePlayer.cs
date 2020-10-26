@@ -16695,8 +16695,8 @@ namespace DOL.GS
 				return reputationDaysDurationInSeconds - ellapsed;
             }
 
-			return 0;
-        }
+			return reputationDaysDurationInSeconds;
+		}
 	
 		private void ConfigureReputationTimer()
         {

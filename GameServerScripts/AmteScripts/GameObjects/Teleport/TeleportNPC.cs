@@ -69,13 +69,15 @@ namespace DOL.GS.Scripts
                 return true;
             }
 
+            string text;
             if (!this.IsInterractionAuthorized(player))
             {
-                player.Out.SendMessage("...", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+                text = string.Format(m_Text_Refuse, player.Name, player.LastName, player.GuildName, player.CharacterClass.Name, player.RaceName);
+                if (text != "")
+                    player.Out.SendMessage(text, eChatType.CT_System, eChatLoc.CL_PopupWindow);
                 return true;
             }
 
-            string text;
             if (player.Level < m_MinLevel || m_Range > 0)
             {
                 text = string.Format(m_Text_Refuse, player.Name, player.LastName, player.GuildName, player.CharacterClass.Name, player.RaceName);
@@ -239,7 +241,7 @@ namespace DOL.GS.Scripts
                 }
                 else
                 {
-                    if (player.Reputation <= 0 && player.Client.Account.PrivLevel == 1)
+                    if (player.Reputation < 0 && player.Client.Account.PrivLevel == 1)
                     {
                         return false;
                     }

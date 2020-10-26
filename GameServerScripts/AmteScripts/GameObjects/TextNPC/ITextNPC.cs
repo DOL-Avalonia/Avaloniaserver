@@ -70,7 +70,7 @@ namespace DOL.GS.Scripts
                 }
                 else
                 {
-                    if (player.Reputation <= 0 && player.Client.Account.PrivLevel == 1)
+                    if (player.Reputation < 0 && player.Client.Account.PrivLevel == 1)
                     {
                         player.Out.SendMessage("...", eChatType.CT_System, eChatLoc.CL_PopupWindow);
                         return true;

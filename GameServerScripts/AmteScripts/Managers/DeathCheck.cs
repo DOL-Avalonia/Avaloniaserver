@@ -57,12 +57,6 @@ namespace GameServerScripts.Amtescripts.Managers
                 if (killer != null)
                 {
                     killer.Reputation--;
-
-                    if (killer.OutlawTimeStamp == 0)
-                    {
-                        killer.OutlawTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-                    }
-
                     GameServer.Database.SaveObject(killer);
                     death.IsWanted = true;
                     reported++;
