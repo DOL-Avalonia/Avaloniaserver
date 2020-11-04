@@ -91,6 +91,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             byte build;
             string password;
             string userName;
+            string avaloniaToken = "";
 
             // 1.125+
             if (client.Version > GameClient.eClientVersion.Version1124)
@@ -112,7 +113,24 @@ namespace DOL.GS.PacketHandler.Client.v168
                 userName = packet.ReadIntPascalStringLowEndian();
 
                 // Read Password
-                password = packet.ReadIntPascalStringLowEndian();
+                string password_avaloniaToken = packet.ReadIntPascalStringLowEndian();
+                if (Properties.AVALONIA_LAUNCHER && password_avaloniaToken.Length == 17)
+                {
+                    password = password_avaloniaToken.Substring(0, 12);
+                    avaloniaToken = password_avaloniaToken.Substring(12);
+                }
+                else if (!Properties.AVALONIA_LAUNCHER)
+                {
+                    password = password_avaloniaToken;
+                }
+                else
+                {
+                    client.IsConnected = false;
+                    client.Out.SendLoginDenied(eLoginError.WrongPassword);
+                    GameServer.Instance.Disconnect(client);
+
+                    return;
+                }
             }
             else // 1.115c+ - 1.124
             {
@@ -133,7 +151,24 @@ namespace DOL.GS.PacketHandler.Client.v168
                 userName = packet.ReadShortPascalStringLowEndian();
 
                 // Read Password
-                password = packet.ReadShortPascalStringLowEndian();
+                string password_avaloniaToken = packet.ReadShortPascalStringLowEndian();
+                if (Properties.AVALONIA_LAUNCHER && password_avaloniaToken.Length == 17)
+                {
+                    password = password_avaloniaToken.Substring(0, 12);
+                    avaloniaToken = password_avaloniaToken.Substring(12);
+                }
+                else if (!Properties.AVALONIA_LAUNCHER)
+                {
+                    password = password_avaloniaToken;
+                }
+                else
+                {
+                    client.IsConnected = false;
+                    client.Out.SendLoginDenied(eLoginError.WrongPassword);
+                    GameServer.Instance.Disconnect(client);
+
+                    return;
+                }
             }
 
             /*
@@ -261,7 +296,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                         {
                             //check autocreate ...
 
-                            if (GameServer.Instance.Configuration.AutoAccountCreation && Properties.ALLOW_AUTO_ACCOUNT_CREATION)
+                            if (GameServer.Instance.Configuration.AutoAccountCreation && Properties.ALLOW_AUTO_ACCOUNT_CREATION && !Properties.AVALONIA_LAUNCHER)
                             {
                                 // autocreate account
                                 if (string.IsNullOrEmpty(password))
@@ -380,6 +415,19 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                                 return;
                             }
+
+                            if (Properties.AVALONIA_LAUNCHER)
+                            {
+                                if (playerAccount.Avalonia_token != avaloniaToken)
+                                {
+                                    client.IsConnected = false;
+                                    client.Out.SendLoginDenied(eLoginError.WrongPassword);
+                                    GameServer.Instance.Disconnect(client);
+
+                                    return;
+                                }
+                            }
+
                             uniqueId = uniqueId ?? ipAddress;
                             var count = WorldMgr.GetAllClients().Count(c => c.UniqueID == uniqueId);
                             if (count >= 2)

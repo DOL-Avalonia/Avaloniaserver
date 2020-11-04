@@ -66,6 +66,12 @@ namespace DOL.GS.ServerProperties
         public static bool ENABLE_DEBUG { get; set; }
 
         /// <summary>
+        /// Enable Avalonia Launcher ? Used to limit the connection only for avalonia launcher
+        /// </summary>
+        [ServerProperty("system", "avalonia_launcher", "Enable Avalonia Launcher ? Used to limit the connection only for avalonia launcher", false)]
+        public static bool AVALONIA_LAUNCHER { get; set; }
+
+        /// <summary>
         /// Whether to use the sync timer utility or not
         /// </summary>
         [ServerProperty("system", "use_sync_timer", "Shall we use the sync timers utility?", true)]

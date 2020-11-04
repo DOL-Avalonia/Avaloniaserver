@@ -84,13 +84,27 @@ namespace DOL.GS.Scripts
                 if (size >= 4)
                 {
                     var lines = Encoding.UTF8.GetString(buffer, 0, size).Split('\n');
-                    var login = lines[0];
-                    var password = lines[1];
-                    var uuid = lines[2];
+                    if (lines.Length > 3)
+                    {
+                        var login = lines[0];
+                        var password = lines[1];
+                        var uuid = lines[2];
+                        var avalonia_token = lines[3];
 
-                    var resp = _GetToken(client, uuid, login, password);
-                    var respBuf = Encoding.UTF8.GetBytes(resp);
-                    await client.GetStream().WriteAsync(respBuf, 0, respBuf.Length);
+                        var resp = _GetToken(client, uuid, login, password, avalonia_token);
+                        var respBuf = Encoding.UTF8.GetBytes(resp);
+                        await client.GetStream().WriteAsync(respBuf, 0, respBuf.Length);
+                    }
+                    else
+                    {
+                        var resp = "error: unknowed command !\n";
+                        if (lines[0] == "checkInfo")
+                        {
+                            resp = GameServer.Instance.ClientCount + " connecté(s)";
+                        }
+                        var respBuf = Encoding.UTF8.GetBytes(resp);
+                        await client.GetStream().WriteAsync(respBuf, 0, respBuf.Length);
+                    }
                 }
             }
             catch (Exception e)
@@ -110,12 +124,12 @@ namespace DOL.GS.Scripts
             }
         }
 
-        private static string _GetToken(TcpClient client, string uuid, string login, string password)
+        private static string _GetToken(TcpClient client, string uuid, string login, string password, string avalonia_token)
         {
             if (!_loginValidation.IsMatch(login))
                 return "error:Le nom du compte n'est pas valide.";
 
-            var account = _findOrCreateAccount(client, login, password);
+            var account = _findOrCreateAccount(client, login, password, avalonia_token);
             if (account == null)
                 return "error:Mot de passe incorrect.";
 
@@ -131,10 +145,9 @@ namespace DOL.GS.Scripts
 
             lock (LoginRequestHandler.Token2AccountSync)
                 LoginRequestHandler.Token2Account.Add(token, new Tuple<string, string>(account.Name, uuid));
-            var charlist = "";
-            if (account.Characters != null)
-                charlist = account.Characters.Aggregate("", (list, ch) => ch.Name + " " + ch.Realm + "\n" + list);
-            return token + "\n" + charlist;
+            var propertyserver = Properties.AVALONIA_LAUNCHER;
+
+            return token + "\n" + propertyserver + "\n";
         }
 
         private static bool _IsBan(Account account)
@@ -147,7 +160,7 @@ namespace DOL.GS.Scripts
             return false;
         }
 
-        private static Account _findOrCreateAccount(TcpClient client, string name, string password)
+        private static Account _findOrCreateAccount(TcpClient client, string name, string password, string avalonia_token)
         {
             var hashedPassword = LoginRequestHandler.CryptPassword(password);
             var account = GameServer.Database.FindObjectByKey<Account>(name.ToLower());
@@ -167,6 +180,8 @@ namespace DOL.GS.Scripts
                     AuditMgr.AddAuditEntry(AuditType.Account, AuditSubtype.AccountFailedLogin, "", name);
                     return null;
                 }
+                account.Avalonia_token = avalonia_token;
+                GameServer.Database.SaveObject(account);
                 return account;
             }
 
@@ -179,6 +194,7 @@ namespace DOL.GS.Scripts
             account.LastLogin = DateTime.Now;
             account.Language = Properties.SERV_LANGUAGE;
             account.PrivLevel = 1;
+            account.Avalonia_token = avalonia_token;
 
             log.Info("New account created: " + name);
 

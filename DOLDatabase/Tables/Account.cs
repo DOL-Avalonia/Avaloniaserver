@@ -41,6 +41,8 @@ namespace DOL.Database
         private string m_lastClientVersion;
         private bool m_isMuted;
 
+        private string avalonia_token;
+
         /// <summary>
         /// Create account row in DB
         /// </summary>
@@ -218,6 +220,20 @@ namespace DOL.Database
         {
             get { return m_isMuted; }
             set { Dirty = true; m_isMuted = value; }
+        }
+
+        /// <summary>
+        /// Is this account is conncet by avalonia launcher
+        /// </summary>
+        [DataElement(AllowDbNull = true)]
+        public string Avalonia_token
+        {
+            get => avalonia_token;
+            set
+            {
+                Dirty = true;
+                avalonia_token = value;
+            }
         }
 
         /// <summary>

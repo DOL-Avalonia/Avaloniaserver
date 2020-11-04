@@ -130,17 +130,13 @@ namespace DOL.GS.Scripts
 			var diffy = (double)followTarget.Y - Y;
 			var diffz = (double)followTarget.Z - Z;
 
-			//SH: Removed Z checks when one of the two Z values is zero(on ground)
-			double distance;
-			if (followTarget.Z == 0 || Z == 0)
-				distance = Math.Sqrt(diffx * diffx + diffy * diffy);
-			else
-				distance = Math.Sqrt(diffx * diffx + diffy * diffy + diffz * diffz);
+            //SH: Removed Z checks when one of the two Z values is zero(on ground)
+            float distance = (float)Math.Sqrt(diffx * diffx + diffy * diffy + diffz * diffz);
 
-			//if distance is greater then the max follow distance, stop following and return home
-			if (distance > m_followMaxDist)
+            //if distance is greater then the max follow distance, stop following and return home
+            if (distance > m_followMaxDist)
 			{
-				StopFollowing();
+				//StopFollowing();
 				Notify(GameNPCEvent.FollowLostTarget, this, new FollowLostTargetEventArgs(followTarget));
 				WalkToSpawn();
 				return 0;
@@ -159,9 +155,9 @@ namespace DOL.GS.Scripts
 					long lasthit = LastAttackedByEnemyTick;
 					if (CurrentRegion.Time - lastattacked > seconds * 1000 && CurrentRegion.Time - lasthit > seconds * 1000)
 					{
-						StopFollowing();
+						//StopFollowing();
 						Notify(GameNPCEvent.FollowLostTarget, this, new FollowLostTargetEventArgs(followTarget));
-						brain.ClearAggroList();
+						//brain.ClearAggroList();
 						WalkToSpawn();
 						return 0;
 					}
@@ -200,14 +196,23 @@ namespace DOL.GS.Scripts
 				newX = (int)(followTarget.X + Math.Cos(angle) * m_DistMob);
 				newY = (int)(followTarget.Y + Math.Sin(angle) * m_DistMob);
 
-				var speed = MaxSpeed;
-				if (GetDistance(new Point2D(newX, newY)) < 500)
-					speed = (short)Math.Max(MaxSpeed, MobFollow.CurrentSpeed + 6);
-				WalkTo(newX, newY, newZ, speed);
-			}
-			else
-				WalkTo(newX, newY, (ushort)newZ, MaxSpeed);
-			return ServerProperties.Properties.GAMENPC_FOLLOWCHECK_TIME;
+                short speed = MobFollow.CurrentSpeed;
+                if (speed < GetDistance(new Point2D(newX, newY)))
+                    speed = Math.Min(MaxSpeed, speed);
+                else
+                    speed = (short)GetDistance(new Point2D(newX, newY));
+                WalkTo(newX, newY, newZ, speed);
+            }
+            else
+            {
+                if (InCombat || Brain is BomberBrain)
+                    WalkTo(newX, newY, (ushort)newZ, MaxSpeed);
+                else if (MaxSpeed < GetDistance(new Point2D(newX, newY)))
+                    WalkTo(newX, newY, (ushort)newZ, Math.Min(MaxSpeed, followLiving.CurrentSpeed));
+                else
+                    WalkTo(newX, newY, (ushort)newZ, (short)GetDistance(new Point2D(newX, newY)));
+            }
+            return ServerProperties.Properties.GAMENPC_FOLLOWCHECK_TIME;
 		}
 
 		public override IList<string> DelveInfo()

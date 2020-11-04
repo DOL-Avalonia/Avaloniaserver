@@ -1547,6 +1547,10 @@ namespace DOL.GS.Commands
             }
 
             info.Add(" + Package ID:  " + targetMob.PackageID);
+            if (targetMob.Faction != null)
+            {
+                info.Add(" + Faction:  " + targetMob.Faction.Name);
+            }
             info.Add(" ");
             info.Add(" + Mob_ID:  " + targetMob.InternalID);
 
@@ -2776,6 +2780,7 @@ namespace DOL.GS.Commands
             mob.ModelDb = targetMob.ModelDb;
             mob.VisibleWeaponsDb = targetMob.VisibleWeaponsDb;
             mob.FlagsDb = targetMob.FlagsDb;
+            mob.Faction = targetMob.Faction;
 
             mob.Inventory = targetMob.Inventory;
             if (mob.Inventory != null)
