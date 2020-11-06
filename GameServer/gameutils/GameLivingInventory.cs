@@ -563,10 +563,23 @@ namespace DOL.GS
                     return false;
                 }
 
-                m_items.Add(slot, item);
+                // Artefact are not consider as such if we don't add them as InventoryArtifact in m_items
+                if (ArtifactMgr.IsArtifact(item))
+                {
+                    InventoryArtifact artifact = new InventoryArtifact(item);
+                    m_items.Add(slot, artifact);
+                    artifact.SlotPosition = (int)slot;
+                    if (artifact.OwnerID != null)
+                    {
+                        artifact.OwnerID = null;
+                    }
+                }
+                else
+                {
+                    m_items.Add(slot, item);
+                }
 
                 item.SlotPosition = (int)slot;
-
                 if (item.OwnerID != null)
                 {
                     item.OwnerID = null; // owner ID for NPC
