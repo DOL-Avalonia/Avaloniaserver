@@ -532,7 +532,8 @@ namespace DOL.AI.Brain
 		{
 			if (spell.CastTime > 0 && Body.IsBeingInterrupted)
 				return false;
-			if (Body.GetSkillDisabledDuration(spell) == 0)
+            // If GetSkillDisableDuration <= 0, the spell could be used
+			if (Body.GetSkillDisabledDuration(spell) > 0)
 				return false;
 
 			GameObject lastTarget = Body.TargetObject;
