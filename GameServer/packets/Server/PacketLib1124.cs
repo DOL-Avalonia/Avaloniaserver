@@ -2020,13 +2020,14 @@ namespace DOL.GS.PacketHandler
                 
                 if (brain != null)
 				{
-					flags2 |= 0x80; // have Owner
+					flags2 |= 0x80; // have Owner   
 				}
-				
-				if ((npc.Flags & GameNPC.eFlags.CANTTARGET) != 0)
-					if (GameClient.Account.PrivLevel > 1) add += "-DOR"; // indicates DOR flag for GMs
-				else flags2 |= 0x01;
-				if ((npc.Flags & GameNPC.eFlags.DONTSHOWNAME) != 0)
+
+                // SummonAnimistFNF type pet should be untargetable by the owner
+                if ((npc.Flags & GameNPC.eFlags.CANTTARGET) != 0 || (brain != null && brain is TurretFNFBrain && ((GamePet)npc).Owner == GameClient.Player))
+                    if (GameClient.Account.PrivLevel > 1) add += "-DOR"; // indicates DOR flag for GMs
+                else flags2 |= 0x01;
+                if ((npc.Flags & GameNPC.eFlags.DONTSHOWNAME) != 0)
 					if (GameClient.Account.PrivLevel > 1) add += "-NON"; // indicates NON flag for GMs
 				else flags2 |= 0x02;
 	
