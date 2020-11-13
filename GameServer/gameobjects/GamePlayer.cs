@@ -198,6 +198,12 @@ namespace DOL.GS
 			set;
         }
 
+		public bool IsInRvR
+		{
+			get;
+			set;
+		}
+
 		/// <summary>
 		/// Current warmap page
 		/// </summary>
@@ -9693,10 +9699,16 @@ namespace DOL.GS
 			}
 
 			//Check if Zone allows to use Magical Item
-			//For Example, Magical Item Should be diable in PvP
 			if (!this.CurrentZone.AllowMagicalItem)
 			{
 				Out.SendMessage("L'utilisation d'objets magiques n'est pas permise dans cette zone.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return false;
+			}
+
+			//Check if Item Should be disable in RvR
+			if (!item.CanUseInRvR && (this.isInBG || this.IsInPvP || this.IsInRvR))
+            {
+				Out.SendMessage("L'utilisation de cet objet n'est pas permis dans cette zone.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;
 			}
 
@@ -12378,7 +12390,7 @@ namespace DOL.GS
 				lock (Inventory)
 				{
 					InventoryItem item = Inventory.GetItem(slot_pos);
-					if (!item.IsDropable || !CurrentZone.AllowMagicalItem || this.CurrentRegion.IsRvR || this.isInBG)
+					if (!item.IsDropable || !CurrentZone.AllowMagicalItem || (!item.CanUseInRvR && (this.IsInRvR || this.IsPvP || this.isInBG)))
 					{
 						Out.SendMessage(item.GetName(0, true) + " ne peux pas etre déposé ici !", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						return false;

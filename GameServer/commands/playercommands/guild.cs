@@ -1084,7 +1084,7 @@ namespace DOL.GS.Commands
 						#region Buybanner
 					case "buybanner":
 						{
-							if (client.Player.Guild.GuildLevel < 7)
+							if (client.Account.PrivLevel == 1)
 							{
 								client.Out.SendMessage(
 									LanguageMgr.GetTranslation(
@@ -1239,7 +1239,9 @@ namespace DOL.GS.Commands
 								}
 							}
 
-							if (client.Player.CurrentRegion.IsRvR)
+							var territory = TerritoryManager.Instance.GetCurrentTerritory(client.Player.CurrentAreas);
+
+							if (client.Player.IsInRvR)
 							{
 								GuildBanner banner = new GuildBanner(client.Player);
 								banner.Start();
@@ -1258,7 +1260,7 @@ namespace DOL.GS.Commands
 									eChatLoc.CL_SystemWindow);
 								client.Player.Guild.UpdateGuildWindow();
 							}
-							else
+							else if (territory == null)
 							{
 								client.Out.SendMessage(
 									LanguageMgr.GetTranslation(
@@ -1266,7 +1268,21 @@ namespace DOL.GS.Commands
 										"Commands.Players.Guild.BannerNotRvR"),
 										eChatType.CT_Guild,
 										eChatLoc.CL_SystemWindow);
+                            }
+                            else
+                            {
+								if (territory.GuildOwner?.Equals(client.Player.GuildName) == true)
+                                {
+									TerritoryManager.ApplyEmblemToTerritory(territory, client.Player.Guild);
+                                }
+                                else
+                                {
+									client.Out.SendMessage("Vous ne pouvez pas poser votre bannière dans ce territoire car il ne vous appartient pas.",
+										eChatType.CT_Guild,
+										eChatLoc.CL_SystemWindow);
+                                }			
 							}
+
 							break;
 						}
 						#endregion

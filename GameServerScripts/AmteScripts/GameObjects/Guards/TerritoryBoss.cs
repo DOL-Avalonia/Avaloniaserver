@@ -28,7 +28,25 @@ namespace DOL.GS.Scripts
             brain.AggroRange = 500;
             SetOwnBrain(brain);
         }
-  
+
+        public override bool AddToWorld()
+        {
+            bool added = base.AddToWorld();
+
+            if (!added)
+            {
+                return false;
+            }
+
+            var territory = TerritoryManager.Instance.Territories.FirstOrDefault(t => t.BossId.Equals(this.InternalID));
+
+            if (territory != null && territory.GuildOwner != null)
+            {
+                this.GuildName = territory.GuildOwner;
+            }
+
+            return true;
+        }
 
         public override bool Interact(GamePlayer player)
         {
@@ -63,7 +81,7 @@ namespace DOL.GS.Scripts
             if (killer.GuildName != null && player != null)
             {
                 this.GuildName = killer.GuildName;
-                TerritoryManager.Instance.ChangeGuildOwner(this.InternalID, player.Guild, isBoss: true);
+                TerritoryManager.Instance.ChangeGuildOwner(this, player.Guild);
             }
         }
 

@@ -272,7 +272,21 @@ namespace AmteScripts.Managers
 			}
 			else
 			{
-                _regions.ForEach(id => WorldMgr.GetClientsOfRegion(id).Where(cl => cl.Player.Guild == null).Foreach(cl => RemovePlayer(cl.Player)));
+                foreach (var id in _regions)
+                {
+                    foreach (var cl in WorldMgr.GetClientsOfRegion(id))
+                    {
+                        if (cl.Player.Guild == null)
+                        {
+                            RemovePlayer(cl.Player);
+                        }
+                        else
+                        {
+                            cl.Player.IsInRvR = true;
+                        }
+                    }
+                }
+
                 if (!_isForcedOpen)
 				{
 					if ((DateTime.Now < _startTime || DateTime.Now > _endTime) && !Close())
@@ -360,29 +374,34 @@ namespace AmteScripts.Managers
             }
             else
             {     
-			switch (player.Realm)
-			{
-				case eRealm.Albion:
-                        Albion.AddPlayer(player);
-                        isAdded = this.AddPlayerToCorrectZone(player, "ALB");
-					break;
+			    switch (player.Realm)
+			    {
+				    case eRealm.Albion:
+                            Albion.AddPlayer(player);
+                            isAdded = this.AddPlayerToCorrectZone(player, "ALB");
+					    break;
 
-				case eRealm.Midgard:
-                        Midgard.AddPlayer(player);
-                        isAdded = this.AddPlayerToCorrectZone(player, "MID");
-					break;
+				    case eRealm.Midgard:
+                            Midgard.AddPlayer(player);
+                            isAdded = this.AddPlayerToCorrectZone(player, "MID");
+					    break;
 
-				case eRealm.Hibernia:
-                        Hibernia.AddPlayer(player);
-                        isAdded = this.AddPlayerToCorrectZone(player, "HIB");
-					break;
-			}
+				    case eRealm.Hibernia:
+                            Hibernia.AddPlayer(player);
+                            isAdded = this.AddPlayerToCorrectZone(player, "HIB");
+					    break;
+			    }
 
-			if (player.Guild != null)
-				foreach (var i in player.Inventory.AllItems.Where(i => i.Emblem != 0))
-					i.Emblem = player.Guild.Emblem;
+                if (isAdded)
+                {
+                    player.IsInRvR = true;
+                }
 
-            }
+			    if (player.Guild != null)
+				    foreach (var i in player.Inventory.AllItems.Where(i => i.Emblem != 0))
+					    i.Emblem = player.Guild.Emblem;
+
+                }
             return isAdded;
         }
 
@@ -461,6 +480,7 @@ namespace AmteScripts.Managers
 
 		public void RemovePlayer(GamePlayer player)
 		{
+            player.IsInRvR = false;
 			if (player.Client.Account.PrivLevel == (uint)ePrivLevel.GM)
 				return;
 			var rvr = GameServer.Database.SelectObject<RvrPlayer>("PlayerID = '" + GameServer.Database.Escape(player.InternalID) + "'");

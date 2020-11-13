@@ -39,6 +39,7 @@ using DOL.GS.ServerProperties;
 using DOL.GameEvents;
 using System.Threading.Tasks;
 using DOL.MobGroups;
+using DOL.Territory;
 
 namespace DOL.GS
 {
@@ -3209,6 +3210,12 @@ namespace DOL.GS
 					MobGroupManager.Instance.Groups[this.CurrentGroupMob.SlaveGroupId].ResetGroupInfo();
 				}
             }
+
+			var territory = TerritoryManager.Instance.GetCurrentTerritory(this.CurrentAreas);
+			if (territory?.GuildOwner != null)
+            {
+				this.GuildName = territory.GuildOwner;
+            }			
 
 			return true;
 		}

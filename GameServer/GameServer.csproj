@@ -407,6 +407,7 @@
     <Compile Include="gameobjects\FeuDeCamp.cs" />
     <Compile Include="gameobjects\MoneyEventNPC.cs" />
     <Compile Include="gameobjects\OutlawMerchant.cs" />
+    <Compile Include="gameobjects\TerritoryBanner.cs" />
     <Compile Include="gameutils\FeuxCamp\FeuxCampMgr.cs" />
     <Compile Include="gameobjects\GameInventoryObject.cs" />
     <Compile Include="gameobjects\GameMythirian.cs" />
