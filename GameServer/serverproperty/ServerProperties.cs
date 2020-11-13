@@ -2018,6 +2018,9 @@ namespace DOL.GS.ServerProperties
         [ServerProperty("territory", "daily_tax ", "Territory Daily Gold Tax", 9)]
         public static int DAILY_TAX { get; internal set; }
 
+        [ServerProperty("territory", "banner_perc_off ", "Territory Percentage off when banner is summon", 30)]
+        public static int TERRITORY_BANNER_PERCENT_OFF { get; internal set; }
+
         [ServerProperty("territory", "daily_merit_points ", "Territory Daily Merit Points", 19)]
         public static int DAILY_MERIT_POINTS { get; internal set; }        
 

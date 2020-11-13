@@ -119,6 +119,12 @@ namespace DOL.Territory
             set;
         }
 
+        public bool IsBannerSummoned
+        {
+            get;
+            set;
+        }
+
 
         private void LoadBonus(string raw)
         {
@@ -143,14 +149,26 @@ namespace DOL.Territory
         {
             if (this.Mobs != null)
             {
-                foreach (var mob in this.Mobs)
+                this.Mobs.ForEach(m => this.SaveMobOriginalGuildname(m));               
+            }    
+            
+            if (this.Boss != null)
+            {
+                var gameEvent = GameEvents.GameEventManager.Instance.Events.FirstOrDefault(e => e.ID.Equals(this.Boss.EventID));
+
+                if (gameEvent?.Mobs?.Any() == true)
                 {
-                    if (!this.OriginalGuilds.ContainsKey(mob.InternalID))
-                    {
-                        this.OriginalGuilds.Add(mob.InternalID, mob.GuildName ?? string.Empty);
-                    }
-                }
-            }           
+                    gameEvent.Mobs.ForEach(m => this.SaveMobOriginalGuildname(m));
+                }                
+            }
+        }
+
+        private void SaveMobOriginalGuildname(GameNPC mob)
+        {
+            if (!this.OriginalGuilds.ContainsKey(mob.InternalID))
+            {
+                this.OriginalGuilds.Add(mob.InternalID, mob.GuildName ?? string.Empty);
+            }
         }
 
 
