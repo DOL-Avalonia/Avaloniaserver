@@ -20,7 +20,7 @@ Commands.Players.Guild.AllianceNoGMSelected:	    Vous devez choisir un Maître d
 Commands.Players.Guild.AllianceNoLeader:		    Pas de chef d'alliance.
 Commands.Players.Guild.AllianceNotLeader:		    Vous devez être la guilde du chef de l'alliance pour pouvoir enlever une guilde de l'alliance.
 Commands.Players.Guild.AllianceNotMember:		    Vous devez être dans une alliance pour le faire.
-Commands.Players.Guild.AlreadyInGuild:		    {0} est un membre de votre guilde.
+Commands.Players.Guild.AlreadyInGuildName:		    {0} est un membre de votre guilde.
 Commands.Players.Guild.AlreadyInGuild:		    Il est déjà membre d'une guilde.
 Commands.Players.Guild.AMotdSet:				    Vous avez mis le message d'alliance à jour.
 Commands.Players.Guild.BannerAlready:			    Votre guilde possède déjà une bannière.

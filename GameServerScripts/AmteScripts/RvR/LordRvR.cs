@@ -103,7 +103,8 @@ namespace Amte
 				},
 				500
 			);
-			player.Out.SendTimerWindow("Prise du fort", CLAIM_TIME_SECONDS);
+			var delay = player.Client.Account.PrivLevel == 1 ? CLAIM_TIME_SECONDS : 2;
+			player.Out.SendTimerWindow("Prise du fort", delay);
 
 			foreach (var obj in GetPlayersInRadius(ushort.MaxValue - 1))
 			{

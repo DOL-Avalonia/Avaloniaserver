@@ -23,7 +23,7 @@ using DOL.Language;
 namespace DOL.GS.Commands
 {
 	[Cmd(
-		"]jump",
+		"&debugjump",
 		ePrivLevel.GM,
 		"Commands.GM.DebugJump.Description",
 		"Commands.GM.DebugJump.Usage")]
