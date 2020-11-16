@@ -1095,7 +1095,7 @@ namespace DOL.GS.Commands
 								return;
 							}
 
-							long bannerPrice = (client.Player.Guild.GuildLevel * 100);
+							long bannerPrice = Properties.GUILD_BANNER_MERIT_PRICE;
 
 							if (client.Player.Guild == null)
 							{
@@ -3028,12 +3028,7 @@ namespace DOL.GS.Commands
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Guild.NoPrivileges"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
-							}
-							if (client.Player.Guild.GuildLevel < 5)
-							{
-								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Guild.GuildLevelReq"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-								return;
-							}
+							}						
 							if (args[2] == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Guild.Help.GuildDues"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -3045,20 +3040,19 @@ namespace DOL.GS.Commands
 							{
 								client.Player.Guild.SetGuildDues(false);
 								client.Player.Guild.SetGuildDuesPercent(0);
-								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Guild.Dues.Off"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Guild.DuesOff"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 							}
 							else if (amount > 0 && amount <= 100)
-							{
-								client.Player.Guild.SetGuildDues(true);
-								if (ServerProperties.Properties.NEW_GUILD_DUES)
+							{								
+								if (Properties.GUILD_DUES_MAX_VALUE < amount)
 								{
+									client.Player.Guild.SetGuildDues(true);
 									client.Player.Guild.SetGuildDuesPercent(amount);
-									client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Guild.Dues.On", amount), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+									client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Guild.DuesOn", amount), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 								}
 								else
-								{
-									client.Player.Guild.SetGuildDuesPercent(2);
-									client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Guild.Dues.On", 2), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+								{									
+									client.Out.SendMessage("Vous ne pouvez pas avoir une taxe supérieur à " + Properties.GUILD_DUES_MAX_VALUE + "%" , eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 								}
 							}
 							else

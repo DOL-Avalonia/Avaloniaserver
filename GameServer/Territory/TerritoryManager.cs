@@ -116,6 +116,20 @@ namespace DOL.Territory
             return false;
         }
 
+        public bool DoesPlayerOwnsTerritory(GamePlayer player)
+        {
+            foreach (var item in player.CurrentAreas)
+            {
+                var matched = this.Territories.FirstOrDefault(t => t.Area.ID.Equals(item.ID));
+
+                if (matched != null)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         public Territory GetCurrentTerritory(IEnumerable<IArea> areas)
         {

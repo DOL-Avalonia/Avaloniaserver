@@ -176,6 +176,13 @@ namespace DOL.GS.ServerRules
 				{
 					return false;
 				}
+
+				//Forbids attack on territory
+				var ownsTerritory = Territory.TerritoryManager.Instance.DoesPlayerOwnsTerritory(playerAttacker);
+				if (ownsTerritory)
+                {					
+					return false;                    
+                }
 			}		
 
 			//Housing
