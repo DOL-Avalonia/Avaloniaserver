@@ -1,4 +1,6 @@
 ﻿using AmteScripts.Managers;
+using DOL.Events;
+using DOL.GameEvents;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 using System;
@@ -22,6 +24,7 @@ namespace Amte
 			{ eRealm.Midgard, new TimeSpan(0) },
 			{ eRealm.Hibernia, new TimeSpan(0) },
 		};
+
 
 		public double timeBeforeClaim
 		{
@@ -126,6 +129,8 @@ namespace Amte
 				if (pl != null)
 					pl.Out.SendMessage(string.Format("{0} a pris le contrôle du fort !", player.GuildName), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 			}
+
+			RvrManager.Instance.OnControlChange(this.InternalID, player.Guild);
 		}
 
 		public virtual void StartRvR()
@@ -133,6 +138,7 @@ namespace Amte
 			var lastTime = DateTime.Now;
 			if (_scoreTimer != null)
 				_scoreTimer.Stop();
+
 			_scoreTimer = new RegionTimer(
 				this,
 				timer => {
@@ -153,7 +159,7 @@ namespace Amte
 		{
 			if (_scoreTimer != null)
 				_scoreTimer.Stop();
-			_scoreTimer = null;
+			_scoreTimer = null;			
 		}
 
 		public virtual string GetScores()

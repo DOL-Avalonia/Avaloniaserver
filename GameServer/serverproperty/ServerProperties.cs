@@ -899,6 +899,24 @@ namespace DOL.GS.ServerProperties
         public static double RvR_XP_RATE { get; set; }
 
         /// <summary>
+        /// RvR RARIUS AREA DEFAULT
+        /// </summary>
+        [ServerProperty("rvr", "rvr_area_radius", "The RvR radius area default value", 6000)]
+        public static int RvR_AREA_RADIUS { get; set; }
+
+        /// <summary>
+        /// RvR INSIDE AREA RP BONUS PERCENTAGE
+        /// </summary>
+        [ServerProperty("rvr", "rvr_inside_area_rp_bonus", "The RvR RP bonus inside the area in percentage", 30)]
+        public static int RvR_INSIDE_AREA_RP_BONUS { get; set; }
+
+        /// <summary>
+        /// RvR OUTSIDE AREA RP BONUS PERCENTAGE
+        /// </summary>
+        [ServerProperty("rvr", "rvr_outside_area_rp_bonus", "The RvR RP bonus outside the area in percentage", 5)]
+        public static int RvR_OUTSIDE_AREA_RP_BONUS { get; set; }
+
+        /// <summary>
         /// The Realm Points Rate
         /// </summary>
         [ServerProperty("rates", "rp_rate", "The Realm Points Rate Modifier - Edit this to change the rate at which you gain realm points e.g 1.5 is 50% more 2.0 is twice the amount (100%) 0.5 is half the amount (50%)", 1.0)]

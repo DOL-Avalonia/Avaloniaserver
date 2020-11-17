@@ -87,7 +87,7 @@ namespace DOL.GS.Commands
                         break;
                     }
                     string regions = "";
-                    RvrManager.Instance.FindRvRMaps().GroupBy(id => id).Foreach(id => regions += " " + id.Key);
+                    RvrManager.Instance.InitMapsAndTerritories().GroupBy(id => id).Foreach(id => regions += " " + id.Key);
 					var pvp = string.Join(", ", PvpManager.Instance.FindPvPMaps());
   				    DisplayMessage(client, string.Format("Le rvr utilise les maps: {0}, le pvp utilise les maps: {1}.", regions, pvp));
 					break;				   

@@ -752,17 +752,30 @@ namespace DOL.GS.ServerRules
 							}
 						}
 
-						if (RvrManager.Instance.IsInRvr(killerPlayer))
+						if (killerPlayer.IsInRvR)
 						{
-							var bonus = 0.1;
-							var lords = RvrManager.Instance.Lords;
-							foreach (var lord in lords)
-								if (lord.CurrentRegionID == killerPlayer.CurrentRegionID && killerPlayer.GetDistance(lord) < 4000)
-									bonus += 0.5;
-							if (!string.IsNullOrEmpty(killerPlayer.GuildName) && lords.Any(l => l.GuildName == killerPlayer.GuildName))
-								bonus += 0.5;
-							realmPoints += (int)(realmPoints * bonus);
-							rpCap += (int)(rpCap * bonus);
+							//Get Territory by RegionId
+							var territory = RvrManager.Instance.GetRvRTerritory(killerPlayer.CurrentRegionID);							
+							if (territory != null)
+							{
+								if (killerPlayer.GuildName != null && killerPlayer.GuildName.Equals(territory.GuildOwner))
+                                {
+									int bonus = 0;
+									//Is Player inside the Territory Area?
+									var owned = Territory.TerritoryManager.Instance.DoesPlayerOwnsTerritory(killerPlayer);
+									if (owned)
+									{
+										bonus = Properties.RvR_INSIDE_AREA_RP_BONUS;			
+									}
+									else
+									{
+										//otherwise give small bonus
+										bonus = Properties.RvR_OUTSIDE_AREA_RP_BONUS;
+									}
+									killedPlayer.Out.SendMessage(string.Format("Vous obtenez un bonus aux RP de {0}% grâce à votre capture du fort.", bonus), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									realmPoints += realmPoints * bonus / 100;
+								}
+							}	
 						}
 
 						if (realmPoints > rpCap)

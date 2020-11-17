@@ -244,7 +244,7 @@ namespace DOL.Territory
                 RestoreOriginalEmblem(mob);
             }
 
-            var firstMob = territory.Mobs.FirstOrDefault();
+            var firstMob = territory.Mobs.FirstOrDefault() ?? territory.Boss;
             foreach (GameObject item in firstMob.CurrentZone.GetObjectsInRadius(Zone.eGameObjectType.ITEM, firstMob.X, firstMob.Y, firstMob.Z, WorldMgr.VISIBILITY_DISTANCE, new System.Collections.ArrayList(), true))
             {
                 if (item is TerritoryBanner ban)
@@ -338,7 +338,8 @@ namespace DOL.Territory
             }
 
             return infos;
-        }
+        }    
+
 
         public static Territory GetTerritoryFromMobId(string mobId)
         {

@@ -25,7 +25,7 @@ namespace DOL.Territory
             this.ZoneId = zoneId;
             this.AreaId = areaId;
             this.GroupId = groupId;
-            this.BossId = boss.InternalID;
+            this.BossId = boss?.InternalID;
             this.Boss = boss;
             this.Coordinates = TerritoryManager.GetCoordinates(area);
             this.Radius = this.GetRadius();
@@ -145,7 +145,7 @@ namespace DOL.Territory
             return !this.Bonus.Any() ? null : string.Join("|", this.Bonus.Select(b => (byte)b));
         }
 
-        private void SaveOriginalGuilds()
+        protected virtual void SaveOriginalGuilds()
         {
             if (this.Mobs != null)
             {
@@ -163,7 +163,7 @@ namespace DOL.Territory
             }
         }
 
-        private void SaveMobOriginalGuildname(GameNPC mob)
+        protected void SaveMobOriginalGuildname(GameNPC mob)
         {
             if (!this.OriginalGuilds.ContainsKey(mob.InternalID))
             {
@@ -172,7 +172,7 @@ namespace DOL.Territory
         }
 
 
-        public IEnumerable<GameNPC> GetMobsInTerritory()
+        private IEnumerable<GameNPC> GetMobsInTerritory()
         {
             List<GameNPC> mobs = new List<GameNPC>();
             if (this.Coordinates == null)
@@ -186,9 +186,9 @@ namespace DOL.Territory
                 return null;
             }
 
-            var items = WorldMgr.Regions[this.RegionId].GetNPCsInRadius(this.Coordinates.X, this.Coordinates.Y, 0, this.Radius, false, true);
+            var items = WorldMgr.Regions[this.RegionId].GetNPCsInRadius(this.Coordinates.X, this.Coordinates.Y, 0, this.Radius, false, false);
 
-            foreach (var item in items.Cast<GameObject>())
+            foreach (GameObject item in items)
             {
                 if (item is GameNPC mob && (mob.Flags & GameNPC.eFlags.CANTTARGET) == 0)
                 {
@@ -257,7 +257,7 @@ namespace DOL.Territory
         }
 
 
-        public void SaveIntoDatabase()
+        public virtual void SaveIntoDatabase()
         {
             TerritoryDb db = null;
             bool isNew = false;
