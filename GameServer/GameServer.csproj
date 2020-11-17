@@ -2368,6 +2368,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Territory\AreaCoordinate.cs" />
+    <Compile Include="Territory\RvRTerritory.cs" />
     <Compile Include="Territory\Territory.cs" />
     <Compile Include="Territory\TerritoryManager.cs" />
     <Compile Include="trainer\albion\AcolyteTrainer.cs">
