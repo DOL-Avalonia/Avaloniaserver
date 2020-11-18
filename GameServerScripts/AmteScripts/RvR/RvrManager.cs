@@ -123,7 +123,7 @@ namespace AmteScripts.Managers
 
             if (territory != null && territory.RvRTerritory != null)
             {
-                TerritoryManager.ApplyEmblemToTerritory(territory.RvRTerritory, guild);
+                TerritoryManager.ApplyEmblemToTerritory(territory.RvRTerritory, guild, territory.RvRTerritory.Boss);
                 territory.RvRTerritory.Mobs.ForEach(m => m.GuildName = guild.Name);
                 territory.RvRTerritory.GuildOwner = guild.Name;
                 //Update client !!
@@ -378,7 +378,7 @@ namespace AmteScripts.Managers
             Midgard.RealmPoints = 0;
             this._maps.Where(m => m.Value.RvRTerritory != null).Foreach(m => {
                 ((LordRvR)m.Value.RvRTerritory.Boss).StartRvR();
-                TerritoryManager.ClearEmblem(m.Value.RvRTerritory);
+                TerritoryManager.ClearEmblem(m.Value.RvRTerritory, m.Value.RvRTerritory.Boss);
             });
         
 			return true;
@@ -393,7 +393,7 @@ namespace AmteScripts.Managers
 
             this._maps.Where(m => m.Value.RvRTerritory != null).Foreach(m => {
                 ((LordRvR)m.Value.RvRTerritory.Boss).StopRvR();
-                TerritoryManager.ClearEmblem(m.Value.RvRTerritory);
+                TerritoryManager.ClearEmblem(m.Value.RvRTerritory, m.Value.RvRTerritory.Boss);
             });
 
             this._maps.Values.GroupBy(v => v.Location.RegionID).ForEach(region => {
