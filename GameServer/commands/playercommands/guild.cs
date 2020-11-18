@@ -1241,47 +1241,45 @@ namespace DOL.GS.Commands
 
 							var territory = TerritoryManager.Instance.GetCurrentTerritory(client.Player.CurrentAreas);
 
-							if (client.Player.IsInRvR)
+							if (territory != null)
 							{
-								GuildBanner banner = new GuildBanner(client.Player);
-								banner.Start();
-								client.Out.SendMessage(
-									LanguageMgr.GetTranslation(
-										client.Account.Language,
-										"Commands.Players.Guild.BannerSummoned"),
-										eChatType.CT_System,
-										eChatLoc.CL_SystemWindow);
-								client.Player.Guild.SendMessageToGuildMembers(
-									LanguageMgr.GetTranslation(
-										client.Account.Language,
-										"Commands.Players.Guild.BannerSummoned",
-										client.Player.Name),
-									eChatType.CT_Guild,
-									eChatLoc.CL_SystemWindow);
-								client.Player.Guild.UpdateGuildWindow();
-							}
-							else if (territory == null)
-							{
-								client.Out.SendMessage(
-									LanguageMgr.GetTranslation(
-										client.Account.Language,
-										"Commands.Players.Guild.BannerNotRvR"),
+								if (territory.GuildOwner?.Equals(client.Player.GuildName) == true)
+								{
+									TerritoryManager.ApplyEmblemToTerritory(territory, client.Player.Guild);
+
+									GuildBanner banner = new GuildBanner(client.Player);
+									banner.Start();
+									client.Out.SendMessage(
+										LanguageMgr.GetTranslation(
+											client.Account.Language,
+											"Commands.Players.Guild.BannerSummoned"),
+											eChatType.CT_System,
+											eChatLoc.CL_SystemWindow);
+									client.Player.Guild.SendMessageToGuildMembers(
+										LanguageMgr.GetTranslation(
+											client.Account.Language,
+											"Commands.Players.Guild.BannerSummoned",
+											client.Player.Name),
 										eChatType.CT_Guild,
 										eChatLoc.CL_SystemWindow);
-                            }
-                            else
-                            {
-								if (territory.GuildOwner?.Equals(client.Player.GuildName) == true)
-                                {
-									TerritoryManager.ApplyEmblemToTerritory(territory, client.Player.Guild);
-                                }
-                                else
-                                {
+									client.Player.Guild.UpdateGuildWindow();
+								}
+								else
+								{
 									client.Out.SendMessage("Vous ne pouvez pas poser votre bannière dans ce territoire car il ne vous appartient pas.",
 										eChatType.CT_Guild,
 										eChatLoc.CL_SystemWindow);
-                                }			
+								}
 							}
+							else
+							{
+								client.Out.SendMessage(
+									LanguageMgr.GetTranslation(
+										client.Account.Language,
+										"Vous devez être dans le territoire et le posseder pour y poser votre bannière"),
+										eChatType.CT_Guild,
+										eChatLoc.CL_SystemWindow);
+                            }                          
 
 							break;
 						}

@@ -228,7 +228,7 @@ namespace DOL.Territory
             territory.SaveIntoDatabase();
         }
 
-        public static void ClearEmblem(Territory territory)
+        public static void ClearEmblem(Territory territory, GameNPC initNpc = null)
         {
             territory.IsBannerSummoned = false;
             foreach (var mob in territory.Mobs)
@@ -244,7 +244,7 @@ namespace DOL.Territory
                 RestoreOriginalEmblem(mob);
             }
 
-            var firstMob = territory.Mobs.FirstOrDefault() ?? territory.Boss;
+            var firstMob = initNpc ?? territory.Mobs.FirstOrDefault() ?? territory.Boss;
             foreach (GameObject item in firstMob.CurrentZone.GetObjectsInRadius(Zone.eGameObjectType.ITEM, firstMob.X, firstMob.Y, firstMob.Z, WorldMgr.VISIBILITY_DISTANCE, new System.Collections.ArrayList(), true))
             {
                 if (item is TerritoryBanner ban)
@@ -412,7 +412,7 @@ namespace DOL.Territory
                 territory.SaveIntoDatabase();
         }
 
-        public static void ApplyEmblemToTerritory(Territory territory, Guild guild)
+        public static void ApplyEmblemToTerritory(Territory territory, Guild guild, GameNPC initSearchNPC = null)
         {
             territory.IsBannerSummoned = true;
             var cls = WorldMgr.GetAllPlayingClients().Where(c => c.Player.CurrentZone.ID.Equals(territory.ZoneId));
@@ -423,7 +423,7 @@ namespace DOL.Territory
                 cls.ForEach(c => c.Out.SendLivingEquipmentUpdate(mob));
             }
 
-            var firstMob = territory.Mobs.FirstOrDefault();
+            var firstMob = initSearchNPC ?? territory.Mobs.FirstOrDefault();
             foreach (GameObject item in firstMob.CurrentZone.GetObjectsInRadius(Zone.eGameObjectType.ITEM, firstMob.X, firstMob.Y, firstMob.Z, WorldMgr.VISIBILITY_DISTANCE, new System.Collections.ArrayList(), true))
             {
                 if (item is TerritoryBanner ban)

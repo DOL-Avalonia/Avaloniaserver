@@ -762,8 +762,8 @@ namespace DOL.GS.ServerRules
                                 {
 									int bonus = 0;
 									//Is Player inside the Territory Area?
-									var owned = Territory.TerritoryManager.Instance.DoesPlayerOwnsTerritory(killerPlayer);
-									if (owned)
+									var isInsideTerritory = killedPlayer.CurrentAreas.Any(a => ((AbstractArea)a).Description.Equals(territory.AreaId));
+									if (isInsideTerritory)
 									{
 										bonus = Properties.RvR_INSIDE_AREA_RP_BONUS;			
 									}
@@ -772,7 +772,7 @@ namespace DOL.GS.ServerRules
 										//otherwise give small bonus
 										bonus = Properties.RvR_OUTSIDE_AREA_RP_BONUS;
 									}
-									killedPlayer.Out.SendMessage(string.Format("Vous obtenez un bonus aux RP de {0}% grâce à votre capture du fort.", bonus), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									killerPlayer.Out.SendMessage(string.Format("Vous obtenez un bonus aux RP de {0}% grâce à votre capture du fort.", bonus), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 									realmPoints += realmPoints * bonus / 100;
 								}
 							}	
