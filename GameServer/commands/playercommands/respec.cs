@@ -209,7 +209,7 @@ namespace DOL.GS.Commands
 								client,
 								LanguageMgr.GetTranslation(
 									client.Account.Language,
-									"Commands.Players.Respec.NotAvailable.Money",
+									"Commands.Players.Respec.NotAvailable.Gold", // No entry for Money, it replace by Gold
 									mgold));
 							return;
 						}
