@@ -89,7 +89,7 @@ namespace Amte
 						player.Out.SendMessage("Vous avez été interrompu.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 						return 0;
 					}
-					if (player.GetDistanceTo(this) > InteractDistance)
+					if (player.GetDistanceTo(this) > WorldMgr.GIVE_ITEM_DISTANCE)
 					{
 						_claimTimer = null;
 						player.Out.SendCloseTimerWindow();
