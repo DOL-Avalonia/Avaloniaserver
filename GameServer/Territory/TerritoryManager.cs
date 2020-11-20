@@ -122,7 +122,7 @@ namespace DOL.Territory
             {
                 var matched = this.Territories.FirstOrDefault(t => t.Area.ID.Equals(item.ID));
 
-                if (matched != null)
+                if (matched != null && matched.GuildOwner != null && matched.GuildOwner.Equals(player.GuildName))
                 {
                     return true;
                 }
@@ -223,14 +223,6 @@ namespace DOL.Territory
                 }
             }
 
-            territory.GuildOwner = null;
-            territory.Boss.RestoreOriginalGuildName();
-            territory.SaveIntoDatabase();
-        }
-
-        public static void ClearEmblem(Territory territory, GameNPC initNpc = null)
-        {
-            territory.IsBannerSummoned = false;
             foreach (var mob in territory.Mobs)
             {
                 if (territory.OriginalGuilds.ContainsKey(mob.InternalID))
@@ -241,6 +233,18 @@ namespace DOL.Territory
                 {
                     mob.GuildName = null;
                 }
+            }       
+
+            territory.GuildOwner = null;
+            territory.Boss.RestoreOriginalGuildName();
+            territory.SaveIntoDatabase();
+        }
+
+        public static void ClearEmblem(Territory territory, GameNPC initNpc = null)
+        {
+            territory.IsBannerSummoned = false;
+            foreach (var mob in territory.Mobs)
+            {     
                 RestoreOriginalEmblem(mob);
             }
 
