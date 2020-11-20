@@ -106,6 +106,8 @@ Commands.Players.Guild.Help.GuildEditView:		'/gc edit <rang#> view <y|n>' # Per
 Commands.Players.Guild.Help.GuildEditWithdraw:	'/gc edit <rang#> withdraw <y|n>' # Permet de donner l'autorisation de retirer les fonds de votre caisse de guilde.
 Commands.Players.Guild.Help.GuildEmail:			'/gc email <contact@guildpage.com>' # Affiche l'adresse internet des contacts au sein de la guilde.
 Commands.Players.Guild.Help.GuildEmblem:			'/gc emblem' # Présentation de l'emblème.
+Commands.Players.Guild.Help.TerritoryBanner:			'/gc territorybanner' # Permet de poser sa bannière dans un territoire conquis.
+
 Commands.Players.Guild.Help.GuildForm:			'/gc form <nom de guilde>' # Création d'une guilde (8 joueurs requis dans le groupe).
 Commands.Players.Guild.Help.GuildGMAddPlayer:		'/gc addplayer <nom de joueur> to <noum de guilde>' # Ajoute un joueur à la guilde.
 Commands.Players.Guild.Help.GuildGMCommands:		Game Master commandes :

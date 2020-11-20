@@ -76,7 +76,6 @@ namespace Amte
 				player.Out.SendMessage("Je suis occupé pour le moment, revenez plus tard.", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 				return true;
 			}
-			var delay = player.Client.Account.PrivLevel == 1 ? CLAIM_TIME_SECONDS : 2;
 
 			var startTime = DateTime.Now;
 			_claimTimer = new RegionTimer(
@@ -97,7 +96,7 @@ namespace Amte
 						return 0;
 					}
 					var passedTime = DateTime.Now - startTime;
-					if (passedTime.TotalSeconds < delay)
+					if (passedTime.TotalSeconds < CLAIM_TIME_SECONDS)
 						return 500;
 
 					player.Out.SendCloseTimerWindow();
@@ -108,7 +107,7 @@ namespace Amte
 				500
 			);
 			
-			player.Out.SendTimerWindow("Prise du fort", delay);
+			player.Out.SendTimerWindow("Prise du fort", CLAIM_TIME_SECONDS);
 
 			foreach (var obj in GetPlayersInRadius(ushort.MaxValue - 1))
 			{

@@ -555,7 +555,7 @@ namespace DOL.Database
         public bool CanUseInRvR
         {
             get { return m_canUseInRvR; }
-            set { Dirty = true; m_canUseInRvR = true; }
+            set { Dirty = true; m_canUseInRvR = value; }
         }
 
         [DataElement(AllowDbNull = true)]

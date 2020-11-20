@@ -1084,17 +1084,6 @@ namespace DOL.GS.Commands
 						#region Buybanner
 					case "buybanner":
 						{
-							if (client.Account.PrivLevel == 1)
-							{
-								client.Out.SendMessage(
-									LanguageMgr.GetTranslation(
-										client.Account.Language,
-										"Commands.Players.Guild.GuildLevelReq"),
-									eChatType.CT_System,
-									eChatLoc.CL_SystemWindow);
-								return;
-							}
-
 							long bannerPrice = Properties.GUILD_BANNER_MERIT_PRICE;
 
 							if (client.Player.Guild == null)
@@ -1239,48 +1228,34 @@ namespace DOL.GS.Commands
 								}
 							}
 
-							var territory = TerritoryManager.Instance.GetCurrentTerritory(client.Player.CurrentAreas);
-
-							if (territory != null)
+							if (client.Player.IsInRvR)
 							{
-								if (territory.GuildOwner?.Equals(client.Player.GuildName) == true)
-								{
-									TerritoryManager.ApplyEmblemToTerritory(territory, client.Player.Guild);
-
-									GuildBanner banner = new GuildBanner(client.Player);
-									banner.Start();
-									client.Out.SendMessage(
-										LanguageMgr.GetTranslation(
-											client.Account.Language,
-											"Commands.Players.Guild.BannerSummoned"),
-											eChatType.CT_System,
-											eChatLoc.CL_SystemWindow);
-									client.Player.Guild.SendMessageToGuildMembers(
-										LanguageMgr.GetTranslation(
-											client.Account.Language,
-											"Commands.Players.Guild.BannerSummoned",
-											client.Player.Name),
-										eChatType.CT_Guild,
+								GuildBanner banner = new GuildBanner(client.Player);
+								banner.Start();
+								client.Out.SendMessage(
+									LanguageMgr.GetTranslation(
+										client.Account.Language,
+										"Commands.Players.Guild.BannerSummoned"),
+										eChatType.CT_System,
 										eChatLoc.CL_SystemWindow);
-									client.Player.Guild.UpdateGuildWindow();
-								}
-								else
-								{
-									client.Out.SendMessage("Vous ne pouvez pas poser votre bannière dans ce territoire car il ne vous appartient pas.",
-										eChatType.CT_Guild,
-										eChatLoc.CL_SystemWindow);
-								}
+								client.Player.Guild.SendMessageToGuildMembers(
+									LanguageMgr.GetTranslation(
+										client.Account.Language,
+										"Commands.Players.Guild.BannerSummoned",
+										client.Player.Name),
+									eChatType.CT_Guild,
+									eChatLoc.CL_SystemWindow);
+								client.Player.Guild.UpdateGuildWindow();
 							}
 							else
 							{
 								client.Out.SendMessage(
 									LanguageMgr.GetTranslation(
 										client.Account.Language,
-										"Vous devez être dans le territoire et le posseder pour y poser votre bannière"),
+										"Commands.Players.Guild.BannerNotRvR"),
 										eChatType.CT_Guild,
 										eChatLoc.CL_SystemWindow);
-                            }                          
-
+							}
 							break;
 						}
 						#endregion
@@ -1684,11 +1659,28 @@ namespace DOL.GS.Commands
 							client.Player.Guild.UpdateGuildWindow();
 							break;
 						}
-						#endregion
-						#region List
-						// --------------------------------------------------------------------------------
-						// LIST
-						// --------------------------------------------------------------------------------
+					#endregion
+						#region Territorybanner
+						case "territorybanner":
+                        {
+							bool owned = TerritoryManager.Instance.DoesPlayerOwnsTerritory(client.Player);
+							if (owned)
+							{
+								var territory = TerritoryManager.Instance.GetCurrentTerritory(client.Player.CurrentAreas);
+								TerritoryManager.ApplyEmblemToTerritory(territory, client.Player.Guild);
+							}
+							else
+							{
+								client.Out.SendMessage("Vous devez etre dans un Territoire et le posséder pour poser votre bannière", eChatType.CT_System, eChatLoc.CL_SystemWindow);	
+							}
+						}
+						break;
+
+					#endregion
+					#region List
+					// --------------------------------------------------------------------------------
+					// LIST
+					// --------------------------------------------------------------------------------
 					case "list":
 						{
 							// Changing this to list online only, not sure if this is live like or not but list can be huge
@@ -3042,7 +3034,7 @@ namespace DOL.GS.Commands
 							}
 							else if (amount > 0 && amount <= 100)
 							{								
-								if (Properties.GUILD_DUES_MAX_VALUE < amount)
+								if (amount <= Properties.GUILD_DUES_MAX_VALUE)
 								{
 									client.Player.Guild.SetGuildDues(true);
 									client.Player.Guild.SetGuildDuesPercent(amount);
@@ -3356,6 +3348,7 @@ namespace DOL.GS.Commands
 			client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Guild.Help.GuildBuyBanner"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 			client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Guild.Help.GuildBannerSummon"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 			client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Guild.Help.GuildTerritoires"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+			client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Guild.Help.TerritoryBanner"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 		}
 
 		/// <summary>

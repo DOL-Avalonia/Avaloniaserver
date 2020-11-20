@@ -124,9 +124,13 @@ namespace AmteScripts.Managers
             if (territory != null && territory.RvRTerritory != null)
             {
                 TerritoryManager.ApplyEmblemToTerritory(territory.RvRTerritory, guild, territory.RvRTerritory.Boss);
-                territory.RvRTerritory.Mobs.ForEach(m => m.GuildName = guild.Name);
+                territory.RvRTerritory.Mobs.ForEach(m => 
+                {
+                    m.GuildName = guild.Name;
+                    m.Realm = guild.Realm;
+                });
                 territory.RvRTerritory.GuildOwner = guild.Name;
-                //Update client !!
+                territory.RvRTerritory.Boss.Realm = guild.Realm;
             }
         }
 
@@ -393,6 +397,7 @@ namespace AmteScripts.Managers
 
             this._maps.Where(m => m.Value.RvRTerritory != null).Foreach(m => {
                 ((LordRvR)m.Value.RvRTerritory.Boss).StopRvR();
+                m.Value.RvRTerritory.Reset();
                 TerritoryManager.ClearEmblem(m.Value.RvRTerritory, m.Value.RvRTerritory.Boss);
             });
 

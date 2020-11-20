@@ -34,5 +34,23 @@ namespace DOL.Territory
             //In memory RvR
             //No save allowed
         }
+
+        public void Reset()
+        {
+            this.Boss.RestoreOriginalGuildName();
+            this.Boss.Realm = eRealm.None;
+            foreach (var mob in this.Mobs)
+            {
+                mob.Realm = eRealm.None;
+                if (this.OriginalGuilds.ContainsKey(mob.InternalID))
+                {
+                    mob.GuildName = this.OriginalGuilds[mob.InternalID];
+                }
+                else
+                {
+                    mob.GuildName = null;
+                }
+            }
+        }
     }
 }

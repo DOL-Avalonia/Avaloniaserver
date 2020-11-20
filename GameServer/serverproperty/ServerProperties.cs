@@ -1962,7 +1962,7 @@ namespace DOL.GS.ServerProperties
         public static int GUILD_NUM { get; set; }
 
         /// <summary>
-        /// This enables or disables new guild dues. Live standard is 2% dues
+        /// Guild dues max value in %
         /// </summary>
         [ServerProperty("guild", "guild_dues_max_value", "Guild dues max value in %", 50)]
         public static int GUILD_DUES_MAX_VALUE { get; set; }

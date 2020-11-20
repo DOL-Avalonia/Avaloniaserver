@@ -186,9 +186,9 @@ namespace DOL.Territory
                 return null;
             }
 
-            var items = WorldMgr.Regions[this.RegionId].GetNPCsInRadius(this.Coordinates.X, this.Coordinates.Y, 0, this.Radius, false, false);
+            var items = WorldMgr.Regions[this.RegionId].GetNPCsInRadius(this.Coordinates.X, this.Coordinates.Y, 0, this.Radius, false, true);
 
-            foreach (GameObject item in items)
+            foreach (GameObject item in items.Cast<GameObject>())
             {
                 if (item is GameNPC mob && (mob.Flags & GameNPC.eFlags.CANTTARGET) == 0)
                 {

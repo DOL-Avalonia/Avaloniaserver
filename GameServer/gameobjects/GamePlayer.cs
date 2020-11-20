@@ -9080,14 +9080,22 @@ namespace DOL.GS
 					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.UseSlot.AttemptToUse", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}
 
+				bool unauthorized = false;
+				//Check if Item Can be used in RvR
+				if ((this.isInBG || this.IsInPvP || this.IsInRvR) && !useItem.CanUseInRvR)
+				{
+					unauthorized = true;
+				}
 				//prevent magical item use in not authorized zones
-				if (useItem.Object_Type == (int)eObjectType.Magical)
+				else if (useItem.Object_Type == (int)eObjectType.Magical && !this.CurrentZone.AllowMagicalItem)
                 {
-					if (this.isInBG || this.CurrentRegion.IsRvR || !this.CurrentZone.AllowMagicalItem)
-                    {
-						Out.SendMessage("Vous ne pouvez pas utiliser cela ici !", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						return;
-					}
+					unauthorized = true;
+				}
+				
+				if (unauthorized)
+                {			
+					Out.SendMessage("Vous ne pouvez pas utiliser cela ici !", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					return;
 				}
 
 				#region Non-backpack/vault slots
@@ -9703,14 +9711,7 @@ namespace DOL.GS
 			{
 				Out.SendMessage("L'utilisation d'objets magiques n'est pas permise dans cette zone.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;
-			}
-
-			//Check if Item Should be disable in RvR
-			if (!item.CanUseInRvR && (this.isInBG || this.IsInPvP || this.IsInRvR))
-            {
-				Out.SendMessage("L'utilisation de cet objet n'est pas permis dans cette zone.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return false;
-			}
+			}		
 
 			//Eden
 			if (IsMezzed || (IsStunned && !(Steed != null && Steed.Name == "Forceful Zephyr")) || !IsAlive)
@@ -12390,7 +12391,23 @@ namespace DOL.GS
 				lock (Inventory)
 				{
 					InventoryItem item = Inventory.GetItem(slot_pos);
-					if (!item.IsDropable || !CurrentZone.AllowMagicalItem || (!item.CanUseInRvR && (this.IsInRvR || this.IsPvP || this.isInBG)))
+					bool unauthorized = false;
+					if (!item.IsDropable)
+					{
+						unauthorized = true;
+					}
+					//Check if Item Can be used in RvR
+					else if ((this.isInBG || this.IsInPvP || this.IsInRvR) && !item.CanUseInRvR)
+					{
+						unauthorized = true;
+					}
+					//prevent magical item use in not authorized zones
+					else if (item.Object_Type == (int)eObjectType.Magical && !this.CurrentZone.AllowMagicalItem)
+					{
+						unauthorized = true;
+					}
+
+					if (unauthorized)
 					{
 						Out.SendMessage(item.GetName(0, true) + " ne peux pas etre déposé ici !", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						return false;
