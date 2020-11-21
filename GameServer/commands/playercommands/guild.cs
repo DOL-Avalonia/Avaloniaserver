@@ -1667,6 +1667,20 @@ namespace DOL.GS.Commands
 							if (owned)
 							{
 								var territory = TerritoryManager.Instance.GetCurrentTerritory(client.Player.CurrentAreas);
+
+								if (client.Player.Guild == null)
+                                {
+									client.Out.SendMessage("Vous devez avoir une guilde pour faire cela", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									break;
+                                }
+
+								if (client.Player.Guild.MeritPoints < (long)Properties.GUILD_BANNER_MERIT_PRICE)								
+                                {
+									client.Out.SendMessage(string.Format("Votre guilde doit avoir {0} points de merite pour faire cela.", Properties.GUILD_BANNER_MERIT_PRICE), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									break;
+								}
+
+								client.Player.Guild.RemoveMeritPoints(Properties.GUILD_BANNER_MERIT_PRICE);
 								TerritoryManager.ApplyEmblemToTerritory(territory, client.Player.Guild);
 							}
 							else

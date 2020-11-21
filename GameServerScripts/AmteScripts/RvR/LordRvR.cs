@@ -1,4 +1,5 @@
 ﻿using AmteScripts.Managers;
+using DOL.Database;
 using DOL.Events;
 using DOL.GameEvents;
 using DOL.GS;
@@ -12,6 +13,7 @@ namespace Amte
 	{
 		public static int CLAIM_TIME_SECONDS = 30;
 		public static int CLAIM_TIME_BETWEEN_SECONDS = 120;
+		public string originalGuildName;
 
 		public DateTime lastClaim = new DateTime(1);
 
@@ -54,7 +56,13 @@ namespace Amte
 			return true;
 		}
 
-		public override bool WhisperReceive(GameLiving source, string text)
+        public override void LoadFromDatabase(DataObject obj)
+        {
+            base.LoadFromDatabase(obj);
+			this.originalGuildName = this.GuildName;
+        }
+
+        public override bool WhisperReceive(GameLiving source, string text)
 		{
 			var player = source as GamePlayer;
 			if (!base.WhisperReceive(source, text) || player == null)
@@ -123,11 +131,18 @@ namespace Amte
 		{
 			lastClaim = DateTime.Now;
 			GuildName = player.GuildName;
-			foreach (var obj in GetPlayersInRadius(ushort.MaxValue - 1))
+			var rvr = RvrManager.Instance.GetRvRTerritory(this.CurrentRegionID);
+			var defaultAreaName = string.Empty;
+			if (rvr != null)
+            {
+				defaultAreaName = ((AbstractArea)rvr.Area).Description;
+			}
+			
+			string fortName = string.IsNullOrEmpty(this.originalGuildName) ? defaultAreaName : this.originalGuildName;
+
+			foreach (GameClient client in WorldMgr.GetAllPlayingClients())
 			{
-				var pl = obj as GamePlayer;
-				if (pl != null)
-					pl.Out.SendMessage(string.Format("{0} a pris le contrôle du fort !", player.GuildName), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage(string.Format("Le RvR {1} est sous le contrôle du royaume {0}", player.GuildName, fortName), eChatType.CT_Help, eChatLoc.CL_SystemWindow);
 			}
 
 			RvrManager.Instance.OnControlChange(this.InternalID, player.Guild);

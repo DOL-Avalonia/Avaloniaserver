@@ -1417,6 +1417,12 @@ namespace DOL.GS.ServerProperties
         public static bool LOAD_KEEPS { get; set; }
 
         /// <summary>
+        /// Notify keep area when players enter/exit area
+        /// </summary>
+        [ServerProperty("keeps", "notify_keep_area_message", "notify keep area when players enter/exit area", false)]
+        public static bool NOTIFY_KEEP_AREA_MESSAGE { get; set; }
+
+        /// <summary>
         /// The level keeps start at when not claimed - please note only levels 4 and 5 are supported correctly at this time
         /// </summary>
         [ServerProperty("keeps", "starting_keep_level", "The level an unclaimed keep starts at.", 4)]
