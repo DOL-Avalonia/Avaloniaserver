@@ -316,8 +316,8 @@ namespace AmteScripts.Managers
                     log.Error("Cannot Init RvR because no LordRvR was present in Region " + initNpc.CurrentRegionID + " for InitNpc: " + initNpc.Name + ". Add a LordRvR in this RvR");
                     return null;
                 }
-
-                var area = new Area.Circle(initNpc.Name, lord.X, lord.Y, lord.Z, RVR_RADIUS);
+                var areaName = string.IsNullOrEmpty(lord.GuildName) ? initNpc.Name : lord.GuildName;
+                var area = new Area.Circle(areaName, lord.X, lord.Y, lord.Z, RVR_RADIUS);
                 rvrTerritory = new RvRTerritory(area, area.Description, lord.CurrentRegionID, lord.CurrentZone.ID, lord);
             }        
 
