@@ -22,7 +22,7 @@ Commands.Players.Respec.Missing.Line:			You don't seem to have any single-line r
 Commands.Players.Respec.Missing.Realm:			You don't seem to have any realm skill respecs available.
 Commands.Players.Respec.NeedTrainer:			You must be speaking with your trainer to respec.
 Commands.Players.Respec.NotAvailable.Buy:		Use /respec buy to buy an single-line respec.
-Commands.Players.Respec.NotAvailable.Gold:		You don't have enough money! You need {0} gold!
+Commands.Players.Respec.NotAvailable.Gold:		Vous n'avez plus assez de sous ! Vous avez besoin de {0} pièces d'or !
 Commands.Players.Respec.NotAvailable.Level:		You can't buy a respec on this level again.
 Commands.Players.Respec.NotAvailable:			You don't seem to have any respecs available.
 Commands.Players.Respec.Regain.Realm:			You regain {0} realm specialization points!
