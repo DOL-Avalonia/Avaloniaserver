@@ -127,7 +127,12 @@ namespace Amte
 			return true;
 		}
 
-		public virtual void TakeControl(GamePlayer player)
+        public override void RestoreOriginalGuildName()
+        {
+			this.GuildName = this.originalGuildName;
+        }
+
+        public virtual void TakeControl(GamePlayer player)
 		{
 			lastClaim = DateTime.Now;
 			GuildName = player.GuildName;
