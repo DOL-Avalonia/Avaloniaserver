@@ -1084,6 +1084,8 @@ namespace DOL.GS.Commands
 						#region Buybanner
 					case "buybanner":
 						{
+							//Not implemented yet
+							break;
 							long bannerPrice = Properties.GUILD_BANNER_MERIT_PRICE;
 
 							if (client.Player.Guild == null)
@@ -1167,6 +1169,8 @@ namespace DOL.GS.Commands
 						#region Summon
 					case "summon":
 						{
+							//Not implemented yet
+							break;
 							if (client.Player.Guild == null)
 							{
 								client.Out.SendMessage(
@@ -1674,14 +1678,26 @@ namespace DOL.GS.Commands
 									break;
                                 }
 
-								if (client.Player.Guild.MeritPoints < (long)Properties.GUILD_BANNER_MERIT_PRICE)								
+								if (!client.Player.GuildRank.Claim && client.Account.PrivLevel == 1)
                                 {
-									client.Out.SendMessage(string.Format("Votre guilde doit avoir {0} points de merite pour faire cela.", Properties.GUILD_BANNER_MERIT_PRICE), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									client.Out.SendMessage("Vous devez etre au moins de rang 2 pour poser une bannière", eChatType.CT_System, eChatLoc.CL_PopupWindow);
 									break;
 								}
 
-								client.Player.Guild.RemoveMeritPoints(Properties.GUILD_BANNER_MERIT_PRICE);
-								TerritoryManager.ApplyEmblemToTerritory(territory, client.Player.Guild);
+								client.Out.SendCustomDialog(string.Format("L'ajout d'une bannière à ce clan coûtera {0} points de merite à votre guilde", Properties.GUILD_BANNER_MERIT_PRICE), (GamePlayer player, byte response) =>
+								{
+									if(response == 1)
+                                    {
+										if (player.Guild.MeritPoints < (long)Properties.GUILD_BANNER_MERIT_PRICE)
+										{
+											client.Out.SendMessage(string.Format("Votre guilde doit avoir {0} points de merite pour faire cela.", Properties.GUILD_BANNER_MERIT_PRICE), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+											return;
+										}
+
+										player.Guild.RemoveMeritPoints(Properties.GUILD_BANNER_MERIT_PRICE);
+										TerritoryManager.ApplyEmblemToTerritory(territory, player.Guild);
+									}
+								});
 							}
 							else
 							{
