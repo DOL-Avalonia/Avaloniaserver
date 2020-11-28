@@ -17,7 +17,40 @@ namespace DOL.GS.RealmAbilities
             _dbspell = dbspell;
         }
 
-        public virtual void CreateSpell(double damage)
+        public AngerOfTheGodsAbility(DBAbility dba, int level) : base(dba, level)
+        {
+            CreateSpell(CalculDomage(level));
+        }
+
+        private double CalculDomage(int level)
+        {
+            double damage = 0;
+            if (ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+            {
+                switch (level)
+                {
+                    case 1: damage = 10.0; break;
+                    case 2: damage = 15.0; break;
+                    case 3: damage = 20.0; break;
+                    case 4: damage = 25.0; break;
+                    case 5: damage = 30.0; break;
+                    default: break;
+                }
+            }
+            else
+            {
+                switch (level)
+                {
+                    case 1: damage = 10.0; break;
+                    case 2: damage = 20.0; break;
+                    case 3: damage = 30.0; break;
+                    default: break;
+                }
+            }
+            return damage;
+        }
+
+        private void CreateSpell(double damage)
         {
             _dbspell = new DBSpell
             {

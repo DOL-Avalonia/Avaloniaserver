@@ -1416,6 +1416,7 @@
     <Compile Include="realmabilities\handlers\rr5\ValhallasBlessingAbility.cs" />
     <Compile Include="realmabilities\handlers\rr5\WallOfFlameAbility.cs" />
     <Compile Include="realmabilities\handlers\rr5\WhirlingStaffAbility.cs" />
+    <Compile Include="realmabilities\handlers\rr5\ShadowStrikeAbility.cs" />
     <Compile Include="realmabilities\handlers\WildMinionAbility.cs" />
     <Compile Include="realmabilities\handlers\LifterAbility.cs" />
     <Compile Include="realmabilities\handlers\VeilRecoveryAbility.cs" />
@@ -2170,6 +2171,7 @@
     <Compile Include="spells\NightShade\NightshadeNukeSpellhandler.cs" />
     <Compile Include="spells\RampingDamageFocus.cs" />
     <Compile Include="spells\RvRSicknessSpellHandler.cs" />
+    <Compile Include="spells\ShadowStrikeSpellHandler.cs" />
     <Compile Include="spells\SpellHelpers\SpellHelper.cs" />
     <Compile Include="spells\SpellHelpers\SpellMessagesHelper.cs" />
     <Compile Include="spells\SpellHelpers\StatsSpellHelper.cs" />

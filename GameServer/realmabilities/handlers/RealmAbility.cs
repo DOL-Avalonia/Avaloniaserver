@@ -87,10 +87,7 @@ namespace DOL.GS.RealmAbilities
             for (int i = 0; i <= MaxLevel - 1; i++)
             {
                 if (CostForUpgrade(i) > 0)
-                {
                     w.AddKeyValuePair($"TrainingCost_{i + 1}", CostForUpgrade(i));
-                }
-                w.AddKeyValuePair(string.Format("AmountLvl_{0}", i), AmountPerLevel(i));
             }
         }
 
@@ -99,18 +96,7 @@ namespace DOL.GS.RealmAbilities
 		/// </summary>
 		public virtual void AddDelve(ref MiniDelveWriter w, int level, GameClient clt)
         {
-            w.AddKeyValuePair("Name", Name);
-            if (Icon > 0)
-                w.AddKeyValuePair("icon", Icon);
-
-            for (int i = 1; i <= MaxLevel; i++)
-            {
-                if (CostForUpgrade(i) > 0)
-                {
-                    w.AddKeyValuePair(string.Format("TrainingCost_{0}", (i)), CostForUpgrade(i));
-                }
-                w.AddKeyValuePair(string.Format("AmountLvl_{0}", i), AmountPerLevel(i));
-            }
+            AddDelve(ref w);
         }
 
         public override string Name
