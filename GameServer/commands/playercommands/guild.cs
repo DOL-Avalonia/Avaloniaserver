@@ -1474,10 +1474,11 @@ namespace DOL.GS.Commands
 								}
 								else
 								{
-									client.Out.SendMessage(
+                                    TimeSpan bonusTime = DateTime.Now.Subtract(client.Player.Guild.BonusStartTime);
+                                    client.Out.SendMessage(
 										LanguageMgr.GetTranslation(
 											client.Account.Language,
-											"Commands.Players.Guild.ActiveBuff"),
+											"Commands.Players.Guild.ActiveBuff", 5 - bonusTime.Hours, 60 - bonusTime.Minutes),
 											eChatType.CT_Guild,
 											eChatLoc.CL_SystemWindow);
 								}

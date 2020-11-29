@@ -10,3 +10,6 @@ Commands.Players.Send.Usage:			Utilisation: '/send <joueur> <message>'
 
 # /respec
 Commands.Players.Respec.NotAvailable.Gold:		You don't have enough money! You need {0} gold!
+
+# /guild
+Commands.Players.Guild.ActiveBuff:			    Your guild already has an improvement spell. You must wait for the spell to expire to re-cast it. Remaining time: {0} hours, {1} minutes.
