@@ -284,11 +284,11 @@ GameObjects.GamePlayer.SayReceive.FalseLanguage:		{0} dit quelque chose dans une
 
 GameObjects.GamePlayer.Send.YouSendTo:					Vous envoyez, "{0}" à {1}.
 #GameObjects.GamePlayer.SendReceive.Sends:				{0} envoie, "{1}"
-GameObjects.GamePlayer.SendReceive.Sends:				{0} sends, "{1}"
+GameObjects.GamePlayer.SendReceive.Sends:				{0} vous envoi, "{1}"
 GameObjects.GamePlayer.SendReceive.FalseLanguage:		{0} envoi quelquechose dans un langage que vous ne comprenez pas.
 GameObjects.GamePlayer.SendReceive.Afk:					{0} est AFK.
 #GameObjects.GamePlayer.SendReceive.AfkMessage:			<AFK> {0} envoi, "{1}"
-GameObjects.GamePlayer.SendReceive.AfkMessage:			<AFK> {0} sends, "{1}"
+GameObjects.GamePlayer.SendReceive.AfkMessage:			<AFK> {0} envoi, "{1}"
 GameObjects.GamePlayer.Send.target.DontUnderstandYou:	{0} ne vous comprend pas.
 
 GameObjects.GamePlayer.SetControlledNpc.ReleaseTarget:	Vous relâchez le contrôle de votre cible.
