@@ -178,7 +178,10 @@ namespace DOL.GS.Commands
 							eChatType.CT_Guild,
 							eChatLoc.CL_SystemWindow
 						);
-					}
+                        // refresh the social window
+                        newGuild.UpdateGuildWindow();
+
+                    }
 				}
 			}
 			else
@@ -201,7 +204,9 @@ namespace DOL.GS.Commands
 					LanguageMgr.GetTranslation(
 						player.Client.Account.Language, "Commands.Players.Guild.GuildCreated", guildname, player.Name),
 						eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
-				}
+                    // refresh the social window
+                    newGuild.UpdateMember(player);
+                }
 			}
 			#endregion
 		}
@@ -297,7 +302,8 @@ namespace DOL.GS.Commands
 								}
 								else
 								{
-									Guild newGuild = GuildMgr.CreateGuild(client.Player.Realm, guildname, client.Player);
+                                    // create the guild with the good leader
+									Guild newGuild = GuildMgr.CreateGuild(((GamePlayer)guildLeader).Realm, guildname, (GamePlayer)guildLeader);
 									if (newGuild == null)
 									{
 										client.Out.SendMessage(
@@ -312,8 +318,8 @@ namespace DOL.GS.Commands
 									}
 									else
 									{
-										newGuild.AddPlayer((GamePlayer)guildLeader);
-										((GamePlayer)guildLeader).GuildRank = ((GamePlayer)guildLeader).Guild.GetRankByID(0);
+                                        // add directly the rank in the player insert
+										newGuild.AddPlayer((GamePlayer)guildLeader, newGuild.GetRankByID(0));
 										client.Out.SendMessage(
 											LanguageMgr.GetTranslation(
 												client.Account.Language,
@@ -324,7 +330,8 @@ namespace DOL.GS.Commands
 											eChatType.CT_System,
 											eChatLoc.CL_SystemWindow
 										);
-									}
+                                        newGuild.UpdateMember((GamePlayer)guildLeader);
+                                    }
 									return;
 								}
 							}
@@ -784,7 +791,34 @@ namespace DOL.GS.Commands
 								);
 							}
 							if (obj is GamePlayer)
-								client.Player.Guild.RemovePlayer(client.Player.Name, ply);
+                            {
+                                // Need clear social interface when the player leave the guild
+                                string mes = "I,";
+                                mes += ','; // Guild Level
+                                mes += ','; // Guild Bank money
+                                mes += ','; // Guild Dues enable/disable
+                                mes += ','; // Guild Bounty
+                                mes += ','; // Guild Experience
+                                mes += ','; // Guild Merit Points
+                                mes += ','; // Guild houseLot ?
+                                mes += ','; // online Guild member ?
+                                mes += ','; //"Banner available for purchase", "Missing banner buying permissions"
+                                mes += ","; // Guild Motd
+                                mes += ","; // Guild oMotd
+                                ply.Out.SendMessage(mes, eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
+
+                                client.Player.Guild.RemovePlayer(client.Player.Name, ply);
+
+                                // clear member list
+                                string[] buffer = new string[10];
+
+                                ply.Out.SendMessage("TE," + 0 + "," + 0 + "," + 0, eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
+
+                                foreach (string member in buffer)
+                                    ply.Out.SendMessage(member, eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
+                            }
+								
+
 							else
 							{
 								ch.GuildID = "";

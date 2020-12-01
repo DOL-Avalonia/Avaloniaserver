@@ -142,6 +142,8 @@ namespace DOL.GS.PacketHandler.Client.v168
                                 if (guildLeader.Guild != null)
                                 {
                                     guildLeader.Guild.AddPlayer(player);
+                                    // Need refresh the social window
+                                    guildLeader.Guild.UpdateMember(player);
                                     return;
                                 }
 
@@ -164,7 +166,30 @@ namespace DOL.GS.PacketHandler.Client.v168
                                     return;
                                 }
 
+                                // Need clear social interface when the player leave the guild
+                                string mes = "I,";
+                                mes += ','; // Guild Level
+                                mes += ','; // Guild Bank money
+                                mes += ','; // Guild Dues enable/disable
+                                mes += ','; // Guild Bounty
+                                mes += ','; // Guild Experience
+                                mes += ','; // Guild Merit Points
+                                mes += ','; // Guild houseLot ?
+                                mes += ','; // online Guild member ?
+                                mes += ','; //"Banner available for purchase", "Missing banner buying permissions"
+                                mes += ","; // Guild Motd
+                                mes += ","; // Guild oMotd
+                                player.Out.SendMessage(mes, eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
+
                                 player.Guild.RemovePlayer(player.Name, player);
+
+                                // clear member list
+                                string[] buffer = new string[10];
+
+                                player.Out.SendMessage("TE," + 0 + "," + 0 + "," + 0, eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
+
+                                foreach (string member in buffer)
+                                    player.Out.SendMessage(member, eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
                             }
                             else
                             {
