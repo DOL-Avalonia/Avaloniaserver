@@ -94,7 +94,22 @@ namespace DOL.GS
 					guildMemberList.Add(player.InternalID, member);
 				}
 			}
-		}
+            else
+            {
+                // need create the guild members dictionary if it doesn't exist 
+                Dictionary<string, GuildMemberDisplay> guildMemberList = new Dictionary<string, GuildMemberDisplay>();
+                GuildMemberDisplay member = new GuildMemberDisplay(player.InternalID,
+                                                                    player.Name,
+                                                                    player.Level.ToString(),
+                                                                    player.CharacterClass.ID.ToString(),
+                                                                    player.GuildRank.RankLevel.ToString(),
+                                                                    player.Group != null ? player.Group.MemberCount.ToString() : "1",
+                                                                    player.CurrentZone.Description,
+                                                                    player.GuildNote);
+                guildMemberList.Add(player.InternalID, member);
+                m_guildXAllMembers.Add(player.GuildID, guildMemberList);
+            }
+        }
 
 		/// <summary>
 		/// Remove a player from the all guilds and players dictionary
@@ -128,8 +143,8 @@ namespace DOL.GS
 				return false;
 
 			if (!m_guilds.ContainsKey(guild.Name))
-			{
-				m_guilds.Add(guild.Name, guild);
+			{                    
+                m_guilds.Add(guild.Name, guild);
 				m_guildids.Add(guild.GuildID, guild);
 				guild.ID = ++m_lastID;
 				return true;
@@ -150,7 +165,9 @@ namespace DOL.GS
 			guild.ClearOnlineMemberList();
 			m_guilds.Remove(guild.Name);
 			m_guildids.Remove(guild.GuildID);
-			return true;
+            m_guildXAllMembers.Remove(guild.GuildID);
+
+            return true;
 		}
 
 		/// <summary>

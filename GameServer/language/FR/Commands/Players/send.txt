@@ -4,4 +4,5 @@ Commands.Players.Send.SlowDown:			Doucement! Réfléchi avant d’envoyer un mes
 Commands.Players.Send.Target.NotFound:	{0} n’est pas dans le jeu, ou est dans un autre royaume.
 Commands.Players.Send.Target.NotUnique:	Le nom fourni n’est pas unique.
 Commands.Players.Send.Target.Yourself:	Tu ne peux pas t’envoyer de message!
+Commands.Players.Send.Target.You:		Vous
 Commands.Players.Send.Usage:			Utilisation: '/send <joueur> <message>'
