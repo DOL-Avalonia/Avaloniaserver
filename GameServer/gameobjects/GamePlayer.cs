@@ -67,6 +67,8 @@ namespace DOL.GS
 
 		private Timer reputationRecoveryTimer;
 
+        private bool stayStealth = false;
+
 		/// <summary>
 		/// This is our gameclient!
 		/// </summary>
@@ -16701,10 +16703,15 @@ namespace DOL.GS
 					: null;
 			}
 		}
-		#endregion
+
+        /// <summary>
+        /// This property is use for the assassinate RA
+        /// </summary>
+        public bool StayStealth { get => stayStealth; set => stayStealth = value; }
+        #endregion
 
 
-		public long GetRemainingIntervalReputationTime()
+        public long GetRemainingIntervalReputationTime()
         {
 			if (this.OutlawTimeStamp == 0)
             {

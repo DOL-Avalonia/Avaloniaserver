@@ -368,9 +368,14 @@ namespace DOL.GS
         public const string Remedy = "Remedy";
 
         /// <summary>
-        /// Remedy Ability
+        /// Shadow Strike
         /// </summary>
         public const string ShadowStrike = "Shadow Strike";
+
+        /// <summary>
+        /// Assassinate
+        /// </summary>
+        public const string Assassinate = "Assassinate";
 
         public const string DefensiveCombatPowerRegeneration = "Defensive Combat Power Regeneration";
 		//NPC only abilities

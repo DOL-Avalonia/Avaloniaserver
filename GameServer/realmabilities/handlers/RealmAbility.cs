@@ -84,11 +84,26 @@ namespace DOL.GS.RealmAbilities
                 w.AddKeyValuePair("icon", Icon);
             }
 
-            for (int i = 0; i <= MaxLevel - 1; i++)
+            string description = "";
+            DelveInfo.Foreach((str) => 
             {
-                if (CostForUpgrade(i) > 0)
-                    w.AddKeyValuePair($"TrainingCost_{i + 1}", CostForUpgrade(i));
+                if (!string.IsNullOrEmpty(str))
+                    description += str + "\n";
+            });
+            // use the DelveInfo to display information in place of the 1.110+ method
+            if(!string.IsNullOrEmpty(description))
+                w.AddKeyValuePair("description_string", description);
+            else
+            {
+                for (int i = 0; i < MaxLevel; i++)
+                {
+                    if (CostForUpgrade(i) > 0)
+                        w.AddKeyValuePair($"TrainingCost_{i + 1}", CostForUpgrade(i));
+                    if (AmountPerLevel(i + 1) > 0)
+                        w.AddKeyValuePair(string.Format("AmountLvl_{0}", i + 1), AmountPerLevel(i + 1));
+                }
             }
+            
         }
 
         /// <summary>

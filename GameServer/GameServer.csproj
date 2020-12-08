@@ -1405,6 +1405,7 @@
     <Compile Include="realmabilities\handlers\rr5\SelectiveBlindnessAbility.cs" />
     <Compile Include="realmabilities\handlers\rr5\SelflessDevotionAbility.cs" />
     <Compile Include="realmabilities\handlers\rr5\ShadowShroudAbility.cs" />
+    <Compile Include="realmabilities\handlers\rr5\AssassinateAbility.cs" />
     <Compile Include="realmabilities\handlers\rr5\ShieldOfImmunityAbility.cs" />
     <Compile Include="realmabilities\handlers\rr5\ShieldTripAbility.cs" />
     <Compile Include="realmabilities\handlers\rr5\SoldiersCitadelAbility.cs" />
@@ -2171,6 +2172,7 @@
     <Compile Include="spells\NightShade\NightshadeNukeSpellhandler.cs" />
     <Compile Include="spells\RampingDamageFocus.cs" />
     <Compile Include="spells\RvRSicknessSpellHandler.cs" />
+    <Compile Include="spells\AssassinateSpellHandler.cs" />
     <Compile Include="spells\ShadowStrikeSpellHandler.cs" />
     <Compile Include="spells\SpellHelpers\SpellHelper.cs" />
     <Compile Include="spells\SpellHelpers\SpellMessagesHelper.cs" />

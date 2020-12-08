@@ -83,7 +83,8 @@ namespace DOL.GS.PacketHandler.Client.v168
                     // unstealth right after entering combat mode if anything is targeted
                     if (player.AttackState && player.TargetObject != null)
                     {
-                        player.Stealth(false);
+                        if (!player.StayStealth)
+                            player.Stealth(false);
                     }
                 }
                 else

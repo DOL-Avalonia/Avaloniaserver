@@ -6,17 +6,17 @@ using DOL.Language;
 namespace DOL.GS.RealmAbilities
 {
     /// <summary>
-    /// Shadow Strike Ability inherit of RR5RealmAbility (RealmLevel >= 40 and free)
+    /// Assassinate inherit of RR5RealmAbility (RealmLevel >= 40 and free)
     /// </summary>
-    public class ShadowStrikeAbility : RR5RealmAbility
+    public class AssassinateAbility : RR5RealmAbility
     {
         private DBSpell _dbspell;
         private Spell _spell;
         private SpellLine _spellline;
-        private ShadowStrikeSpellHandler dd;
+        private AssassinateHandler dd;
         private GamePlayer _player;
 
-        public ShadowStrikeAbility(DBAbility dba, int level) : base(dba, level)
+        public AssassinateAbility(DBAbility dba, int level) : base(dba, level)
         {
             CreateSpell();
         }
@@ -25,15 +25,11 @@ namespace DOL.GS.RealmAbilities
         {
             _dbspell = new DBSpell
             {
-                Name = "Shadow Strike",
-                Icon = 7073,
-                ClientEffect = 12011,
-                IsFocus = true,
+                Name = "Assassinate",
                 Target = "Enemy",
-                Type = "ShadowStrike",
-                CastTime = 10,
-                MoveCast = false,
-                Range = 1000
+                Type = "Assassinate",
+                CastTime = 15,
+                Range = 750
             };
 
             _spell = new Spell(_dbspell, 0); // make spell level 0 so it bypasses the spec level adjustment code
@@ -44,7 +40,7 @@ namespace DOL.GS.RealmAbilities
         {
             if (target.IsAlive && _spell != null)
             {
-                dd = ScriptMgr.CreateSpellHandler(_player, _spell, _spellline) as ShadowStrikeSpellHandler;
+                dd = ScriptMgr.CreateSpellHandler(_player, _spell, _spellline) as AssassinateHandler;
                 dd.IgnoreDamageCap = true;
                 return dd.CastSpell(target);
             }
@@ -66,7 +62,7 @@ namespace DOL.GS.RealmAbilities
             }
             else
             {
-                _player.Out.SendMessage(LanguageMgr.GetTranslation(_player.Client.Account.Language, "ShadowStrikeAbility.Target"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                _player.Out.SendMessage(LanguageMgr.GetTranslation(_player.Client.Account.Language, "AssassinateAbility.Target"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
         }
