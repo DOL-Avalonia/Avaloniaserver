@@ -2220,6 +2220,7 @@ namespace DOL.GS.Quests
 		{
 			get { return ((Current > 0) || 
 					Type == GoalType.InteractDeliver || 
+					Type == GoalType.Collect ||
 					Type == GoalType.InteractFinish ||
 					Type == GoalType.DeliverFinish ||
 					Type == GoalType.InteractWhisper) ? goalItem : null; }
