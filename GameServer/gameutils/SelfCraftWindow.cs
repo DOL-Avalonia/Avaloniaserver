@@ -298,10 +298,11 @@ namespace DOL.GS
                         }
                     }
                 }
-                else
-                {
-                    m_owner.Out.SendMessage("You don't have enough skill to combine items.",eChatType.CT_System,eChatLoc.CL_SystemWindow);
-                }
+                // this message as deleted in https://github.com/Dawn-of-Light/DOLSharp/commit/4c95aa99d3f4d9b3b52027df281aecde7eb7d6a6
+                //else
+                //{
+                //    m_owner.Out.SendMessage("You don't have enough skill to combine items.",eChatType.CT_System,eChatLoc.CL_SystemWindow);
+                //}
 
                 m_owner.Out.SendTradeWindow();
             }

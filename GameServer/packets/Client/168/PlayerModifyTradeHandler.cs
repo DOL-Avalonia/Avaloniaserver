@@ -58,7 +58,13 @@ namespace DOL.GS.PacketHandler.Client.v168
                 {
                     int slotPosition = packet.ReadByte();
                     InventoryItem item = client.Player.Inventory.GetItem((eInventorySlot)slotPosition);
-                    if (item != null && ((item.IsDropable && item.IsTradable) || (client.Player.CanTradeAnyItem || client.Player.TradeWindow.Partner.CanTradeAnyItem)))
+
+                    // Fixed Exception when Self Crafting: When self crafting trade windows are open, there is no trade partner, so checking trade.Partner.CanTradeAnyItem was throwing a null exception.
+                    // see: https://github.com/Dawn-of-Light/DOLSharp/commit/4c95aa99d3f4d9b3b52027df281aecde7eb7d6a6
+                    if (item != null
+                        && ((item.IsDropable && item.IsTradable) || (client.Player.CanTradeAnyItem
+                        || trade is SelfCraftWindow
+                        || (trade.Partner != null && trade.Partner.CanTradeAnyItem))))
                     {
                         tradeSlots.Add(item);
                     }
