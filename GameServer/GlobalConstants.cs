@@ -2319,8 +2319,9 @@ namespace DOL.GS
 					"Dragon Knight",
 					"Lord",
 					"Baronet",
-					"Baron"
-				}
+					"Baron",
+                    "Arch Duke"
+                }
 				,
 				// Female
 				{
@@ -2336,8 +2337,9 @@ namespace DOL.GS
 					"Dragon Knight",
 					"Lady",
 					"Baronetess",
-					"Baroness"
-				}
+					"Baroness",
+                    "Arch Duchess",
+                }
 			}
 			,
 			// Midgard
@@ -2356,8 +2358,9 @@ namespace DOL.GS
 					"Einherjar",
 					"Herra",
 					"Hersir",
-					"Vicomte"
-				}
+					"Vicomte",
+                    "Stor Jarl"
+                }
 				,
 				// Female
 				{
@@ -2373,8 +2376,9 @@ namespace DOL.GS
 					"Einherjar",
 					"Fru",
 					"Baronsfru",
-					"Vicomtessa"
-				}
+					"Vicomtessa",
+                    "Stor Hurfru",
+                }
 			}
 			,
 			// Hibernia
@@ -2393,8 +2397,9 @@ namespace DOL.GS
 					"Emerald Ridere",
 					"Barun",
 					"Ard Tiarna",
-					"Ciann Cath"
-				}
+					"Ciann Cath",
+                    "Ard Diuc"
+                }
 				,
 				// Female
 				{
@@ -2410,8 +2415,9 @@ namespace DOL.GS
 					"Emerald Ridere",
 					"Banbharun",
 					"Ard Bantiarna",
-					"Ciann Cath"
-				}
+					"Ciann Cath",
+                    "Ard Bandiuc"
+                }
 			}
 		};
 
