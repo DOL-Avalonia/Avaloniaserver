@@ -39,8 +39,8 @@ namespace DOL.GS.Spells
 		/// <param name="target"></param>
 		protected override void SendUpdates(GameLiving target)
 		{
-			target.SendLivingStatsAndRegenUpdate();
-		}
+            target.UpdateHealthManaEndu();
+        }
 
 		/// <summary>
 		/// Apply effect on target or do spell action if non duration spell
@@ -454,13 +454,25 @@ namespace DOL.GS.Spells
 		public PaladinArmorFactorBuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 	}
 
-	/// <summary>
-	/// Flexible skill buff
-	/// </summary>
 	[SpellHandlerAttribute("FlexibleSkillBuff")]
-	public class FelxibleSkillBuff : SingleStatBuff
+    [Obsolete("This class will be removed. Please use FlexibleSkillBuff instead!")]
+    public class FelxibleSkillBuff : SingleStatBuff
 	{
 		public override eProperty Property1 { get { return eProperty.Skill_Flexible_Weapon; } }
 		public FelxibleSkillBuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 	}
+
+    [SpellHandler("FlexibleSkillBuff")]
+    public class FlexibleSkillBuff : SingleStatBuff
+    {
+        public override eProperty Property1 { get { return eProperty.Skill_Flexible_Weapon; } }
+        public FlexibleSkillBuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+    }
+
+    [SpellHandler("ResiPierceBuff")]
+    public class ResiPierceBuff : SingleStatBuff
+    {
+        public override eProperty Property1 { get { return eProperty.ResistPierce; } }
+        public ResiPierceBuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+    }
 }

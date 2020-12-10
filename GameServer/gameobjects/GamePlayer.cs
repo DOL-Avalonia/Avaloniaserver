@@ -11827,10 +11827,19 @@ namespace DOL.GS
 			Out.SendEncumberance();
 		}
 
-		/// <summary>
-		/// Get the bonus names
-		/// </summary>
-		public string ItemBonusName(int BonusType)
+        public override void UpdateHealthManaEndu()
+        {
+            Out.SendCharStatsUpdate();
+            Out.SendUpdateWeaponAndArmorStats();
+            UpdateEncumberance();
+            UpdatePlayerStatus();
+            base.UpdateHealthManaEndu();
+        }
+
+        /// <summary>
+        /// Get the bonus names
+        /// </summary>
+        public string ItemBonusName(int BonusType)
 		{
 			string BonusName = "";
 

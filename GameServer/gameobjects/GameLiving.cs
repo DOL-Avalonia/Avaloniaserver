@@ -5054,12 +5054,12 @@ namespace DOL.GS
 			return level;
 		}
 
-		#endregion
-		#region Regeneration
-		/// <summary>
-		/// GameTimer used for restoring hp
-		/// </summary>
-		protected RegionTimer m_healthRegenerationTimer;
+        #endregion
+        #region Regeneration
+        /// <summary>
+        /// GameTimer used for restoring hp
+        /// </summary>
+        protected RegionTimer m_healthRegenerationTimer;
 		/// <summary>
 		/// GameTimer used for restoring mana
 		/// </summary>
@@ -5751,13 +5751,29 @@ namespace DOL.GS
 			}
 		}
 
-		/// <summary>
-		/// Set the tick speed, that is the distance covered in one tick.
-		/// </summary>
-		/// <param name="dx"></param>
-		/// <param name="dy"></param>
-		/// <param name="dz"></param>
-		protected void SetTickSpeed(double dx, double dy, double dz)
+        // replace StatsSpellHandler
+        public virtual void UpdateHealthManaEndu()
+        {
+            if (IsAlive)
+            {
+                if (Health < MaxHealth) StartHealthRegeneration();
+                else if (Health > MaxHealth) Health = MaxHealth;
+
+                if (Mana < MaxMana) StartPowerRegeneration();
+                else if (Mana > MaxMana) Mana = MaxMana;
+
+                if (Endurance < MaxEndurance) StartEnduranceRegeneration();
+                else if (Endurance > MaxEndurance) Endurance = MaxEndurance;
+            }
+        }
+
+        /// <summary>
+        /// Set the tick speed, that is the distance covered in one tick.
+        /// </summary>
+        /// <param name="dx"></param>
+        /// <param name="dy"></param>
+        /// <param name="dz"></param>
+        protected void SetTickSpeed(double dx, double dy, double dz)
 		{
 			TickSpeedX = dx;
 			TickSpeedY = dy;
