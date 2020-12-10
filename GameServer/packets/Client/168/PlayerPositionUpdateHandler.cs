@@ -144,10 +144,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 				{
 					client.Player.MaxLastZ = int.MinValue;
 				}
-				// Update water level and diving flag for the new zone
-				client.Out.SendPlayerPositionAndObjectID();				
+                // Update water level and diving flag for the new zone
+                // commenting this out for now, creates a race condition when teleporting within same region, jumping player back and forth as player xyz isnt updated yet.
+                //client.Out.SendPlayerPositionAndObjectID();				
 
-				/*
+                /*
 				 * "You have entered Burial Tomb."
 				 * "Burial Tomb"
 				 * "Current area is adjusted for one level 1 player."
