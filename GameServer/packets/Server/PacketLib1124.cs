@@ -6182,10 +6182,10 @@ namespace DOL.GS.PacketHandler
                 pak.WriteByte(0x00); //unk
 
                 // weapondamage
-                var wd = (int)(GameClient.Player.WeaponDamage(GameClient.Player.AttackWeapon) * 100.0);
-                pak.WriteByte((byte)(wd / 100));
+                var wd = (int)(GameClient.Player.WeaponDamage(GameClient.Player.AttackWeapon) * 10.0);
+                pak.WriteByte((byte)(wd >> 8));
                 pak.WritePascalString(" ");
-                pak.WriteByte((byte)(wd % 100));
+                pak.WriteByte((byte)(wd & 0xff));
                 pak.WritePascalString(" ");
                 // weaponskill
                 int ws = GameClient.Player.DisplayedWeaponSkill;

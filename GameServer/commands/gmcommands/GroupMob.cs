@@ -122,7 +122,7 @@ namespace DOL.commands.gmcommands
 							spawner.PercentLifeAddsActivity = 0;
 							spawner.MasterGroupId = groupId;
 							spawner.AddsRespawnCount = 0;
-							spawner.PercentLifeAddsActivity = 0;
+							spawner.AddRespawnTimerSecs = 0;
 							spawner.MobID = spawnerId;
 							GameServer.Database.AddObject(spawner);
 
