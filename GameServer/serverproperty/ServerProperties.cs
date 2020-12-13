@@ -72,6 +72,12 @@ namespace DOL.GS.ServerProperties
         public static bool AVALONIA_LAUNCHER { get; set; }
 
         /// <summary>
+        /// Enable Avalonia Launcher ? Used to limit the connection only for avalonia launcher
+        /// </summary>
+        [ServerProperty("system", "enable_sub_spell_all_class", "Enable sub spells for Archery, Summon Animist Pet, Summon Animist Fnf, Bomber spell and Battle Master", false)]
+        public static bool ENABLE_SUB_SPELL_ALL_CLASS { get; set; }
+
+        /// <summary>
         /// Whether to use the sync timer utility or not
         /// </summary>
         [ServerProperty("system", "use_sync_timer", "Shall we use the sync timers utility?", true)]

@@ -2469,7 +2469,7 @@ namespace DOL.GS.Spells
 			{
 				Spell spell = SkillBase.GetSpellByID(spellID);
 				//we need subspell ID to be 0, we don't want spells linking off the subspell
-				if (target != null && spell != null && spell.SubSpellID == 0)
+				if (target != null && spell != null)
 				{
 					ISpellHandler spellhandler = ScriptMgr.CreateSpellHandler(m_caster, spell, SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells));
                     spellhandler.StartSpell(target);

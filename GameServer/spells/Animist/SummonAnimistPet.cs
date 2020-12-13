@@ -136,6 +136,8 @@ namespace DOL.GS.Spells
 		/// <param name="target"></param>
 		public override void CastSubSpells(GameLiving target)
 		{
-		}
+            if (ServerProperties.Properties.ENABLE_SUB_SPELL_ALL_CLASS)
+                base.CastSubSpells(target);
+        }
 	}
 }
