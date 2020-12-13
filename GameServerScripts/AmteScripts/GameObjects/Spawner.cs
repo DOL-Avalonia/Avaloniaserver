@@ -121,11 +121,8 @@ namespace DOL.GS
                         {
                             this.AddSpawnerToMobGroup();
                         }
-
-                        if (addsGroupmobId != null)
-                        {
-                            this.UpdateMasterGroupInDatabase();
-                        }                      
+                     
+                        this.UpdateMasterGroupInDatabase();
                     }
 
                     this.addsRespawnCountTotal = db.AddsRespawnCount;
@@ -262,19 +259,16 @@ namespace DOL.GS
             bool isXOffset = false;
             bool isPositiveOffset = true;
             List<GameNPC> npcs = new List<GameNPC>();
-
-            Task.Run(async () =>
-            {
-                isPositiveOffset = await LoadNpcTemplateMob(npc1, template1, isXOffset, isPositiveOffset, npcs);
-                isPositiveOffset = await LoadNpcTemplateMob(npc2, template2, isXOffset, isPositiveOffset, npcs);
-                isXOffset = true;
-                isPositiveOffset = await LoadNpcTemplateMob(npc3, template3, isXOffset, isPositiveOffset, npcs);
-                await LoadNpcTemplateMob(npc4, template4, isXOffset, isPositiveOffset, npcs);
-                this.AddToMobGroupToNPCTemplates(npcs);
-            });        
+         
+            isPositiveOffset = LoadNpcTemplateMob(npc1, template1, isXOffset, isPositiveOffset, npcs);
+            isPositiveOffset = LoadNpcTemplateMob(npc2, template2, isXOffset, isPositiveOffset, npcs);
+            isXOffset = true;
+            isPositiveOffset = LoadNpcTemplateMob(npc3, template3, isXOffset, isPositiveOffset, npcs);
+            LoadNpcTemplateMob(npc4, template4, isXOffset, isPositiveOffset, npcs);
+            this.AddToMobGroupToNPCTemplates(npcs);       
         }
 
-        private async Task<bool> LoadNpcTemplateMob(GameNPC npc, NpcTemplate template, bool isXOffset, bool isPositiveOffset, List<GameNPC> npcs)
+        private bool LoadNpcTemplateMob(GameNPC npc, NpcTemplate template, bool isXOffset, bool isPositiveOffset, List<GameNPC> npcs)
         {
             if (npc != null)
             {
@@ -284,7 +278,6 @@ namespace DOL.GS
                 npcs.Add(npc);
             }
 
-            await Task.Delay(500);
             return isPositiveOffset;
         }
 
@@ -315,7 +308,12 @@ namespace DOL.GS
                 status = this.GetInativeStatus();
             }
 
-            MobGroupManager.Instance.Groups[this.addsGroupmobId].SetGroupInfo(status, true, true);
+            Task.Run(async () =>
+            {
+                //Delay animation on mob added to world
+                await Task.Delay(500);
+                MobGroupManager.Instance.Groups[this.addsGroupmobId].SetGroupInfo(status, true, true);
+            });
         }
 
         private void SetPositionAndLoad(GameNPC npc, bool isXOffset, bool isPositiveOffset)
@@ -328,7 +326,7 @@ namespace DOL.GS
             npc.RespawnInterval = -1;
             npc.CurrentRegion = WorldMgr.GetRegion(this.CurrentRegionID);
             npc.CurrentRegionID = this.CurrentRegionID;
-            npc.AddToWorld();
+            var added = npc.AddToWorld();
             npc.OwnerID = this.InternalID;
             if (this.Faction != null)
             {
@@ -398,7 +396,6 @@ namespace DOL.GS
             }
             else
             {       
-                //Instanciate Mobs is async but control is not awaited
                 this.InstanciateMobs();
             }
 
@@ -420,16 +417,7 @@ namespace DOL.GS
             {
                 MobGroupManager.Instance.Groups[this.addsGroupmobId].NPCs.ForEach(n =>
                 {
-                    var spawner = n as Spawner;
-                    if (spawner != null)
-                    {
-                        spawner.RemoveAdds();
-                    }
-
-                    if (!this.isAddsGroupMasterGroup)
-                    {
-                        n.RespawnInterval = -1;
-                    }
+                    //if npc is spawner it will call this method (see Die)
                     n.Die(this);
                 });
 
