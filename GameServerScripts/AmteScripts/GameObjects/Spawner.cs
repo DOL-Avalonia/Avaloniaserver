@@ -121,8 +121,11 @@ namespace DOL.GS
                         {
                             this.AddSpawnerToMobGroup();
                         }
-                     
-                        this.UpdateMasterGroupInDatabase();
+
+                        if (addsGroupmobId != null)
+                        {
+                            this.UpdateMasterGroupInDatabase();
+                        }                      
                     }
 
                     this.addsRespawnCountTotal = db.AddsRespawnCount;
@@ -180,7 +183,7 @@ namespace DOL.GS
         /// </summary>
         private void ClearNPCTemplatesOldMobs()
         {
-            if (this.hasLoadedAdd && MobGroupManager.Instance.Groups.ContainsKey(this.addsGroupmobId))
+            if (this.addsGroupmobId != null && this.hasLoadedAdd && MobGroupManager.Instance.Groups.ContainsKey(this.addsGroupmobId))
             {
                 MobGroupManager.Instance.RemoveGroupsAndMobs(this.addsGroupmobId, true); 
                 this.hasLoadedAdd = false;
@@ -364,16 +367,19 @@ namespace DOL.GS
                         this.LoadAdds();
                     }
 
-                    if (!isAddsActiveStatus && (this.percentLifeAddsActivity == 0 || this.HealthPercent <= this.percentLifeAddsActivity))
+                    if (addsGroupmobId != null && MobGroupManager.Instance.Groups.ContainsKey(addsGroupmobId))
                     {
-                        this.isAddsActiveStatus = true;
-                        if (this.isAddsGroupMasterGroup)
+                        if (!isAddsActiveStatus && (this.percentLifeAddsActivity == 0 || this.HealthPercent <= this.percentLifeAddsActivity))
                         {
-                            MobGroupManager.Instance.Groups[this.addsGroupmobId].ResetGroupInfo(true);
-                        }
-                        else
-                        {
-                            MobGroupManager.Instance.Groups[this.addsGroupmobId].SetGroupInfo(this.GetActiveStatus(), false, true);
+                            this.isAddsActiveStatus = true;
+                            if (this.isAddsGroupMasterGroup)
+                            {
+                                MobGroupManager.Instance.Groups[this.addsGroupmobId].ResetGroupInfo(true);
+                            }
+                            else
+                            {
+                                MobGroupManager.Instance.Groups[this.addsGroupmobId].SetGroupInfo(this.GetActiveStatus(), false, true);
+                            }
                         }
                     }
                 }             
@@ -383,12 +389,16 @@ namespace DOL.GS
         //Load adds if respawn is passed
         public void LoadAdds()
         {
-            if (isAddsGroupMasterGroup && MobGroupManager.Instance.Groups.ContainsKey(this.addsGroupmobId))
+            if (isAddsGroupMasterGroup)
             {
-                MobGroupManager.Instance.Groups[this.addsGroupmobId].ReloadMobsFromDatabase();
+                if (this.addsGroupmobId != null && MobGroupManager.Instance.Groups.ContainsKey(this.addsGroupmobId))
+                {
+                    MobGroupManager.Instance.Groups[this.addsGroupmobId].ReloadMobsFromDatabase();
+                }
             }
             else
             {       
+                //Instanciate Mobs is async but control is not awaited
                 this.InstanciateMobs();
             }
 
@@ -406,7 +416,7 @@ namespace DOL.GS
 
         private void RemoveAdds()
         {
-            if (MobGroupManager.Instance.Groups.ContainsKey(this.addsGroupmobId))
+            if (addsGroupmobId != null && MobGroupManager.Instance.Groups.ContainsKey(this.addsGroupmobId))
             {
                 MobGroupManager.Instance.Groups[this.addsGroupmobId].NPCs.ForEach(n =>
                 {
@@ -530,7 +540,7 @@ namespace DOL.GS
         {
             base.AddToWorld();    
 
-            if (this.isAddsGroupMasterGroup)
+            if (this.isAddsGroupMasterGroup && addsGroupmobId != null)
             {
                 //remove mastergroup mob if present
                 if (MobGroupManager.Instance.Groups.ContainsKey(this.addsGroupmobId))

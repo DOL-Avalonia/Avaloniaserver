@@ -45,7 +45,6 @@ namespace DOL.MobGroups
 
             if (!this.Groups.ContainsKey(npc.CurrentGroupMob.GroupId))
             {
-                log.Warn($"Mob has a GroupMobId with a value: {npc.CurrentGroupMob} but the group is not declared");
                 return false;
             }
         
