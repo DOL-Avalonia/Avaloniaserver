@@ -59,6 +59,7 @@ namespace DOL.Database
         protected int m_spellGroup;
         protected int m_effectGroup;
         protected int m_subSpellID = 0;
+        protected int m_subSpellDelay = 0;
         protected bool m_moveCast = false;
         protected bool m_uninterruptible = false;
         protected bool m_isfocus = false;
@@ -541,6 +542,21 @@ namespace DOL.Database
             {
                 Dirty = true;
                 m_subSpellID = value;
+            }
+        }
+
+        [DataElement(AllowDbNull = true)]
+        public int SubSpellDelay
+        {
+            get
+            {
+                return m_subSpellDelay;
+            }
+
+            set
+            {
+                Dirty = true;
+                m_subSpellDelay = value;
             }
         }
 

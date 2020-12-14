@@ -59,6 +59,7 @@ namespace DOL.GS
 		protected readonly int m_spellGroup = 0;
 		protected readonly int m_effectGroup = 0;
 		protected readonly int m_subSpellID = 0;
+        protected readonly int m_subSpellDelay = 0;
         protected readonly int m_sharedtimergroup = 0; 
 		protected readonly bool m_moveCast = false;
 		protected readonly bool m_uninterruptible = false;
@@ -280,7 +281,12 @@ namespace DOL.GS
 			get { return m_subSpellID; }
 		}
 
-		public bool MoveCast
+        public int SubSpellDelay
+        {
+            get { return m_subSpellDelay; }
+        }
+
+        public bool MoveCast
 		{
 			get { return m_moveCast; }
 		}
@@ -378,7 +384,8 @@ namespace DOL.GS
 			m_spellGroup = dbspell.SpellGroup;
 			m_effectGroup = dbspell.EffectGroup;
 			m_subSpellID = dbspell.SubSpellID;
-			m_moveCast = dbspell.MoveCast;
+            m_subSpellDelay = dbspell.SubSpellDelay;
+            m_moveCast = dbspell.MoveCast;
 			m_uninterruptible = dbspell.Uninterruptible;
 			m_isfocus = dbspell.IsFocus;
 			// warlocks
@@ -430,7 +437,8 @@ namespace DOL.GS
 			m_spellGroup = spell.Group;
 			m_effectGroup = spell.EffectGroup;
 			m_subSpellID = spell.SubSpellID;
-			m_moveCast = spell.MoveCast;
+            m_subSpellDelay = spell.SubSpellDelay;
+            m_moveCast = spell.MoveCast;
 			m_uninterruptible = spell.Uninterruptible;
 			m_isfocus = spell.IsFocus;
 			m_isprimary = spell.IsPrimary;

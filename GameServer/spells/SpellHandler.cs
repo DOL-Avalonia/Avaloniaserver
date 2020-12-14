@@ -32,6 +32,7 @@ using DOL.GS.SkillHandler;
 using DOL.Language;
 
 using log4net;
+using static DOL.GS.GameTimer;
 
 namespace DOL.GS.Spells
 {
@@ -2455,11 +2456,29 @@ namespace DOL.GS.Spells
 			return list;
 		}
 
-		/// <summary>
-		/// Cast all subspell recursively
-		/// </summary>
-		/// <param name="target"></param>
-		public virtual void CastSubSpells(GameLiving target)
+        private class SubSpellTimer : GameTimer
+        {
+            private ISpellHandler m_subspellhandler;
+            private GameLiving m_target;
+
+            public SubSpellTimer(GameLiving actionSource, ISpellHandler spellhandler, GameLiving target) : base(actionSource.CurrentRegion.TimeManager)
+            {
+                m_subspellhandler = spellhandler;
+                m_target = target;
+            }
+
+            protected override void OnTick()
+            {
+                m_subspellhandler.StartSpell(m_target);
+                Stop();
+            }
+        }
+
+        /// <summary>
+        /// Cast all subspell recursively
+        /// </summary>
+        /// <param name="target"></param>
+        public virtual void CastSubSpells(GameLiving target)
 		{
 			List<int> subSpellList = new List<int>();
 			if (m_spell.SubSpellID > 0)
@@ -2468,11 +2487,15 @@ namespace DOL.GS.Spells
 			foreach (int spellID in subSpellList.Union(m_spell.MultipleSubSpells))
 			{
 				Spell spell = SkillBase.GetSpellByID(spellID);
-				//we need subspell ID to be 0, we don't want spells linking off the subspell
 				if (target != null && spell != null)
 				{
 					ISpellHandler spellhandler = ScriptMgr.CreateSpellHandler(m_caster, spell, SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells));
-                    spellhandler.StartSpell(target);
+                    if (m_spell.SubSpellDelay > 0)
+                    {
+                        new SubSpellTimer(Caster, spellhandler, target).Start(m_spell.SubSpellDelay * 1000);
+                    }
+                    else
+                        spellhandler.StartSpell(target);
 				}
 			}
 		}
