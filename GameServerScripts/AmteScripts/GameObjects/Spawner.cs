@@ -355,33 +355,32 @@ namespace DOL.GS
         {
             base.TakeDamage(ad);
 
-            if (!this.isAggroType)
+            if (!this.isAggroType && IsAlive)
             {
-                //npcTemplateAddsNextTimeStamp is null for GroupMobs because the respawn in handled on groupmob's death (see OnGroupMobDead method)
                 if (npcAddsNextPopupTimeStamp == null || npcAddsNextPopupTimeStamp.Value < DateTime.Now)
                 {
                     if (!this.hasLoadedAdd)
                     {
                         this.LoadAdds();
                     }
-
-                    if (addsGroupmobId != null && MobGroupManager.Instance.Groups.ContainsKey(addsGroupmobId))
-                    {
-                        if (!isAddsActiveStatus && (this.percentLifeAddsActivity == 0 || this.HealthPercent <= this.percentLifeAddsActivity))
-                        {
-                            this.isAddsActiveStatus = true;
-                            if (this.isAddsGroupMasterGroup)
-                            {
-                                MobGroupManager.Instance.Groups[this.addsGroupmobId].ResetGroupInfo(true);
-                            }
-                            else
-                            {
-                                MobGroupManager.Instance.Groups[this.addsGroupmobId].SetGroupInfo(this.GetActiveStatus(), false, true);
-                            }
-                        }
-                    }
-                }             
+                }
             }
+
+            if (addsGroupmobId != null && MobGroupManager.Instance.Groups.ContainsKey(addsGroupmobId))
+            {
+                if (!isAddsActiveStatus && (this.percentLifeAddsActivity == 0 || this.HealthPercent <= this.percentLifeAddsActivity))
+                {
+                    this.isAddsActiveStatus = true;
+                    if (this.isAddsGroupMasterGroup)
+                    {
+                        MobGroupManager.Instance.Groups[this.addsGroupmobId].ResetGroupInfo(true);
+                    }
+                    else
+                    {
+                        MobGroupManager.Instance.Groups[this.addsGroupmobId].SetGroupInfo(this.GetActiveStatus(), false, true);
+                    }
+                }
+            } 
         }
 
         //Load adds if respawn is passed
@@ -437,7 +436,7 @@ namespace DOL.GS
             //check group
             MobGroup senderGroup = sender as MobGroup;
 
-            //Check is npc is in comabt to allow respawn only in this case
+            //Check is npc is in combat to allow respawn only in this case
             if (senderGroup != null && senderGroup.GroupId.Equals(this.addsGroupmobId) && this.InCombat)
             {
                 //own group is dead
