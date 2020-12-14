@@ -23,6 +23,7 @@ namespace DOLDatabase.Tables
         private string m_activeStatusId;
         private int m_addsRespawnCount;
         private string m_masterGroupId;
+        private int m_addRespawnTimerSecs;
 
         [DataElement(AllowDbNull = false, Varchar = 255, Index = true)]
         public string MobID
@@ -100,5 +101,12 @@ namespace DOLDatabase.Tables
             get => m_percentLifeAddsActivity;
             set { Dirty = true; m_percentLifeAddsActivity = value; }
         }  
+
+        [DataElement(AllowDbNull = false)]
+        public int AddRespawnTimerSecs
+        {
+            get => m_addRespawnTimerSecs;
+            set { Dirty = true; m_addRespawnTimerSecs = value; }
+        }
     }
 }
