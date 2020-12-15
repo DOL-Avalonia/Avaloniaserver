@@ -10333,7 +10333,8 @@ namespace DOL.GS
 
 			IsJumping = false;
 			m_invulnerabilityTick = 0;
-			m_healthRegenerationTimer = new RegionTimer(this);
+            m_pve_invulnerabilityTick = 0;
+            m_healthRegenerationTimer = new RegionTimer(this);
 			m_powerRegenerationTimer = new RegionTimer(this);
 			m_enduRegenerationTimer = new RegionTimer(this);
 			m_healthRegenerationTimer.Callback = new RegionTimerCallback(HealthRegenerationTimerCallback);
@@ -15221,29 +15222,29 @@ namespace DOL.GS
 		/// Holds the invulnerability timer
 		/// </summary>
 		protected InvulnerabilityTimer m_invulnerabilityTimer;
-		/// <summary>
-		/// Holds the invulnerability expiration tick
-		/// </summary>
-		protected long m_invulnerabilityTick;
+        /// <summary>
+        /// Holds the invulnerability expiration tick
+        /// </summary>
+        protected long m_invulnerabilityTick;
 
-		/// <summary>
-		/// Starts the Invulnerability Timer
-		/// </summary>
-		/// <param name="duration">The invulnerability duration in milliseconds</param>
-		/// <param name="callback">
-		/// The callback for when invulnerability expires;
-		/// not guaranteed to be called if overwriten by another invulnerability
-		/// </param>
-		/// <returns>true if invulnerability was set (smaller than old invulnerability)</returns>
-		public virtual bool StartInvulnerabilityTimer(int duration, InvulnerabilityExpiredCallback callback)
+        /// <summary>
+        /// Starts the Invulnerability Timer
+        /// </summary>
+        /// <param name="duration">The invulnerability duration in milliseconds</param>
+        /// <param name="callback">
+        /// The callback for when invulnerability expires;
+        /// not guaranteed to be called if overwriten by another invulnerability
+        /// </param>
+        /// <returns>true if invulnerability was set (smaller than old invulnerability)</returns>
+        public virtual bool StartInvulnerabilityTimer(int duration, InvulnerabilityExpiredCallback callback)
 		{
 			if (duration < 1)
-            		{
-                		//throw new ArgumentOutOfRangeException("duration", duration, "Immunity duration cannot be less than 1ms"); This causes problems down the road, just log it instead.
-                		if (log.IsWarnEnabled)
-                    			log.Warn("GameObjects.GamePlayer.StartInvulnerabilityTimer(): Immunity duration cannot be less than 1ms");
-                		return false;
-            		}
+            {
+                //throw new ArgumentOutOfRangeException("duration", duration, "Immunity duration cannot be less than 1ms"); This causes problems down the road, just log it instead.
+                if (log.IsWarnEnabled)
+                    log.Warn("GameObjects.GamePlayer.StartInvulnerabilityTimer(): Immunity duration cannot be less than 1ms");
+                return false;
+            }
 
 			long newTick = CurrentRegion.Time + duration;
 			if (newTick < m_invulnerabilityTick)
@@ -15266,18 +15267,74 @@ namespace DOL.GS
 			return true;
 		}
 
-		/// <summary>
-		/// True if player is invulnerable to any attack
+        /// <summary>
+        /// Holds the pve invulnerability timer
+        /// </summary>
+        protected InvulnerabilityTimer m_pveinvulnerabilityTimer;
+        /// <summary>
+		/// Holds the pve invulnerability expiration tick
 		/// </summary>
-		public virtual bool IsInvulnerableToAttack
+		protected long m_pve_invulnerabilityTick;
+
+        /// <summary>
+        /// Starts the PVE Invulnerability Timer
+        /// </summary>
+        /// <param name="duration">The invulnerability duration in milliseconds</param>
+        /// <param name="callback">
+        /// The callback for when invulnerability expires;
+        /// not guaranteed to be called if overwriten by another invulnerability
+        /// </param>
+        /// <returns>true if invulnerability was set (smaller than old invulnerability)</returns>
+        public virtual bool StartPVEInvulnerabilityTimer(int duration, InvulnerabilityExpiredCallback callback)
+        {
+            if (duration < 1)
+            {
+                if (log.IsWarnEnabled)
+                    log.Warn("GameObjects.GamePlayer.StartPVEInvulnerabilityTimer(): Immunity duration cannot be less than 1ms");
+                return false;
+            }
+
+            long newTick = CurrentRegion.Time + duration;
+            if (newTick < m_pve_invulnerabilityTick)
+                return false;
+
+            m_pve_invulnerabilityTick = newTick;
+            if (m_pveinvulnerabilityTimer != null)
+                m_pveinvulnerabilityTimer.Stop();
+
+            if (callback != null)
+            {
+                m_pveinvulnerabilityTimer = new InvulnerabilityTimer(this, callback);
+                m_pveinvulnerabilityTimer.Start(duration);
+            }
+            else
+            {
+                m_pveinvulnerabilityTimer = null;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// True if player is invulnerable to any attack
+        /// </summary>
+        public virtual bool IsInvulnerableToAttack
 		{
 			get { return m_invulnerabilityTick > CurrentRegion.Time; }
 		}
 
-		/// <summary>
-		/// The timer to call invulnerability expired callbacks
-		/// </summary>
-		protected class InvulnerabilityTimer : RegionAction
+        /// <summary>
+        /// True if player is invulnerable to pve attack
+        /// </summary>
+        public virtual bool IsInvulnerableToPVEAttack
+        {
+            get { return m_pve_invulnerabilityTick > CurrentRegion.Time; }
+        }
+
+        /// <summary>
+        /// The timer to call invulnerability expired callbacks
+        /// </summary>
+        protected class InvulnerabilityTimer : RegionAction
 		{
 			/// <summary>
 			/// Defines a logger for this class.
@@ -15302,10 +15359,10 @@ namespace DOL.GS
 				m_callback = callback;
 			}
 
-			/// <summary>
-			/// Called on every timer tick
-			/// </summary>
-			protected override void OnTick()
+            /// <summary>
+            /// Called on every timer tick
+            /// </summary>
+            protected override void OnTick()
 			{
 				try
 				{

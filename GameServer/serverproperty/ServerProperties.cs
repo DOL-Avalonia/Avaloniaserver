@@ -1315,6 +1315,12 @@ namespace DOL.GS.ServerProperties
         public static int TIMER_REGION_CHANGED { get; set; }
 
         /// <summary>
+        /// PvP Immunity Timer - Region Changed
+        /// </summary>
+        [ServerProperty("pve", "Timer_PVE_Region_Changed", "PVE Immunity Timer when player changes regions, in seconds", 30)] // 30 seconds default
+        public static int TIMER_PVE_REGION_CHANGED { get; set; }
+
+        /// <summary>
         /// PvP Immunity Timer - Game Entered
         /// </summary>
         [ServerProperty("pvp", "Timer_Game_Entered", "Immunity Timer when player enters the game, in seconds", 10)] // 10 seconds default
@@ -1325,6 +1331,12 @@ namespace DOL.GS.ServerProperties
         /// </summary>
         [ServerProperty("pvp", "Timer_PvP_Teleport", "Immunity Timer when player teleports within the same region, in seconds", 30)] // 30 seconds default
         public static int TIMER_PVP_TELEPORT { get; set; }
+
+        /// <summary>
+        /// PvP Immunity Timer - Teleport
+        /// </summary>
+        [ServerProperty("pve", "Timer_PVE_Teleport", "PVE Immunity Timer when player teleports within the same region, in seconds", 30)] // 30 seconds default
+        public static int TIMER_PVE_TELEPORT { get; set; }
 
         /// <summary>
         /// Time after a relic lost in nature is returning to his ReturnRelicPad pad
