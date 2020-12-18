@@ -72,6 +72,12 @@ namespace DOL.GS.ServerRules
 			return true;
 		}
 
+        public override void Initialize()
+        {
+            m_pveinvExpiredCallback = new GamePlayer.InvulnerabilityExpiredCallback(PVEImmunityExpiredCallback);
+            base.Initialize();
+        }
+
         /// <summary>
 		/// Removes immunity from the players
 		/// </summary>
@@ -126,6 +132,18 @@ namespace DOL.GS.ServerRules
                 StartPVEImmunityTimer(player, Properties.TIMER_PVE_TELEPORT * 1000);
             }
             base.OnPlayerTeleport(player, source, destination);
+        }
+
+        /// <summary>
+		/// Called when player enters the game for first time
+		/// </summary>
+		/// <param name="e">event</param>
+		/// <param name="sender">GamePlayer object that has entered the game</param>
+		/// <param name="args"></param>
+		public override void OnGameEntered(DOLEvent e, object sender, EventArgs args)
+        {
+            StartPVEImmunityTimer((GamePlayer)sender, Properties.TIMER_GAME_ENTERED * 1000);
+            base.OnGameEntered(e, sender, args);
         }
 
         public override bool IsAllowedToAttack(GameLiving attacker, GameLiving defender, bool quiet)
