@@ -20,9 +20,9 @@ namespace AmteScripts.Managers
         const string HIBERNIA = "Hibernia";
         const string MIDGARD = "Midgard";
 
-        const string RvRNoviceALB = "RvR-Novice-ALB";
-        const string RvRNoviceHIB = "RvR-Novice-HIB";
-        const string RvRNoviceMID = "RvR-Novice-MID";
+        //const string RvRNoviceALB = "RvR-Novice-ALB";
+        //const string RvRNoviceHIB = "RvR-Novice-HIB";
+        //const string RvRNoviceMID = "RvR-Novice-MID";
 
         const string RvRDebutantALB = "RvR-Debutant-ALB";
         const string RvRDebutantHIB = "RvR-Debutant-HIB";
@@ -40,9 +40,9 @@ namespace AmteScripts.Managers
         const string RvRMasterHIB = "RvR-Master-HIB";
         const string RvRMasterMID = "RvR-Master-MID";
 
-        const string RvRDivineALB = "RvR-Divine-ALB";
-        const string RvRDivineHIB = "RvR-Divine-HIB";
-        const string RvRDivineMID = "RvR-Divine-MID";
+        //const string RvRDivineALB = "RvR-Divine-ALB";
+        //const string RvRDivineHIB = "RvR-Divine-HIB";
+        //const string RvRDivineMID = "RvR-Divine-MID";
 
         private static int RVR_RADIUS = Properties.RvR_AREA_RADIUS;
         private static DateTime _startTime = DateTime.Today.AddHours(20D); //20H00
@@ -151,39 +151,39 @@ namespace AmteScripts.Managers
             var npcs = WorldMgr.GetNPCsByGuild("RVR", eRealm.None).Where(n => n.Name.StartsWith("RvR-"));
 			_maps.Clear();
            
-            var RvRNovices = npcs.Where(n => n.Name.StartsWith("RvR-Novice"));
-            var RvRDebutants = npcs.Where(n => n.Name.StartsWith("RvR-Debutant"));
-            var RvRStandards = npcs.Where(n => n.Name.StartsWith("RvR-Standard"));
+            //var RvRNovices = npcs.Where(n => n.Name.StartsWith("RvR-Novice"));
+            var RvRDebutants = npcs.Where(n => n.Name.StartsWith("RvR-Novice"));
+            var RvRStandards = npcs.Where(n => n.Name.StartsWith("RvR-Debutant"));
             var RvRExperts = npcs.Where(n => n.Name.StartsWith("RvR-Expert"));
             var RvRMasters = npcs.Where(n => n.Name.StartsWith("RvR-Master"));
-            var RvRDivines = npcs.Where(n => n.Name.StartsWith("RvR-Divine"));
+            //var RvRDivines = npcs.Where(n => n.Name.StartsWith("RvR-Divine"));
 
-            if (RvRNovices == null || RvRDebutants == null || RvRStandards == null || RvRExperts == null || RvRMasters == null)
+            if (RvRDebutants == null || RvRStandards == null || RvRExperts == null || RvRMasters == null)
             {
                 throw new KeyNotFoundException("RvR Maps");
             }
 
-            RvRNovices.ForEach(novice =>
-            {
-                string name = null;
-                var map = this.BuildRvRMap(novice);
+            //RvRNovices.ForEach(novice =>
+            //{
+            //    string name = null;
+            //    var map = this.BuildRvRMap(novice);
 
-                if (map == null) {  /*Skip Null Map*/ return; }
+            //    if (map == null) {  /*Skip Null Map*/ return; }
 
-                if (novice.Name.EndsWith("HIB"))
-                {
-                    name = RvRNoviceHIB;
-                }
-                else if (novice.Name.EndsWith("ALB"))
-                {
-                    name = RvRNoviceALB;
-                }
-                else if (novice.Name.EndsWith("MID"))
-                {
-                    name = RvRNoviceMID;
-                }
-                _maps.Add(name, map);
-            });
+            //    if (novice.Name.EndsWith("HIB"))
+            //    {
+            //        name = RvRNoviceHIB;
+            //    }
+            //    else if (novice.Name.EndsWith("ALB"))
+            //    {
+            //        name = RvRNoviceALB;
+            //    }
+            //    else if (novice.Name.EndsWith("MID"))
+            //    {
+            //        name = RvRNoviceMID;
+            //    }
+            //    _maps.Add(name, map);
+            //});
 
             RvRDebutants.ForEach(debutant =>
             {
@@ -276,27 +276,27 @@ namespace AmteScripts.Managers
                 _maps.Add(name, map);
             });
 
-            RvRDivines.ForEach(divine =>
-            {
-                string name = null;
-                var map = this.BuildRvRMap(divine);
+            //RvRDivines.ForEach(divine =>
+            //{
+            //    string name = null;
+            //    var map = this.BuildRvRMap(divine);
 
-                if (map == null) {  /*Skip Null Map*/ return; }
+            //    if (map == null) {  /*Skip Null Map*/ return; }
 
-                if (divine.Name.EndsWith("HIB"))
-                {
-                    name = RvRDivineHIB;
-                }
-                else if (divine.Name.EndsWith("ALB"))
-                {
-                    name = RvRDivineALB;
-                }
-                else if (divine.Name.EndsWith("MID"))
-                {
-                    name = RvRDivineMID;
-                }
-                _maps.Add(name, map);
-            });
+            //    if (divine.Name.EndsWith("HIB"))
+            //    {
+            //        name = RvRDivineHIB;
+            //    }
+            //    else if (divine.Name.EndsWith("ALB"))
+            //    {
+            //        name = RvRDivineALB;
+            //    }
+            //    else if (divine.Name.EndsWith("MID"))
+            //    {
+            //        name = RvRDivineMID;
+            //    }
+            //    _maps.Add(name, map);
+            //});
 
             _regions = _maps.Values.GroupBy(v => v.Location.RegionID).Select(v => v.Key).OrderBy(v => v);
             _regions.ForEach(r => this.RvrStats.Add(r, new string[] { }));
@@ -469,15 +469,15 @@ namespace AmteScripts.Managers
             string key = null;
             try
             {
-                if (player.Level >= 20 && player.Level < 26)
-                {
-                    key = "RvR-Novice-" + realm;
-                    if (!_maps.ContainsKey(key))
-                    {
-                        throw new KeyNotFoundException(key);
-                    }                 
-                }
-                else if (player.Level >= 26 && player.Level < 32)
+                //if (player.Level >= 20 && player.Level < 26)
+                //{
+                //    key = "RvR-Novice-" + realm;
+                //    if (!_maps.ContainsKey(key))
+                //    {
+                //        throw new KeyNotFoundException(key);
+                //    }                 
+                //}
+                if (player.Level >= 20 && player.Level < 29)
                 {
                     key = "RvR-Debutant-" + realm;
                     if (!_maps.ContainsKey(key))
@@ -485,7 +485,7 @@ namespace AmteScripts.Managers
                         throw new KeyNotFoundException(key);
                     }                   
                 }
-                else if (player.Level >= 32 && player.Level < 38)
+                else if (player.Level >= 29 && player.Level < 38)
                 {
                     key = "RvR-Standard-" + realm;
                     if (!_maps.ContainsKey(key))
@@ -493,7 +493,7 @@ namespace AmteScripts.Managers
                         throw new KeyNotFoundException(key);
                     }                 
                 }
-                else if (player.Level >= 38 && player.Level < 44)
+                else if (player.Level >= 38 && player.Level < 46)
                 {
                     key = "RvR-Expert-" + realm;
                     if (!_maps.ContainsKey(key))
@@ -501,7 +501,7 @@ namespace AmteScripts.Managers
                         throw new KeyNotFoundException(key);
                     }                 
                 }
-                else if (player.Level >= 44 && !player.IsRenaissance)
+                else if (player.Level >= 46)
                 {
                     key = "RvR-Master-" + realm;
                     if (!_maps.ContainsKey(key))
@@ -509,15 +509,15 @@ namespace AmteScripts.Managers
                         throw new KeyNotFoundException(key);
                     }                   
                 }
-                else if (player.Level >= 50 && player.IsRenaissance)
-                {
-                    //RvR DIVINITÉS acessible UNIQUEMENT aux joueurs « IsRenaissance » Level50
-                    key = "RvR-Divine-" + realm;
-                    if (!_maps.ContainsKey(key))
-                    {
-                        throw new KeyNotFoundException(key);
-                    }                 
-                }
+                //else if (player.Level >= 50 && player.IsRenaissance)
+                //{
+                //    //RvR DIVINITÉS acessible UNIQUEMENT aux joueurs « IsRenaissance » Level50
+                //    key = "RvR-Divine-" + realm;
+                //    if (!_maps.ContainsKey(key))
+                //    {
+                //        throw new KeyNotFoundException(key);
+                //    }                 
+                //}
 
                 player.MoveTo(_maps[key].Location);
                 player.Bind(true);
