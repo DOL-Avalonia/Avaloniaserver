@@ -1100,39 +1100,27 @@ namespace DOL.GS
 
 		public void UpdateMember(GamePlayer player)
 		{
-			if (player.Guild != this)
-				return;
-			int housenum;
-			if (player.Guild.GuildOwnsHouse)
-			{
-				housenum = player.Guild.GuildHouseNumber;
-			}
-			else
-				housenum = 0;
+            UpdateMember(player, true);
+        }
 
-			string mes = "I";
-			mes += ',' + player.Guild.GuildLevel.ToString(); // Guild Level
-			mes += ',' + player.Guild.GetGuildBank().ToString(); // Guild Bank money
-			mes += ',' + player.Guild.GetGuildDuesPercent().ToString(); // Guild Dues enable/disable
-			mes += ',' + player.Guild.BountyPoints.ToString(); // Guild Bounty
-			mes += ',' + player.Guild.RealmPoints.ToString(); // Guild Experience
-			mes += ',' + player.Guild.MeritPoints.ToString(); // Guild Merit Points
-			mes += ',' + housenum.ToString(); // Guild houseLot ?
-			mes += ',' + (player.Guild.MemberOnlineCount + 1).ToString(); // online Guild member ?
-			mes += ',' + player.Guild.GuildBannerStatus(player); //"Banner available for purchase", "Missing banner buying permissions"
-			mes += ",\"" + player.Guild.Motd + '\"'; // Guild Motd
-			mes += ",\"" + player.Guild.Omotd + '\"'; // Guild oMotd
-			player.Out.SendMessage(mes, eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
-			player.Guild.SaveIntoDatabase();
-		}
+        public void UpdateMember(GamePlayer player, bool saveIntoDatabase)
+        {
+            if (player.Guild != this)
+                return;
+            if(saveIntoDatabase)
+                player.Guild.SaveIntoDatabase();
+            ScriptMgr.HandleCommand(player.Client, "&gc info 1");
+            player.Client.Out.SendUpdatePlayer();
+        }
 
-		public void UpdateGuildWindow()
+        public void UpdateGuildWindow()
 		{
 			lock (m_onlineGuildPlayers)
 			{
-				foreach (GamePlayer player in m_onlineGuildPlayers.Values)
+                SaveIntoDatabase();
+                foreach (GamePlayer player in m_onlineGuildPlayers.Values)
 				{
-					player.Guild.UpdateMember(player);
+					UpdateMember(player, false);
 				}
 			}
 		}
