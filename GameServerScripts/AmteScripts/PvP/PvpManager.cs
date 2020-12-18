@@ -14,8 +14,8 @@ namespace AmteScripts.Managers
 {
 	public class PvpManager
 	{
-		private static readonly TimeSpan _startTime = new TimeSpan(19, 0, 0);
-		private static readonly TimeSpan _endTime = _startTime.Add(TimeSpan.FromHours(7));
+		private static readonly TimeSpan _startTime = new TimeSpan(14, 0, 0);
+		private static readonly TimeSpan _endTime = _startTime.Add(TimeSpan.FromHours(8));
 		private const int _checkInterval = 30 * 1000; // 30 seconds
 		private static readonly GameLocation _stuckSpawn = new GameLocation("", 51, 434303, 493165, 3088, 1069);
 
