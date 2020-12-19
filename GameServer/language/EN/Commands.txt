@@ -13,3 +13,4 @@ Commands.Players.Respec.NotAvailable.Gold:		You don't have enough money! You nee
 
 # /guild
 Commands.Players.Guild.ActiveBuff:			    Your guild already has an improvement spell. You must wait for the spell to expire to re-cast it. Remaining time: {0} hours, {1} minutes.
+Commands.Players.Guild.PromoteHaveToUseDemote:	Vous ne pouvez pas rétrograder le rank de ce joueur avec la commande promote. Utiliser '/gc demote joueur <rang#>'.

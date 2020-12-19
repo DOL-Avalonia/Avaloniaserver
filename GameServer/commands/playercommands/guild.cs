@@ -384,16 +384,46 @@ namespace DOL.GS.Commands
 								);
 								return;
 							}
+                            Guild g = GuildMgr.GetGuildByName(guildname);
+                            IList<GamePlayer> players = g.GetListOfOnlineMembers();
 							if (GuildMgr.DeleteGuild(guildname))
-								client.Out.SendMessage(
-									LanguageMgr.GetTranslation(
-										client.Account.Language,
-										"Commands.Players.Guild.Purged",
-										guildname
-									),
-									eChatType.CT_System,
-									eChatLoc.CL_SystemWindow
-								);
+                            {
+                                client.Out.SendMessage(
+                                    LanguageMgr.GetTranslation(
+                                        client.Account.Language,
+                                        "Commands.Players.Guild.Purged",
+                                        guildname
+                                    ),
+                                    eChatType.CT_System,
+                                    eChatLoc.CL_SystemWindow
+                                );
+                                players.Foreach((ply) =>
+                                {
+                                    // Need clear social interface when the player leave the guild
+                                    string mes = "I,";
+                                    mes += ','; // Guild Level
+                                    mes += ','; // Guild Bank money
+                                    mes += ','; // Guild Dues enable/disable
+                                    mes += ','; // Guild Bounty
+                                    mes += ','; // Guild Experience
+                                    mes += ','; // Guild Merit Points
+                                    mes += ','; // Guild houseLot ?
+                                    mes += ','; // online Guild member ?
+                                    mes += ','; //"Banner available for purchase", "Missing banner buying permissions"
+                                    mes += ","; // Guild Motd
+                                    mes += ","; // Guild oMotd
+                                    ply.Out.SendMessage(mes, eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
+
+                                    // clear member list
+                                    string[] buffer = new string[10];
+
+                                    ply.Out.SendMessage("TE," + 0 + "," + 0 + "," + 0, eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
+
+                                    foreach (string member in buffer)
+                                        ply.Out.SendMessage(member, eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
+                                });
+                            }
+								
 						}
 						break;
 						#endregion
@@ -2003,7 +2033,7 @@ namespace DOL.GS.Commands
 
 							if (args.Length >= 4)
 							{
-								playerName = args[3];
+								playerName = args[2];
 							}
 
 							if (playerName == string.Empty)
@@ -2103,7 +2133,7 @@ namespace DOL.GS.Commands
 							ushort newrank;
 							try
 							{
-								newrank = Convert.ToUInt16(args[2]);
+								newrank = Convert.ToUInt16(args[3]);
 
 								if (newrank > 9)
 								{
@@ -2202,7 +2232,7 @@ namespace DOL.GS.Commands
 
 
 							object obj = null;
-							string playername = args[3];
+							string playername = args[2];
 							if (playername == "")
 								obj = client.Player.TargetObject as GamePlayer;
 							else
@@ -2248,7 +2278,7 @@ namespace DOL.GS.Commands
 
 							try
 							{
-								ushort newrank = Convert.ToUInt16(args[2]);
+								ushort newrank = Convert.ToUInt16(args[3]);
 								if (newrank < guildRank || newrank > 10)
 								{
 									client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Guild.Demoted.HigherThanPlayer"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -3889,7 +3919,9 @@ namespace DOL.GS.Commands
 			client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Guild.Help.GuildEditUpgrade"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 			client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Guild.Help.GuildEditRelease"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 			client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Guild.Help.GuildEditDues"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
-			client.Out.SendMessage("/gc edit <ranknum> buff <y/n>", eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Guild.Help.GuildTerritoires"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+            client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Guild.Help.TerritoryBanner"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+            client.Out.SendMessage("/gc edit <ranknum> buff <y/n>", eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 			client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Guild.Help.GuildEditWithdraw"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 		}
 	}

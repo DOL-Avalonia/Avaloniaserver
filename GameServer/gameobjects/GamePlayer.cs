@@ -7849,7 +7849,7 @@ namespace DOL.GS
             if (mob == null)
                 return true;
             Territory.Territory territory = TerritoryManager.Instance.GetCurrentTerritory(CurrentAreas);
-            return territory != null && mob.IsInTerritory;
+            return territory == null && !mob.IsInTerritory;
         }
 
 		/// <summary>

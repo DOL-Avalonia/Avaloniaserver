@@ -189,7 +189,7 @@ Commands.Players.Guild.PlayerNotFound:			Ce joueur n'est pas en ligne ou se trou
 Commands.Players.Guild.PromotedOther:			{0} est promu(e) au rang {1}.
 Commands.Players.Guild.PromotedSelf:			Vous êtes promu(e) au rang {0}.
 Commands.Players.Guild.PromoteHigherThanPlayer:	Vous pouvez seulement promouvoir un joueur à un rang inférieur au votre.
-Commands.Players.Guild.PromoteHaveToUseDemote:	Vous ne pouvez pas rétrograder le rank de ce joueur avec la commande promote. Utiliser '/demote <rang#>' player.
+Commands.Players.Guild.PromoteHaveToUseDemote:	Vous ne pouvez pas rétrograder le rank de ce joueur avec la commande promote. Utiliser '/gc demote joueur <rang#>'.
 Commands.Players.Guild.Purged:					{0} est purgé.
 Commands.Players.Guild.RankACHearSet:			Vous avez {0} l'accés à ACHear au rang {1}.
 Commands.Players.Guild.RankACSpeakSet:			Vous avez {0} l'ACSpeak au rang {1}.
