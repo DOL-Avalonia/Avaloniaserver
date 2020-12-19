@@ -29,7 +29,18 @@ namespace DOL.GS
 			}
 		}
 
-		public override void Die(GameObject killer)
+        /// <summary>
+        /// Check if the player lost Constitution
+        /// Override : Don't lost in PVP zone and RVR zone or if to be killed by GuarNPC and GuardOutlaw
+        /// </summary>
+        /// <param name="killer">The player killer</param>
+        /// <returns></returns>
+        public override bool CheckIfLostConstitution(GameObject killer)
+        {
+            return (!(killer is GuardNPC) || !(killer is GuardOutlaw) || RvrManager.Instance.IsInRvr(this) || PvpManager.Instance.IsIn(this)) && base.CheckIfLostConstitution(killer);
+        }
+
+        public override void Die(GameObject killer)
 		{
 			base.Die(killer);
 

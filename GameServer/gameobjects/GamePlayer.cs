@@ -43,6 +43,7 @@ using DOL.GS.Spells;
 using DOL.GS.Styles;
 using DOL.GS.Utils;
 using DOL.Language;
+using DOL.Territory;
 using log4net;
 
 namespace DOL.GS
@@ -7836,6 +7837,21 @@ namespace DOL.GS
 			set { m_lastDeathRealmPoints = value; }
 		}
 
+        /// <summary>
+        /// Check if the player lost Constitution
+        /// Player can't lost cons if he is in a territory and the killer is a territory mob
+        /// </summary>
+        /// <param name="killer">The player killer</param>
+        /// <returns></returns>
+        public virtual bool CheckIfLostConstitution(GameObject killer)
+        {
+            GameNPC mob = killer as GameNPC;
+            if (mob == null)
+                return true;
+            Territory.Territory territory = TerritoryManager.Instance.GetCurrentTerritory(CurrentAreas);
+            return territory != null && mob.IsInTerritory;
+        }
+
 		/// <summary>
 		/// Called when the player dies
 		/// </summary>
@@ -8028,21 +8044,21 @@ namespace DOL.GS
 					switch (GameServer.Instance.Configuration.ServerType)
 					{
 						case eGameServerType.GST_Normal:
-								Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.Die.DeadRVR"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
-								xpLossPercent = 0;
-								m_deathtype = eDeathType.RvR;
-								break;
+							Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.Die.DeadRVR"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
+							xpLossPercent = 0;
+							m_deathtype = eDeathType.RvR;
+							break;
 								
 						case eGameServerType.GST_PvP:
-								Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.Die.DeadRVR"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
-								xpLossPercent = 0;
-								m_deathtype = eDeathType.PvP;
-								if (ServerProperties.Properties.PVP_DEATH_CON_LOSS)
-								{
-									conpenalty = 3;
-									TempProperties.setProperty(DEATH_CONSTITUTION_LOSS_PROPERTY, conpenalty);
-								}
-								break;
+							Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.Die.DeadRVR"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
+							xpLossPercent = 0;
+							m_deathtype = eDeathType.PvP;
+                            if (ServerProperties.Properties.PVP_DEATH_CON_LOSS && CheckIfLostConstitution(killer))
+							{
+								conpenalty = 3;
+								TempProperties.setProperty(DEATH_CONSTITUTION_LOSS_PROPERTY, conpenalty);
+							}
+							break;
 				 	}
 					 
 				}
@@ -8071,7 +8087,7 @@ namespace DOL.GS
                         TempProperties.setProperty(DEATH_EXP_LOSS_PROPERTY, xpLoss);
                     }
 
-                    if (Level >= ServerProperties.Properties.PVE_CON_LOSS_LEVEL)
+                    if (Level >= ServerProperties.Properties.PVE_CON_LOSS_LEVEL && CheckIfLostConstitution(killer))
                     {
                         int conLoss = DeathCount;
                         if (conLoss > 3)
