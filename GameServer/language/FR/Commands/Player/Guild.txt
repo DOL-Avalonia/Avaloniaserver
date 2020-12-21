@@ -42,8 +42,8 @@ Commands.Players.Guild.BuffRealmPoints:		    Votre guilde gagnera maintenant 5 
 Commands.Players.Guild.ClaimNotNear:			    Vous devez être près du Lord pour revendiquer ce fort.
 Commands.Players.Guild.ConfirmLeave:			    Voulez-vous vraiment partir {0} ?
 Commands.Players.Guild.DemotedHigherThanPlayer:   Vous pouvez seulement rétrograder les grades au-dessous du votre.
-Commands.Players.Guild.DemotedOther:			    {0} a rétrogradé au rang {1}.
-Commands.Players.Guild.DemotedSelf:			    Vous avez été rétrogradé(e) au rang {0}.
+Commands.Players.Guild.Demoted.Other:			    {0} a rétrogradé au rang {1}.
+Commands.Players.Guild.Demoted.Self:			    Vous avez été rétrogradé(e) au rang {0}.
 Commands.Players.Guild.DepositAmount:			    Vous déposez {0} dans la caisse de guilde.
 Commands.Players.Guild.DepositFull:			    La caisse de guilde semble être pleine.
 Commands.Players.Guild.DepositInvalid:			Ce n'est pas un dépôt valide.
@@ -81,7 +81,7 @@ Commands.Players.Guild.Help.GuildBuyBanner:		'/gc buybanner' # Achète une bann
 Commands.Players.Guild.Help.GuildCancel:			'/gc cancel <option> <joueur>' # Annule toutes les commandes précédentes.
 Commands.Players.Guild.Help.GuildClaim:			'/gc claim' # Réclame une tour ou un fort pour la guilde.
 Commands.Players.Guild.Help.GuildDecline:			'/gc decline' # Décline une invitation à rejoindre la guilde.
-Commands.Players.Guild.Help.GuildDemote:			'/gc demote <rang#> [nom de joueur]' # Rétrograde le joueur indiqué au rang désiré.
+Commands.Players.Guild.Help.GuildDemote:			'/gc demote [nom de joueur] <rang#>' # Rétrograde le joueur indiqué au rang désiré.
 Commands.Players.Guild.Help.GuildDeposit:			'/gc deposit <montant>' # Dépose une somme dans la caisse de guilde.
 Commands.Players.Guild.Help.GuildDues:			'/gc dues <montant>' # Active ou désactive le système de taxation de la guilde (x% de l'argent gagné sur des créatures) (x = 0 à 10).
 Commands.Players.Guild.Help.GuildEdit:			'/gc edit' # Listes les parties modifiables de la structure de guilde.
@@ -122,7 +122,7 @@ Commands.Players.Guild.Help.GuildList:			'/gc list' # Informe le joueur de tout
 Commands.Players.Guild.Help.GuildMotd:			'/gc motd <texte>' # Modifie le message du jour de la guilde.
 Commands.Players.Guild.Help.GuildNoteSelf:		'/gc noteself <note>' # Crée une note à votre propos.
 Commands.Players.Guild.Help.GuildOMotd:			'/gc omotd <texte>' # Définit le message du jour des officiers de votre guilde.
-Commands.Players.Guild.Help.GuildPromote:			'/gc promote <rang#> [name]' # Promeut le personnage indiqué au rang désiré.
+Commands.Players.Guild.Help.GuildPromote:			'/gc promote [name] <rang#>' # Promeut le personnage indiqué au rang désiré.
 Commands.Players.Guild.Help.GuildQuit:			'/gc quit' # Pour quitter une guilde.
 Commands.Players.Guild.Help.GuildRanks:			'/gc ranks' # Affiche les rangs de la guilde. Les chefs de guilde peuvent aussi utiliser cette commande pour modifier les rangs.
 Commands.Players.Guild.Help.GuildRemAccount:		'/gc removeaccount <nom du compte>' # Retire d'une guilde tous les personnages du compte sur lequel se trouve le personnage sélectionné.

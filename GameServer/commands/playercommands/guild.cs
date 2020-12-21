@@ -1990,13 +1990,13 @@ namespace DOL.GS.Commands
 							client.Player.Guild.UpdateGuildWindow();
 						}
 						break;
-						#endregion
-						#region Promote
-						// --------------------------------------------------------------------------------
-						// PROMOTE
-						// /gc promote <rank#> [name]' to promote player to a superior rank
-						// --------------------------------------------------------------------------------
-					case "promote":
+                    #endregion
+                    #region Promote
+                    // --------------------------------------------------------------------------------
+                    // PROMOTE
+                    // /gc promote [name] <rank#>' to promote player to a superior rank
+                    // --------------------------------------------------------------------------------
+                    case "promote":
 						{
 							if (client.Player.Guild == null)
 							{
@@ -2030,8 +2030,9 @@ namespace DOL.GS.Commands
 							object obj = null;
 							string playerName = string.Empty;
 							bool useDB = false;
+                            bool playerNameIsEmpty = false;
 
-							if (args.Length >= 4)
+                            if (args.Length >= 4)
 							{
 								playerName = args[2];
 							}
@@ -2039,7 +2040,9 @@ namespace DOL.GS.Commands
 							if (playerName == string.Empty)
 							{
 								obj = client.Player.TargetObject as GamePlayer;
-							}
+                                playerNameIsEmpty = true;
+
+                            }
 							else
 							{
 								GameClient onlineClient = WorldMgr.GetClientByPlayerName(playerName, true, false);
@@ -2130,12 +2133,16 @@ namespace DOL.GS.Commands
 							//Second Check, Autorisation Checks, a player can promote another to it's own RealmRank or above only if: newrank(rank to be applied) >= commandUserGuildRank(usercommandRealmRank)
 
 							ushort commandUserGuildRank = client.Player.GuildRank.RankLevel;
-							ushort newrank;
-							try
-							{
-								newrank = Convert.ToUInt16(args[3]);
+                            ushort newrank;
 
-								if (newrank > 9)
+                            try
+							{
+                                if(!playerNameIsEmpty)
+								    newrank = Convert.ToUInt16(args[3]);
+                                else
+                                    newrank = Convert.ToUInt16(args[2]);
+
+                                if (newrank > 9)
 								{
 									client.Out.SendMessage(
 										LanguageMgr.GetTranslation(
@@ -2232,10 +2239,15 @@ namespace DOL.GS.Commands
 
 
 							object obj = null;
-							string playername = args[2];
-							if (playername == "")
-								obj = client.Player.TargetObject as GamePlayer;
-							else
+							string playername = string.Empty;
+                            if (args.Length >= 4)
+                                playername = args[2];
+
+                            bool playerNameisEmpty = string.IsNullOrEmpty(playername);
+                            if (playerNameisEmpty)
+                                obj = client.Player.TargetObject as GamePlayer;
+
+                            else
 							{
 								GameClient myclient = WorldMgr.GetClientByPlayerName(playername, true, false);
 								if (myclient == null)
@@ -2278,7 +2290,12 @@ namespace DOL.GS.Commands
 
 							try
 							{
-								ushort newrank = Convert.ToUInt16(args[3]);
+                                ushort newrank;
+                                if (playerNameisEmpty)
+                                    newrank = Convert.ToUInt16(args[2]);
+                                else
+                                    newrank = Convert.ToUInt16(args[3]);
+
 								if (newrank < guildRank || newrank > 10)
 								{
 									client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Guild.Demoted.HigherThanPlayer"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
