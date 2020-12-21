@@ -7847,9 +7847,10 @@ namespace DOL.GS
         {
             GameNPC mob = killer as GameNPC;
             if (mob == null)
-                return true;
+                return !IsInPvP && !IsInRvR;
+            string classType = killer.GetType().Name;
             Territory.Territory territory = TerritoryManager.Instance.GetCurrentTerritory(CurrentAreas);
-            return territory == null && !mob.IsInTerritory;
+            return classType != "GuardNPC" && classType != "GuardOutlaw" && territory == null && !mob.IsInTerritory && !IsInPvP && !IsInRvR;
         }
 
 		/// <summary>
