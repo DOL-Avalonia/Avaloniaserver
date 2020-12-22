@@ -115,7 +115,8 @@ namespace DOL.GS.GameEvents
             if (player.isInBG ||
                 player.CurrentRegion.IsRvR ||
                 PvpManager.Instance.IsPvPRegion(player.CurrentRegion.ID) ||
-                player.CurrentAreas.Any(a => a.IsPvP))
+                player.CurrentAreas.Any(a => a.IsPvP) ||
+                player.CurrentZone.AllowReputation)
             {
                 return true;
             }

@@ -379,9 +379,11 @@ namespace DOL.GS
                 zoneData.DivingFlag = dbZone.DivingFlag;
                 zoneData.IsLava = dbZone.IsLava;
                 zoneData.AllowMagicalItem = dbZone.AllowMagicalItem;
+                zoneData.AllowReputation = dbZone.AllowReputation;
+
 
                 RegisterZone(zoneData, zoneData.ZoneID, zoneData.RegionID, zoneData.Description,
-                    dbZone.Experience, dbZone.Realmpoints, dbZone.Bountypoints, dbZone.Coin, dbZone.Realm, dbZone.AllowMagicalItem);
+                    dbZone.Experience, dbZone.Realmpoints, dbZone.Bountypoints, dbZone.Coin, dbZone.Realm, dbZone.AllowMagicalItem, dbZone.AllowReputation);
 
                 // Save the zonedata.
                 if (!m_zonesData.ContainsKey(zoneData.RegionID))
@@ -829,7 +831,7 @@ namespace DOL.GS
         /// <summary>
         /// Registers a Zone into a Region
         /// </summary>
-        public static void RegisterZone(ZoneData zoneData, ushort zoneID, ushort regionID, string zoneName, int xpBonus, int rpBonus, int bpBonus, int coinBonus, byte realm, bool allowMagicalItem)
+        public static void RegisterZone(ZoneData zoneData, ushort zoneID, ushort regionID, string zoneName, int xpBonus, int rpBonus, int bpBonus, int coinBonus, byte realm, bool allowMagicalItem, bool allowReputation)
         {
             Region region = GetRegion(regionID);
             if (region == null)
@@ -876,7 +878,8 @@ namespace DOL.GS
                 bpBonus,
                 coinBonus,
                 realm,
-                allowMagicalItem);
+                allowMagicalItem,
+                allowReputation);
 
             region.Zones.Add(zone);
             m_zones.AddOrReplace(zoneID, zone);
@@ -1831,7 +1834,7 @@ namespace DOL.GS
                     return true;
                 }))
                 {
-                    RegisterZone(dat, (ushort)zoneID, ID, $"{dat.Description} (Instance)", 0, 0, 0, 0, 0, dat.AllowMagicalItem);
+                    RegisterZone(dat, (ushort)zoneID, ID, $"{dat.Description} (Instance)", 0, 0, 0, 0, 0, dat.AllowMagicalItem, dat.AllowReputation);
                 }
             }
 

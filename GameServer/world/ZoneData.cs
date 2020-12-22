@@ -48,5 +48,7 @@ namespace DOL.GS
         public bool IsLava { get; set; }
 
         public bool AllowMagicalItem { get; set; }
+
+        public bool AllowReputation { get; set; }
     }
 }
