@@ -3190,7 +3190,25 @@ namespace DOL.GS
 			Experience = 0;
 			RespecAllLines();
 
-			if (Level < originalLevel && originalLevel > 5)
+            // Increase the concentration for class: Cleric, Minstrel, Healer, Shaman, Druid and Bard
+            DBCharacter.Concentration = 100;
+            switch (DBCharacter.Class)
+            {
+                case 6:
+                case 26:
+                case 47:
+                    DBCharacter.Concentration = (int)(DBCharacter.Concentration * 1.25);
+                    break;
+                case 4:
+                case 28:
+                case 48:
+                    DBCharacter.Concentration = (int)(DBCharacter.Concentration * 1.1);
+                    break;
+                default:
+                    break;
+            }
+
+            if (Level < originalLevel && originalLevel > 5)
 			{
 				for (int i = 6; i <= originalLevel; i++)
 				{
