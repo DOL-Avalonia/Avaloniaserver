@@ -22,6 +22,7 @@ using System.Threading;
 using DOL.Events;
 using log4net;
 using DOL.GS.PacketHandler;
+using System.Collections.Generic;
 
 namespace DOL.GS
 {
@@ -44,7 +45,7 @@ namespace DOL.GS
         public static readonly int BUFFCHECK_INTERVAL = 60 * 1000; // 1 Minute
 
         /// <summary>
-        /// Static Timer for the Timer to check for expired guild buffs
+        /// Static Timer for the Timer to check for expired guild buffs and check leave/enter new members
         /// </summary>
         private static Timer m_timer;
 
@@ -291,6 +292,32 @@ namespace DOL.GS
                         }
                     }
                 }
+
+                // Remove player in the invit dictionnary, they can leave or be expelled
+                List<GamePlayer> playertoRemoveFromDic = new List<GamePlayer>();
+                checkGuild.Invite_Players.ForEach((memberKeyValue) =>
+                {
+                    TimeSpan inviteTime = DateTime.Now.Subtract(memberKeyValue.Value);
+                    if (inviteTime.TotalMinutes >= ServerProperties.Properties.RECRUITMENT_TIMER_OPTION)
+                        playertoRemoveFromDic.Add(memberKeyValue.Key);
+                });
+                playertoRemoveFromDic.ForEach((member) =>
+                {
+                    checkGuild.Invite_Players.Remove(member);
+                });
+
+                // Remove player in the leaver dictionnary, they can be invited
+                playertoRemoveFromDic = new List<GamePlayer>();
+                checkGuild.Leave_Players.ForEach((playerKeyValue) =>
+                {
+                    TimeSpan leaveTime = DateTime.Now.Subtract(playerKeyValue.Value);
+                    if (leaveTime.TotalMinutes >= ServerProperties.Properties.RECRUITMENT_TIMER_OPTION)
+                        playertoRemoveFromDic.Add(playerKeyValue.Key);
+                });
+                playertoRemoveFromDic.ForEach((member) =>
+                {
+                    checkGuild.Leave_Players.Remove(member);
+                });
             }
         }
     }

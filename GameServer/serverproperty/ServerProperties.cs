@@ -78,6 +78,12 @@ namespace DOL.GS.ServerProperties
         public static bool ENABLE_SUB_SPELL_ALL_CLASS { get; set; }
 
         /// <summary>
+        /// Timer when player is recruited by a guild to leave, or to enter after leave it (default 1H)
+        /// </summary>
+        [ServerProperty("system", "recruitment_timer_option", "Timer when player is recruited by a guild to leave, or to enter after leave it", 60)]
+        public static int RECRUITMENT_TIMER_OPTION { get; set; }
+
+        /// <summary>
         /// Whether to use the sync timer utility or not
         /// </summary>
         [ServerProperty("system", "use_sync_timer", "Shall we use the sync timers utility?", true)]

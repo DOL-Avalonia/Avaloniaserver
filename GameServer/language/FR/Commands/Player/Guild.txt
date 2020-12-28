@@ -207,6 +207,9 @@ Commands.Players.Guild.WebpageSet:				Vous avez défini la page internet de la g
 Commands.Players.Guild.Withdrawamount:			Votre taxe de {0} va dans la caisse de guilde.
 Commands.Players.Guild.WithdrawInvalid:			Ce n'est pas un montant valide.
 Commands.Players.Guild.WithdrawTooMuch:			Vous ne pouvez plus ajouter d'argent dans la caisse de guilde.
+Commands.Players.Guild.NotAbleToBeInvited:		Vous ne pouvez pas entrer dans cette guilde avant {0} minutes.
+Commands.Players.Guild.NotAbleToLeave:			Vous ne pouvez quitter cette guilde avant {0} minutes.
+Commands.Players.Guild.NotAbleToBeExpelled:		Vous ne pouvez pas expulser ce joueur avant {0} minutes.
 
 # /GC
 Commands.Players.Guild.Alliance.Info:			Information d'Alliance pour {0} :

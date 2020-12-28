@@ -28,6 +28,7 @@ using System.Linq;
 using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
 using DOL.Territory;
+using DOL.GS.ServerProperties;
 
 namespace DOL.GS
 {
@@ -107,10 +108,20 @@ namespace DOL.GS
 		/// </summary>
 		protected readonly Dictionary<string, GamePlayer> m_onlineGuildPlayers = new Dictionary<string, GamePlayer>();
 
-		/// <summary>
-		/// Use this object to lock the guild member list
+        /// <summary>
+		/// This holds all new recrue in the guild who can't leave during the server property timer
 		/// </summary>
-		public Object m_memberListLock = new Object();
+		private Dictionary<GamePlayer, DateTime> m_invite_Players = new Dictionary<GamePlayer, DateTime>();
+
+        /// <summary>
+		/// This holds all old members guild in the guild who can't enter during the server property timer
+		/// </summary>
+		private Dictionary<GamePlayer, DateTime> m_leave_Players = new Dictionary<GamePlayer, DateTime>();
+
+        /// <summary>
+        /// Use this object to lock the guild member list
+        /// </summary>
+        public Object m_memberListLock = new Object();
 
 		/// <summary>
 		/// This holds all players inside the guild
@@ -734,6 +745,13 @@ namespace DOL.GS
 		{
 			if (addPlayer == null || addPlayer.Guild != null)
 				return false;
+
+            if (m_leave_Players.ContainsKey(addPlayer) && addPlayer.Client.Account.PrivLevel == 1)
+            {
+                int time = Properties.RECRUITMENT_TIMER_OPTION - (int)DateTime.Now.Subtract(m_leave_Players[addPlayer]).TotalMinutes;
+                addPlayer.Client.Out.SendMessage(LanguageMgr.GetTranslation(addPlayer.Client.Account.Language, "Commands.Players.Guild.NotAbleToBeInvited", time), eChatType.CT_Advise, eChatLoc.CL_SystemWindow);
+                return false;
+            }
 			
 			if (log.IsDebugEnabled)
 				log.Debug("Adding player to the guild, guild name=\"" + Name + "\"; player name=" + addPlayer.Name);
@@ -751,6 +769,9 @@ namespace DOL.GS
 				addPlayer.Out.SendMessage("Your current rank is " + addPlayer.GuildRank.Title + "!", eChatType.CT_Group, eChatLoc.CL_SystemWindow);
 				SendMessageToGuildMembers(addPlayer.Name + " has joined the guild!", eChatType.CT_Group, eChatLoc.CL_SystemWindow);
 				addPlayer.Client.Out.SendCharResistsUpdate();
+                if (addPlayer.Client.Account.PrivLevel != 1)
+                    return true;
+                m_invite_Players.Add(addPlayer, DateTime.Now);
 			}
 			catch (Exception e)
 			{
@@ -770,7 +791,19 @@ namespace DOL.GS
 		/// <returns>true or false</returns>
 		public bool RemovePlayer(string removername, GamePlayer member)
 		{
-			try
+            GameClient remover = WorldMgr.GetClientByPlayerName(removername, false, true);
+            if (m_invite_Players.ContainsKey(member) && (remover == null || ((remover != null) && remover.Account.PrivLevel == 1)))
+            {
+                int time = Properties.RECRUITMENT_TIMER_OPTION - (int)DateTime.Now.Subtract(m_invite_Players[member]).TotalMinutes;
+                if (member.Name == removername)
+                    member.Client.Out.SendMessage(LanguageMgr.GetTranslation(member.Client.Account.Language, "Commands.Players.Guild.NotAbleToLeave", time), eChatType.CT_Advise, eChatLoc.CL_SystemWindow);
+                else
+                {
+                    remover.Out.SendMessage(LanguageMgr.GetTranslation(remover.Account.Language, "Commands.Players.Guild.NotAbleToBeExpelled", time), eChatType.CT_Advise, eChatLoc.CL_SystemWindow);
+                }
+                return false;
+            }
+            try
 			{
 				GuildMgr.RemovePlayerFromAllGuildPlayersList(member);
 				RemoveOnlineMember(member);
@@ -789,6 +822,9 @@ namespace DOL.GS
 					member.Out.SendMessage(removername + " removed you from " + Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 				member.Client.Out.SendCharResistsUpdate();
+                if (remover != null && remover.Account.PrivLevel != 1)
+                    return true;
+                m_leave_Players.Add(member, DateTime.Now);
 			}
 			catch (Exception e)
 			{
@@ -1031,11 +1067,14 @@ namespace DOL.GS
 			}
 		}
 
-		/// <summary>
-		/// Called when this guild gains merit points
-		/// </summary>
-		/// <param name="amount">The amount of bounty points gained</param>
-		public virtual void GainMeritPoints(long amount)
+        public Dictionary<GamePlayer, DateTime> Leave_Players { get => m_leave_Players; set => m_leave_Players = value; }
+        public Dictionary<GamePlayer, DateTime> Invite_Players { get => m_invite_Players; set => m_invite_Players = value; }
+
+        /// <summary>
+        /// Called when this guild gains merit points
+        /// </summary>
+        /// <param name="amount">The amount of bounty points gained</param>
+        public virtual void GainMeritPoints(long amount)
 		{
 			MeritPoints += amount;
 			UpdateGuildWindow();
