@@ -21,7 +21,6 @@ using System.Linq;
 
 using DOL.AI.Brain;
 using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
@@ -32,8 +31,6 @@ namespace DOL.GS.Spells
         /// Dictionary to Keep Track of Fear Brains attached to NPCs
         /// </summary>
         private readonly ReaderWriterDictionary<GameNPC, FearBrain> m_NPCFearBrains = new ReaderWriterDictionary<GameNPC, FearBrain>();
-
-        private int nbPulse = 0;
 
         /// <summary>
         /// Consume Power on Spell Start
@@ -124,22 +121,6 @@ namespace DOL.GS.Spells
             SendSpellResistAnimation(target);
             SendSpellResistMessages(target);
             StartSpellResistLastAttackTimer(target);
-        }
-
-        /// <summary>
-		/// When spell pulses, cancel it if the number of iteration is greater than the pulse number
-		/// </summary>
-		public override void OnSpellPulse(PulsingSpellEffect effect)
-        {
-            if (Spell.Pulse > 0)
-            {
-                nbPulse++;
-            }
-            base.OnSpellPulse(effect);
-            if (nbPulse >= Spell.Pulse)
-            {
-                effect.Cancel(false);
-            }
         }
 
         /// <summary>
