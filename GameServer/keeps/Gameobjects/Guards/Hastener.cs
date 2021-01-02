@@ -51,7 +51,7 @@ namespace DOL.GS.Keeps
             GameNPCHelper.CastSpellOnOwnerAndPets(this, player, SkillBase.GetSpellByID(GameHastener.SPEEDOFTHEREALMID), SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
             return true;
         }
-        #endregion Examine/Interact Message
+        //#endregion Examine/Interact Message
 
 		/// <summary>
 		/// Hasteners don't respond to calls for help
