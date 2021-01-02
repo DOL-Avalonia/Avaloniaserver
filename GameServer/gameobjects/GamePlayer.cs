@@ -5120,7 +5120,8 @@ namespace DOL.GS
 				}
 				else
 				{
-					bonusRenaissance = (int)Math.Round(expTotal / 2D);
+					//Remove 50% points from levl > 40
+					bonusRenaissance = (int)Math.Round(expTotal / 2D) * -1;
 				}
 
 				expTotal += bonusRenaissance; 
@@ -5216,6 +5217,9 @@ namespace DOL.GS
 				if (bonusRenaissance > 0)
 				{
 					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.GainExperience.BonusRenaissance", bonusRenaissance), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				}else if (bonusRenaissance < 0)
+                {
+					Out.SendMessage("dont un malus renaissance de: " + Math.Abs(bonusRenaissance), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				}
 
 				if (territoryExp > 0)
@@ -16210,7 +16214,7 @@ namespace DOL.GS
 			}
 
 			System.Globalization.NumberFormatInfo format = System.Globalization.NumberFormatInfo.InvariantInfo;
-			Out.SendMessage("You get " + experience.ToString("N0", format) + " champion experience points.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			Out.SendMessage("Vous gagnez " + experience.ToString("N0", format) + " points d'experience champion", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 
 			ChampionExperience += experience;
 			Out.SendUpdatePoints();
