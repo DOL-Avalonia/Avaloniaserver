@@ -355,7 +355,7 @@ namespace DOL.GS.Keeps
                     spell.Target = "Self";
                     spell.Type = "Heal";
         if (GameServer.Instance.Configuration.ServerType != eGameServerType.GST_PvE)
-					    spell.Uninterruptible = true;e;
+					    spell.Uninterruptible = true;
                     m_hibLordHealSpell = new Spell(spell, 50);
                 }
 
