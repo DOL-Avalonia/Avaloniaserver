@@ -9,6 +9,8 @@ namespace DOL.GS.Keeps
     /// </summary>
     public class SpellMgr
     {
+	private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public static void CheckForNuke(GameKeepGuard guard)
         {
             if (guard == null)
@@ -62,8 +64,12 @@ namespace DOL.GS.Keeps
         public static void CheckAreaForHeals(GameKeepGuard guard)
         {
             GameLiving target = null;
+            GamePlayer LOSChecker = null;
+
             foreach (GamePlayer player in guard.GetPlayersInRadius(2000))
             {
+		LOSChecker = player;
+
                 if (!player.IsAlive)
                 {
                     continue;
@@ -101,12 +107,7 @@ namespace DOL.GS.Keeps
 
             if (target != null)
             {
-                GamePlayer LOSChecker = null;
-                if (target is GamePlayer)
-                {
-                    LOSChecker = target as GamePlayer;
-                }
-                else
+		if (LOSChecker == null)
                 {
                     foreach (GamePlayer player in guard.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                     {
@@ -125,7 +126,7 @@ namespace DOL.GS.Keeps
                     return;
                 }
 
-                guard.TargetObject = target;
+		guard.HealTarget = target;
                 LOSChecker.Out.SendCheckLOS(guard, target, new CheckLOSResponse(guard.GuardStartSpellHealCheckLOS));
             }
         }
@@ -296,9 +297,10 @@ namespace DOL.GS.Keeps
                     spell.Name = "Guard Heal";
                     spell.Range = WorldMgr.VISIBILITY_DISTANCE;
                     spell.SpellID = 90001;
-                    spell.Target = "Realm";
+                    spell.Target = "Self";
                     spell.Type = "Heal";
-                    spell.Uninterruptible = true;
+         if (GameServer.Instance.Configuration.ServerType != eGameServerType.GST_PvE)
+					    spell.Uninterruptible = true;
                     m_albLordHealSpell = new Spell(spell, 50);
                 }
 
@@ -323,9 +325,10 @@ namespace DOL.GS.Keeps
                     spell.Name = "Guard Heal";
                     spell.Range = WorldMgr.VISIBILITY_DISTANCE;
                     spell.SpellID = 90002;
-                    spell.Target = "Realm";
+                    spell.Target = "Self";
                     spell.Type = "Heal";
-                    spell.Uninterruptible = true;
+           if (GameServer.Instance.Configuration.ServerType != eGameServerType.GST_PvE)
+					    spell.Uninterruptible = true;
                     m_midLordHealSpell = new Spell(spell, 50);
                 }
 
@@ -350,9 +353,10 @@ namespace DOL.GS.Keeps
                     spell.Name = "Guard Heal";
                     spell.Range = WorldMgr.VISIBILITY_DISTANCE;
                     spell.SpellID = 90003;
-                    spell.Target = "Realm";
+                    spell.Target = "Self";
                     spell.Type = "Heal";
-                    spell.Uninterruptible = true;
+        if (GameServer.Instance.Configuration.ServerType != eGameServerType.GST_PvE)
+					    spell.Uninterruptible = true;
                     m_hibLordHealSpell = new Spell(spell, 50);
                 }
 

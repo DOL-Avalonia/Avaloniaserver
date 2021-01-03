@@ -17,6 +17,7 @@
  *
  */
 using System;
+using DOL.GS;
 using DOL.AI.Brain;
 using DOL.Database;
 
@@ -42,7 +43,8 @@ namespace DOL.GS
         {
             LootList loot = base.GenerateLoot(mob, killer);
 
-            ItemTemplate aurulite = new ItemTemplate(m_aurulite);
+			// ItemTemplate aurulite = new ItemTemplate(m_aurulite);  Creating a new ItemTemplate throws an exception later
+			ItemTemplate aurulite = GameServer.Database.FindObjectByKey<ItemTemplate>(m_aurulite.Id_nb);
 
             try
             {

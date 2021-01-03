@@ -4242,6 +4242,35 @@ namespace DOL.GS
 					SpellTimer.Start(1);
 			}
 		}
+		
+		/// <summary>
+		/// Returns the Damage this NPC does on an attack, adding 2H damage bonus if appropriate
+		/// </summary>
+		/// <param name="weapon">the weapon used for attack</param>
+		/// <returns></returns>
+		public override double AttackDamage(InventoryItem weapon)
+		{
+			double damage = base.AttackDamage(weapon);
+
+			if (ActiveWeaponSlot == eActiveWeaponSlot.TwoHanded && m_blockChance > 0)
+				switch (this)
+				{
+					case Keeps.GameKeepGuard guard:
+						if (ServerProperties.Properties.GUARD_2H_BONUS_DAMAGE)
+							damage *= (100 + m_blockChance) / 100.00;
+						break;
+					case GamePet pet:
+						if (ServerProperties.Properties.PET_2H_BONUS_DAMAGE)
+							damage *= (100 + m_blockChance) / 100.00;
+						break;
+					default:
+						if (ServerProperties.Properties.MOB_2H_BONUS_DAMAGE)
+							damage *= (100 + m_blockChance) / 100.00;
+						break;
+				}
+
+			return damage;
+		}
 
 		/// <summary>
 		/// Gets/sets the object health
@@ -4887,7 +4916,7 @@ namespace DOL.GS
 				foreach (ItemTemplate lootTemplate in lootTemplates)
 				{
 					if (lootTemplate == null) continue;
-					GameStaticItem loot;
+					GameStaticItem loot = null;
 					if (GameMoney.IsItemMoney(lootTemplate.Name))
 					{
 						long value = lootTemplate.Price;
@@ -4947,16 +4976,29 @@ namespace DOL.GS
 					else if (lootTemplate.Name.StartsWith("scroll|"))
 					{
 						String[] scrollData = lootTemplate.Name.Split('|');
-						String artifactID = scrollData[1];
-						int pageNumber = UInt16.Parse(scrollData[2]);
-						loot = ArtifactMgr.CreateScroll(artifactID, pageNumber);
-						loot.X = X;
-						loot.Y = Y;
-						loot.Z = Z;
-						loot.Heading = Heading;
-						loot.CurrentRegion = CurrentRegion;
-						(loot as WorldInventoryItem).Item.IsCrafted = false;
-						(loot as WorldInventoryItem).Item.Creator = Name;
+
+						if (scrollData.Length >= 3)
+						{
+							String artifactID = scrollData[1];
+							int pageNumber = UInt16.Parse(scrollData[2]);
+							loot = ArtifactMgr.CreateScroll(artifactID, pageNumber);
+						}
+
+						if (loot == null)
+						{
+							log.Error($"Artifact scroll could not be created for data string [{lootTemplate.Name}]");
+							continue;
+						}
+						else
+						{
+							loot.X = X;
+							loot.Y = Y;
+							loot.Z = Z;
+							loot.Heading = Heading;
+							loot.CurrentRegion = CurrentRegion;
+							(loot as WorldInventoryItem).Item.IsCrafted = false;
+							(loot as WorldInventoryItem).Item.Creator = Name;
+						}
 					}
 					else
 					{

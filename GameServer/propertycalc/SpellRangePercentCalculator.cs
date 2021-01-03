@@ -45,7 +45,7 @@ namespace DOL.GS.PropertyCalc
                 GameSpellEffect nsreduction = SpellHandler.FindEffectOnTarget(living, "NearsightReduction");
                 if (nsreduction != null)
                 {
-                    debuff *= (int)(1.00 - nsreduction.Spell.Value * 0.01);
+                    debuff = (int)(debuff * (1.00 - nsreduction.Spell.Value * 0.01));
                 }
             }
 

@@ -17,8 +17,11 @@
  *
  */
 using System;
+using System.Reflection;
+using DOL.GS;
 using DOL.AI.Brain;
 using DOL.Database;
+using log4net;
 
 namespace DOL.GS
 {
@@ -29,6 +32,7 @@ namespace DOL.GS
     /// </summary>
     public class LootGeneratorDragonscales : LootGeneratorBase
     {
+	private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private static ItemTemplate m_dragonscales = GameServer.Database.FindObjectByKey<ItemTemplate>("dragonscales");
         /// <summary>
@@ -54,73 +58,67 @@ namespace DOL.GS
                     return loot;
                 }
 
-                ItemTemplate dragonscales = new ItemTemplate(m_dragonscales);
-
                 int killedcon = (int)player.GetConLevel(mob) + 3;
 
                 if (killedcon <= 0)
                 {
                     return loot;
                 }
+		int iScaleCount = 0;
 
-                int lvl = mob.Level + 1;
-                if (lvl < 1)
+		switch (mob.Name.ToLower())
                 {
-                    lvl = 1;
-                }
-
-                int maxcount = 1;
-
-                // Switch pack size
-                if (lvl > 0 && lvl < 10)
-                {
-                    // Single Dragonscales
-                    maxcount = (int)Math.Floor((double)(lvl / 2)) + 1;
-                }
-                else if (lvl >= 10 && lvl < 20)
-                {
-                    // Double
-                    dragonscales.PackSize = 2;
-                    maxcount = (int)Math.Floor((double)((lvl - 10) / 2)) + 1;
-                }
-                else if (lvl >= 20 && lvl < 30)
-                {
-                    // Triple
-                    dragonscales.PackSize = 3;
-                    maxcount = (int)Math.Floor((double)((lvl - 20) / 2)) + 1;
-                }
-                else if (lvl >= 30 && lvl < 40)
-                {
-                    // Quad
-                    dragonscales.PackSize = 4;
-                    maxcount = (int)Math.Floor((double)((lvl - 30) / 2)) + 1;
-                }
-                else if (lvl >= 40 && lvl < 50)
-                {
-                    // Quint
-                    dragonscales.PackSize = 5;
-                    maxcount = (int)Math.Floor((double)((lvl - 40) / 2)) + 1;
-                }
-                else
-                {
-                    // Cache (x10)
-                    dragonscales.PackSize = 10;
-                    maxcount = (int)Math.Round((double)(lvl / 10));
-                }
-
-                if (!mob.Name.ToLower().Equals(mob.Name))
-                {
-                    // Named mob, more cash !
-                    maxcount = (int)Math.Round(maxcount * ServerProperties.Properties.LOOTGENERATOR_DRAGONSCALES_NAMED_COUNT);
+			// Epic dragons
+			case "cuuldurach the glimmer king":
+			case "gjalpinulva":
+			case "golestandt":
+			case "myrddraxis":
+			case "nosdoden":
+			case "xanxicar":
+				iScaleCount = 10 * ServerProperties.Properties.LOOTGENERATOR_DRAGONSCALES_NAMED_COUNT;
+				break;
+			// Named Dragons
+			case "asiintath":
+			case "ghorvensath":
+			case "iasentinth":
+			case "neureksath":
+			case "dyronith":
+			case "elinkueth":
+			case "jarkkonith":
+			case "ljoridkorith":
+			case "preniceth":
+			case "runicaath":
+			case "tollabarth":
+			case "varrkorith":
+				iScaleCount = 5 * ServerProperties.Properties.LOOTGENERATOR_DRAGONSCALES_NAMED_COUNT;					break;
+			// Dragon Spawn
+			case "glimmer dragon spawn":
+			case "stone dragon spawn":
+			case "wolf dragon spawn":
+				iScaleCount = 1;
+				break;
+			default:
+				// Mobs range from 55 to 75, and we want an up to 10% bonus to drop chance based on that
+				// I dislike losing accuracy rounding things, and it's a lot faster to do this in 1/10ths 
+				//	of a percent than to convert to doubles and to multiply rather than divide.
+				if (Util.Random(1000) < (10 * ServerProperties.Properties.LOOTGENERATOR_DRAGONSCALES_BASE_CHANCE 
+					+ 5 * (mob.Level - 55)))
+				{
+					if (mob.Name.ToLower() != mob.Name)
+						// Named critter
+						iScaleCount = ServerProperties.Properties.LOOTGENERATOR_DRAGONSCALES_NAMED_COUNT;
+					else
+						iScaleCount = 1;
+				}
+				break;
                 }
 
-                if (maxcount > 0 && Util.Chance(ServerProperties.Properties.LOOTGENERATOR_DRAGONSCALES_BASE_CHANCE + Math.Max(10, killedcon)))
-                {
-                    loot.AddFixed(dragonscales, maxcount);
-                }
+		if (iScaleCount > 0)
+			loot.AddFixed(m_dragonscales, iScaleCount);
             }
-            catch
+		catch (Exception e)
             {
+	    	log.Error("LootGeneratorDragonscales.GenerateLoot()", e);
                 return loot;
             }
 

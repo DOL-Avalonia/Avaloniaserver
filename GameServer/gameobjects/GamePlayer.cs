@@ -4396,7 +4396,7 @@ namespace DOL.GS
 					int areaBonus = (int)(amount * areapoints * ServerProperties.Properties.RP_RATE);
 					if (areaBonus > 0)
 					{
-						Out.SendMessage(string.Format("Vous obtenez {0} points de royaume de bonus gr‚ce aux bonus d'area", areaBonus),
+						Out.SendMessage(string.Format("Vous obtenez {0} points de royaume de bonus gr√¢ce aux bonus d'area", areaBonus),
 										eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 						GainRealmPoints((long)(areaBonus), false, false, false);
 					}
@@ -5120,7 +5120,8 @@ namespace DOL.GS
 				}
 				else
 				{
-					bonusRenaissance = (int)Math.Round(expTotal / 2D);
+					//Remove 50% points from levl > 40
+					bonusRenaissance = (int)Math.Round(expTotal / 2D) * -1;
 				}
 
 				expTotal += bonusRenaissance; 
@@ -5216,6 +5217,9 @@ namespace DOL.GS
 				if (bonusRenaissance > 0)
 				{
 					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.GainExperience.BonusRenaissance", bonusRenaissance), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				}else if (bonusRenaissance < 0)
+                {
+					Out.SendMessage("dont un malus renaissance de: " + Math.Abs(bonusRenaissance), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				}
 
 				if (territoryExp > 0)
@@ -9764,13 +9768,13 @@ namespace DOL.GS
 			//Eden
 			if (IsMezzed || (IsStunned && !(Steed != null && Steed.Name == "Forceful Zephyr")) || !IsAlive)
 			{
-				Out.SendMessage("Vous ne pouvez rien utiliser dans votre Ètat.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				Out.SendMessage("Vous ne pouvez rien utiliser dans votre √©tat.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;
 			}
 
 			if (m_runningSpellHandler != null)
 			{
-				Out.SendMessage("Vous etes dÈj‡ en train de lancer un sort.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				Out.SendMessage("Vous etes d√©j√† en train de lancer un sort.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;
 			}
 
@@ -9789,7 +9793,7 @@ namespace DOL.GS
 
 					if (requiredLevel > Level)
 					{
-						Out.SendMessage("Vous n'Ítes pas assez puissant pour utiliser le sort de cet objet.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						Out.SendMessage("Vous n'√™tes pas assez puissant pour utiliser le sort de cet objet.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						return false;
 					}
 
@@ -12467,7 +12471,7 @@ namespace DOL.GS
 
 					if (unauthorized)
 					{
-						Out.SendMessage(item.GetName(0, true) + " ne peux pas etre dÈposÈ ici !", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						Out.SendMessage(item.GetName(0, true) + " ne peux pas etre d√©pos√© ici !", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						return false;
 					}
 
@@ -14612,21 +14616,26 @@ namespace DOL.GS
 							{
 								if (IsCraftingSkillDefined(Convert.ToInt32(values[0])))
 								{
-									m_craftingSkills.Add((eCraftingSkill)i, Convert.ToInt32(values[1]));
+									if (DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS)
+										m_craftingSkills.Add((eCraftingSkill)i, AbstractCraftingSkill.subSkillCap);
+									else
+										m_craftingSkills.Add((eCraftingSkill)i, Convert.ToInt32(values[1]));
 								}
 								else
 								{
 									log.Error("Tried to load invalid CraftingSkill :" + values[0]);
 								}
 							}
-
 						}
 						//Load by number
 						else if (!m_craftingSkills.ContainsKey((eCraftingSkill)Convert.ToInt32(values[0])))
 						{
 							if(IsCraftingSkillDefined(Convert.ToInt32(values[0])))
 							{
-								m_craftingSkills.Add((eCraftingSkill)Convert.ToInt32(values[0]), Convert.ToInt32(values[1]));
+								if (DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS)
+									m_craftingSkills.Add((eCraftingSkill)Convert.ToInt32(values[0]), AbstractCraftingSkill.subSkillCap);
+								else
+									m_craftingSkills.Add((eCraftingSkill)Convert.ToInt32(values[0]), Convert.ToInt32(values[1]));
 							}
 							else
 							{
@@ -14831,7 +14840,7 @@ namespace DOL.GS
 			this.ResetAfkTimers();
 
 			if (!isSilent)
-				this.Out.SendMessage("Vous n'etes dÈsormais plus afk", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				this.Out.SendMessage("Vous n'etes d√©sormais plus afk", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 		}
 
         public void InitAfkTimers()		
@@ -14878,7 +14887,7 @@ namespace DOL.GS
 
             if (bonusXP > 0)
             {
-                Out.SendMessage("Vous gagnez " + bonusXP + " points d'experiences gr‚ce ‡ votre statut AFK!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                Out.SendMessage("Vous gagnez " + bonusXP + " points d'experiences gr√¢ce √† votre statut AFK!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
             }
         }
 
@@ -16210,7 +16219,7 @@ namespace DOL.GS
 			}
 
 			System.Globalization.NumberFormatInfo format = System.Globalization.NumberFormatInfo.InvariantInfo;
-			Out.SendMessage("You get " + experience.ToString("N0", format) + " champion experience points.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+			Out.SendMessage("Vous gagnez " + experience.ToString("N0", format) + " points d'experience champion", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 
 			ChampionExperience += experience;
 			Out.SendUpdatePoints();
@@ -16891,12 +16900,12 @@ namespace DOL.GS
 			if (Reputation + amount >= 0)
 			{
 				Reputation = 0;	
-				Out.SendMessage("Votre rÈputation est dÈsormais de 0.", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+				Out.SendMessage("Votre r√©putation est d√©sormais de 0.", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
 			}
 			else
 			{
 				Reputation += amount;
-				Out.SendMessage(string.Format("Vous gagnez {0} " + (amount > 1 ? "points" : "point") + " de rÈputation. Vous avez dÈsormais {1} points", amount, Reputation), eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+				Out.SendMessage(string.Format("Vous gagnez {0} " + (amount > 1 ? "points" : "point") + " de r√©putation. Vous avez d√©sormais {1} points", amount, Reputation), eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
 			}
 		}		
 	}

@@ -665,31 +665,20 @@ namespace DOL.GS.Keeps
                 return false;
             }
 
-            switch (GameServer.Instance.Configuration.ServerType)
+			if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvP)
             {
-                case eGameServerType.GST_Normal:
+				if (keep.Guild == null)
+					return ServerProperties.Properties.PVP_UNCLAIMED_KEEPS_ENEMY;
+
+				//friendly player in group
+				if (checkGroup && target.Group != null)
+				{
+					foreach (GamePlayer player in target.Group.GetPlayersInTheGroup())
                     {
-                        return keep.Realm != target.Realm;
+						if (!IsEnemy(keep, target, false))
+							return false;
                     }
-
-                case eGameServerType.GST_PvP:
-                    {
-                        if (keep.Guild == null)
-                        {
-                            return ServerProperties.Properties.PVP_UNCLAIMED_KEEPS_ENEMY;
-                        }
-
-                        // friendly player in group
-                        if (checkGroup && target.Group != null)
-                        {
-                            foreach (GamePlayer player in target.Group.GetPlayersInTheGroup())
-                            {
-                                if (!IsEnemy(keep, target, false))
-                                {
-                                    return false;
-                                }
-                            }
-                        }
+                 }
 
                         // guild alliance
                         if (keep.Guild != null && keep.Guild.alliance != null)
@@ -701,15 +690,9 @@ namespace DOL.GS.Keeps
                         }
 
                         return keep.Guild != target.Guild;
-                    }
-
-                case eGameServerType.GST_PvE:
-                    {
-                        return !(target is GamePlayer);
-                    }
             }
 
-            return true;
+			return keep.Realm != target.Realm;
         }
 
         /// <summary>

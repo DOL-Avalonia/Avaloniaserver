@@ -24,6 +24,7 @@ using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
+using DOL.GS.Styles;
 
 namespace DOL.GS
 {
@@ -216,7 +217,7 @@ namespace DOL.GS
 
                 case eProperty.MaxHealth:
                     {
-                        int conBonus = (int)(3.1 * Constitution);
+			int conBonus = (int)(3.1 * GetModified(eProperty.Constitution));
                         int hitsBonus = (int)(32.5 * Level + m_summonHitsBonus);
                         int debuff = DebuffCategory[(int)property];
 
@@ -275,71 +276,36 @@ namespace DOL.GS
         }
 
         /// <summary>
-        /// Base strength.
+	/// Set stats according to necro pet server properties
         /// </summary>
-        public override short Strength
+	public override void AutoSetStats()
         {
-            get
-            {
-                switch (Name.ToLower())
-                {
-                    case "greater necroservant":
-                        return 60;
-                    default:
-                        return (short)(60 + Level);
-                }
-            }
-        }
+			// Use normal pet stats for Cha, Emp, Int, and Pie.
+			base.AutoSetStats();
 
-        /// <summary>
-        /// Base constitution.
-        /// </summary>
-        public override short Constitution
-        {
-            get
+			if (Name.ToUpper() == "GREATER NECROSERVANT")
             {
-                switch (Name.ToLower())
-                {
-                    case "greater necroservant":
-                        return (short)(60 + Level / 3 + m_summonConBonus);
-                    default:
-                        return (short)(60 + Level / 2 + m_summonConBonus);
-                }
+				Strength = (short)(ServerProperties.Properties.NECRO_GREATER_PET_STR_BASE
+					+ (short)(Math.Round(ServerProperties.Properties.NECRO_GREATER_PET_STR_MULTIPLIER * Level)));
+				Constitution = (short)(ServerProperties.Properties.NECRO_GREATER_PET_CON_BASE
+					+ (short)(Math.Round(ServerProperties.Properties.NECRO_GREATER_PET_CON_MULTIPLIER * Level))
+					+ m_summonConBonus);
+				Dexterity = (short)(ServerProperties.Properties.NECRO_GREATER_PET_DEX_BASE
+					+ (short)(Math.Round(ServerProperties.Properties.NECRO_GREATER_PET_DEX_MULTIPLIER * Level)));
+				Quickness = (short)(ServerProperties.Properties.NECRO_GREATER_PET_QUI_BASE
+					+ (short)(Math.Round(ServerProperties.Properties.NECRO_GREATER_PET_QUI_MULTIPLIER * Level)));
             }
-        }
-
-        /// <summary>
-        /// Base dexterity. Make greater necroservant slightly more dextrous than
-        /// all the other pets.
-        /// </summary>
-        public override short Dexterity
-        {
-            get
+			else
             {
-                switch (Name.ToLower())
-                {
-                    case "greater necroservant":
-                        return (short)(60 + Level / 2);
-                    default:
-                        return 60;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Base quickness.
-        /// </summary>
-        public override short Quickness
-        {
-            get
-            {
-                switch (Name.ToLower())
-                {
-                    case "greater necroservant":
-                        return (short)(60 + Level);
-                    default:
-                        return (short)(60 + Level / 3);
-                }
+				Strength = (short)(ServerProperties.Properties.NECRO_PET_STR_BASE
+					+ (short)(Math.Round(ServerProperties.Properties.NECRO_PET_STR_MULTIPLIER * Level)));
+				Constitution = (short)(ServerProperties.Properties.NECRO_PET_CON_BASE
+					+ (short)(Math.Round(ServerProperties.Properties.NECRO_PET_CON_MULTIPLIER * Level))
+					+ m_summonConBonus);
+				Dexterity = (short)(ServerProperties.Properties.NECRO_PET_DEX_BASE
+					+ (short)(Math.Round(ServerProperties.Properties.NECRO_PET_DEX_MULTIPLIER * Level)));
+				Quickness = (short)(ServerProperties.Properties.NECRO_PET_QUI_BASE
+					+ (short)(Math.Round(ServerProperties.Properties.NECRO_PET_QUI_MULTIPLIER * Level)));
             }
         }
 
@@ -412,7 +378,40 @@ namespace DOL.GS
 
                 new TauntEffect().Start(this);
             }
-        }
+        }	
+
+	/// <summary>
+	/// Called when necro pet is hit to see if spellcasting is interrupted
+	/// </summary>
+	/// <param name="ad">information about the attack</param>
+	public override void OnAttackedByEnemy(AttackData ad)
+	{
+		if (Brain is NecromancerPetBrain necroBrain && necroBrain.SpellsQueued && !HasEffect(typeof(FacilitatePainworkingEffect)) 
+			&& ad != null && ad.Attacker != null && ChanceSpellInterrupt(ad.Attacker))
+		{
+			StopCurrentSpellcast();
+			necroBrain.ClearSpellQueue();
+			necroBrain.MessageToOwner("Your pet was attacked by " + ad.Attacker.Name + " and their spell was interrupted!", eChatType.CT_SpellResisted);
+		}
+
+		base.OnAttackedByEnemy(ad);
+	}
+
+	/// <summary>
+	/// Called when the necro pet attacks, which interrupts current spells being cast
+	/// </summary>
+	protected override AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield, bool ignoreLOS)
+	{
+		if (Brain is NecromancerPetBrain necroBrain && necroBrain.SpellsQueued && !HasEffect(typeof(FacilitatePainworkingEffect)))
+		{
+			StopCurrentSpellcast();
+			necroBrain.ClearSpellQueue();
+
+			necroBrain.MessageToOwner("Your pet attacked and interrupted their spell!", eChatType.CT_SpellResisted);
+		}
+
+		return base.MakeAttack(target, weapon, style, effectiveness, interruptDuration, dualWield, ignoreLOS);
+	}
 
         /// <summary>
         /// Pet-only insta spells.

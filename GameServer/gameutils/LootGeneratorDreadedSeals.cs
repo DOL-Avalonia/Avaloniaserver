@@ -21,23 +21,22 @@ using System.Reflection;
 using DOL.GS;
 using DOL.AI.Brain;
 using DOL.Database;
+using DOL.GS.Keeps;
 using log4net;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// LootGeneratorDreadedSeals
-	/// At the moment this generator only adds dreaded seals to the loot
-	/// </summary>
-	public class LootGeneratorDreadedSeals : LootGeneratorBase
-	{
+    /// <summary>
+    /// LootGeneratorDreadedSeals
+    /// At the moment this generator only adds dreaded seals to the loot
+    /// </summary>
+    public class LootGeneratorDreadedSeals : LootGeneratorBase
+    {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private static readonly ItemTemplate m_DreadedSeal = GameServer.Database.FindObjectByKey<ItemTemplate>("glowing_dreaded_seal");
-
-        // LootList.AddChance() only goes to the nearest percent, we need to the nearest 0.01%.
-        private static readonly Random m_rnd = new Random(); 
-                                                                                                                                                              
+        private static readonly ItemTemplate m_GlowingDreadedSeal = GameServer.Database.FindObjectByKey<ItemTemplate>("glowing_dreaded_seal");
+        private static readonly ItemTemplate m_SanguineDreadedSeal = GameServer.Database.FindObjectByKey<ItemTemplate>("sanguine_dreaded_seal");
+                                                                                                                                               
         /// <summary>       
         /// Generate loot for given mob
         /// </summary>
@@ -56,57 +55,39 @@ namespace DOL.GS
                 if (player == null)
                     return loot;
 
-                // Certain epic mobs have a 100% drop chance of 10 seals at once
-                switch (mob.Brain.ToString().ToLower())
+                switch (mob)
                 {
-                    case "dragonbrain":
-                    case "lord":
-                        loot.AddFixed(m_DreadedSeal, 10);
+                    // Certain mobs have a 100% drop chance of multiple seals at once
+                    case GuardLord lord:
+                        if (lord.IsTowerGuard || lord.Component.AbstractKeep.BaseLevel < 50)
+                            loot.AddFixed(m_SanguineDreadedSeal, 1);  // Guaranteed drop, but towers and BGs only merit 1 seal.
+                        else
+                            loot.AddFixed(m_SanguineDreadedSeal, 5 * lord.Component.Keep.Level);
                         break;
                     default:
-                        if (mob.Name.ToLower() == "lord agramon") // Another 10 seal dropper
+                        if (mob.Name.ToUpper() == "LORD AGRAMON")
+                            loot.AddFixed(m_SanguineDreadedSeal, 10);
+                        else if (mob.Level >= ServerProperties.Properties.LOOTGENERATOR_DREADEDSEALS_STARTING_LEVEL)
                         {
-                            loot.AddFixed(m_DreadedSeal, 10);
+                        int iPercentDrop = (mob.Level - ServerProperties.Properties.LOOTGENERATOR_DREADEDSEALS_STARTING_LEVEL)
+	                        * ServerProperties.Properties.LOOTGENERATOR_DREADEDSEALS_DROP_CHANCE_PER_LEVEL
+	                        + ServerProperties.Properties.LOOTGENERATOR_DREADEDSEALS_BASE_CHANCE;
+			    
+                        if (!mob.Name.ToLower().Equals(mob.Name)) // Named mobs are more likely to drop a seal
+	                        iPercentDrop = (int)Math.Round(iPercentDrop * ServerProperties.Properties.LOOTGENERATOR_DREADEDSEALS_NAMED_CHANCE);
+			
+                        if (Util.Random(9999) < iPercentDrop)
+	                        loot.AddFixed(m_GlowingDreadedSeal, 1);
                         }
-                        else
-                        {
-
-                            if (mob.Level < ServerProperties.Properties.LOOTGENERATOR_DREADEDSEALS_STARTING_LEVEL)
-                                return loot;
-
-                            int iPercentDrop = (mob.Level - ServerProperties.Properties.LOOTGENERATOR_DREADEDSEALS_STARTING_LEVEL)
-                                * ServerProperties.Properties.LOOTGENERATOR_DREADEDSEALS_DROP_CHANCE_PER_LEVEL
-                                + ServerProperties.Properties.LOOTGENERATOR_DREADEDSEALS_BASE_CHANCE;
-
-                            if (!mob.Name.ToLower().Equals(mob.Name)) // Named mobs are more likely to drop a seal
-                                iPercentDrop = (int)Math.Round(iPercentDrop * ServerProperties.Properties.LOOTGENERATOR_DREADEDSEALS_NAMED_CHANCE);
-
-                            int iRandom = m_rnd.Next(10000);
-
-                            if (iRandom < iPercentDrop)
-                                // ItemTemplate dragonscales = new ItemTemplate(m_dragonscales); Creating a new ItemTemplate like this throws an exception later
-                                loot.AddFixed(m_DreadedSeal, 1);
-
-                            /*log.Error("LootGeneratorDreadedSeal Calculations: " + "Mob level " + mob.Level.ToString()
-                                + ", Starting Level=" + ServerProperties.Properties.LOOTGENERATOR_DREADEDSEALS_STARTING_LEVEL.ToString()
-                                + ", Base chance=" + ServerProperties.Properties.LOOTGENERATOR_DREADEDSEALS_BASE_CHANCE
-                                + ", Chance per level=" + ServerProperties.Properties.LOOTGENERATOR_DREADEDSEALS_DROP_CHANCE_PER_LEVEL
-                                + ", " + (iPercentDrop / 100).ToString()
-                                + "% drop chance, rolled "
-                                + (iRandom / 100).ToString());*/
-
-                        }// else
                         break;
-                }//switch
-                
+	            }// switch
             }//try
             catch (Exception e)
             {
                 log.Error(e.Message);
-                return loot;
             }
 
             return loot;
-        }
+          }
 	}
 }
