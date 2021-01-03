@@ -441,13 +441,6 @@ namespace DOL.AI.Brain
 				previousIsStealthed = player.IsStealthed;
 			}
 
-			// Always check offensive spells, or pets in melee will keep blindly melee attacking,
-			//	when they should be stopping to cast offensive spells.
-			if (IsActive && m_aggressionState != eAggressionState.Passive)
-				CheckSpells(eCheckSpellType.Offensive);
-
-			if (!Body.AttackState && WalkState == eWalkState.Follow && Owner != null)
-				Follow(Owner);
 		}
 
 		/// <summary>
