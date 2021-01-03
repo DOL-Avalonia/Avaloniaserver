@@ -2116,9 +2116,11 @@
     <Compile Include="spells\Artifacts\TraitorsDagger.cs" />
     <Compile Include="spells\Artifacts\Traldor.cs" />
     <Compile Include="spells\AstralPetSummon.cs" />
+    <Compile Include="spells\AvaloniaFakeSpellHandler.cs" />
     <Compile Include="spells\Bainshee\BainsheePulseDmgSpellHandler.cs" />
     <Compile Include="spells\CombineItemSpellHandler.cs" />
     <Compile Include="spells\negative\BeFriendSpellHandler.cs" />
+    <Compile Include="spells\negative\DamnationSpellHandler.cs" />
     <Compile Include="spells\negative\FearBrain.cs" />
     <Compile Include="spells\negative\FearSpellHandler.cs" />
     <Compile Include="spells\negative\FriendBrain.cs" />
@@ -2169,7 +2171,9 @@
     <Compile Include="spells\Hunter\SummonHunterPet.cs" />
     <Compile Include="spells\Necromancer\PowerTransfer.cs" />
     <Compile Include="spells\Necromancer\PowerDrain.cs" />
+    <Compile Include="spells\negative\PetrifySpellHandler.cs" />
     <Compile Include="spells\NightShade\NightshadeNukeSpellhandler.cs" />
+    <Compile Include="spells\OmniHealSpellHandler.cs" />
     <Compile Include="spells\RampingDamageFocus.cs" />
     <Compile Include="spells\RvRSicknessSpellHandler.cs" />
     <Compile Include="spells\AssassinateSpellHandler.cs" />
@@ -2221,6 +2225,7 @@
     <Compile Include="spells\Bonedancer\SummonMinionHandler.cs" />
     <Compile Include="spells\Theurgist\SummonTheurgistPet.cs" />
     <Compile Include="spells\Teleport\UniPortal.cs" />
+    <Compile Include="spells\UnpetrifySpellHandler.cs" />
     <Compile Include="spells\Valkyrie\FrontalAOEConeHandler.cs" />
     <Compile Include="spells\Valkyrie\ValkyrieProc.cs" />
     <Compile Include="spells\Vampiir\VampArmorDebuff.cs">

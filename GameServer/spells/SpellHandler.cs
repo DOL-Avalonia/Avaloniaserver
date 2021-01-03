@@ -2665,6 +2665,11 @@ namespace DOL.GS.Spells
 			return new GameSpellEffect(this, CalculateEffectDuration(target, effectiveness), freq, effectiveness);
 		}
 
+        public virtual bool HasPositiveOrSpeedEffect()
+        {
+            return Spell.SpellType != "Unpetrify" && (HasPositiveEffect || Spell.SpellType == "Stun" || Spell.SpellType == "Stylestun" || Spell.SpellType == "Mesmerize" || Spell.SpellType == "SpeedDecrease" || Spell.SpellType == "Slow" || Spell.SpellType == "StyleSpeedDecrease" || Spell.SpellType == "VampSpeedDecrease");
+        }
+
 		/// <summary>
 		/// Apply effect on target or do spell action if non duration spell
 		/// </summary>
@@ -2683,7 +2688,15 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			if ((target is Keeps.GameKeepDoor || target is Keeps.GameKeepComponent))
+            GameSpellEffect pertrifyEffect = SpellHandler.FindEffectOnTarget(target, "Petrify");
+            if (pertrifyEffect != null && (HasPositiveOrSpeedEffect() || Spell.Pulse > 0))
+            {
+                if (Caster is GamePlayer player)
+                    MessageToCaster(target.Name + LanguageMgr.GetTranslation(player.Client, "Petrify.Target.Resist"), eChatType.CT_SpellResisted);
+                return;
+            }
+
+            if ((target is Keeps.GameKeepDoor || target is Keeps.GameKeepComponent))
 			{
 				bool isAllowed = false;
 				bool isSilent = false;
@@ -2725,7 +2738,7 @@ namespace DOL.GS.Spells
 					return;
 				}
 			}
-			if (m_spellLine.KeyName == GlobalSpellsLines.Item_Effects || m_spellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect || m_spellLine.KeyName == GlobalSpellsLines.Potions_Effects || m_spellLine.KeyName == Specs.Savagery || m_spellLine.KeyName == GlobalSpellsLines.Character_Abilities || m_spellLine.KeyName == "OffensiveProc")
+			if (m_spellLine.KeyName == GlobalSpellsLines.Item_Effects || m_spellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect || m_spellLine.KeyName == GlobalSpellsLines.Potions_Effects || m_spellLine.KeyName == Specs.Savagery || m_spellLine.KeyName == GlobalSpellsLines.Character_Abilities || m_spellLine.KeyName == "OffensiveProc" || m_spellLine.KeyName == "GMCast")
 				effectiveness = 1.0; // TODO player.PlayerEffectiveness
 			if (effectiveness <= 0)
 				return; // no effect

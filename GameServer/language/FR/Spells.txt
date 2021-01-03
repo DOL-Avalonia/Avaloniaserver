@@ -117,3 +117,14 @@ AblativeArmor.DelveInfo.Absorption1:			Absorption: {0}%
 AblativeArmor.DelveInfo.Absorption2:			Absorption: 100%
 AblativeArmor.DelveInfo.Absorption3:			Absorption: 25%
 AblativeArmor.DelveInfo.CastingTime:			Instantanné
+
+# Petrify
+Petrify.Target.Absorbs:  Votre cible est pétrifiée et absorbe {0} domages.
+Petrify.Target.Resist:   Votre cible est pétrifiée et est insensible à ce sort.
+Petrify.Self.Message:	La cilbe est pétrifiée.
+Petrify.Self.Absorb:		Vous êtes pétrifié(e) et absorbez {0} domages.
+Petrify.Self.Unpetrify:		Vous êtes libéré(e) de Petrify.
+
+# Damnation
+Damnation.Self.Message: Votre cible est damnée
+Damnation.Self.Message2: Tu ne le sais pas encore, mais tu es déjà mort !

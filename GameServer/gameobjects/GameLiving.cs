@@ -505,6 +505,8 @@ namespace DOL.GS
 			set { }
 		}
 
+        private bool isDamned = false;
+
 		/// <summary>
 		/// Holds disease counter
 		/// </summary>
@@ -6898,15 +6900,17 @@ namespace DOL.GS
 			get { return m_groupIndex; }
 			set { m_groupIndex = value; }
 		}
-		#endregion
-		
-		/// <summary>
-		/// Handle event notifications.
-		/// </summary>
-		/// <param name="e"></param>
-		/// <param name="sender"></param>
-		/// <param name="args"></param>
-		public override void Notify(DOLEvent e, object sender, EventArgs args)
+        #endregion
+
+        public bool IsDamned { get => isDamned; set => isDamned = value; }
+
+        /// <summary>
+        /// Handle event notifications.
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        public override void Notify(DOLEvent e, object sender, EventArgs args)
 		{
 			if (e == GameLivingEvent.Interrupted && args != null)
 			{
