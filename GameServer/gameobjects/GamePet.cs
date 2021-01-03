@@ -130,17 +130,12 @@ namespace DOL.GS
 		/// <returns>The specialisation level.</returns>
 		public override int GetModifiedSpecLevel(string keyName)
 		{
-			switch (keyName)
-			{
-				case Specs.Slash:
-				case Specs.Crush:
-				case Specs.Two_Handed:
-				case Specs.Shield:
-				case Specs.Critical_Strike:
-				case Specs.Large_Weapons:
-					return Level;
-                default: return (Brain as IControlledBrain).GetLivingOwner().GetModifiedSpecLevel(keyName);
-			}
+			int spec = (Brain as IControlledBrain).GetLivingOwner().GetModifiedSpecLevel(keyName);
+
+			if (spec <= 0)
+				return Level;
+
+			return spec;
 		}
 
 		#endregion
