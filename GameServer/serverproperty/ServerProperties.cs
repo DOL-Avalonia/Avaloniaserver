@@ -1104,6 +1104,18 @@ namespace DOL.GS.ServerProperties
         /// </summary>
         [ServerProperty("rates", "relic_owning_bonus", "Relic Owning Bonus in percent per relic (default 10%) in effect when owning enemy relic", (short)10)]
         public static short RELIC_OWNING_BONUS { get; set; }
+	    
+	/// <summary>
+	/// Doppelganger realm point value
+	/// </summary>
+	[ServerProperty("npc", "doppelganger_realm_points", "Realm point value of doppelgangers. ", 400)]
+	public static int DOPPELGANGER_REALM_POINTS { get; set; }
+
+	/// <summary>
+	/// Doppelganger bounty point value
+	/// </summary>
+	[ServerProperty("npc", "doppelganger_bounty_points", "Bounty point value of doppelgangers. ", 250)]
+	public static int DOPPELGANGER_BOUNTY_POINTS { get; set; }
 
         /// <summary>
         /// Base Value to use when auto-setting STR stat.
