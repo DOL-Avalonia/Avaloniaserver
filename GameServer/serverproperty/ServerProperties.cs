@@ -1861,8 +1861,8 @@ namespace DOL.GS.ServerProperties
         /// <summary>
         /// Dragon Scales Loot Generator Named Boost Count
         /// </summary>
-        [ServerProperty("pve", "lootgenerator_dragonscales_named_count", "Increase count of Dragon Scales Loot Generator drop for Named mobs. (count * lootgenerator_dragonscales_named_count)", 1.5)]
-        public static double LOOTGENERATOR_DRAGONSCALES_NAMED_COUNT { get; set; }
+	[ServerProperty("pve", "lootgenerator_dragonscales_named_count", "Multiplier for number of scales dropped from named mobs, including named dragons.  Must be an integer.", 2)]
+	public static int LOOTGENERATOR_DRAGONSCALES_NAMED_COUNT { get; set; }
 
         /// <summary>
         /// Dreaded Seals Loot Generator Starting Level
@@ -2237,7 +2237,7 @@ namespace DOL.GS.ServerProperties
 	/// Max character crafting skill?
 	/// </summary>
 	[ServerProperty("craft", "crafting_max_skills", "Set character crafting skills to max level.", false)]
-	public static bool CRAFTING_MAX_SKILLS;
+	public static bool CRAFTING_MAX_SKILLS { get; set; }
 
         /// <summary>
         /// Use salvage per realm and get back material to use in chars realm
