@@ -2202,6 +2202,12 @@ namespace DOL.GS.ServerProperties
         /// </summary>
         [ServerProperty("craft", "allow_craft_norealm_items", "Allow any realm to craft items with 0 (no) realm.", false)]
         public static bool ALLOW_CRAFT_NOREALM_ITEMS { get; set; }
+	    
+	/// <summary>
+	/// Max character crafting skill?
+	/// </summary>
+	[ServerProperty("craft", "crafting_max_skills", "Set character crafting skills to max level.", false)]
+	public static bool CRAFTING_MAX_SKILLS;
 
         /// <summary>
         /// Use salvage per realm and get back material to use in chars realm
