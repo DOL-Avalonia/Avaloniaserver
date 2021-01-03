@@ -389,9 +389,9 @@ namespace DOL.GS.ServerProperties
         public static bool LOG_TRADES { get; set; }
 
         /// <summary>
-		/// Property to enable crush/slash/thrust determining damage variance for polearms and 2H weapons
-		/// </summary>
-		[ServerProperty("server", "enable_albion_advanced_weapon_spec", "Set to true to determine damage variance for polearms and 2H weapons on 1H crush/slash/thrust spec.", true)]
+	/// Property to enable crush/slash/thrust determining damage variance for polearms and 2H weapons
+	/// </summary>
+	[ServerProperty("server", "enable_albion_advanced_weapon_spec", "Set to true to determine damage variance for polearms and 2H weapons on 1H crush/slash/thrust spec.", true)]
         public static bool ENABLE_ALBION_ADVANCED_WEAPON_SPEC { get; set; }
 
         /// <summary>
@@ -399,6 +399,18 @@ namespace DOL.GS.ServerProperties
         /// </summary>
         [ServerProperty("server", "disable_quit_timer", "Allow players to log out without waiting?", false)]
         public static bool DISABLE_QUIT_TIMER { get; set; }
+	    
+	/// <summary>
+	/// Enable Discord Webhook?
+	/// </summary>
+	[ServerProperty("server", "Discord_Webhook_Active", "Enable Discord webhook?", false)]
+	public static bool DISCORD_ACTIVE;
+
+	/// <summary>
+	/// Webhook ID
+	/// </summary>
+	[ServerProperty("server", "Discord_Webhook_ID", "The id of the webhook", "")]
+	public static string DISCORD_WEBHOOK_ID;		
 
         /// <summary>
         /// Log Email Addresses
