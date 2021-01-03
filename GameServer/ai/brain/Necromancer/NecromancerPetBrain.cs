@@ -131,11 +131,12 @@ namespace DOL.AI.Brain
 					CastSpell(petSpell.Spell, petSpell.SpellLine, petSpell.Target);
 				else // Necro pets can always try to cast in combat
 					AddToSpellQueue(petSpell.Spell, petSpell.SpellLine, petSpell.Target);
-					
-				// Immediately cast if this was the first spell added
-				if (hadQueuedSpells == false && !Body.IsCasting)
-				{
-					CheckSpellQueue();
+
+                // Immediately cast if this was the first spell added
+                if (hadQueuedSpells == false && !Body.IsCasting)
+                {
+                    CheckSpellQueue();
+                }
 			}
             else if (e == GameLivingEvent.Dying)
             {
