@@ -9183,7 +9183,23 @@ namespace DOL.GS
 									StopWhistleTimers();
 									return;
 								}
-								Out.SendTimerWindow("Summoning Mount", 5);
+                                if(IsAttacking)
+                                {
+                                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.UseSlot.CantMountCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                    StopWhistleTimers();
+                                    return;
+                                }
+                                if (IsCasting)
+                                {
+                                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.UseSlot.CantMountSpell"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                    StopWhistleTimers();
+                                    return;
+                                }
+
+                                if (HasEnabledAPulseSpell)
+                                    PulseSpell.CancelPulsingSpell(this, PulseSpell.Spell.SpellType);
+                                
+                                Out.SendTimerWindow("Summoning Mount", 5);
 								foreach (GamePlayer plr in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 								{
 									if (plr == null) continue;
@@ -15766,6 +15782,16 @@ namespace DOL.GS
 			get { return m_whistleMountTimer != null && m_whistleMountTimer.IsAlive; }
 		}
 
+        private SpellHandler m_pulseSpell;
+
+        public bool HasEnabledAPulseSpell
+        {
+            get
+            {
+                return m_pulseSpell != null;
+            }
+        }
+
 		protected bool m_isOnHorse;
 		public virtual bool IsOnHorse
 		{
@@ -15799,13 +15825,15 @@ namespace DOL.GS
 				Out.SendCloseTimerWindow();
 			}
 			m_whistleMountTimer = null;
-		}
+        }
 
 		protected int WhistleMountTimerCallback(RegionTimer callingTimer)
 		{
 			StopWhistleTimers();
 			IsOnHorse = true;
-			return 0;
+            if (IsSitting)
+                IsSitting = false;
+            return 0;
 		}
 
 		public enum eHorseSaddleBag : byte
@@ -16829,6 +16857,7 @@ namespace DOL.GS
         /// This property is use for the assassinate RA
         /// </summary>
         public bool StayStealth { get => stayStealth; set => stayStealth = value; }
+        public SpellHandler PulseSpell { get => m_pulseSpell; set => m_pulseSpell = value; }
         #endregion
 
 

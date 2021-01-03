@@ -300,7 +300,9 @@ namespace DOL.GS.Spells
 						continue;
 					if (effect.SpellHandler.Spell.SpellType == spellType)
 					{
-						effect.Cancel(false);
+                        if (Caster is GamePlayer player)
+                            player.PulseSpell = null;
+                        effect.Cancel(false);
 						return true;
 					}
 				}
@@ -540,7 +542,18 @@ namespace DOL.GS.Spells
 						(m_caster as GamePlayer).IsOnHorse = false;
 					}
 
-					if (!Spell.IsInstantCast)
+                    if (m_caster is GamePlayer && (m_caster as GamePlayer).IsSummoningMount)
+                    {
+                        (m_caster as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((m_caster as GamePlayer).Client.Account.Language, "GameObjects.GamePlayer.UseSlot.CantMountSpell"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        (m_caster as GamePlayer).IsOnHorse = false;
+                    }
+
+                    if(Spell.Pulse != 0 && m_caster is GamePlayer player)
+                    {
+                        player.PulseSpell = this;
+                    }
+
+                    if (!Spell.IsInstantCast)
 					{
 						StartCastTimer(m_spellTarget);
 
@@ -1920,9 +1933,15 @@ namespace DOL.GS.Spells
 		{
 			if (Caster is GamePlayer && ((GamePlayer)Caster).IsOnHorse && !HasPositiveEffect)
 				((GamePlayer)Caster).IsOnHorse = false;
-			
-			//[Stryve]: Do not break stealth if spell never breaks stealth.
-			if ((Caster is GamePlayer) && UnstealthCasterOnFinish )
+
+            if (m_caster is GamePlayer && (m_caster as GamePlayer).IsSummoningMount)
+            {
+                (m_caster as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((m_caster as GamePlayer).Client.Account.Language, "GameObjects.GamePlayer.UseSlot.CantMountSpell"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                (m_caster as GamePlayer).IsOnHorse = false;
+            }
+
+            //[Stryve]: Do not break stealth if spell never breaks stealth.
+            if ((Caster is GamePlayer) && UnstealthCasterOnFinish )
 				((GamePlayer)Caster).Stealth(false);
 
 			if (Caster is GamePlayer && !HasPositiveEffect)
