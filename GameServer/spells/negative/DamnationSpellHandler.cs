@@ -21,7 +21,8 @@ namespace DOL.GS.Spells
 
         public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
         {
-            if (target.IsDamned)
+            GameSpellEffect damnationEffect = SpellHandler.FindEffectOnTarget(target, "Damnation");
+            if (damnationEffect != null)
             {
                 if (Caster is GamePlayer player)
                     MessageToCaster(LanguageMgr.GetTranslation(player.Client, "Damnation.Target.Resist", target.Name), eChatType.CT_SpellResisted);
@@ -65,11 +66,11 @@ namespace DOL.GS.Spells
             living.Die(Caster);
             if (living is GamePlayer player)
             {
+                player.IsDamned = false;
                 living.Model = living.TempProperties.getProperty<ushort>("OriginalModel");
                 player.Out.SendUpdatePlayer();
                 if (player.Group != null)
                 {
-                    player.IsDamned = false;
                     player.Group.UpdateMember(player, false, false);
                 }
             }

@@ -221,6 +221,7 @@ GameObjects.GamePlayer.Quit.YouWillQuit1:				You will quit after sitting for {0}
 GameObjects.GamePlayer.Quit.YouWillQuit2:				You will quit after sitting for {0} seconds. Type '/stand' or move if you don't want to quit.	
 GameObjects.GamePlayer.Quit.CanTQuitDamned:				You cannot quit, you're damned.
 GameObjects.GamePlayer.Quit.CanTQuitStunned:			You cannot quit, you're stunned.
+GameObjects.GamePlayer.Quit.CanTQuitMezzed:				You cannot quit, you're mezzed.
 GameObjects.GamePlayer.RealmTitle.UnknownRealm:			Unknown realm
 GameObjects.GamePlayer.ReceiveItem.Receive:				You receive {0}!
 GameObjects.GamePlayer.ReceiveItem.ReceiveFrom:			You receive {0} from {1}!

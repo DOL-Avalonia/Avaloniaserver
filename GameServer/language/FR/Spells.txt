@@ -128,4 +128,4 @@ Petrify.Self.Unpetrify:		Vous êtes libéré(e) de Petrify.
 # Damnation
 Damnation.Self.Message: Votre cible est damnée
 Damnation.Self.Message2: Tu ne le sais pas encore, mais tu es déjà mort !
-Damnation.Target.Resist:   {0} est déjà damné et est insensible à ce sort.
+Damnation.Target.Resist:   {0} est damné et est insensible à ce sort.

@@ -131,4 +131,4 @@ Petrify.Self.Unpetrify:		You're unpetrify.
 # Damnation
 Damnation.Self.Message:  The target is damned
 Damnation.Self.Message2: You're damned
-Damnation.Target.Resist:  {0} is already damned and can't be effected by this Spell!
+Damnation.Target.Resist:  {0} is damned and can't be effected by this Spell!

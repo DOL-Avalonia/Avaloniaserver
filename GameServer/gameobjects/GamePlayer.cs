@@ -1045,7 +1045,7 @@ namespace DOL.GS
 					return false;
 				}
 
-                if (IsDamned)
+                if (SpellHandler.FindEffectOnTarget(this, "Damnation") != null)
                 {
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.Quit.CanTQuitDamned"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return false;
@@ -1054,6 +1054,12 @@ namespace DOL.GS
                 if (IsStunned)
                 {
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.Quit.CanTQuitStunned"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return false;
+                }
+
+                if (IsMezzed)
+                {
+                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.Quit.CanTQuitMezzed"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return false;
                 }
 

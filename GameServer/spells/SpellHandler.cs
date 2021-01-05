@@ -2686,7 +2686,7 @@ namespace DOL.GS.Spells
 
         public virtual bool HasPositiveOrSpeedEffect()
         {
-            return Spell.SpellType != "Unpetrify" && (HasPositiveEffect || Spell.SpellType == "Stun" || Spell.SpellType == "Stylestun" || Spell.SpellType == "Mesmerize" || Spell.SpellType == "SpeedDecrease" || Spell.SpellType == "Slow" || Spell.SpellType == "StyleSpeedDecrease" || Spell.SpellType == "VampSpeedDecrease" || Spell.SpellType == "Petrify" || Spell.SpellType == "Damnation");
+            return Spell.SpellType != "Unpetrify" && (HasPositiveEffect || Spell.SpellType == "Stun" || Spell.SpellType == "Stylestun" || Spell.SpellType == "Mesmerize" || Spell.SpellType == "SpeedDecrease" || Spell.SpellType == "Slow" || Spell.SpellType == "StyleSpeedDecrease" || Spell.SpellType == "VampSpeedDecrease");
         }
 
 		/// <summary>
@@ -2708,7 +2708,7 @@ namespace DOL.GS.Spells
 			}
 
             GameSpellEffect pertrifyEffect = SpellHandler.FindEffectOnTarget(target, "Petrify");
-            if (pertrifyEffect != null && (HasPositiveOrSpeedEffect() || Spell.Pulse > 0))
+            if (pertrifyEffect != null && (HasPositiveOrSpeedEffect() || Spell.Pulse > 0 || Spell.SpellType == "Petrify" || Spell.SpellType == "Damnation"))
             {
                 if (Caster is GamePlayer player)
                     MessageToCaster(LanguageMgr.GetTranslation(player.Client, "Petrify.Target.Resist", target.Name), eChatType.CT_SpellResisted);
