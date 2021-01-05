@@ -58,6 +58,7 @@ namespace DOL.GS.Spells
             {
                 MessageToLiving(casterPlayer, LanguageMgr.GetTranslation(casterPlayer.Client, "Damnation.Self.Message"), eChatType.CT_Spell);
             }
+            SendEffectAnimation(effect.Owner, 0, false, 1);
         }
 
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)

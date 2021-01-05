@@ -180,6 +180,7 @@ namespace DOL.GS.Spells
             {
                 MessageToLiving(casterPlayer, LanguageMgr.GetTranslation(casterPlayer.Client, "Petrify.Self.Message"), eChatType.CT_Spell);
             }
+            SendEffectAnimation(effect.Owner, 0, false, 1);
         }
 
         public void EventHandler(DOLEvent e, object sender, EventArgs arguments)
