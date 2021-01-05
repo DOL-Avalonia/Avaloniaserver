@@ -6,11 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DOL.spells
+namespace DOL.GS.Spells
 {
     /// <summary>
     /// Use it to call only subspell and dislay additional information in delv info
     /// </summary>
+    [SpellHandler("AvaloniaFake")]
     public class AvaloniaFakeSpellHandler : SpellHandler
     {
         public AvaloniaFakeSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine)

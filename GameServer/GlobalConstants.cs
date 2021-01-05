@@ -2431,17 +2431,17 @@ namespace DOL.GS
 		public static string RaceToTranslatedName(this GameClient client, int race, int gender)
 		{
 			eRace r = (eRace)race;
-			string translationID = string.Format("GamePlayer.PlayerRace.{0}", r.ToString("F")); //Returns 'Unknown'
+			string translationID = string.Format("GameObjects.GamePlayer.PlayerRace.{0}", r.ToString("F")); //Returns 'Unknown'
 
 			if (r != 0)
 			{
 				switch ((eGender)gender)
 				{
 					case eGender.Female:
-						translationID = string.Format("GamePlayer.PlayerRace.Female.{0}", r.ToString("F"));
+						translationID = string.Format("GameObjects.GamePlayer.PlayerRace.Female.{0}", r.ToString("F"));
 						break;
 					default:
-						translationID = string.Format("GamePlayer.PlayerRace.Male.{0}", r.ToString("F"));
+						translationID = string.Format("GameObjects.GamePlayer.PlayerRace.Male.{0}", r.ToString("F"));
 						break;
 				}
 			}
@@ -2483,7 +2483,7 @@ namespace DOL.GS
 					spell.ClientEffect = 2435;
 					spell.Icon = 2435;
 					spell.SpellID = 2435;
-					spell.Name = LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "GamePlayer.Spell.ResurrectionIllness");
+					spell.Name = LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "GameObjects.GamePlayer.Spell.ResurrectionIllness");
 					spell.Range = 0;
 					spell.Duration = 300;
 					spell.Value = 30;
@@ -2513,7 +2513,7 @@ namespace DOL.GS
 					spelltwo.ClientEffect = 2435;
 					spelltwo.Icon = 2435;
 					spelltwo.SpellID = 8181;
-					spelltwo.Name = LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "GamePlayer.Spell.RvrResurrectionIllness");
+					spelltwo.Name = LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "GameObjects.GamePlayer.Spell.RvrResurrectionIllness");
 					spelltwo.Range = 0;
 					spelltwo.Duration = 300;
 					spelltwo.Value = 50;

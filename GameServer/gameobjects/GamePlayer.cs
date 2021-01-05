@@ -1045,7 +1045,19 @@ namespace DOL.GS
 					return false;
 				}
 
-				if (Statistics != null)
+                if (IsDamned)
+                {
+                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.Quit.CanTQuitDamned"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return false;
+                }
+
+                if (IsStunned)
+                {
+                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.Quit.CanTQuitStunned"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return false;
+                }
+
+                if (Statistics != null)
 				{
 					string stats = Statistics.GetStatisticsMessage();
 					if (stats != "")
@@ -9174,7 +9186,8 @@ namespace DOL.GS
 								if (!String.IsNullOrEmpty(reason))
 								{
 									Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, reason), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-									return;
+                                    StopWhistleTimers();
+                                    return;
 								}
 								
 								if (IsSummoningMount)

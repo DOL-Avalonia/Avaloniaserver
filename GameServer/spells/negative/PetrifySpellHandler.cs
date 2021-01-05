@@ -3,7 +3,6 @@ using DOL.Events;
 using DOL.GS;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
 using DOL.Language;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DOL.spells.negative
+namespace DOL.GS.Spells
 {
     [SpellHandler("Petrify")]
     public class PetrifySpellHandler : SpellHandler

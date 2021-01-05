@@ -716,7 +716,7 @@ namespace DOL.GS.Spells
 
 				if (nextSpellAvailTime > m_caster.CurrentRegion.Time)
 				{
-					((GamePlayer)m_caster).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)m_caster).Client, "GamePlayer.CastSpell.MustWaitBeforeCast", (nextSpellAvailTime - m_caster.CurrentRegion.Time) / 1000), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					((GamePlayer)m_caster).Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)m_caster).Client, "GameObjects.GamePlayer.CastSpell.MustWaitBeforeCast", (nextSpellAvailTime - m_caster.CurrentRegion.Time) / 1000), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					return false;
 				}
 				if (((GamePlayer)m_caster).Steed != null && ((GamePlayer)m_caster).Steed is GameSiegeRam)
@@ -2686,7 +2686,7 @@ namespace DOL.GS.Spells
 
         public virtual bool HasPositiveOrSpeedEffect()
         {
-            return Spell.SpellType != "Unpetrify" && (HasPositiveEffect || Spell.SpellType == "Stun" || Spell.SpellType == "Stylestun" || Spell.SpellType == "Mesmerize" || Spell.SpellType == "SpeedDecrease" || Spell.SpellType == "Slow" || Spell.SpellType == "StyleSpeedDecrease" || Spell.SpellType == "VampSpeedDecrease");
+            return Spell.SpellType != "Unpetrify" && (HasPositiveEffect || Spell.SpellType == "Stun" || Spell.SpellType == "Stylestun" || Spell.SpellType == "Mesmerize" || Spell.SpellType == "SpeedDecrease" || Spell.SpellType == "Slow" || Spell.SpellType == "StyleSpeedDecrease" || Spell.SpellType == "VampSpeedDecrease" || Spell.SpellType == "Petrify" || Spell.SpellType == "Damnation");
         }
 
 		/// <summary>
@@ -2711,7 +2711,7 @@ namespace DOL.GS.Spells
             if (pertrifyEffect != null && (HasPositiveOrSpeedEffect() || Spell.Pulse > 0))
             {
                 if (Caster is GamePlayer player)
-                    MessageToCaster(target.Name + LanguageMgr.GetTranslation(player.Client, "Petrify.Target.Resist"), eChatType.CT_SpellResisted);
+                    MessageToCaster(LanguageMgr.GetTranslation(player.Client, "Petrify.Target.Resist", target.Name), eChatType.CT_SpellResisted);
                 return;
             }
 

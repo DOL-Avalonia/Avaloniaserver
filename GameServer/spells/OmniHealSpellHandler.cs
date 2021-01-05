@@ -1,12 +1,12 @@
 ﻿using DOL.GS;
-using DOL.GS.Spells;
+using DOL.GS.PacketHandler;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DOL.spells
+namespace DOL.GS.Spells
 {
     [SpellHandler("OmniHeal")]
     public class OmniHealSpellHandler : HealSpellHandler
@@ -19,11 +19,29 @@ namespace DOL.spells
         {
             if (!base.StartSpell(target))
                 return false;
+            var targets = SelectTargets(target);
             int min, max;
             CalculateHealVariance(out min, out max);
-            int amount = Util.Random(min, max);
-            target.ChangeEndurance(Caster, GameLiving.eEnduranceChangeType.Spell, amount);
-            target.ChangeMana(Caster, GameLiving.eManaChangeType.Spell, amount);
+            foreach (GameLiving healTarget in targets)
+            {
+                int amount = Util.Random(min, max);
+                if (SpellLine.KeyName == GlobalSpellsLines.Item_Effects)
+                {
+                    amount = max;
+                }
+                int endurance  = healTarget.ChangeEndurance(Caster, GameLiving.eEnduranceChangeType.Spell, amount);
+                int power = healTarget.ChangeMana(Caster, GameLiving.eManaChangeType.Spell, amount);
+                if (m_caster == healTarget)
+                {
+                    MessageToCaster("You gain for " + endurance + " endurance and " + power + " power points.", eChatType.CT_Spell);
+                }
+                else
+                {
+                    MessageToCaster("You heal " + target.GetName(0, false) + " for " + endurance + " endurance and " + power + " power points.", eChatType.CT_Spell);
+                    MessageToLiving(target, "You are healed by " + m_caster.GetName(0, false) + " for " + endurance + " endurance and " + power + " power points.", eChatType.CT_Spell);
+                }
+            }
+                
             return true;
         }
     }

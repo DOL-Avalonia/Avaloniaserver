@@ -3,7 +3,6 @@ using DOL.Events;
 using DOL.GS;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
 using DOL.Language;
 using System;
 using System.Collections.Generic;
@@ -11,13 +10,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DOL.spells.negative
+namespace DOL.GS.Spells
 {
     [SpellHandler("Damnation")]
     public class DamnationSpellHandler : SpellHandler
     {
         public DamnationSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine)
         {
+        }
+
+        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
+        {
+            GameSpellEffect damnationEffect = SpellHandler.FindEffectOnTarget(target, "Damnation");
+            if (damnationEffect != null)
+            {
+                if (Caster is GamePlayer player)
+                    MessageToCaster(LanguageMgr.GetTranslation(player.Client, "Damnation.Target.Resist", target.Name), eChatType.CT_SpellResisted);
+                return;
+            }
+            base.ApplyEffectOnTarget(target, effectiveness);
         }
 
         public override void OnEffectStart(GameSpellEffect effect)
