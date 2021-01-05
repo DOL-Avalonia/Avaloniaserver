@@ -21,8 +21,7 @@ namespace DOL.GS.Spells
 
         public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
         {
-            GameSpellEffect damnationEffect = SpellHandler.FindEffectOnTarget(target, "Damnation");
-            if (damnationEffect != null)
+            if (target.IsDamned)
             {
                 if (Caster is GamePlayer player)
                     MessageToCaster(LanguageMgr.GetTranslation(player.Client, "Damnation.Target.Resist", target.Name), eChatType.CT_SpellResisted);
