@@ -25,6 +25,7 @@ namespace DOL.Database
     public class DBJumpPoint : DataObject
     {
         private string m_name;
+        private string m_zoneName;
         private int m_xpos;
         private int m_ypos;
         private int m_zpos;
@@ -45,6 +46,23 @@ namespace DOL.Database
             {
                 Dirty = true;
                 m_name = value;
+            }
+        }
+ 
+        /// <summary>
+        /// The zone name of this JP
+        /// </summary>
+        [DataElement(AllowDbNull = false)]
+        public string ZoneName
+        {
+            get
+            {
+                return m_zoneName;
+            }
+            set
+            {
+                Dirty = true;
+                m_zoneName = value;
             }
         }
 
