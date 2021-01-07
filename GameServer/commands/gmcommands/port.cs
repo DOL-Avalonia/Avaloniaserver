@@ -54,6 +54,8 @@ namespace DOL.GS.Commands
                     PortToJumpPoint(client,args); break;
                 case "remove":
                     RemoveJumpPoint(client, args); break;
+                case "update":
+                    UpdateJumpPoints(); break;
                 default:
                     DisplaySyntax(client);
                     break;
@@ -91,15 +93,16 @@ namespace DOL.GS.Commands
 
         private void ListJumpPoints(GameClient client)
         {
-        	var col = GameServer.Database.SelectAllObjects<DBJumpPoint>();
-            
-            SendSystemMessage(client,"----------List of JumpPoints----------");
+            var col = GameServer.Database.SelectAllObjects<DBJumpPoint>();
+            col = col.OrderBy(x => x.ZoneName).ThenBy(x => x.Name).ToList();
+
+            SendSystemMessage(client, "----------List of JumpPoints----------");
 
             foreach (DBJumpPoint p in col)
             {
-                string locAndRegion = p.Name + " : " + WorldMgr.GetRegion(p.Region).GetZone(p.Xpos, p.Ypos).Description;
-                SendSystemMessage(client, locAndRegion);
-            }            
+                string zoneAndName = p.ZoneName + ": " + p.Name;
+                SendSystemMessage(client, zoneAndName);
+            }        
         }
 
         private void RemoveJumpPoint(GameClient client, string[] args)
@@ -160,6 +163,18 @@ namespace DOL.GS.Commands
                 return false;
             }
             return true;
+        }
+
+        // intended as a one time use to update existing entries on your 'jumppoint' table
+        private void UpdateJumpPoints()
+        {
+            var col = GameServer.Database.SelectAllObjects<DBJumpPoint>();
+
+            foreach (DBJumpPoint p in col)
+            {
+                p.ZoneName = WorldMgr.GetRegion(p.Region).GetZone(p.Xpos, p.Ypos).Description;
+                GameServer.Database.SaveObject(p);
+            }
         }
     }
 }
