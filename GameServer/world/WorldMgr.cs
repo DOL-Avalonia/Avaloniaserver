@@ -109,14 +109,15 @@ namespace DOL.GS
         {
             if (region != null && region.VisibilityDungeon)
                 return VISIBILITY_DONJON_DISTANCE_CONST;
-            // if region null, return false by default
+            // if region null, return VISIBILITY_DISTANCE_CONST by default
             return VISIBILITY_DISTANCE_CONST;
         }
 
         public static ushort OBJ_UPDATE_DISTANCE(Region region)
         {
-            if (region.VisibilityDungeon)
+            if (region != null && region.VisibilityDungeon)
                 return OBJ_UPDATE_DONJON_DISTANCE_CONST;
+            // if region null, return OBJ_UPDATE_DISTANCE_CONST by default
             return OBJ_UPDATE_DISTANCE_CONST;
         }
 
