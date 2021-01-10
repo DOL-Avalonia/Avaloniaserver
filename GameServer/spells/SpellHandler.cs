@@ -2783,7 +2783,11 @@ namespace DOL.GS.Spells
 				ad.IsSpellResisted = false;
 
 				m_lastAttackData = ad;
-			}
+
+                // Treat non-damaging effects as attacks to trigger an immediate response and BAF
+                if (target is GameNPC npc)
+                    npc.OnAttackedByEnemy(ad);
+            }
 		}
 
 		/// <summary>
