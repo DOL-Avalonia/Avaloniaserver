@@ -81,7 +81,7 @@ namespace DOL.GS.RealmAbilities
                 player.Out.SendMessage("You cancel your Spell!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
             }
 
-            foreach (GamePlayer p in living.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer p in living.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(living.CurrentRegion)))
             {
                 p.Out.SendSpellCastAnimation(living, icon, 20);
             }
@@ -217,7 +217,7 @@ namespace DOL.GS.RealmAbilities
                 }
             }
 
-            foreach (GamePlayer p in target.GetPlayersInRadius(false, WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer p in target.GetPlayersInRadius(false, WorldMgr.VISIBILITY_DISTANCE(target.CurrentRegion)))
             {
                 p.Out.SendSpellEffectAnimation(_owner, target, 7026, 0, false, 1);
                 p.Out.SendCombatAnimation(_owner, target, 0, 0, 0, 0, 0x14, target.HealthPercent);

@@ -463,7 +463,7 @@ namespace DOL.GS
 
         private void BroadcastAnimation()
         {
-            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
             {
                 player.Out.SendSiegeWeaponAnimation(this);
             }
@@ -471,7 +471,7 @@ namespace DOL.GS
 
         private void BroadcastFireAnimation(int timer)
         {
-            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
             {
                 player.Out.SendSiegeWeaponFireAnimation(this, timer);
 

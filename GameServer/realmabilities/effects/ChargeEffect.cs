@@ -37,7 +37,7 @@ namespace DOL.GS.Effects
             }
 
             _startTick = living.CurrentRegion.Time;
-            foreach (GamePlayer tPlayer in living.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer tPlayer in living.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(living.CurrentRegion)))
             {
                 tPlayer.Out.SendSpellEffectAnimation(living, living, 7035, 0, false, 1);
             }

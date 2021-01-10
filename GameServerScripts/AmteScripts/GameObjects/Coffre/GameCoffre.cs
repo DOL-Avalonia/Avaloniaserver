@@ -260,7 +260,7 @@ namespace DOL.GS.Scripts
 
 			if (HasPickableAnim)
 			{
-				foreach(GamePlayer otherPlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				foreach(GamePlayer otherPlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
 				{
 					if (otherPlayer != null)
 						otherPlayer.Out.SendEmoteAnimation(player, eEmote.PlayerPickup);

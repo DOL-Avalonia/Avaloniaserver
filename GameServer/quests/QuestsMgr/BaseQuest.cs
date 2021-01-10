@@ -227,7 +227,7 @@ namespace DOL.GS.Quests
             {
                 AnimSpellTeleportTimerQueue.Dequeue();
                 GameLiving animObject = (GameLiving)AnimSpellObjectQueue.Dequeue();
-                foreach (GamePlayer player in animObject.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer player in animObject.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(animObject.CurrentRegion)))
                 {
                     player.Out.SendSpellCastAnimation(animObject, 1, 20);
                 }
@@ -242,7 +242,7 @@ namespace DOL.GS.Quests
             {
                 AnimEmoteTeleportTimerQueue.Dequeue();
                 GameLiving animObject = (GameLiving)AnimEmoteObjectQueue.Dequeue();
-                foreach (GamePlayer player in animObject.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer player in animObject.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(animObject.CurrentRegion)))
                 {
                     player.Out.SendEmoteAnimation(animObject, eEmote.Bind);
                 }

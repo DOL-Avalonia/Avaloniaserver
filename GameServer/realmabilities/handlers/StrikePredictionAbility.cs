@@ -73,7 +73,7 @@ namespace DOL.GS.RealmAbilities
             foreach (GamePlayer target in targets)
             {
                 var success = target.EffectList.CountOfType<StrikePredictionEffect>() == 0;
-                foreach (GamePlayer visPlayer in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer visPlayer in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(target.CurrentRegion)))
                 {
                     visPlayer.Out.SendSpellEffectAnimation(player, target, 7037, 0, false, CastSuccess(success));
                 }

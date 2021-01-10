@@ -67,7 +67,7 @@ namespace DOL.GS.Spells
                 LifeDrainReturn = spell.LifeDrainReturn,
                 Power = 0,
                 CastTime = 0,
-                Range = WorldMgr.VISIBILITY_DISTANCE
+                Range = WorldMgr.VISIBILITY_DISTANCE(Caster.CurrentRegion)
             };
 
             // should be 4
@@ -224,7 +224,7 @@ namespace DOL.GS.Spells
                 LifeDrainReturn = spell.LifeDrainReturn,
                 Power = 0,
                 CastTime = 0,
-                Range = WorldMgr.VISIBILITY_DISTANCE
+                Range = WorldMgr.VISIBILITY_DISTANCE(Caster.CurrentRegion)
             };
 
             // should be 2
@@ -322,7 +322,7 @@ namespace DOL.GS.Spells
                 LifeDrainReturn = spell.LifeDrainReturn,
                 Power = 0,
                 CastTime = 0,
-                Range = WorldMgr.VISIBILITY_DISTANCE
+                Range = WorldMgr.VISIBILITY_DISTANCE(Caster.CurrentRegion)
             };
 
             // should be 2
@@ -420,7 +420,7 @@ namespace DOL.GS.Spells
                 LifeDrainReturn = spell.LifeDrainReturn,
                 Power = 0,
                 CastTime = 0,
-                Range = WorldMgr.VISIBILITY_DISTANCE
+                Range = WorldMgr.VISIBILITY_DISTANCE(Caster.CurrentRegion)
             };
 
             // should be 2
@@ -591,7 +591,7 @@ namespace DOL.GS.Spells
                 LifeDrainReturn = spell.LifeDrainReturn,
                 Power = 0,
                 CastTime = 0,
-                Range = WorldMgr.VISIBILITY_DISTANCE
+                Range = WorldMgr.VISIBILITY_DISTANCE(Caster.CurrentRegion)
             };
 
             // should be 2
@@ -689,7 +689,7 @@ namespace DOL.GS.Spells
                 LifeDrainReturn = spell.LifeDrainReturn,
                 Power = 0,
                 CastTime = 0,
-                Range = WorldMgr.VISIBILITY_DISTANCE
+                Range = WorldMgr.VISIBILITY_DISTANCE(Caster.CurrentRegion)
             };
 
             // should be 2
@@ -808,7 +808,7 @@ namespace DOL.GS.Spells
                 LifeDrainReturn = spell.LifeDrainReturn,
                 Power = 0,
                 CastTime = 0,
-                Range = WorldMgr.VISIBILITY_DISTANCE
+                Range = WorldMgr.VISIBILITY_DISTANCE(Caster.CurrentRegion)
             };
 
             sRadius = 350;

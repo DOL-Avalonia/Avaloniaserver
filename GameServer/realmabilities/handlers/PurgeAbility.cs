@@ -151,7 +151,7 @@ if (gsp.SpellHandler is RvRResurrectionIllness)
                 }
             }
 
-            foreach (GamePlayer rangePlayer in living.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer rangePlayer in living.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(living.CurrentRegion)))
             {
                 if (player.CharacterClass.ID == (int)eCharacterClass.Necromancer)
                 {

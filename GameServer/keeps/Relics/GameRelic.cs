@@ -221,7 +221,7 @@ namespace DOL.GS
 
             if (IsMounted)
             {
-                AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(m_currentRelicPad.CurrentRegionID, m_currentRelicPad, WorldMgr.VISIBILITY_DISTANCE);
+                AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(m_currentRelicPad.CurrentRegionID, m_currentRelicPad, WorldMgr.VISIBILITY_DISTANCE(CurrentRegion));
 
                 log.DebugFormat("keep {0}", keep);
 
@@ -332,7 +332,7 @@ namespace DOL.GS
             {
                 // Note: This does not show up, possible issue with SendSpellEffect
                 ushort effectID = (ushort)Util.Random(5811, 5815);
-                foreach (GamePlayer ppl in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer ppl in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
                 {
                     ppl.Out.SendSpellEffectAnimation(this, this, effectID, 0, false, 0x01);
                 }
@@ -416,7 +416,7 @@ namespace DOL.GS
 
             // fireworks spells temp
             ushort effectID = (ushort)Util.Random(5811, 5815);
-            foreach (GamePlayer ppl in m_currentCarrier.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer ppl in m_currentCarrier.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(m_currentCarrier.CurrentRegion)))
             {
                 ppl.Out.SendSpellEffectAnimation(m_currentCarrier, m_currentCarrier, effectID, 0, false, 0x01);
             }

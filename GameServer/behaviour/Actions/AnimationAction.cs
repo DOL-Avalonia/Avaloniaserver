@@ -39,7 +39,7 @@ namespace DOL.GS.Behaviour.Actions
 
             GameLiving actor = Q != null ? Q : player;
 
-            foreach (GamePlayer nearPlayer in actor.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer nearPlayer in actor.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(actor.CurrentRegion)))
             {
                 nearPlayer.Out.SendEmoteAnimation(actor, P);
             }

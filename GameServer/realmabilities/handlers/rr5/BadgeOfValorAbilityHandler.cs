@@ -25,7 +25,7 @@ namespace DOL.GS.RealmAbilities
             }
 
             // send spelleffect
-            foreach (GamePlayer visPlayer in living.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer visPlayer in living.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(living.CurrentRegion)))
             {
                 visPlayer.Out.SendSpellEffectAnimation(living, living, 7057, 0, false, 0x01);
             }

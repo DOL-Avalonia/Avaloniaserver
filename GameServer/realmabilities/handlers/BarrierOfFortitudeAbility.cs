@@ -82,7 +82,7 @@ namespace DOL.GS.RealmAbilities
                 }
 
                 var success = !target.TempProperties.getProperty(BofBaSb, false);
-                foreach (GamePlayer visPlayer in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer visPlayer in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(target.CurrentRegion)))
                 {
                     visPlayer.Out.SendSpellEffectAnimation(player, target, 7016, 0, false, CastSuccess(success));
                 }

@@ -1164,7 +1164,7 @@ namespace DOL.GS.Quests.Midgard
 
                 GameEventMgr.AddHandler(briediClone, GameLivingEvent.Interact, new DOLEventHandler(TalkToMasterBriediClone));
 
-                foreach (GamePlayer visPlayer in briediClone.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer visPlayer in briediClone.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(briediClone.CurrentRegion)))
                 {
                     visPlayer.Out.SendEmoteAnimation(briediClone, eEmote.Bind);
                 }

@@ -846,7 +846,7 @@ namespace DOL.GS
 
 			//Stop player if he's running....
 			CurrentSpeed = 0;
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 			{
 				if (player.ObjectState != eObjectState.Active || player == null || player == this) 
 					continue;
@@ -895,7 +895,7 @@ namespace DOL.GS
 
 		private void CheckIfNearEnemyKeepAndAddToRvRLinkDeathListIfNecessary()
 		{
-			AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(this.CurrentRegionID, this, WorldMgr.VISIBILITY_DISTANCE);
+			AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(this.CurrentRegionID, this, WorldMgr.VISIBILITY_DISTANCE(CurrentRegion));
 			if(keep != null && this.Client.Account.PrivLevel == 1 && GameServer.KeepManager.IsEnemy(keep, this))
 			{
 				if(WorldMgr.RvRLinkDeadPlayers.ContainsKey(this.m_InternalID))
@@ -1306,7 +1306,7 @@ namespace DOL.GS
 							case eRealm.Hibernia: bindEmote = eEmote.BindHib; break;
 					}
 					
-					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 					{
 						if (player == null)
 							return;
@@ -1984,7 +1984,7 @@ namespace DOL.GS
 			Sit(true);
 			Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.Pray.Begin"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 			{
 				if (player == null) continue;
 				player.Out.SendEmoteAnimation(this, eEmote.Pray);
@@ -2022,7 +2022,7 @@ namespace DOL.GS
 				if (ObjectState == eObjectState.Active)
 				{
 					Out.SendUpdatePlayer();
-					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 					{
 						if (player == null) continue;
 						if (player != this)
@@ -2076,7 +2076,7 @@ namespace DOL.GS
 						Out.SendUpdatePlayer();
 						if (Group != null)
 							Out.SendGroupWindowUpdate();
-						foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+						foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 						{
 							if (player == null) continue;
 							if (player != this)
@@ -2124,7 +2124,7 @@ namespace DOL.GS
 					{
 						Notify(GamePlayerEvent.ModelChanged, this);
 
-						foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+						foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 						{
 							if (player == null) continue;
 							player.Out.SendModelChange(this, Model);
@@ -2814,7 +2814,7 @@ namespace DOL.GS
 			TakeDamage(null, eDamageType.Falling, (int)damage, 0);
 
 			//Update the player's health to all other players around
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 				Out.SendCombatAnimation(null, Client.Player, 0, 0, 0, 0, 0, HealthPercent);
 
 			return damage;
@@ -4452,7 +4452,7 @@ namespace DOL.GS
 					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.GainRealmPoints.ReachedRank", (RealmLevel / 10) + 1), eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.GainRealmPoints.NewRealmTitle", RealmRankTitle(Client.Account.Language)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.GainRealmPoints.GainBonus", RealmLevel / 10), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					foreach (GamePlayer plr in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					foreach (GamePlayer plr in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 						plr.Out.SendLivingDataUpdate(this, true);
 					Notify(GamePlayerEvent.RRLevelUp, this);
 				}
@@ -5472,7 +5472,7 @@ namespace DOL.GS
 			// update color on levelup
 			if (ObjectState == eObjectState.Active)
 			{
-				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 				{
 					if (player == null) continue;
 					player.Out.SendEmoteAnimation(this, eEmote.LvlUp);
@@ -5594,7 +5594,7 @@ namespace DOL.GS
 			// update color on levelup
 			if (ObjectState == eObjectState.Active)
 			{
-				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 				{
 					if (player == null) continue;
 					player.Out.SendEmoteAnimation(this, eEmote.LvlUp);
@@ -8062,7 +8062,7 @@ namespace DOL.GS
 				// clear target object so no more actions can used on this target, spells, styles, attacks...
 				TargetObject = null;
 
-				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 				{
 					if (player == null) continue;
 					player.Out.SendPlayerDied(this, killer);
@@ -9219,7 +9219,7 @@ namespace DOL.GS
                                     PulseSpell.CancelPulsingSpell(this, PulseSpell.Spell.SpellType);
                                 
                                 Out.SendTimerWindow("Summoning Mount", 5);
-								foreach (GamePlayer plr in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+								foreach (GamePlayer plr in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 								{
 									if (plr == null) continue;
 									plr.Out.SendEmoteAnimation(this, eEmote.Horse_whistle);
@@ -10307,7 +10307,7 @@ namespace DOL.GS
 			if (GameServer.ServerRules.ReasonForDisallowMounting(this) != string.Empty && !forced)
 				return false;
 			
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 			{
 				if (player == null) continue;
 				player.Out.SendRiding(this, steed, false);
@@ -10351,7 +10351,7 @@ namespace DOL.GS
 			if (!Steed.RiderDismount(forced, this) && !forced)
 				return false;
 
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 			{
 				if (player == null) continue;
 				player.Out.SendRiding(this, steed, true);
@@ -10381,7 +10381,7 @@ namespace DOL.GS
 			GameNPC steed = Steed;
 			steed.RiderDismount(true, this);
 			steed.RiderMount(this, true, slot);
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 			{
 				if (player == null) continue;
 				player.Out.SendRiding(this, steed, false);
@@ -10414,7 +10414,7 @@ namespace DOL.GS
 			m_healthRegenerationTimer.Callback = new RegionTimerCallback(HealthRegenerationTimerCallback);
 			m_powerRegenerationTimer.Callback = new RegionTimerCallback(PowerRegenerationTimerCallback);
 			m_enduRegenerationTimer.Callback = new RegionTimerCallback(EnduranceRegenerationTimerCallback);
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 			{
 				if (player == null) continue;
 				if (player != this)
@@ -10464,7 +10464,7 @@ namespace DOL.GS
 						player.MoveToBind();
 					}
 				}
-				else foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				else foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 				{
 					if (player == null) continue;
 					if (player != this)
@@ -10586,7 +10586,7 @@ namespace DOL.GS
 				if (Steed != null)
 					DismountSteed(true);
 
-				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 				{
 					if (player == null) continue;
 					if (player != this)
@@ -10642,7 +10642,7 @@ namespace DOL.GS
 				}
 				else
 				{
-					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 					{
 						if (player != null && player != this)
 						{
@@ -10693,14 +10693,14 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void RefreshWorld()
 		{
-			foreach (GameNPC npc in GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE * 2))
+			foreach (GameNPC npc in GetNPCsInRadius((ushort)(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion) * 2)))
 			{
 				Out.SendNPCCreate(npc);
 				if (npc.Inventory != null)
 					Out.SendLivingEquipmentUpdate(npc);
 			}
 
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer player in GetPlayersInRadius((ushort)(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion) * 2)))
 			{
 				if (player != null && player != this)
 				{
@@ -10782,7 +10782,7 @@ namespace DOL.GS
 				if (ObjectState == eObjectState.Active)
 				{
 					Out.SendUpdatePlayer();
-					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 					{
 						if (player == null) continue;
 						if (player != this)
@@ -11503,7 +11503,7 @@ namespace DOL.GS
 			{
 				TakeDamage(null, eDamageType.Natural, (int)(MaxHealth * 0.34), 0);
 
-				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 					player.Out.SendCombatAnimation(null, this, 0x0000, 0x0000, 0x00, 0x00, 0x14, HealthPercent);
 			}
 			return 2000;
@@ -11879,7 +11879,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void UpdateEquipmentAppearance()
 		{
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 			{
 				if (player == null) continue;
 				if (player != this)
@@ -12830,7 +12830,7 @@ namespace DOL.GS
 		/// <returns>True/False</returns>
 		public bool CanSeeObject(GameObject obj)
 		{
-			return IsWithinRadius(obj, WorldMgr.VISIBILITY_DISTANCE);
+			return IsWithinRadius(obj, WorldMgr.VISIBILITY_DISTANCE(CurrentRegion));
 		}
 
 		/// <summary>
@@ -12841,7 +12841,7 @@ namespace DOL.GS
 		/// <returns>True/False</returns>
 		public static bool CanSeeObject(GamePlayer player, GameObject obj)
 		{
-			return player.IsWithinRadius(obj, WorldMgr.VISIBILITY_DISTANCE);
+			return player.IsWithinRadius(obj, WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion));
 		}
 
 		#endregion
@@ -13648,7 +13648,7 @@ namespace DOL.GS
 				bool needUpdate = m_isWireframe != value;
 				m_isWireframe = value;
 				if (needUpdate && ObjectState == eObjectState.Active)
-					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 				{
 					if (player == null) continue;
 					player.Out.SendPlayerModelTypeChange(this, (byte)(value ? 1 : 0));
@@ -13727,7 +13727,7 @@ namespace DOL.GS
 				m_stealthEffect.Start(this);
 				Sprint(false);
 				GameEventMgr.AddHandler(this, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(Unstealth));
-				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 				{
 					if (player == null) continue;
 					if (player == this) continue;
@@ -13764,7 +13764,7 @@ namespace DOL.GS
 				if (m_stealthEffect != null) m_stealthEffect.Stop();
 				m_stealthEffect = null;
 				GameEventMgr.RemoveHandler(this, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(Unstealth));
-				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 				{
 					if (player == null) continue;
 					//TODO: more correct way to do it
@@ -15538,7 +15538,7 @@ namespace DOL.GS
 		{
 			if (ObjectState == eObjectState.Active)
 			{
-				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 				{
 					if (player == null) continue;
 					if (player != this)
@@ -15821,7 +15821,7 @@ namespace DOL.GS
 					StopWhistleTimers();
 				m_isOnHorse = value;
 				Out.SendControlledHorse(this, value); // fix very rare bug when this player not in GetPlayersInRadius;
-				foreach (GamePlayer plr in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				foreach (GamePlayer plr in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 				{
 					if (plr == null) continue;
 					if (plr == this)
@@ -16051,7 +16051,7 @@ namespace DOL.GS
 
 				if (value != null)
 				{
-					foreach (GamePlayer playerToUpdate in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+					foreach (GamePlayer playerToUpdate in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE(CurrentRegion)))
 					{
 						if (playerToUpdate == null) continue;
 
@@ -16063,7 +16063,7 @@ namespace DOL.GS
 				}
 				else
 				{
-					foreach (GamePlayer playerToUpdate in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+					foreach (GamePlayer playerToUpdate in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE(CurrentRegion)))
 					{
 						if (playerToUpdate == null) continue;
 

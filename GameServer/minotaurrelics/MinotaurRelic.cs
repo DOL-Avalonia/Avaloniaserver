@@ -242,7 +242,7 @@ namespace DOL.GS
             player.MinotaurRelic = this;
             Owner = player;
 
-            foreach (GamePlayer pl in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer pl in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
             {
                 pl.Out.SendMinotaurRelicWindow(player, Effect, true);
             }
@@ -285,7 +285,7 @@ namespace DOL.GS
                         {
                             foreach (GamePlayer plr in Owner.Group.GetPlayersInTheGroup())
                             {
-                                if (plr != null && !newPlayerlist.Contains(plr) && Owner.IsWithinRadius(plr, WorldMgr.VISIBILITY_DISTANCE))
+                                if (plr != null && !newPlayerlist.Contains(plr) && Owner.IsWithinRadius(plr, WorldMgr.VISIBILITY_DISTANCE(Owner.CurrentRegion)))
                                 {
                                     newPlayerlist.Add(plr);
                                 }
@@ -294,7 +294,7 @@ namespace DOL.GS
 
                         break;
                     case "realm":
-                        foreach (GamePlayer plr in Owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                        foreach (GamePlayer plr in Owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(Owner.CurrentRegion)))
                         {
                             if (plr != null && GameServer.ServerRules.IsAllowedToAttack(Owner, plr, true) == false && !newPlayerlist.Contains(plr))
                             {
@@ -429,7 +429,7 @@ namespace DOL.GS
                 _timer = null;
             }
 
-            foreach (GamePlayer pl in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer pl in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
             {
                 pl.Out.SendMinotaurRelicWindow(player, 0, false);
             }

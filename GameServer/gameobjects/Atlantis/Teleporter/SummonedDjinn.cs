@@ -137,7 +137,7 @@ namespace DOL.GS
                 {
                     Model = VisibleModel;
 
-                    foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                    foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
                     {
                         player.Out.SendModelChange(this, Model);
                     }
@@ -156,7 +156,7 @@ namespace DOL.GS
                     Say("My time here is done.");
                     Model = InvisibleModel;
 
-                    foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                    foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
                     {
                         player.Out.SendModelChange(this, Model);
                     }
@@ -255,7 +255,7 @@ namespace DOL.GS
                     if (m_smoke)
                     {
                         // Send smoke animation to players in visibility range.
-                        foreach (GamePlayer player in m_owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                        foreach (GamePlayer player in m_owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(m_owner.CurrentRegion)))
                         {
                             player.Out.SendSpellEffectAnimation(m_owner, m_owner, SummonSpellEffect, 0, false, 0x01);
                         }

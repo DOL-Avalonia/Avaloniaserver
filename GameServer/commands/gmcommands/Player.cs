@@ -2326,7 +2326,7 @@ namespace DOL.GS.Commands
         {
             if (target != null)
             {
-                foreach (GamePlayer nearPlayer in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer nearPlayer in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(target.CurrentRegion)))
                 {
                     nearPlayer.Out.SendSpellEffectAnimation(target, target, 7011, 0, false, 0);
                 }

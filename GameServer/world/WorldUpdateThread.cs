@@ -147,7 +147,7 @@ namespace DOL.GS
         private static void UpdatePlayerOtherPlayers(GamePlayer player, long nowTicks)
         {
             // Get All Player in Range
-            var players = player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE)
+            var players = player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion))
                 .Cast<GamePlayer>()
                 .Where(p => p != null && p.IsVisibleTo(player) && (!p.IsStealthed || player.CanDetect(p)))
                 .ToArray();
@@ -236,7 +236,7 @@ namespace DOL.GS
         private static void UpdatePlayerNPCs(GamePlayer player, long nowTicks)
         {
             // Get All Mobs in Range
-            var npcs = player.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE)
+            var npcs = player.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion))
                 .Cast<GameNPC>()
                 .Where(n => n != null && n.IsVisibleTo(player))
                 .ToArray();
@@ -320,7 +320,7 @@ namespace DOL.GS
         private static void UpdatePlayerItems(GamePlayer player, long nowTicks)
         {
             // Get All Static Item in Range
-            var objs = player.GetItemsInRadius(WorldMgr.OBJ_UPDATE_DISTANCE)
+            var objs = player.GetItemsInRadius(WorldMgr.OBJ_UPDATE_DISTANCE(player.CurrentRegion))
                 .Cast<GameStaticItem>()
                 .Where(i => i != null && i.IsVisibleTo(player))
                 .ToArray();
@@ -390,7 +390,7 @@ namespace DOL.GS
         private static void UpdatePlayerDoors(GamePlayer player, long nowTicks)
         {
             // Get All Game Doors in Range
-            var doors = player.GetDoorsInRadius(WorldMgr.OBJ_UPDATE_DISTANCE).Cast<IDoor>().OfType<GameObject>().Where(o => o.IsVisibleTo(player)).ToArray();
+            var doors = player.GetDoorsInRadius(WorldMgr.OBJ_UPDATE_DISTANCE(player.CurrentRegion)).Cast<IDoor>().OfType<GameObject>().Where(o => o.IsVisibleTo(player)).ToArray();
 
             try
             {

@@ -770,7 +770,7 @@ namespace DOL.GS.Keeps
 				int count = 0;
 				foreach (GamePlayer p in player.Group.GetPlayersInTheGroup())
 				{
-					if (GameServer.KeepManager.GetKeepCloseToSpot(p.CurrentRegionID, p, WorldMgr.VISIBILITY_DISTANCE) == this)
+					if (GameServer.KeepManager.GetKeepCloseToSpot(p.CurrentRegionID, p, WorldMgr.VISIBILITY_DISTANCE(p.CurrentRegion)) == this)
 						count++;
 				}
 
@@ -1282,7 +1282,7 @@ namespace DOL.GS.Keeps
 				return;
 			int z = component.Z + hp.Z;
 
-			foreach (GamePlayer player in component.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer player in component.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(component.CurrentRegion)))
 			{
                 int d = hookpoint.GetDistance( player as IPoint2D );
 				if (d > distance)

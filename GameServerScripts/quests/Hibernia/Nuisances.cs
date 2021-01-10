@@ -442,7 +442,7 @@ namespace DOL.GS.Quests.Hibernia
                 {
                     if (player.IsWithinRadius(quest.sluagh, 500))
                     {
-                        foreach (GamePlayer visPlayer in quest.sluagh.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                        foreach (GamePlayer visPlayer in quest.sluagh.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(quest.sluagh.CurrentRegion)))
                         {
                             visPlayer.Out.SendSpellCastAnimation(quest.sluagh, 1, 20);
                         }
@@ -474,7 +474,7 @@ namespace DOL.GS.Quests.Hibernia
                 SendSystemMessage(player, "Sluaghs! Quick! USE your Magical Wooden Box to capture the sluagh footsoldier! To USE an item, right click on the item and type /use.");
                 quest.CreateSluagh();
 
-                foreach (GamePlayer visPlayer in quest.sluagh.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer visPlayer in quest.sluagh.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(quest.sluagh.CurrentRegion)))
                 {
                     visPlayer.Out.SendSpellCastAnimation(quest.sluagh, 1, 20);
                 }

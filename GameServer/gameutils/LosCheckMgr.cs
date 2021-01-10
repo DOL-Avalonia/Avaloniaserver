@@ -522,7 +522,7 @@ namespace DOL.GS
             if (source.IsWithinRadius(target, GetDefaultThreshold(source, target), false))
             {
                 // we need an arbitrary player
-                foreach (GamePlayer player in source.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer player in source.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(source.CurrentRegion)))
                 {
                     if (player.ObjectState == GameNPC.eObjectState.Active)
                     {
@@ -546,7 +546,7 @@ namespace DOL.GS
                     bool los = GetLosCheckFromCache(source, target, timeout);
 
                     // we need an arbitrary player
-                    foreach (GamePlayer player in source.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                    foreach (GamePlayer player in source.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(source.CurrentRegion)))
                     {
                         if (player.ObjectState == GameNPC.eObjectState.Active)
                         {
@@ -1099,13 +1099,13 @@ namespace DOL.GS
             }
 
             // Get all players around able to check LoS
-            IEnumerable<GamePlayer> playersQuery = from GamePlayer player in source.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE) select player;
+            IEnumerable<GamePlayer> playersQuery = from GamePlayer player in source.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(source.CurrentRegion)) select player;
 
             List<GamePlayer> players = new List<GamePlayer>();
 
             foreach (GamePlayer test in playersQuery)
             {
-                if (target.IsWithinRadius(test, WorldMgr.VISIBILITY_DISTANCE))
+                if (target.IsWithinRadius(test, WorldMgr.VISIBILITY_DISTANCE(target.CurrentRegion)))
                 {
                     players.Add(test);
                 }

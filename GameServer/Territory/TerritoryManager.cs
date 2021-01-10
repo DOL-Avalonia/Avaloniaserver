@@ -251,7 +251,7 @@ namespace DOL.Territory
             RestoreOriginalEmblem(territory.Boss);
 
             var firstMob = initNpc ?? territory.Mobs.FirstOrDefault() ?? territory.Boss;
-            foreach (GameObject item in firstMob.CurrentZone.GetObjectsInRadius(Zone.eGameObjectType.ITEM, firstMob.X, firstMob.Y, firstMob.Z, WorldMgr.VISIBILITY_DISTANCE, new System.Collections.ArrayList(), true))
+            foreach (GameObject item in firstMob.CurrentZone.GetObjectsInRadius(Zone.eGameObjectType.ITEM, firstMob.X, firstMob.Y, firstMob.Z, WorldMgr.VISIBILITY_DISTANCE(firstMob.CurrentRegion), new System.Collections.ArrayList(), true))
             {
                 if (item is TerritoryBanner ban)
                 {
@@ -433,7 +433,7 @@ namespace DOL.Territory
             ApplyNewEmblem(guild.Name, territory.Boss);
 
             var firstMob = initSearchNPC ?? territory.Mobs.FirstOrDefault();
-            foreach (GameObject item in firstMob.CurrentZone.GetObjectsInRadius(Zone.eGameObjectType.ITEM, firstMob.X, firstMob.Y, firstMob.Z, WorldMgr.VISIBILITY_DISTANCE, new System.Collections.ArrayList(), true))
+            foreach (GameObject item in firstMob.CurrentZone.GetObjectsInRadius(Zone.eGameObjectType.ITEM, firstMob.X, firstMob.Y, firstMob.Z, WorldMgr.VISIBILITY_DISTANCE(firstMob.CurrentRegion), new System.Collections.ArrayList(), true))
             {
                 if (item is TerritoryBanner ban)
                 {

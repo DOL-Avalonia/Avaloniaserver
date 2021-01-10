@@ -929,7 +929,7 @@ namespace DOL.GS.Quests.Albion
                 dunwynClone.MoveTo(1, 567604, 509619, 2813, 3292);
             }
 
-            foreach (GamePlayer visPlayer in dunwynClone.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer visPlayer in dunwynClone.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(dunwynClone.CurrentRegion)))
             {
                 visPlayer.Out.SendEmoteAnimation(dunwynClone, eEmote.Bind);
             }

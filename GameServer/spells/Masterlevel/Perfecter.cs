@@ -73,7 +73,7 @@ namespace DOL.GS.Spells
                 LifeDrainReturn = spell.LifeDrainReturn,
                 Power = 0,
                 CastTime = 0,
-                Range = WorldMgr.VISIBILITY_DISTANCE,
+                Range = WorldMgr.VISIBILITY_DISTANCE(Caster.CurrentRegion),
                 Message1 = spell.Message1,
                 Message2 = spell.Message2,
                 Message3 = spell.Message3,
@@ -132,7 +132,7 @@ namespace DOL.GS.Spells
                 LifeDrainReturn = spell.LifeDrainReturn,
                 Power = 0,
                 CastTime = 0,
-                Range = WorldMgr.VISIBILITY_DISTANCE,
+                Range = WorldMgr.VISIBILITY_DISTANCE(Caster.CurrentRegion),
                 Message1 = spell.Message1,
                 Message2 = spell.Message2,
                 Message3 = spell.Message3,
@@ -190,7 +190,7 @@ namespace DOL.GS.Spells
                 LifeDrainReturn = spell.LifeDrainReturn,
                 Power = 0,
                 CastTime = 0,
-                Range = WorldMgr.VISIBILITY_DISTANCE
+                Range = WorldMgr.VISIBILITY_DISTANCE(Caster.CurrentRegion)
             };
 
             sRadius = 350;
@@ -258,7 +258,7 @@ namespace DOL.GS.Spells
                 LifeDrainReturn = spell.LifeDrainReturn,
                 Power = 0,
                 CastTime = 0,
-                Range = WorldMgr.VISIBILITY_DISTANCE
+                Range = WorldMgr.VISIBILITY_DISTANCE(Caster.CurrentRegion)
             };
 
             sRadius = 350;

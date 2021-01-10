@@ -143,7 +143,7 @@ namespace DOL.GS.Commands
 					}
 				case eBroadcastType.Visible:
 					{
-						foreach (GamePlayer p in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+						foreach (GamePlayer p in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
 						{
 							list.Add(p);
 						}

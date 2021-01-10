@@ -163,7 +163,7 @@ namespace DOL.GS.SkillHandler
             mez?.Cancel(false);
 
             // sending spell effect
-            foreach (GamePlayer effPlayer in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer effPlayer in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(target.CurrentRegion)))
             {
                 effPlayer.Out.SendSpellEffectAnimation(player, target, 7103, 0, false, 0x01);
             }

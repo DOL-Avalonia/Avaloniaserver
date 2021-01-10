@@ -4533,7 +4533,7 @@ namespace DOL.GS.PacketHandler
 	            //pak.WriteByte(0x55);
 	            pak.WriteInt(0);
 	
-	            foreach (GamePlayer plr in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+	            foreach (GamePlayer plr in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
 	            {
 	                if (player != plr)
 	                    plr.Client.PacketProcessor.SendTCP(pak);

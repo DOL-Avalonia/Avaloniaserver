@@ -11,7 +11,7 @@ namespace DOL.GS.Scripts
         public int Rplay(RegionTimer callingTimer)
         {
             //Si un joueur est présent dans un radius de 2k le mob se met en mouvement
-            foreach (GamePlayer pl1 in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            foreach (GamePlayer pl1 in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE(CurrentRegion)))
                 pl1.Out.SendSpellCastAnimation(this, _SpellID, 1111);
             return 5000;
         }

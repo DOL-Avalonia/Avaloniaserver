@@ -122,7 +122,7 @@ namespace DOL.AI.Brain
                 return;
             }
 
-            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(Body.CurrentRegion)))
             {
                 if (player == null)
                 {

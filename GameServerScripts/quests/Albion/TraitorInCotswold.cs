@@ -460,7 +460,7 @@ namespace DOL.GS.Quests.Albion
                 {
                     if (player.IsWithinRadius(felinEnd, 2500))
                     {
-                        foreach (GamePlayer visPlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                        foreach (GamePlayer visPlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
                         {
                             visPlayer.Out.SendSpellCastAnimation(player, 1, 20);
                         }
@@ -803,7 +803,7 @@ namespace DOL.GS.Quests.Albion
 
         protected virtual int CastLadyFelin(RegionTimer callingTimer)
         {
-            foreach (GamePlayer visPlayer in ladyFelin.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer visPlayer in ladyFelin.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(ladyFelin.CurrentRegion)))
             {
                 visPlayer.Out.SendSpellCastAnimation(ladyFelin, 1, 20);
             }

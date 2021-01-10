@@ -716,7 +716,7 @@ namespace DOL.GameEvents
 
         private void ApplyEffect(GameObject item, Dictionary<string, ushort> dic)
         {
-            foreach (GamePlayer pl in item.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer pl in item.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(item.CurrentRegion)))
             {
                 pl.Out.SendSpellEffectAnimation(item, item, dic[item.InternalID], 0, false, 5);
 

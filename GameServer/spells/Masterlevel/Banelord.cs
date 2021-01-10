@@ -98,7 +98,7 @@ namespace DOL.GS.Spells
                     return;
                 }
 
-                foreach (GamePlayer _ in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer _ in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
                 {
                     SendEffectAnimation(player, 0, false, 1);
                 }

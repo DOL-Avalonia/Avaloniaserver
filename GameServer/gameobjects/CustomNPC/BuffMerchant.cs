@@ -207,7 +207,7 @@ namespace DOL.GS
                     spell.Value = 78; // Effective buff 58
                     spell.Name = "Armor of the Realm";
                     spell.Description = "Adds to the recipient's Armor Factor (AF) resulting in better protection againts some forms of attack. It acts in addition to any armor the target is wearing.";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 88001;
                     spell.Target = "Realm";
                     spell.Type = "ArmorFactorBuff";
@@ -239,7 +239,7 @@ namespace DOL.GS
                     spell.Value = 58; // Effective buff 58
                     spell.Name = "Armor of the Realm";
                     spell.Description = "Adds to the recipient's Armor Factor (AF) resulting in better protection againts some forms of attack. It acts in addition to any armor the target is wearing.";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 89001;
                     spell.Target = "Realm";
                     spell.Type = "ArmorFactorBuff";
@@ -271,7 +271,7 @@ namespace DOL.GS
                     spell.Value = 74; // effective buff 55
                     spell.Name = "Strength of the Realm";
                     spell.Description = "Increases target's Strength.";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 88002;
                     spell.Target = "Realm";
                     spell.Type = "StrengthBuff";
@@ -303,7 +303,7 @@ namespace DOL.GS
                     spell.Value = 55; // effective buff 55
                     spell.Name = "Strength of the Realm";
                     spell.Description = "Increases target's Strength.";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 89002;
                     spell.Target = "Realm";
                     spell.Type = "StrengthBuff";
@@ -335,7 +335,7 @@ namespace DOL.GS
                     spell.Value = 74; // effective buff 55
                     spell.Name = "Fortitude of the Realm";
                     spell.Description = "Increases target's Constitution.";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 88003;
                     spell.Target = "Realm";
                     spell.Type = "ConstitutionBuff";
@@ -367,7 +367,7 @@ namespace DOL.GS
                     spell.Value = 55; // effective buff 55
                     spell.Name = "Fortitude of the Realm";
                     spell.Description = "Increases target's Constitution.";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 89003;
                     spell.Target = "Realm";
                     spell.Type = "ConstitutionBuff";
@@ -399,7 +399,7 @@ namespace DOL.GS
                     spell.Value = 74; // effective buff 55
                     spell.Name = "Dexterity of the Realm";
                     spell.Description = "Increases Dexterity for a character.";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 88004;
                     spell.Target = "Realm";
                     spell.Type = "DexterityBuff";
@@ -431,7 +431,7 @@ namespace DOL.GS
                     spell.Value = 55; // effective buff 55
                     spell.Name = "Dexterity of the Realm";
                     spell.Description = "Increases Dexterity for a character.";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 89004;
                     spell.Target = "Realm";
                     spell.Type = "DexterityBuff";
@@ -463,7 +463,7 @@ namespace DOL.GS
                     spell.Value = 114; // effective buff 85
                     spell.Name = "Might of the Realm";
                     spell.Description = "Increases Str/Con for a character";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 88005;
                     spell.Target = "Realm";
                     spell.Type = "StrengthConstitutionBuff";
@@ -495,7 +495,7 @@ namespace DOL.GS
                     spell.Value = 85; // effective buff 85
                     spell.Name = "Might of the Realm";
                     spell.Description = "Increases Str/Con for a character";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 89005;
                     spell.Target = "Realm";
                     spell.Type = "StrengthConstitutionBuff";
@@ -527,7 +527,7 @@ namespace DOL.GS
                     spell.Value = 114; // effective buff 85
                     spell.Name = "Deftness of the Realm";
                     spell.Description = "Increases Dexterity and Quickness for a character.";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 88006;
                     spell.Target = "Realm";
                     spell.Type = "DexterityQuicknessBuff";
@@ -559,7 +559,7 @@ namespace DOL.GS
                     spell.Value = 85; // effective buff 85
                     spell.Name = "Deftness of the Realm";
                     spell.Description = "Increases Dexterity and Quickness for a character.";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 89006;
                     spell.Target = "Realm";
                     spell.Type = "DexterityQuicknessBuff";
@@ -591,7 +591,7 @@ namespace DOL.GS
                     spell.Value = 96; // effective buff 72;
                     spell.Name = "Acuity of the Realm";
                     spell.Description = "Increases Acuity (casting attribute) for a character.";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 88007;
                     spell.Target = "Realm";
                     spell.Type = "AcuityBuff";
@@ -623,7 +623,7 @@ namespace DOL.GS
                     spell.Value = 72; // effective buff 72;
                     spell.Name = "Acuity of the Realm";
                     spell.Description = "Increases Acuity (casting attribute) for a character.";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 89007;
                     spell.Target = "Realm";
                     spell.Type = "AcuityBuff";
@@ -655,7 +655,7 @@ namespace DOL.GS
                     spell.Value = 90; // effective buff 67
                     spell.Name = "Armor of the Realm";
                     spell.Description = "Adds to the recipient's Armor Factor (AF), resulting in better protection against some forms of attack. It acts in addition to any armor the target is wearing.";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 88014;
                     spell.Target = "Realm";
                     spell.Type = "ArmorFactorBuff";
@@ -687,7 +687,7 @@ namespace DOL.GS
                     spell.Value = 67; // effective buff 67
                     spell.Name = "Armor of the Realm";
                     spell.Description = "Adds to the recipient's Armor Factor (AF), resulting in better protection against some forms of attack. It acts in addition to any armor the target is wearing.";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 89014;
                     spell.Target = "Realm";
                     spell.Type = "ArmorFactorBuff";
@@ -719,7 +719,7 @@ namespace DOL.GS
                     spell.Value = 15;
                     spell.Name = "Haste of the Realm";
                     spell.Description = "Increases the target's combat speed.";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 88010;
                     spell.Target = "Realm";
                     spell.Type = "CombatSpeedBuff";
@@ -752,7 +752,7 @@ namespace DOL.GS
                     spell.Value = 30;
                     spell.Name = "Power of the Realm";
                     spell.Description = "Target regenerates power regeneration during the duration of the spell";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 88008;
                     spell.Target = "Realm";
                     spell.Type = "PowerRegenBuff";
@@ -782,7 +782,7 @@ namespace DOL.GS
                     spell.DamageType = 15;
                     spell.Name = "Damage of the Realm";
                     spell.Description = "Target's melee attacks do additional damage.";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 88009;
                     spell.Target = "Realm";
                     spell.Type = "DamageAdd";
@@ -811,7 +811,7 @@ namespace DOL.GS
                     spell.Value = 7;
                     spell.Name = "Health of the Realm";
                     spell.Description = "Target regenerates the given amount of health every tick";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 88011;
                     spell.Target = "Realm";
                     spell.Type = "HealthRegenBuff";
@@ -838,7 +838,7 @@ namespace DOL.GS
                     spell.Value = 3000;
                     spell.Name = "Blessed Health of the Realm";
                     spell.Description = "Heals the target.";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 88013;
                     spell.Target = "Realm";
                     spell.Type = "Heal";

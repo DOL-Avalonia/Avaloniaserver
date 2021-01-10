@@ -589,7 +589,7 @@ namespace DOL.GS.Quests
 					UpdateQuestIndicator(m_startNPC, _questPlayer);
 				}
 	
-				foreach (GameNPC npc in _questPlayer.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				foreach (GameNPC npc in _questPlayer.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE(_questPlayer.CurrentRegion)))
 				{
 					UpdateQuestIndicator(npc, _questPlayer);
 				}
@@ -1970,7 +1970,7 @@ namespace DOL.GS.Quests
 				UpdateQuestIndicator(m_startNPC, _questPlayer);
 			}
 
-			foreach (GameNPC npc in _questPlayer.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GameNPC npc in _questPlayer.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE(_questPlayer.CurrentRegion)))
 			{
 				UpdateQuestIndicator(npc, _questPlayer);
 			}
@@ -2022,7 +2022,7 @@ namespace DOL.GS.Quests
 			{
 				UpdateQuestIndicator(m_startNPC, _questPlayer);
 			}
-			else foreach (GameNPC npc in _questPlayer.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			else foreach (GameNPC npc in _questPlayer.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE(_questPlayer.CurrentRegion)))
 			{
 				UpdateQuestIndicator(npc, _questPlayer);
 			}

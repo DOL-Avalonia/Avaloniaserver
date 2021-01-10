@@ -394,7 +394,7 @@ namespace DOL.GS.Spells
 
                     player.SetControlledBrain(m_controlledBrain);
 
-                    foreach (GamePlayer ply in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE)) {
+                    foreach (GamePlayer ply in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(npc.CurrentRegion))) {
                         ply.Out.SendNPCCreate(npc);
                         if (npc.Inventory != null)
                         {
@@ -518,7 +518,7 @@ namespace DOL.GS.Spells
 
                     npc.TempProperties.setProperty(GameNPC.CHARMED_TICK_PROP, npc.CurrentRegion.Time);
 
-                    foreach (GamePlayer ply in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                    foreach (GamePlayer ply in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(npc.CurrentRegion)))
                     {
                         if (npc.IsAlive) {
 

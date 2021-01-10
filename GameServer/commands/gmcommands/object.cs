@@ -258,7 +258,7 @@ namespace DOL.GS.Commands
                             targetObject.SaveIntoDatabase();
                             DisplayMessage(client, "Object emblem changed to: " + targetObject.Emblem);
 
-                            foreach (GamePlayer player in targetObject.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                            foreach (GamePlayer player in targetObject.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(targetObject.CurrentRegion)))
                             {
                                 player.Out.SendObjectCreate(targetObject);
                             }                            
@@ -399,7 +399,7 @@ namespace DOL.GS.Commands
 
                             if (client.Player.TargetObject is GameNPC)
                             {
-                                foreach (GamePlayer player in client.Player.TargetObject.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                                foreach (GamePlayer player in client.Player.TargetObject.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(client.Player.CurrentRegion)))
                                 {
                                     player.Out.SendNPCsQuestEffect(client.Player.TargetObject as GameNPC, (client.Player.TargetObject as GameNPC).GetQuestIndicator(player));
                                 }

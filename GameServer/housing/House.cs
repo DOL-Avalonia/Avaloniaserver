@@ -245,7 +245,7 @@ namespace DOL.GS.Housing
         {
             get
             {
-                foreach (GamePlayer player in WorldMgr.GetPlayersCloseToSpot(RegionID, X, Y, 25000, WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer player in WorldMgr.GetPlayersCloseToSpot(RegionID, X, Y, 25000, WorldMgr.VISIBILITY_DISTANCE(WorldMgr.GetRegion(RegionID))))
                 {
                     if (player.CurrentHouse == this && player.InHouse)
                     {
@@ -569,7 +569,7 @@ namespace DOL.GS.Housing
         public IList<GamePlayer> GetAllPlayersInHouse()
         {
             var ret = new List<GamePlayer>();
-            foreach (GamePlayer player in WorldMgr.GetPlayersCloseToSpot(RegionID, X, Y, 25000, WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer player in WorldMgr.GetPlayersCloseToSpot(RegionID, X, Y, 25000, WorldMgr.VISIBILITY_DISTANCE(WorldMgr.GetRegion(RegionID))))
             {
                 if (player.CurrentHouse == this && player.InHouse)
                 {

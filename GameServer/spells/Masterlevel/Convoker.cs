@@ -81,7 +81,7 @@ namespace DOL.GS.Spells
 			dbs.LifeDrainReturn = spell.LifeDrainReturn;
 			dbs.Power = 0;
 			dbs.CastTime = 0;
-			dbs.Range = WorldMgr.VISIBILITY_DISTANCE;
+			dbs.Range = WorldMgr.VISIBILITY_DISTANCE(Caster.CurrentRegion);
 			sRadius = 2000;
 			s = new Spell(dbs, 50);
 			sl = SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells);
@@ -154,7 +154,7 @@ namespace DOL.GS.Spells
 			dbs.LifeDrainReturn = spell.LifeDrainReturn;
 			dbs.Power = 0;
 			dbs.CastTime = 0;
-			dbs.Range = WorldMgr.VISIBILITY_DISTANCE;
+			dbs.Range = WorldMgr.VISIBILITY_DISTANCE(Caster.CurrentRegion);
 			sRadius = 350;
 			s = new Spell(dbs, 1);
 			sl = SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells);
@@ -205,7 +205,7 @@ namespace DOL.GS.Spells
 			dbs.LifeDrainReturn = spell.LifeDrainReturn;
 			dbs.Power = 0;
 			dbs.CastTime = 0;
-			dbs.Range = WorldMgr.VISIBILITY_DISTANCE;
+			dbs.Range = WorldMgr.VISIBILITY_DISTANCE(Caster.CurrentRegion);
 			sRadius = 1000;
 			dbs.SpellGroup = 9;
 			s = new Spell(dbs, 50);
@@ -435,7 +435,7 @@ namespace DOL.GS.Spells
 			dbs.LifeDrainReturn = spell.LifeDrainReturn;
 			dbs.Power = 0;
 			dbs.CastTime = 0;
-			dbs.Range = WorldMgr.VISIBILITY_DISTANCE;
+			dbs.Range = WorldMgr.VISIBILITY_DISTANCE(Caster.CurrentRegion);
 			sRadius = 350;
 			s = new Spell(dbs, 1);
 			sl = SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells);

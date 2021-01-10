@@ -206,7 +206,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 }
 
                 int.TryParse(Properties.RVR_LINK_DEATH_RELOG_GRACE_PERIOD, out var gracePeriodInMinutes);
-                AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(player.CurrentRegionID, player, WorldMgr.VISIBILITY_DISTANCE);
+                AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(player.CurrentRegionID, player, WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion));
                 if (keep != null && player.Client.Account.PrivLevel == 1 && GameServer.KeepManager.IsEnemy(keep, player))
                 {
                     if (WorldMgr.RvRLinkDeadPlayers.ContainsKey(player.InternalID))
@@ -298,7 +298,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             {
                 if (player.CurrentRegion != null)
                 {
-                    var npcs = player.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE).Cast<GameNPC>().ToArray();
+                    var npcs = player.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)).Cast<GameNPC>().ToArray();
                     foreach (GameNPC npc in npcs)
                     {
                         player.Out.SendNPCCreate(npc);

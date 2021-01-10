@@ -126,7 +126,7 @@ namespace DOL.GS.Scripts
 	                break;
 	        }
 
-            foreach (GamePlayer player in mobs[0].GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer player in mobs[0].GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(mobs[0].CurrentRegion)))
             {
                 player.Out.SendSpellEffectAnimation(mobs[0], mobs[0], 71, 0, false, 0x01);
                 player.Out.SendSpellEffectAnimation(mobs[0], npc1, (ushort)effect1, 0, false, 0x01);

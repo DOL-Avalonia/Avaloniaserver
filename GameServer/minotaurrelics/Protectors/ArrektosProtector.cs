@@ -74,7 +74,7 @@ namespace DOL.GS
 
             if (!TempProperties.getProperty<bool>(AlreadyGotHelp))
             {
-                foreach (GameNPC npc in GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GameNPC npc in GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
                 {
                     // on initial attack, all fireborn in range add!
                     if (npc.Name == "minotaur fireborn")

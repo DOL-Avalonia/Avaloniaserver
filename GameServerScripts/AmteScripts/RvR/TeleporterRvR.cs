@@ -87,7 +87,7 @@ namespace DOL.GS.Scripts
             RegionTimer TimerTL = new RegionTimer(this, _Teleportation);
             TimerTL.Properties.setProperty("player", player);
             TimerTL.Start(3000);
-            foreach (GamePlayer players in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer players in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
             {
                 players.Out.SendSpellCastAnimation(this, 1, 20);
                 players.Out.SendEmoteAnimation(player, eEmote.Bind);

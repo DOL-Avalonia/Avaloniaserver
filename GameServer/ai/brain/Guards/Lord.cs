@@ -65,7 +65,7 @@ namespace DOL.AI.Brain
 					else
 						sMessage += $"and {iGuardsResponding} guards respond!";
 
-					foreach (GamePlayer player in lord.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE, true))
+					foreach (GamePlayer player in lord.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(Body.CurrentRegion), true))
 						if (player != null)
 							ChatUtil.SendErrorMessage(player, sMessage);
 				}

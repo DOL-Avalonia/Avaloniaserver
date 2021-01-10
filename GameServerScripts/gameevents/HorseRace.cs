@@ -642,7 +642,7 @@ namespace DOL.GS.GameEvents
                     {
                         // increase the ranking and output message
                         m_currentRanking++;
-                        foreach (GamePlayer player in horse.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                        foreach (GamePlayer player in horse.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(horse.CurrentRegion)))
                         {
                             player.Out.SendMessage(
                                 ply.Name + " has finished the horse race and came in at " + m_currentRanking + ". position!",

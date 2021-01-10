@@ -441,7 +441,7 @@ namespace DOL.GS.Quests.Midgard
                 {
                     if (player.IsWithinRadius(quest.askefruer, 500))
                     {
-                        foreach (GamePlayer visPlayer in quest.askefruer.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                        foreach (GamePlayer visPlayer in quest.askefruer.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(quest.askefruer.CurrentRegion)))
                         {
                             visPlayer.Out.SendSpellCastAnimation(quest.askefruer, 1, 20);
                         }
@@ -473,7 +473,7 @@ namespace DOL.GS.Quests.Midgard
                 SendSystemMessage(player, "It's Fallen Askefruer! Quickly now, /use your box to capture the Askefruer! To USE an item, right click on the item and type /use.");
                 quest.CreateAskefruer();
 
-                foreach (GamePlayer visPlayer in quest.askefruer.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer visPlayer in quest.askefruer.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(quest.askefruer.CurrentRegion)))
                 {
                     visPlayer.Out.SendSpellCastAnimation(quest.askefruer, 1, 20);
                 }

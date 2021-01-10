@@ -29,7 +29,7 @@ namespace DOL.GS.RealmAbilities
 
             player.ControlledBrain.Body.AddAbility(SkillBase.GetAbility(Abilities.CCImmunity));
             new ResoluteMinionEffect().Start(player.ControlledBrain.Body);
-            foreach (GamePlayer visPlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer visPlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
             {
                 visPlayer.Out.SendSpellEffectAnimation(player, player.ControlledBrain.Body, 7047, 0, false, 0x01);
             }

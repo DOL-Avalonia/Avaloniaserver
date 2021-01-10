@@ -17,7 +17,7 @@ namespace DOL.GS.Effects
             base.Start(target);
             if (target is GamePlayer player)
             {
-                foreach (GamePlayer p in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer p in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
                 {
                     p.Out.SendSpellEffectAnimation(player, player, Icon, 0, false, 1);
                 }

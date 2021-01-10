@@ -19,7 +19,7 @@ namespace DOL.GS.Effects
         {
             base.Start(target);
             _owner = target;
-            foreach (GamePlayer p in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer p in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(target.CurrentRegion)))
             {
                 p.Out.SendSpellEffectAnimation(target, target, 7042, 0, false, 1);
             }
@@ -90,7 +90,7 @@ namespace DOL.GS.Effects
             _owner = target;
             if (target is GamePlayer player)
             {
-                foreach (GamePlayer p in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer p in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
                 {
                     p.Out.SendSpellEffectAnimation(player, player, 7042, 0, false, 1);
                 }

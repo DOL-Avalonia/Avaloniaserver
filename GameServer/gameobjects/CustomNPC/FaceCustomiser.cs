@@ -90,7 +90,7 @@ namespace DOL.GS
 
             if (player.CustomisationStep == 2 && text == "change your appearance")
             {
-                foreach (GamePlayer players in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer players in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
                 {
                     players.Out.SendSpellCastAnimation(this,EFFECT_ID,CAST_TIME);
                 }
@@ -111,7 +111,7 @@ namespace DOL.GS
         /// <returns>new delay in milliseconds</returns>
         protected virtual int EndCastCallback(RegionTimer callingTimer)
         {
-            foreach (GamePlayer players in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer players in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
             {
                 players.Out.SendSpellEffectAnimation(this,this,EFFECT_ID,0,false,0x01);
             }

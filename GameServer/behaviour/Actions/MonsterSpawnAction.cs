@@ -40,7 +40,7 @@ namespace DOL.GS.Behaviour.Actions
             if (P.AddToWorld())
             {
                 // appear with a big buff of magic
-                foreach (GamePlayer visPlayer in P.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer visPlayer in P.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(P.CurrentRegion)))
                 {
                     visPlayer.Out.SendSpellCastAnimation(P, 1, 20);
                 }

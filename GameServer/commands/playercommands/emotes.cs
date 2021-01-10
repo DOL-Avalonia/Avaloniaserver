@@ -389,7 +389,7 @@ namespace DOL.GS.Commands
                 }
             }
 
-            foreach (GamePlayer player in sourcePlayer.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer player in sourcePlayer.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(sourcePlayer.CurrentRegion)))
             {
                 if (!player.IsIgnoring(sourcePlayer))
                 {

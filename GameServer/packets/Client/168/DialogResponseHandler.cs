@@ -300,7 +300,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                                     return;
                                 }
 
-                                AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(player.CurrentRegionID, player, WorldMgr.VISIBILITY_DISTANCE);
+                                AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(player.CurrentRegionID, player, WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion));
                                 if (keep == null)
                                 {
                                     player.Out.SendMessage("You have to be near the keep to claim it.", eChatType.CT_System, eChatLoc.CL_SystemWindow);

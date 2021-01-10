@@ -58,7 +58,7 @@ namespace DOL.GS.Effects
 
             _effectCaster = caster;
             _effectOwner = casterTarget;
-            foreach (GamePlayer p in _effectOwner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer p in _effectOwner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(_effectOwner.CurrentRegion)))
             {
                 p.Out.SendSpellEffectAnimation(_effectCaster, _effectOwner, 7090, 0, false, 1);
             }

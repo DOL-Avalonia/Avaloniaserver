@@ -62,7 +62,7 @@ namespace DOL.GS.Effects
                 Name = "Rescue stun",
                 Target = "Enemy",
                 Radius = 0,
-                Range = WorldMgr.VISIBILITY_DISTANCE,
+                Range = WorldMgr.VISIBILITY_DISTANCE_CONST,
                 CastTime = 0,
                 Duration = SpellDuration,
                 Uninterruptible = true,

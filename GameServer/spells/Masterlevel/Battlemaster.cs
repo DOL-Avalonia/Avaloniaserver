@@ -386,7 +386,7 @@ namespace DOL.GS.Spells
                         break;
                 }
 
-                foreach (GamePlayer player in ad.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer player in ad.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(ad.Target.CurrentRegion)))
                 {
                     if (player == null) continue;
                     int animationId;
@@ -521,7 +521,7 @@ namespace DOL.GS.Spells
         {
             GamePlayer player = target as GamePlayer;
           
-            foreach (GamePlayer visPlayer in Caster.GetPlayersInRadius((ushort)WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer visPlayer in Caster.GetPlayersInRadius((ushort)WorldMgr.VISIBILITY_DISTANCE(Caster.CurrentRegion)))
             {
                 visPlayer.Out.SendCombatAnimation(Caster, target, 0x0000, 0x0000, (ushort)408, 0, 0x00, target.HealthPercent);
             }

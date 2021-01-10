@@ -95,7 +95,7 @@ namespace DOL.GS
 					TheSpell.Radius = (int)KamiBomb.MAX_DISTANCE_HIT;
 					TheSpell.Name = "Tricheur";
 					TheSpell.Description = "Si quelqu'un voit ça, c'est qu'il triche :D";
-					TheSpell.Range = WorldMgr.VISIBILITY_DISTANCE;
+					TheSpell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
 					TheSpell.Radius = 0;
 					TheSpell.SpellID = 25668;
 					TheSpell.Target = "Enemy";

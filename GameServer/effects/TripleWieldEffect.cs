@@ -19,7 +19,7 @@ namespace DOL.GS.Effects
         {
             base.Start(target);
             GamePlayer player = target as GamePlayer;
-            foreach (GamePlayer p in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer p in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
             {
                 p.Out.SendSpellEffectAnimation(player, player, 7102, 0, false, 1);
                 p.Out.SendSpellCastAnimation(player, Icon, 0);
@@ -138,7 +138,7 @@ namespace DOL.GS.Effects
             target.OnAttackedByEnemy(ad);
             attacker.DealDamage(ad);
 
-            foreach (GamePlayer player in ad.Attacker.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer player in ad.Attacker.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(ad.Attacker.CurrentRegion)))
             {
                 player.Out.SendCombatAnimation(null, target, 0, 0, 0, 0, 0x0A, target.HealthPercent);
             }

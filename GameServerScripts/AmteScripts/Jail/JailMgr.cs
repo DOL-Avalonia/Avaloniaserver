@@ -219,7 +219,7 @@ namespace DOL.GS.Scripts
 		#region Animation
 		private static void Animation(GameLiving player)
 		{
-			foreach(GamePlayer pl in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE)) 
+			foreach(GamePlayer pl in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion))) 
 				pl.Out.SendSpellEffectAnimation(pl,player,177,0,false,1);
 		}
 		#endregion

@@ -655,7 +655,7 @@ namespace DOL.GS.Quests.Albion
 
                     if (quest.dunwynClone != null)
                     {
-                        foreach (GamePlayer visPlayer in quest.dunwynClone.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                        foreach (GamePlayer visPlayer in quest.dunwynClone.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(quest.dunwynClone.CurrentRegion)))
                         {
                             visPlayer.Out.SendSpellCastAnimation(quest.dunwynClone, 1, 20);
                         }
@@ -1045,7 +1045,7 @@ namespace DOL.GS.Quests.Albion
 
         protected virtual int CastDunwynClone(RegionTimer callingTimer)
         {
-            foreach (GamePlayer visPlayer in fairySorceress[0].GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer visPlayer in fairySorceress[0].GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(fairySorceress[0].CurrentRegion)))
             {
                 foreach (GameNPC fairy in fairySorceress)
                 {
@@ -1117,7 +1117,7 @@ namespace DOL.GS.Quests.Albion
 
                 GameEventMgr.AddHandler(dunwynClone, GameLivingEvent.Interact, new DOLEventHandler(TalkToMasterDunwynClone));
 
-                foreach (GamePlayer visPlayer in dunwynClone.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer visPlayer in dunwynClone.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(dunwynClone.CurrentRegion)))
                 {
                     visPlayer.Out.SendEmoteAnimation(dunwynClone, eEmote.Bind);
                 }

@@ -34,7 +34,7 @@ namespace DOL.GS.Keeps
                 return;
             }
 
-            if (!guard.IsWithinRadius(target, WorldMgr.VISIBILITY_DISTANCE)) { guard.TargetObject = null; return; }
+            if (!guard.IsWithinRadius(target, WorldMgr.VISIBILITY_DISTANCE(guard.CurrentRegion))) { guard.TargetObject = null; return; }
             GamePlayer LOSChecker = null;
             if (target is GamePlayer)
             {
@@ -42,7 +42,7 @@ namespace DOL.GS.Keeps
             }
             else
             {
-                foreach (GamePlayer player in guard.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer player in guard.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(guard.CurrentRegion)))
                 {
                     LOSChecker = player;
                     break;
@@ -109,7 +109,7 @@ namespace DOL.GS.Keeps
             {
 		if (LOSChecker == null)
                 {
-                    foreach (GamePlayer player in guard.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                    foreach (GamePlayer player in guard.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(guard.CurrentRegion)))
                     {
                         LOSChecker = player;
                         break;
@@ -295,7 +295,7 @@ namespace DOL.GS.Keeps
                     spell.ClientEffect = 1340;
                     spell.Value = 225; // 350;
                     spell.Name = "Guard Heal";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 90001;
                     spell.Target = "Self";
                     spell.Type = "Heal";
@@ -323,7 +323,7 @@ namespace DOL.GS.Keeps
                     spell.ClientEffect = 3011;
                     spell.Value = 225;// 350;
                     spell.Name = "Guard Heal";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 90002;
                     spell.Target = "Self";
                     spell.Type = "Heal";
@@ -351,7 +351,7 @@ namespace DOL.GS.Keeps
                     spell.ClientEffect = 3030;
                     spell.Value = 225;// 350;
                     spell.Name = "Guard Heal";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 90003;
                     spell.Target = "Self";
                     spell.Type = "Heal";
@@ -383,7 +383,7 @@ namespace DOL.GS.Keeps
                     spell.ClientEffect = 1340;
                     spell.Value = 200;
                     spell.Name = "Guard Heal";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 90004;
                     spell.Target = "Realm";
                     spell.Type = "Heal";
@@ -411,7 +411,7 @@ namespace DOL.GS.Keeps
                     spell.ClientEffect = 3011;
                     spell.Value = 200;
                     spell.Name = "Guard Heal";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 90005;
                     spell.Target = "Realm";
                     spell.Type = "Heal";
@@ -439,7 +439,7 @@ namespace DOL.GS.Keeps
                     spell.ClientEffect = 3030;
                     spell.Value = 200;
                     spell.Name = "Guard Heal";
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 90006;
                     spell.Target = "Realm";
                     spell.Type = "Heal";

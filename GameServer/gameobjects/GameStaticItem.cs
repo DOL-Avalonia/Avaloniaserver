@@ -66,7 +66,7 @@ namespace DOL.GS
                 base.Model = value;
                 if (ObjectState == eObjectState.Active)
                 {
-                    foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                    foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
                     {
                         player.Out.SendObjectCreate(this);
                     }
@@ -86,7 +86,7 @@ namespace DOL.GS
                 m_Emblem = value;
                 if (ObjectState == eObjectState.Active)
                 {
-                    foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                    foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
                     {
                         player.Out.SendObjectCreate(this);
                     }
@@ -137,7 +137,7 @@ namespace DOL.GS
                 base.Name = value;
                 if (ObjectState == eObjectState.Active)
                 {
-                    foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                    foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
                     {
                         player.Out.SendObjectCreate(this);
                     }
@@ -242,7 +242,7 @@ namespace DOL.GS
                 base.Heading = value;
                 if (ObjectState == eObjectState.Active)
                 {
-                    foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                    foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
                     {
                         player.Out.SendObjectCreate(this);
                     }
@@ -262,7 +262,7 @@ namespace DOL.GS
                 base.Level = value;
                 if (ObjectState == eObjectState.Active)
                 {
-                    foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                    foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
                     {
                         player.Out.SendObjectCreate(this);
                     }
@@ -366,7 +366,7 @@ namespace DOL.GS
                 return false;
             }
 
-            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
             {
                 player.Out.SendObjectCreate(this);
             }
@@ -404,7 +404,7 @@ namespace DOL.GS
         {
             if (ObjectState == eObjectState.Active)
             {
-                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE(CurrentRegion)))
                 {
                     player.Out.SendObjectRemove(this);
                 }

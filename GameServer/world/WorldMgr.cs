@@ -83,7 +83,14 @@ namespace DOL.GS
         /// <summary>
         /// Is the distance an player can see
         /// </summary>
-        public const int VISIBILITY_DISTANCE = 5192;
+        public const int VISIBILITY_DISTANCE_CONST = 5192;
+
+        /// <summary>
+        /// Is the distance an player can see in donjon or region with visibility column at true
+        /// </summary>
+        public const int VISIBILITY_DONJON_DISTANCE_CONST = 3200;
+
+
         /// <summary>
         /// Moving greater than this distance requires the player to do a full world refresh
         /// </summary>
@@ -91,7 +98,27 @@ namespace DOL.GS
         /// <summary>
         /// Holds the distance at which objects are updated
         /// </summary>
-        public const int OBJ_UPDATE_DISTANCE = 6192;
+        public const int OBJ_UPDATE_DISTANCE_CONST = 6192;
+
+        /// <summary>
+        /// Holds the distance at which objects are updated in donjon or region with visibility column at true
+        /// </summary>
+        public const int OBJ_UPDATE_DONJON_DISTANCE_CONST = 3200;
+
+        public static ushort VISIBILITY_DISTANCE(Region region)
+        {
+            if (region != null && region.VisibilityDungeon)
+                return VISIBILITY_DONJON_DISTANCE_CONST;
+            // if region null, return false by default
+            return VISIBILITY_DISTANCE_CONST;
+        }
+
+        public static ushort OBJ_UPDATE_DISTANCE(Region region)
+        {
+            if (region.VisibilityDungeon)
+                return OBJ_UPDATE_DONJON_DISTANCE_CONST;
+            return OBJ_UPDATE_DISTANCE_CONST;
+        }
 
         /// <summary>
         /// This will store available teleport destinations as read from the 'teleport' table.  These are
@@ -299,6 +326,7 @@ namespace DOL.GS
                 data.WaterLevel = dbRegion.WaterLevel;
                 data.ClassType = dbRegion.ClassType;
                 data.IsFrontier = dbRegion.IsFrontier;
+                data.VisibilityDungeon = dbRegion.VisibilityDungeon;
 
                 hasFrontierRegion |= data.IsFrontier;
 

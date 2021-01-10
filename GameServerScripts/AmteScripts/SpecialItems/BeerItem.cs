@@ -188,7 +188,7 @@ namespace DOL.GS.Scripts
 			player.TempProperties.removeProperty("Drink");
 
             if (item.SpellID > 0)
-                foreach (GamePlayer pl1 in player.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+                foreach (GamePlayer pl1 in player.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE(player.CurrentRegion)))
                     pl1.Out.SendSpellEffectAnimation(player, player, (ushort)item.SpellID, 0, false, 1);
 
 			return 0;

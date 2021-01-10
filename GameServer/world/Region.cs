@@ -140,6 +140,8 @@ namespace DOL.GS
         /// </summary>
         private long m_lastRelocationTime = 0;
 
+        private bool m_visibilityDungeon;
+
         /// <summary>
         /// The region time manager
         /// </summary>
@@ -225,6 +227,8 @@ namespace DOL.GS
             m_Areas = new Dictionary<ushort, IArea>();
 
             m_timeManager = time;
+
+            m_visibilityDungeon = data.VisibilityDungeon;
 
             List<string> list = null;
 
@@ -1247,6 +1251,8 @@ namespace DOL.GS
                 }
             }
         }
+
+        public bool VisibilityDungeon { get => m_visibilityDungeon; set => m_visibilityDungeon = value; }
 
         /// <summary>
         /// Check if the given region is Atlantis.

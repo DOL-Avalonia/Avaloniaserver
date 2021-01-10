@@ -52,7 +52,7 @@ namespace DOL.GS
 			{
 				if (player.GetCurrentMoney() < Price)
 				{
-					foreach (GamePlayer emoteplayer in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					foreach (GamePlayer emoteplayer in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 						emoteplayer.Out.SendEmoteAnimation(this, eEmote.Laugh);
 					Say("Tchakkkk, tu passe pas ! t'es fauché !");	
 				}
@@ -74,7 +74,7 @@ namespace DOL.GS
 					TimerTL.Properties.setProperty("TP", new JumpPos("Drium Ligen", 393786, 616663, 9025, 3501, 163));
 					TimerTL.Properties.setProperty("player", player);
 					TimerTL.Start(3000);
-					foreach (GamePlayer players in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					foreach (GamePlayer players in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
 					{
 						players.Out.SendSpellCastAnimation(this, 1, 20);
 						players.Out.SendEmoteAnimation(player, eEmote.Bind);

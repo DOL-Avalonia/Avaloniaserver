@@ -202,7 +202,7 @@ namespace DOL.GS
                     lock (m_LockObject)
                     {
                         m_state = value;
-                        foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                        foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
                         {
                             player.SendDoorUpdate(this);
                         }

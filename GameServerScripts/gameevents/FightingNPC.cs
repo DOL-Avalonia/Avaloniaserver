@@ -281,7 +281,7 @@ namespace DOL.GS.GameEvents
 
             // Now we send the combat-animation to all players that are viewing
             // the combat scene
-            foreach (GamePlayer player in m_guardMaster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer player in m_guardMaster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(m_guardMaster.CurrentRegion)))
             {
                 player.Out.SendCombatAnimation(attacker, defender, weapon, shield, attackValue, 0, (byte)defenseValue, 100);
             }

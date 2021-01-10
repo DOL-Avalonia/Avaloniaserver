@@ -55,7 +55,7 @@ namespace DOL.GS.RealmAbilities
 			}
 			
 			SendCasterSpellEffectAndCastMessage(living, 7007, true);
-			foreach (GamePlayer player in caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer player in caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(caster.CurrentRegion)))
 			{
 
                 if ( caster.IsWithinRadius( player, WorldMgr.INFO_DISTANCE ) )

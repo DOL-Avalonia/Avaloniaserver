@@ -160,7 +160,7 @@ namespace DOL.GS.Spells
             target.OnAttackedByEnemy(ad);
             attacker.DealDamage(ad);
 
-            foreach (GamePlayer player in ad.Attacker.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer player in ad.Attacker.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(ad.Attacker.CurrentRegion)))
             {
                 player?.Out.SendCombatAnimation(null, target, 0, 0, 0, 0, 0x0A, target.HealthPercent);
             }
@@ -287,7 +287,7 @@ namespace DOL.GS.Spells
 
             target.OnAttackedByEnemy(ad);
             attacker.DealDamage(ad);
-            foreach (GamePlayer player in attacker.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer player in attacker.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(attacker.CurrentRegion)))
             {
                 player?.Out.SendCombatAnimation(null, target, 0, 0, 0, 0, 0x14, target.HealthPercent);
             }

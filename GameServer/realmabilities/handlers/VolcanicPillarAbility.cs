@@ -103,7 +103,7 @@ namespace DOL.GS.RealmAbilities
                 return 0;
             }
 
-            foreach (GamePlayer player in _caster.TargetObject.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer player in _caster.TargetObject.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(_caster.CurrentRegion)))
             {
                 player.Out.SendSpellEffectAnimation(_caster, _caster.TargetObject as GameLiving, 7025, 0, false, 1);
             }
@@ -117,7 +117,7 @@ namespace DOL.GS.RealmAbilities
 
                 mob.TakeDamage(_caster, eDamageType.Heat, _dmgValue, 0);
                 _caster.Out.SendMessage($"You hit the {mob.Name} for {_dmgValue} damage.", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-                foreach (GamePlayer player2 in _caster.TargetObject.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer player2 in _caster.TargetObject.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(_caster.CurrentRegion)))
                 {
                     player2.Out.SendSpellEffectAnimation(_caster, mob, 7025, 0, false, 1);
                 }
@@ -133,7 +133,7 @@ namespace DOL.GS.RealmAbilities
                 aeplayer.TakeDamage(_caster, eDamageType.Heat, _dmgValue, 0);
                 _caster.Out.SendMessage($"You hit {aeplayer.Name} for {_dmgValue} damage.", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                 aeplayer.Out.SendMessage($"{_caster.Name} hits you for {_dmgValue} damage.", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow);
-                foreach (GamePlayer player3 in _caster.TargetObject.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer player3 in _caster.TargetObject.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(_caster.CurrentRegion)))
                 {
                     player3.Out.SendSpellEffectAnimation(_caster, aeplayer, 7025, 0, false, 1);
                 }

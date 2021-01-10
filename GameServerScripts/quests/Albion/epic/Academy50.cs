@@ -1151,7 +1151,7 @@ namespace DOL.GS.Quests.Albion
                     Morgana.Yell("Ha, is this all the forces of Albion have to offer? I expected a whole army leaded by my brother Arthur, but what do they send a poor " + player.CharacterClass.Name + "?");
                 }
 
-                foreach (GamePlayer visPlayer in Morgana.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer visPlayer in Morgana.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(Morgana.CurrentRegion)))
                 {
                     visPlayer.Out.SendSpellCastAnimation(Morgana, 1, 20);
                 }

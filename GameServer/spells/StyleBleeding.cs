@@ -77,7 +77,7 @@ namespace DOL.GS.Spells
             SendDamageMessages(ad);
 
             // attacker must be null, attack result is 0x0A
-            foreach (GamePlayer player in ad.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer player in ad.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(ad.Target.CurrentRegion)))
             {
                 player.Out.SendCombatAnimation(null, ad.Target, 0, 0, 0, 0, 0x0A, ad.Target.HealthPercent);
             }

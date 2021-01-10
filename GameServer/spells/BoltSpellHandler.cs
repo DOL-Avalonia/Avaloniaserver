@@ -93,7 +93,7 @@ namespace DOL.GS.Spells
 		{
             int ticksToTarget = m_caster.GetDistanceTo( target ) * 100 / 85; // 85 units per 1/10s
 			int delay = 1 + ticksToTarget / 100;
-			foreach (GamePlayer player in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer player in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(target.CurrentRegion)))
 			{
 				player.Out.SendSpellEffectAnimation(m_caster, target, m_spell.ClientEffect, (ushort)(delay), false, 1);
 			}

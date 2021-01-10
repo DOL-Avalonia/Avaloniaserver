@@ -62,10 +62,10 @@ namespace DOL.GS.Scripts
                 }
 
                 if (player.Client.Account.PrivLevel == 1)
-                    foreach (GamePlayer plr in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                    foreach (GamePlayer plr in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
                         plr.Out.SendSpellEffectAnimation(this, player, (ushort)SpellEffect, 0, false, 1);
             }
-            foreach (GamePlayer plr in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer plr in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
                 plr.Out.SendSpellEffectAnimation(this, this, (ushort)SpellEffect, 0, false, 1);
 
             LastApplyEffectTick = CurrentRegion.Time;

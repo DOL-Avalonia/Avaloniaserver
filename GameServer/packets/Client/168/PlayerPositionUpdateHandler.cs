@@ -511,7 +511,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             //outpak1119.Write(pak1119, 0, 36);
             outpak.WritePacketLength();
 
-			foreach (GamePlayer player in client.Player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer player in client.Player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(client.Player.CurrentRegion)))
 			{
 				if (player == null)
 					continue;

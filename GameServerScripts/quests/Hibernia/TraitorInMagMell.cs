@@ -468,7 +468,7 @@ namespace DOL.GS.Quests.Hibernia
                 {
                     if (player.IsWithinRadius(legadaEnd, 2500))
                     {
-                        foreach (GamePlayer visPlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                        foreach (GamePlayer visPlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
                         {
                             visPlayer.Out.SendSpellCastAnimation(player, 1, 20);
                         }
@@ -811,7 +811,7 @@ namespace DOL.GS.Quests.Hibernia
 
         protected virtual int CastLadyLegada(RegionTimer callingTimer)
         {
-            foreach (GamePlayer visPlayer in ladyLegada.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer visPlayer in ladyLegada.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(ladyLegada.CurrentRegion)))
             {
                 visPlayer.Out.SendSpellCastAnimation(ladyLegada, 1, 20);
             }

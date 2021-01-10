@@ -152,7 +152,7 @@ namespace DOL.GS.Spells
             GameEventMgr.RemoveHandler(Caster, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(FocusSpellAction));
             GameEventMgr.RemoveHandler(currentEffect.Owner, GameLivingEvent.Dying, new DOLEventHandler(FocusSpellAction));
             Caster.TempProperties.removeProperty(FOCUS_SPELL);
-            foreach (GamePlayer player in Caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer player in Caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(Caster.CurrentRegion)))
             {
                 player.Out.SendInterruptAnimation(Caster);
             }

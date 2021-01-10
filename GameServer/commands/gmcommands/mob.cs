@@ -1792,7 +1792,7 @@ namespace DOL.GS.Commands
                 // regular dataquests
                 GameObject.FillDataQuestCache();
                 targetMob.LoadDataQuests(client.Player);
-                foreach (GamePlayer player in targetMob.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer player in targetMob.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(targetMob.CurrentRegion)))
                 {
                     player.Out.SendNPCsQuestEffect(targetMob, targetMob.GetQuestIndicator(player));
                 }
@@ -1801,7 +1801,7 @@ namespace DOL.GS.Commands
                 // dataquest reward quests
                 GameObject.FillDQRewardQCache();
                 targetMob.LoadDQRewardQs(client.Player);
-                foreach (GamePlayer player in targetMob.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer player in targetMob.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(targetMob.CurrentRegion)))
                 {
                     player.Out.SendNPCsQuestEffect(targetMob, targetMob.GetQuestIndicator(player));
                 }

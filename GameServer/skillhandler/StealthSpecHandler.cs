@@ -94,7 +94,7 @@ namespace DOL.GS.SkillHandler
                 }
 
                 // Check if enemy player is close
-                foreach (GamePlayer ply in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer ply in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
                 {
                     if (ply.ObjectState != GameObject.eObjectState.Active)
                     {
@@ -136,7 +136,7 @@ namespace DOL.GS.SkillHandler
                 }
 
                 // Check if enemy NPC is close
-                foreach (GameNPC npc in player.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GameNPC npc in player.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
                 {
                     if (npc.ObjectState != GameObject.eObjectState.Active)
                     {

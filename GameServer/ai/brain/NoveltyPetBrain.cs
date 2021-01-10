@@ -68,7 +68,7 @@ namespace DOL.AI.Brain
             if (m_owner == null ||
                 m_owner.IsAlive == false ||
                 (m_owner is GamePlayer player && player.Client.ClientState != GameClient.eClientState.Playing) ||
-                Body.IsWithinRadius(m_owner, WorldMgr.VISIBILITY_DISTANCE) == false)
+                Body.IsWithinRadius(m_owner, WorldMgr.VISIBILITY_DISTANCE(Body.CurrentRegion)) == false)
             {
                 Body.Delete();
                 Body = null;

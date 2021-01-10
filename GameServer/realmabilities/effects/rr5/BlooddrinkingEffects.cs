@@ -47,7 +47,7 @@ namespace DOL.GS.Effects
             if (target is GamePlayer)
             {
                 EffectOwner = target as GamePlayer;
-                foreach (GamePlayer p in EffectOwner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer p in EffectOwner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(EffectOwner.CurrentRegion)))
                 {
                     p.Out.SendSpellEffectAnimation(EffectOwner, EffectOwner, Effect, 0, false, 1);
                 }
@@ -133,7 +133,7 @@ namespace DOL.GS.Effects
                 {
                     // TODO correct messages
                     MessageToLiving(living, $"Blooddrinking ability is healing you for {healAbsorbed} health points!", eChatType.CT_Spell);
-                    foreach (GamePlayer p in EffectOwner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                    foreach (GamePlayer p in EffectOwner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(EffectOwner.CurrentRegion)))
                     {
                         // heal effect
                         p.Out.SendSpellEffectAnimation(EffectOwner, EffectOwner, 3011, 0, false, 1);

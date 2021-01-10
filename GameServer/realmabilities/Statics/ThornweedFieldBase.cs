@@ -32,7 +32,7 @@ namespace DOL.GS.RealmAbilities.Statics
                 PulsePower = 0,
                 Power = 0,
                 CastTime = 0,
-                Range = WorldMgr.VISIBILITY_DISTANCE
+                Range = WorldMgr.VISIBILITY_DISTANCE_CONST
             };
 
             _spell = new Spell(dbSpell,1);

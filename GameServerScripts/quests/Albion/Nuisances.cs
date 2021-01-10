@@ -423,7 +423,7 @@ namespace DOL.GS.Quests.Albion
                 SendSystemMessage(player, "Ire Fairies! Quick! USE your Magical Wooden Box to capture the fairies! To USE an item, right click on the item and type /use.");
                 quest.CreateFairy();
 
-                foreach (GamePlayer visPlayer in quest.ireFairy.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer visPlayer in quest.ireFairy.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(quest.ireFairy.CurrentRegion)))
                 {
                     visPlayer.Out.SendSpellCastAnimation(quest.ireFairy, 1, 20);
                 }
@@ -449,7 +449,7 @@ namespace DOL.GS.Quests.Albion
                 {
                     if (player.IsWithinRadius(quest.ireFairy, 500))
                     {
-                        foreach (GamePlayer visPlayer in quest.ireFairy.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                        foreach (GamePlayer visPlayer in quest.ireFairy.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(quest.ireFairy.CurrentRegion)))
                         {
                             visPlayer.Out.SendSpellCastAnimation(quest.ireFairy, 1, 20);
                         }

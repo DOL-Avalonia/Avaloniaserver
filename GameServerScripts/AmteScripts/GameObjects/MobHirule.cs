@@ -276,7 +276,7 @@ namespace DOL.GS
 
 		public void HiruleBroadcast(string message)
 		{
-			foreach (GamePlayer players in this.GetPlayersInRadius((ushort)(WorldMgr.VISIBILITY_DISTANCE + 1500)))
+			foreach (GamePlayer players in this.GetPlayersInRadius((ushort)(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion) + 1500)))
 				players.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
 		}
 

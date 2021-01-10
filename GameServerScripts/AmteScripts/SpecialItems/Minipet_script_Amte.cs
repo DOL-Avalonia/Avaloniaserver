@@ -29,7 +29,7 @@ namespace DOL.GS.Scripts
 				m_pet.Flags |= GameNPC.eFlags.PEACE; //must be peace!
 
 				//No brain for now, so just follow owner.
-				m_pet.Follow(Caster, 100, WorldMgr.VISIBILITY_DISTANCE);
+				m_pet.Follow(Caster, 100, WorldMgr.VISIBILITY_DISTANCE(m_pet.CurrentRegion));
 
 				Caster.TempProperties.setProperty(NoveltyPetBrain.HAS_PET, true);
 			}

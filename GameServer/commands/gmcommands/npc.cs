@@ -221,7 +221,7 @@ namespace DOL.GS.Commands
                             default:
                                 {
                                     // Check for players by name in visibility distance
-                                    foreach (GamePlayer targetplayer in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                                    foreach (GamePlayer targetplayer in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(npc.CurrentRegion)))
                                     {
                                         if (targetplayer.Name.ToLower() == args[2].ToLower())
                                         {
@@ -233,7 +233,7 @@ namespace DOL.GS.Commands
                                     }
 
                                     // Check for NPCs by name in visibility distance
-                                    foreach (GameNPC target in npc.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                                    foreach (GameNPC target in npc.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE(npc.CurrentRegion)))
                                     {
                                         if (target.Name.ToLower() == args[2].ToLower())
                                         {
@@ -279,7 +279,7 @@ namespace DOL.GS.Commands
                             default:
                                 {
                                     // Check for players by name in visibility distance
-                                    foreach (GamePlayer targetplayer in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                                    foreach (GamePlayer targetplayer in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(npc.CurrentRegion)))
                                     {
                                         if (targetplayer.Name.ToLower() == args[2].ToLower())
                                         {
@@ -289,7 +289,7 @@ namespace DOL.GS.Commands
                                     }
 
                                     // Check for NPCs by name in visibility distance
-                                    foreach (GameNPC targetNpc in npc.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                                    foreach (GameNPC targetNpc in npc.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE(npc.CurrentRegion)))
                                     {
                                         if (targetNpc.Name.ToLower() == args[2].ToLower())
                                         {
@@ -332,7 +332,7 @@ namespace DOL.GS.Commands
                             default:
                                 {
                                     // Check for players by name in visibility distance
-                                    foreach (GamePlayer targetplayer in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                                    foreach (GamePlayer targetplayer in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(npc.CurrentRegion)))
                                     {
                                         if (targetplayer.Name.ToLower() == args[2].ToLower())
                                         {
@@ -342,7 +342,7 @@ namespace DOL.GS.Commands
                                     }
 
                                     // Check for NPCs by name in visibility distance
-                                    foreach (GameNPC targetNpc in npc.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                                    foreach (GameNPC targetNpc in npc.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE(npc.CurrentRegion)))
                                     {
                                         if (targetNpc.Name.ToLower() == args[2].ToLower())
                                         {
@@ -405,7 +405,7 @@ namespace DOL.GS.Commands
                             default:
                                 {
                                     // Check for players by name in visibility distance
-                                    foreach (GamePlayer targetplayer in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                                    foreach (GamePlayer targetplayer in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(npc.CurrentRegion)))
                                     {
                                         if (targetplayer.Name.ToLower() == args[2].ToLower())
                                         {
@@ -415,7 +415,7 @@ namespace DOL.GS.Commands
                                     }
 
                                     // Check for NPCs by name in visibility distance
-                                    foreach (GameNPC targetNpc in npc.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                                    foreach (GameNPC targetNpc in npc.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE(npc.CurrentRegion)))
                                     {
                                         if (targetNpc.Name.ToLower() == args[2].ToLower())
                                         {

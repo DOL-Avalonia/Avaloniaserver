@@ -206,7 +206,7 @@ namespace DOL.GS.Scripts
             if (m_intervalCount % 16 == 0)
             {
                 // Player animation (short duration state)
-                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
                 {
                     GamePlayer ply = player;
                     if (ply != null)
@@ -235,7 +235,7 @@ namespace DOL.GS.Scripts
                 // Player teleport animation here
 
                 // Player animation (short duration state)
-                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
                 {
                     GamePlayer ply = player;
                     if (ply != null)
@@ -252,7 +252,7 @@ namespace DOL.GS.Scripts
             else if (m_intervalCount % 16 == 14 && PortalTeleporterEffectCritic > 0)
             {
                 // Player animation (short duration state)
-                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
                 {
                     GamePlayer ply = player;
                     if (ply != null)
@@ -270,7 +270,7 @@ namespace DOL.GS.Scripts
             {
                 // last warning
                 // Player animation
-                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
                 {
                     GamePlayer ply = player;
                     if (ply != null)
@@ -287,7 +287,7 @@ namespace DOL.GS.Scripts
             else if (m_intervalCount % 16 == 12 && PortalTeleporterEffectWarn > 0)
             {
                 // Player animation (short duration state)
-                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
                 {
                     GamePlayer ply = player;
                     if (ply != null)
@@ -305,7 +305,7 @@ namespace DOL.GS.Scripts
             {
                 // first warning
                 // Player animation
-                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
                 {
                     GamePlayer ply = player;
                     if (ply != null)

@@ -248,7 +248,7 @@ namespace DOL.GS.RealmAbilities
         /// <param name="success"></param>
         public virtual void SendCasterSpellEffectAndCastMessage(GameLiving caster, ushort spellEffect, bool success)
         {
-            foreach (GamePlayer player in caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer player in caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(caster.CurrentRegion)))
             {
                 player.Out.SendSpellEffectAnimation(caster, caster, spellEffect, 0, false, success ? (byte)1 : (byte)0);
 
@@ -268,7 +268,7 @@ namespace DOL.GS.RealmAbilities
         /// </summary>
         protected virtual void SendCastMessage(GameLiving caster)
         {
-            foreach (GamePlayer player in caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer player in caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(caster.CurrentRegion)))
             {
                 if (caster.IsWithinRadius(player, WorldMgr.INFO_DISTANCE))
                 {

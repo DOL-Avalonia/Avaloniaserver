@@ -112,7 +112,7 @@ namespace DOL.GS.Commands
 				messageToOthers = LanguageMgr.GetTranslation(client.Account.Language, string.Format("Commands.Players.HorseEmote.{0}.NoTargetToOthers", emoteType), sourcePlayer.Name, sourcePlayer.GetPronoun(1, false));
 			}
 
-			foreach (GamePlayer player in sourcePlayer.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer player in sourcePlayer.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(sourcePlayer.CurrentRegion)))
 				player.Out.SendEmoteAnimation(sourcePlayer, emoteID);
 
 			SendEmoteMessages(sourcePlayer, targetObject as GamePlayer, messageToSource, messageToTarget, messageToOthers);

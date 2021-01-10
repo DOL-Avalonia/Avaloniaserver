@@ -45,7 +45,7 @@ namespace DOL.GS.Effects
                 return;
             }
 
-            foreach (GamePlayer p in _owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer p in _owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(_owner.CurrentRegion)))
             {
                 p.Out.SendSpellEffectAnimation(_owner, _owner, Icon, 0, false, 1);
             }

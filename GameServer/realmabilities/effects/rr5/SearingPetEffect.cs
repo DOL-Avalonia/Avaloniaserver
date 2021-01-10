@@ -59,7 +59,7 @@ namespace DOL.GS.Effects
                 Name = "PBAoE damage",
                 Target = "Enemy",
                 Radius = 0,
-                Range = WorldMgr.VISIBILITY_DISTANCE,
+                Range = WorldMgr.VISIBILITY_DISTANCE_CONST,
                 CastTime = 0,
                 Duration = 0,
                 Frequency = 0,

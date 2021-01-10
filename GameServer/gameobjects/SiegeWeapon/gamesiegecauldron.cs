@@ -81,7 +81,7 @@ namespace DOL.GS
                     spell.DamageType = (int)eDamageType.Heat;
                     spell.Name = "Boiling Oil";
                     spell.Radius = 350;
-                    spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+                    spell.Range = WorldMgr.VISIBILITY_DISTANCE_CONST;
                     spell.SpellID = 50005;
                     spell.Target = "Area";
                     spell.Type = "SiegeDirectDamage";

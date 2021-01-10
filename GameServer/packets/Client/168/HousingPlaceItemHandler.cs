@@ -328,7 +328,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                             ChatUtil.SendSystemMessage(client, "Scripts.Player.Housing.GardenItemPlacedName", orgitem.Name);
 
                             // update all nearby players
-                            foreach (GamePlayer player in WorldMgr.GetPlayersCloseToSpot(house.RegionID, house, WorldMgr.OBJ_UPDATE_DISTANCE))
+                            foreach (GamePlayer player in WorldMgr.GetPlayersCloseToSpot(house.RegionID, house, WorldMgr.OBJ_UPDATE_DISTANCE(WorldMgr.GetRegion(house.RegionID))))
                             {
                                 player.Out.SendGarden(house);
                             }

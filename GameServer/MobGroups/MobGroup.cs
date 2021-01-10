@@ -293,7 +293,7 @@ namespace DOL.MobGroups
                 {
                     npc.VisibleActiveWeaponSlots = this.GroupInfos.VisibleSlot.HasValue ? this.GroupInfos.VisibleSlot.Value : npc.VisibleWeaponsDb;
 
-                    foreach (GamePlayer player in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                    foreach (GamePlayer player in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(npc.CurrentRegion)))
                     {
                         player.Out.SendLivingEquipmentUpdate(npc);
                     }
@@ -314,7 +314,7 @@ namespace DOL.MobGroups
 
                 this.NPCs.ForEach(npc =>
                 {
-                    foreach (GamePlayer player in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                    foreach (GamePlayer player in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(npc.CurrentRegion)))
                     {
                         player.Out.SendSpellEffectAnimation(npc, npc, effect, 0, false, (byte)5);
                     }

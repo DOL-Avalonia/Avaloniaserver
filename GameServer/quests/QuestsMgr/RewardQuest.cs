@@ -415,7 +415,7 @@ namespace DOL.GS.Quests
                             done &= goal.IsAchieved;
                         }
 
-                        if (done && _quest.QuestGiver.IsWithinRadius(_quest.QuestPlayer, WorldMgr.VISIBILITY_DISTANCE))
+                        if (done && _quest.QuestGiver.IsWithinRadius(_quest.QuestPlayer, WorldMgr.VISIBILITY_DISTANCE(_quest.QuestGiver.CurrentRegion)))
                         {
                             _quest.QuestPlayer.Out.SendNPCsQuestEffect(_quest.QuestGiver, _quest.QuestGiver.GetQuestIndicator(_quest.QuestPlayer));
                         }

@@ -32,9 +32,9 @@ namespace DOL.GS.Spells
 			base.ApplyEffectOnTarget(Caster,effectiveness);
 			Caster.StopAttack();
             Caster.DisarmedTime = Caster.CurrentRegion.Time + Spell.Duration;
-			foreach (GamePlayer visPlayer in Caster.GetPlayersInRadius((ushort)WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer visPlayer in Caster.GetPlayersInRadius((ushort)WorldMgr.VISIBILITY_DISTANCE(Caster.CurrentRegion)))
 				visPlayer.Out.SendCombatAnimation(Caster, target, 0x0000, 0x0000, (ushort)408, 0, 0x00, target.HealthPercent);
-			if(Spell.ResurrectMana>0) foreach (GamePlayer visPlayer in target.GetPlayersInRadius((ushort)WorldMgr.VISIBILITY_DISTANCE))
+			if(Spell.ResurrectMana>0) foreach (GamePlayer visPlayer in target.GetPlayersInRadius((ushort)WorldMgr.VISIBILITY_DISTANCE(target.CurrentRegion)))
 				visPlayer.Out.SendSpellEffectAnimation(Caster, target, (ushort)Spell.ResurrectMana, 0, false, 0x01);
 			
 			if((Spell.Duration>0&&Spell.Target!="area")||Spell.Concentration>0) OnDirectEffect(target,effectiveness);

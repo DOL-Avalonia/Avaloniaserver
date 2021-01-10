@@ -29,7 +29,7 @@ namespace DOL.GS.Keeps
         {
             if (base.IsAlive)
             {
-                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
                 {
                     player.Out.SendSpellCastAnimation(this, 4321, 30);
                     RegionTimer timer = new RegionTimer(player, new RegionTimerCallback(ShowEffect), 3000);
@@ -43,7 +43,7 @@ namespace DOL.GS.Keeps
         {
             if (base.IsAlive)
             {
-                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
                 {
                     player.Out.SendSpellEffectAnimation(this, this, 4321, 0, false, 1);
                 }

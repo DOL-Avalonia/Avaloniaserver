@@ -1672,7 +1672,7 @@ namespace DOL.GS.Quests
                         case eStepType.KillFinish:
                         case eStepType.WhisperFinish:
                         case eStepType.CollectFinish:
-                            foreach (GameNPC n in _questPlayer.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                            foreach (GameNPC n in _questPlayer.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE(_questPlayer.CurrentRegion)))
                             {
                                 GameNPC npc = n;
                                 if (npc != null && TargetName == npc.Name && (TargetRegion == 0 || TargetRegion == npc.CurrentRegionID))
@@ -3063,7 +3063,7 @@ namespace DOL.GS.Quests
                 UpdateQuestIndicator(_startNpc, _questPlayer);
             }
 
-            foreach (GameNPC npc in _questPlayer.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GameNPC npc in _questPlayer.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE(_questPlayer.CurrentRegion)))
             {
                 UpdateQuestIndicator(npc, _questPlayer);
             }

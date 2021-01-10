@@ -56,7 +56,7 @@ namespace DOL.GS.RealmAbilities
                 return;
             }
 
-            foreach (GamePlayer p in target.GetPlayersInRadius(false, WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer p in target.GetPlayersInRadius(false, WorldMgr.VISIBILITY_DISTANCE(target.CurrentRegion)))
             {
                 p.Out.SendSpellEffectAnimation(caster, target, 7072, 0, false, 1);
             }

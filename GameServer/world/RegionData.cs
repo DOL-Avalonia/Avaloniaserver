@@ -76,6 +76,11 @@ namespace DOL.GS
         public bool IsFrontier { get; set; }
 
         /// <summary>
+        /// Get if visibility dungeon should be applied
+        /// </summary>
+        public bool VisibilityDungeon { get; set; }
+
+        /// <summary>
         /// Compares 2 objects
         /// </summary>
         /// <param name="obj"></param>

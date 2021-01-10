@@ -931,7 +931,7 @@ namespace DOL.GS.Quests.Midgard
             InventoryItem item = player.Inventory.GetItem((eInventorySlot)uArgs.Slot);
             if (item != null && item.Id_nb == assistantNecklace.Id_nb)
             {
-                foreach (GamePlayer visPlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer visPlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
                 {
                     visPlayer.Out.SendSpellCastAnimation(player, 1, 20);
                 }
@@ -985,7 +985,7 @@ namespace DOL.GS.Quests.Midgard
                 GameEventMgr.AddHandler(assistant, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToAssistant));
             }
 
-            foreach (GamePlayer visPlayer in assistant.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer visPlayer in assistant.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(assistant.CurrentRegion)))
             {
                 visPlayer.Out.SendEmoteAnimation(assistant, eEmote.Bind);
             }

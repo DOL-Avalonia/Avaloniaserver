@@ -472,7 +472,7 @@ namespace DOL.GS.Quests.Midgard
                 {
                     if (player.IsWithinRadius(hindaEnd, 2500))
                     {
-                        foreach (GamePlayer visPlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                        foreach (GamePlayer visPlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
                         {
                             visPlayer.Out.SendSpellCastAnimation(player, 1, 20);
                         }
@@ -810,7 +810,7 @@ namespace DOL.GS.Quests.Midgard
 
         protected virtual int CastLadyFelin(RegionTimer callingTimer)
         {
-            foreach (GamePlayer visPlayer in ladyHinda.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer visPlayer in ladyHinda.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(ladyHinda.CurrentRegion)))
             {
                 visPlayer.Out.SendSpellCastAnimation(ladyHinda, 1, 20);
             }

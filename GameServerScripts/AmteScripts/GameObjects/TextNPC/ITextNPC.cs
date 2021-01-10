@@ -85,12 +85,12 @@ namespace DOL.GS.Scripts
 
             //Spell
             if (SpellReponses != null && SpellReponses.ContainsKey("INTERACT"))
-                foreach (GamePlayer plr in _body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer plr in _body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(_body.CurrentRegion)))
                     plr.Out.SendSpellEffectAnimation(_body, player, SpellReponses["INTERACT"], 0, false, 1);
 
             //Emote
             if (EmoteReponses != null && EmoteReponses.ContainsKey("INTERACT"))
-                foreach (GamePlayer plr in _body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer plr in _body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(_body.CurrentRegion)))
                     plr.Out.SendEmoteAnimation(_body, EmoteReponses["INTERACT"]);
 
             return true;
@@ -135,12 +135,12 @@ namespace DOL.GS.Scripts
 
             //Spell
             if (SpellReponses != null && SpellReponses.ContainsKey(str))
-                foreach (GamePlayer plr in _body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer plr in _body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(_body.CurrentRegion)))
                     plr.Out.SendSpellEffectAnimation(_body, player, SpellReponses[str], 0, false, 1);
 
             //Emote
             if (EmoteReponses != null && EmoteReponses.ContainsKey(str))
-                foreach (GamePlayer plr in _body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer plr in _body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(_body.CurrentRegion)))
                     plr.Out.SendEmoteAnimation(_body, EmoteReponses[str]);
 
 
@@ -515,7 +515,7 @@ namespace DOL.GS.Scripts
 
             //Emote
             if (emote != 0)
-                foreach (GamePlayer plr in _body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer plr in _body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(_body.CurrentRegion)))
                     plr.Out.SendEmoteAnimation(_body, emote);
 
         }

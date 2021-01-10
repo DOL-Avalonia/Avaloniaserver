@@ -103,7 +103,7 @@ namespace DOL.GS.Scripts
 			timer.Start(1000);
 
 
-			foreach (GamePlayer plr in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer plr in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
 				plr.Out.SendSpellEffectAnimation(player, player, 2661, 0, false, 1);
 		}
 
@@ -211,7 +211,7 @@ namespace DOL.GS.Scripts
 						return 0;
 					}
 
-					foreach (GamePlayer plr in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					foreach (GamePlayer plr in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
 						plr.Out.SendSpellEffectAnimation(player, player, 2661, 0, false, 1);
 					break;
 
@@ -228,7 +228,7 @@ namespace DOL.GS.Scripts
 						return 0;
 					}
 
-					foreach (GamePlayer plr in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					foreach (GamePlayer plr in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
 					{
 						plr.Out.SendSpellEffectAnimation(player, player, 2661, 0, false, 1);
 						plr.Out.SendSpellEffectAnimation(player, player, 1677, 0, false, 1);
@@ -248,7 +248,7 @@ namespace DOL.GS.Scripts
 						return 0;
 					}
 
-					foreach (GamePlayer plr in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					foreach (GamePlayer plr in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
 					{
 						plr.Out.SendSpellEffectAnimation(player, player, 82, 0, false, 1);
 						plr.Out.SendSpellEffectAnimation(player, player, 276, 0, false, 1);
@@ -256,7 +256,7 @@ namespace DOL.GS.Scripts
 					break;
 
 				case 8000: //8s
-					foreach (GamePlayer plr in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					foreach (GamePlayer plr in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
 						plr.Out.SendSpellEffectAnimation(player, player, 2569, 0, false, 1);
 					break;
 
@@ -329,7 +329,7 @@ namespace DOL.GS.Scripts
 		{
 			var player = timer.Owner as GamePlayer;
 			if (player != null)
-				foreach (GamePlayer plr in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				foreach (GamePlayer plr in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
 					plr.Out.SendSpellEffectAnimation(player, player, 276, 0, false, 1);
 			timer.Stop();
 			return 0;

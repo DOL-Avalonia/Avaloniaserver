@@ -133,7 +133,7 @@ namespace DOL.GS
 				m_size = value;
 				if (ObjectState == eObjectState.Active)
 				{
-					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 						player.Out.SendModelAndSizeChange(this, Model, value);
 					//					BroadcastUpdate();
 				}
@@ -228,7 +228,7 @@ namespace DOL.GS
 				base.Model = value;
 				if (ObjectState == eObjectState.Active)
 				{
-					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 						player.Out.SendModelChange(this, Model);
 				}
 			}
@@ -276,7 +276,7 @@ namespace DOL.GS
 
 				if (ObjectState == eObjectState.Active)
 				{
-					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 					{
 						player.Out.SendNPCCreate(this);
 						if (m_inventory != null)
@@ -381,7 +381,7 @@ namespace DOL.GS
 				base.Realm = value;
 				if (ObjectState == eObjectState.Active)
 				{
-					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 					{
 						player.Out.SendNPCCreate(this);
 						if (m_inventory != null)
@@ -402,7 +402,7 @@ namespace DOL.GS
 				base.Name = value;
 				if (ObjectState == eObjectState.Active)
 				{
-					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 					{
 						player.Out.SendNPCCreate(this);
 						if (m_inventory != null)
@@ -447,7 +447,7 @@ namespace DOL.GS
 				base.GuildName = value;
 				if (ObjectState == eObjectState.Active)
 				{
-					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 					{
 						player.Out.SendNPCCreate(this);
 						if (m_inventory != null)
@@ -764,7 +764,7 @@ namespace DOL.GS
 				{
 					if (oldflags != m_flags)
 					{
-						foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+						foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 						{
 							player.Out.SendNPCCreate(this);
 							if (m_inventory != null)
@@ -3114,7 +3114,7 @@ namespace DOL.GS
 				Riders = new GamePlayer[MAX_PASSENGERS];
 
 			bool anyPlayer = false;
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 			{
 				if (player == null) continue;
 				player.Out.SendNPCCreate(this);
@@ -3248,7 +3248,7 @@ namespace DOL.GS
 
 			if (ObjectState == eObjectState.Active)
 			{
-				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 					player.Out.SendObjectRemove(this);
 			}
 			if (!base.RemoveFromWorld()) return false;
@@ -3312,7 +3312,7 @@ namespace DOL.GS
 
 			if (ObjectState == eObjectState.Active)
 			{
-				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 				{
 					player.Out.SendObjectRemove(this);
 				}
@@ -3323,7 +3323,7 @@ namespace DOL.GS
 			m_z = z;
 			m_Heading = heading;
 
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 			{
 				if (player == null) continue;
 
@@ -4049,7 +4049,7 @@ namespace DOL.GS
 				else
 				{
 					// try to find another player to use for checking line of site
-					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 					{
 						losChecker = player;
 						break;

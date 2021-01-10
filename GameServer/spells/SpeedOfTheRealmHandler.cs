@@ -32,7 +32,7 @@ namespace DOL.GS.Spells
         public override void FinishSpellCast(GameLiving target)
         {
             base.FinishSpellCast(target);
-            foreach (GamePlayer player in Caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer player in Caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(Caster.CurrentRegion)))
             {
                 player.Out.SendSpellCastAnimation(Caster, SECONDEFFECT, 20);
             }

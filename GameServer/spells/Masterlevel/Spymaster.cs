@@ -203,7 +203,7 @@ namespace DOL.GS.Spells
                 LifeDrainReturn = spell.LifeDrainReturn,
                 Power = 0,
                 CastTime = 0,
-                Range = WorldMgr.VISIBILITY_DISTANCE
+                Range = WorldMgr.VISIBILITY_DISTANCE(Caster.CurrentRegion)
             };
 
             sRadius = 350;
@@ -256,7 +256,7 @@ namespace DOL.GS.Spells
                 LifeDrainReturn = spell.LifeDrainReturn,
                 Power = 0,
                 CastTime = 0,
-                Range = WorldMgr.VISIBILITY_DISTANCE
+                Range = WorldMgr.VISIBILITY_DISTANCE(Caster.CurrentRegion)
             };
 
             sRadius = 350;
@@ -418,7 +418,7 @@ namespace DOL.GS.Spells
                 LifeDrainReturn = spell.LifeDrainReturn,
                 Power = 0,
                 CastTime = 0,
-                Range = WorldMgr.VISIBILITY_DISTANCE
+                Range = WorldMgr.VISIBILITY_DISTANCE(Caster.CurrentRegion)
             };
 
             sRadius = 350;

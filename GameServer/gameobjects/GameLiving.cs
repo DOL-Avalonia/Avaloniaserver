@@ -2379,7 +2379,7 @@ namespace DOL.GS
 					}
 
 					int model = (attackWeapon == null ? 0 : attackWeapon.Model);
-					foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(owner.CurrentRegion)))
 					{
 						if (player == null) continue;
 						player.Out.SendCombatAnimation(owner, attackTarget, (ushort)model, 0x00, player.Out.BowShoot, 0x01, 0, ((GameLiving)attackTarget).HealthPercent);
@@ -2569,7 +2569,7 @@ namespace DOL.GS
 						int speed = owner.AttackSpeed(attackWeapon);
 						byte attackSpeed = (byte)(speed / 100);
 						int model = (attackWeapon == null ? 0 : attackWeapon.Model);
-						foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+						foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(owner.CurrentRegion)))
 						{
 							player.Out.SendCombatAnimation(owner, null, (ushort)model, 0x00, player.Out.BowPrepare, attackSpeed, 0x00, 0x00);
 						}
@@ -3106,7 +3106,7 @@ namespace DOL.GS
 					{
 						RangedAttackState = eRangedAttackState.Aim;
 
-						foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+						foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 							player.Out.SendCombatAnimation(this, null, (ushort)(AttackWeapon == null ? 0 : AttackWeapon.Model),
 							                               0x00, player.Out.BowPrepare, (byte)(speed / 100), 0x00, 0x00);
 
@@ -3149,7 +3149,7 @@ namespace DOL.GS
 			RangedAttackState = eRangedAttackState.None;
 			RangedAttackType = eRangedAttackType.Normal;
 
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 				player.Out.SendInterruptAnimation(this);
 		}
 
@@ -4190,7 +4190,7 @@ namespace DOL.GS
 						break;
 				}
 
-				foreach (GamePlayer player in ad.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				foreach (GamePlayer player in ad.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(ad.Target.CurrentRegion)))
 				{
 					if (player == null) continue;
 					int animationId;
@@ -5691,7 +5691,7 @@ namespace DOL.GS
 				base.Level = value;
 				if (ObjectState == eObjectState.Active)
 				{
-					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 					{
 						if (player == null)
 							continue;
@@ -6092,7 +6092,7 @@ namespace DOL.GS
 		/// <param name="emote">the emote animation to show</param>
 		public virtual void Emote(eEmote emote)
 		{
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 			{
 				player.Out.SendEmoteAnimation(this, emote);
 			}
@@ -6532,7 +6532,7 @@ namespace DOL.GS
 			if (ObjectState != eObjectState.Active)
 				return;
 			
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 			{
 				if (player == null)
 					continue;

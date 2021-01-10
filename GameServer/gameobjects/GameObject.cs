@@ -1801,7 +1801,7 @@ namespace DOL.GS
                 return;
             }
 
-            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
             {
                 if (player == null)
                 {

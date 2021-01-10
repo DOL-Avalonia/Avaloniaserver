@@ -230,7 +230,7 @@ namespace DOL.GS
         /// </summary>
         public bool CanSeeBoat(GamePlayer player, GameBoat boat)
         {
-            foreach (GamePlayer plr in boat.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer plr in boat.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(boat.CurrentRegion)))
             {
                 if (player.Name == plr.Name)
                 {

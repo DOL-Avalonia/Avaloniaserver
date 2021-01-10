@@ -53,7 +53,7 @@ namespace DOL.GS.Effects
             m_owner.AbilityBonus[(int)eProperty.Resist_Spirit] += _value;
             (m_owner as GamePlayer)?.Out.SendCharResistsUpdate();
 
-            foreach (GamePlayer visiblePlayer in living.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer visiblePlayer in living.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(living.CurrentRegion)))
             {
                 visiblePlayer.Out.SendSpellEffectAnimation(living, living, 1197, 0, false, 1);
             }

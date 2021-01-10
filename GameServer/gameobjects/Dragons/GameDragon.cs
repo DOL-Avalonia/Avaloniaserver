@@ -193,7 +193,7 @@ namespace DOL.GS
 			bool canReportNews = true;
 
 			// due to issues with attackers the following code will send a notify to all in area in order to force quest credit
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 			{
 				player.Notify(GameLivingEvent.EnemyKilled, killer, new EnemyKilledEventArgs(this));
 
@@ -311,7 +311,7 @@ namespace DOL.GS
 		/// <param name="message">The message to be broadcast.</param>
 		public void BroadcastMessage(String message)
 		{
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE(CurrentRegion)))
 			{
 				player.Out.SendMessage(message, eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 			}
@@ -330,7 +330,7 @@ namespace DOL.GS
 
 			if (Properties.GUILD_MERIT_ON_DRAGON_KILL > 0)
 			{
-				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 				{
 					if (player.IsEligibleToGiveMeritPoints)
 					{
@@ -347,7 +347,7 @@ namespace DOL.GS
 		protected int AwardDragonKillPoint()
 		{
 			int count = 0;
-            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
             {
                 player.KillsDragon++;
                 count++;

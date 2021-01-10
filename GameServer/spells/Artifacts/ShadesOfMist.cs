@@ -107,7 +107,7 @@ namespace DOL.GS.Spells
             {
                 ablativehp = 200;
                 GamePlayer player = sender as GamePlayer;
-                foreach (GamePlayer players in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer players in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
                 {
                     players.Out.SendSpellEffectAnimation(player, player, 9103, 0, false, 1);
                 }

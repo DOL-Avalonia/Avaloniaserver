@@ -54,7 +54,7 @@ namespace DOL.GS.RealmAbilities
 
             foreach (GamePlayer gp in _group.GetPlayersInTheGroup())
             {
-                foreach (GamePlayer p in living.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer p in living.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(living.CurrentRegion)))
                 {
                     if (!p.IsAlive)
                     {
@@ -172,7 +172,7 @@ namespace DOL.GS.RealmAbilities
                 healamount = dmgamount - _poolValue;
             }
 
-            foreach (GamePlayer tPlayer in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer tPlayer in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(npc.CurrentRegion)))
             {
                 if (!tPlayer.IsAlive)
                 {
@@ -242,7 +242,7 @@ namespace DOL.GS.RealmAbilities
                 healamount = dmgamount - _poolValue;
             }
 
-            foreach (GamePlayer tPlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer tPlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
             {
                 if (!tPlayer.IsAlive)
                 {

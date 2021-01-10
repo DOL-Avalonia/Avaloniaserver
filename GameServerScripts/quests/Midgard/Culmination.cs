@@ -957,7 +957,7 @@ namespace DOL.GS.Quests.Midgard
                 briediClone.MoveTo(100, GameLocation.ConvertLocalXToGlobalX(45394, 100), GameLocation.ConvertLocalYToGlobalY(39768, 100), 4709, 107);
             }
 
-            foreach (GamePlayer visPlayer in briediClone.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer visPlayer in briediClone.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(briediClone.CurrentRegion)))
             {
                 visPlayer.Out.SendEmoteAnimation(briediClone, eEmote.Bind);
             }

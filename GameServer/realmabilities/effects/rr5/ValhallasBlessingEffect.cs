@@ -40,7 +40,7 @@ namespace DOL.GS.Effects
             if (target is GamePlayer player)
             {
                 _effectOwner = player;
-                foreach (GamePlayer p in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer p in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(target.CurrentRegion)))
                 {
                     p.Out.SendSpellEffectAnimation(target, target, 7087, 0, false, 1);
                 }

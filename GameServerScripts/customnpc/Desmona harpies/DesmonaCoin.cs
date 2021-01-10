@@ -49,7 +49,7 @@ namespace DOL.GS.Scripts
         {
             base.OnReceive(player);
 
-            foreach (GameNPC npc in player.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GameNPC npc in player.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
             {
                 npc.BroadcastUpdate();
             }
@@ -59,7 +59,7 @@ namespace DOL.GS.Scripts
         {
             base.OnLose(player);
 
-            foreach (GameNPC npc in player.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GameNPC npc in player.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
             {
                 npc.BroadcastUpdate();
             }

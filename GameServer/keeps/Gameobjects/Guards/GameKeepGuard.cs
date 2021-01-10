@@ -347,7 +347,7 @@ namespace DOL.GS.Keeps
 			else
 			{
 				// try to find another player to use for checking line of site
-				foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 				{
 					LOSChecker = player;
 					break;
@@ -557,7 +557,7 @@ namespace DOL.GS.Keeps
 		public int GetEnemyCountInArea()
 		{
 			int inArea = 0;
-			foreach (GamePlayer NearbyPlayers in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer NearbyPlayers in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 			{
 				if (this.Component != null)
 				{

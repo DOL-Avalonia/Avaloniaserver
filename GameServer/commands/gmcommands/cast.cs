@@ -92,7 +92,7 @@ namespace DOL.GS.Commands
 						DummyEffect effect = new DummyEffect((ushort)id);
 						effect.Start(client.Player);
 
-						foreach (GamePlayer player in client.Player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+						foreach (GamePlayer player in client.Player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(client.Player.CurrentRegion)))
 							player.Out.SendSpellEffectAnimation(client.Player, target, (ushort)id, 0, false, 1);
 
 						break;
@@ -102,7 +102,7 @@ namespace DOL.GS.Commands
 				case "cast":
 					{
 						DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Commands.GM.Cast.CastExecuted", id.ToString()));
-						foreach (GamePlayer player in client.Player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+						foreach (GamePlayer player in client.Player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(client.Player.CurrentRegion)))
 							player.Out.SendSpellCastAnimation(client.Player, (ushort)id, 30);
 						break;
 					}

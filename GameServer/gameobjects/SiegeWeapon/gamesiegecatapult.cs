@@ -107,7 +107,7 @@ namespace DOL.GS
                 living.TakeDamage(Owner, eDamageType.Crush, damageAmount, 0);
                 Owner.Out.SendMessage("The " + Name + " hits " + living.Name + " for " + damageAmount + " damage!", eChatType.CT_YouHit,
                                       eChatLoc.CL_SystemWindow);
-                foreach (GamePlayer player in living.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                foreach (GamePlayer player in living.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
                 {
                     player.Out.SendCombatAnimation(this, living, 0x0000, 0x0000, 0x00, 0x00, 0x14, living.HealthPercent);
                 }

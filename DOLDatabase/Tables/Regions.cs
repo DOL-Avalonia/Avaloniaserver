@@ -79,6 +79,8 @@ namespace DOL.Database
         /// </summary>
         private bool m_isFrontier;
 
+        private bool m_visibilityDungeon;
+
         public DBRegions()
         {
             m_regionID = 0;
@@ -92,6 +94,7 @@ namespace DOL.Database
             m_waterLevel = 0;
             m_classType = string.Empty;
             m_isFrontier = false;
+            m_visibilityDungeon = false;
         }
 
         /// <summary>
@@ -256,6 +259,19 @@ namespace DOL.Database
             {
                 Dirty = true;
                 m_isFrontier = value;
+            }
+        }
+
+        /// <summary>
+        /// Get if visibility dungeon should be applied
+        /// </summary>
+        [DataElement(AllowDbNull = false)]
+        public bool VisibilityDungeon {
+            get => m_visibilityDungeon;
+            set
+            {
+                Dirty = true;
+                m_visibilityDungeon = value;
             }
         }
     }

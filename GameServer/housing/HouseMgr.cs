@@ -477,7 +477,7 @@ namespace DOL.GS.Housing
             }
 
             // remove the house for all nearby players
-            foreach (GamePlayer player in WorldMgr.GetPlayersCloseToSpot(house, WorldMgr.OBJ_UPDATE_DISTANCE))
+            foreach (GamePlayer player in WorldMgr.GetPlayersCloseToSpot(house, WorldMgr.OBJ_UPDATE_DISTANCE(WorldMgr.GetRegion(house.RegionID))))
             {
                 player.Out.SendRemoveHouse(house);
                 player.Out.SendGarden(house);
