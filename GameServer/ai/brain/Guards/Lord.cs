@@ -36,12 +36,12 @@ namespace DOL.AI.Brain
         }
 
 		private long m_nextCallForHelpTime = 0; // Used to limit how often keep lords call for help
-		/// <summary>
-		/// Bring all alive keep guards to defend the lord
-		/// </summary>
-		/// <param name="attackData">The data associated with the puller's attack.</param>
-		protected override void BringFriends(AttackData ad)
-		{
+        /// <summary>
+        /// Bring all alive keep guards to defend the lord
+        /// </summary>
+        /// <param name="trigger">The entity which triggered the BAF.</param>
+        protected override void BringFriends(GameLiving trigger)
+        {
 			if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvE)
 			{
 				GuardLord lord = Body as GuardLord;
@@ -71,7 +71,7 @@ namespace DOL.AI.Brain
 				}
 			}
 			else
-				base.BringFriends(ad);
+				base.BringFriends(trigger);
 		}
 	}// LordBrain
 }
