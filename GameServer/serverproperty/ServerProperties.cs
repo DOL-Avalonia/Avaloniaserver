@@ -1791,10 +1791,22 @@ namespace DOL.GS.ServerProperties
         public static int BAF_ADDITIONAL_CHANCE { get; set; }
 
         /// <summary>
-        /// Do BAF mobs attack random players near the puller?
+        /// Do BAF mobs attack the player who pulled?
         /// </summary>
-        [ServerProperty("pve", "baf_mobs_attack_random_players", "Do mobs brought by friends attack random nearby players in the puller's group or battlegroup?  If false, additional mobs attack the puller as on live.", false)]
-        public static bool BAF_MOBS_ATTACK_RANDOM_PLAYERS { get; set; }
+        [ServerProperty("pve", "baf_mobs_attack_puller", "Do mobs brought by friends only attack the character who pulled them?  If false, mobs attack random players near the puller.", false)]
+        public static bool BAF_MOBS_ATTACK_PULLER { get; set; }
+
+        /// <summary>
+        /// Do BAF mobs attack characters in the same BG as the pulling character?
+        /// </summary>
+        [ServerProperty("pve", "baf_mobs_attack_bg_members", "Do mobs brought by friends attack random nearby players in the puller's battlegroup?  If false, mobs only attack characters in the pulling player's group.", false)]
+        public static bool BAF_MOBS_ATTACK_BG_MEMBERS { get; set; }
+
+        /// <summary>
+        /// Is the number of mobs added by BAF based on the number of nearby players in the puller's BG?
+        /// </summary>
+        [ServerProperty("pve", "baf_mobs_count_bg_members", "Is the number of mobs brought by a friend based on the number of nearby players in the pulling player's battlegroup?  If false, the number of mobs brought is determined by the number of players in the pulling player's group.", false)]
+        public static bool BAF_MOBS_COUNT_BG_MEMBERS { get; set; }
 
         /// <summary>
         /// Adjustment to missrate per number of attackers
