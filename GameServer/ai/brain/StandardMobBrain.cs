@@ -922,11 +922,11 @@ namespace DOL.AI.Brain
         /// <param name="attacker">Whoever triggered the BAF</param>
 		protected virtual void BringFriends(GameLiving attacker)
         {
-            if (!m_canBAF)
+            if (!canBAF)
                 return;
             GamePlayer trigger;	// player that triggered the BAF
 
-            // Only add on players and pets of players
+            // Only BAF on players and pets of players
             if (attacker is GamePlayer)
                 trigger = (GamePlayer)attacker;
 			else if (attacker is GamePet pet && pet.Owner is GamePlayer owner)
@@ -935,25 +935,74 @@ namespace DOL.AI.Brain
                 return;
 
             m_canBAF = false; // Mobs only BAF once per fight
-            ArrayList victims = null; // List of potential victims, only used if trigger is in a group 
-            int numAttackers;
-            if (trigger.Group == null)
-                numAttackers = 1;
-            else
-            {
-                victims = new ArrayList(trigger.Group.MemberCount);
 
-                // Only count the trigger and froup members near them
-                foreach (GamePlayer player in trigger.Group.GetPlayersInTheGroup())
+            ArrayList victims = null; // List of potential victims, only used if there are multiple possible targets for mobs to attack
+            int numAttackers = 0;
+
+            BattleGroup battleGroup = (BattleGroup)trigger.TempProperties.getProperty<object>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+            if (battleGroup != null)
+            {
+                // Look for nearby players in the battlegroup
+                if (Properties.BAF_MOBS_ATTACK_RANDOM_PLAYERS)
                 {
-                    if (player.InternalID == trigger.InternalID)
-                        victims.Add(player);
-                    else if (trigger.IsWithinRadius(player, m_BAFMaxRange))
-                        victims.Add(player);
+                    victims = new ArrayList(battleGroup.PlayerCount);
+
+                    // Add the trigger and battlegroup members near them to the victims list
+                    foreach (GamePlayer player in battleGroup.GetPlayersInTheBattleGroup())
+                        if (player != null)
+                        {
+                            if (player.InternalID == trigger.InternalID)
+                                // Players are always within range of themselves
+                                victims.Add(player);
+                            else if (player.IsWithinRadius(trigger, m_BAFMaxRange, true))
+                                victims.Add(player);
+                        }
+
+                    numAttackers = victims.Count;
                 }
-                numAttackers = victims.Count;
-            } // else
-            // Chance of bringing a friend is exposed to end users by server properties
+                else
+                    // Count the trigger and battlegroup members near them
+                    foreach (GamePlayer player in battleGroup.GetPlayersInTheBattleGroup())
+                        if (player != null)
+                        {
+                            if (player.InternalID == trigger.InternalID)
+                                // Players are always within range of themselves
+                                numAttackers++;
+                            else if (player.IsWithinRadius(trigger, m_BAFMaxRange, true))
+                                numAttackers++;
+                        }
+
+            }
+            else if (trigger.Group is Group group)
+            {
+                // Look for nearby players in the group
+                if (DOL.GS.ServerProperties.Properties.BAF_MOBS_ATTACK_RANDOM_PLAYERS)
+                {
+                    victims = new ArrayList(group.MemberCount);
+                    // Add the trigger and group members near them to the victims list
+                    foreach (GamePlayer player in group.GetPlayersInTheGroup())
+                        if (player.InternalID == trigger.InternalID)
+                            // Players are always within range of themselves
+                            victims.Add(player);
+                        else if (player.IsWithinRadius(trigger, m_BAFMaxRange, true))
+                            victims.Add(player);
+
+                    numAttackers = victims.Count;
+                }
+                else
+                    // Count the trigger and group members near them
+                    foreach (GamePlayer player in group.GetPlayersInTheGroup())
+                        if (player.InternalID == trigger.InternalID)
+                            // Players are always within range of themselves
+                            numAttackers++;
+                        else if (player.IsWithinRadius(trigger, m_BAFMaxRange, true))
+                            numAttackers++;
+            }
+            else
+                // Player is on their own
+                numAttackers = 1;
+
+            // Chance of bringing a friend is exposed by server properties
             int percentBAF = Properties.BAF_INITIAL_CHANCE
                 + ((numAttackers - 1) * Properties.BAF_ADDITIONAL_CHANCE);
 
@@ -962,9 +1011,9 @@ namespace DOL.AI.Brain
             // Multiple of 100 are guaranteed adds
             maxAdds = percentBAF / 100;
 
-            // Calculate chance of an addition add
-            percentBAF = percentBAF % 100;
-            if (Util.Random(99) < percentBAF)
+            // Calculate chance of an addition add based on the remainder
+            percentBAF %= 100;
+            if (Util.Chance(percentBAF))
                 maxAdds++;
 
             if (maxAdds > 0)
@@ -984,7 +1033,7 @@ namespace DOL.AI.Brain
                             brain.m_canBAF = false; // Mobs brought cannot bring friends of their own
 
                             GamePlayer target;
-                            if (numAttackers > 1)
+                            if (victims != null && victims.Count > 0)
                                 // Attack a random victim
                                 target = (GamePlayer)victims[Util.Random(victims.Count - 1)];
                             else

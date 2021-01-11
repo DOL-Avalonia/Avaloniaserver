@@ -1791,6 +1791,12 @@ namespace DOL.GS.ServerProperties
         public static int BAF_ADDITIONAL_CHANCE { get; set; }
 
         /// <summary>
+        /// Do BAF mobs attack random players near the puller?
+        /// </summary>
+        [ServerProperty("pve", "baf_mobs_attack_random_players", "Do mobs brought by friends attack random nearby players in the puller's group or battlegroup?  If false, additional mobs attack the puller as on live.", false)]
+        public static bool BAF_MOBS_ATTACK_RANDOM_PLAYERS { get; set; }
+
+        /// <summary>
         /// Adjustment to missrate per number of attackers
         /// </summary>
         [ServerProperty("pve", "missrate_reduction_per_attackers", "Adjustment to missrate per number of attackers", 0)]
