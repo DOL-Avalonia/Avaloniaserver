@@ -49,7 +49,7 @@ namespace DOL.GS
 	/// </summary>
 	public class GameNPC : GameLiving, ITranslatableObject
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		/// <summary>
 		/// Constant for determining if already at a point
@@ -3648,7 +3648,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Sorts styles by type for more efficient style selection later
 		/// </summary>
-		protected void SortStyles()
+		public void SortStyles()
 		{
 			if (m_stylesAnyPos != null)
 				m_stylesAnyPos.Clear();
@@ -5342,7 +5342,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Sort spells into specific lists
 		/// </summary>
-		private void SortSpells()
+		public void SortSpells()
 		{
 			// Clear the lists
 			if (m_HarmfulInstantSpells != null)
