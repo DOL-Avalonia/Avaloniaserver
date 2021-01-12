@@ -358,22 +358,6 @@ namespace DOL.GS
 			double speed = 100 * weaponSpeed * (1.0 - (GetModified(eProperty.Quickness) - 60) / 500.0);
 			return (int)Math.Max(500.0, (speed * (double)GetModified(eProperty.MeleeSpeed) * 0.01)); // no bonus is 100%, opposite how players work
 		}
-
-		/// <summary>
-		/// Pick a random style for now.
-		/// </summary>
-		/// <returns></returns>
-		protected override Style GetStyleToUse()
-		{
-			if (Styles != null && Styles.Count > 0 && Util.Chance(Properties.GAMENPC_CHANCES_TO_STYLE + Styles.Count))
-			{
-				Style style = (Style)Styles[Util.Random(Styles.Count - 1)];
-				if (StyleProcessor.CanUseStyle(this, style, AttackWeapon))
-					return style;
-			}
-
-			return base.GetStyleToUse();
-		}
 		#endregion
 
 		public override void Die(GameObject killer)
