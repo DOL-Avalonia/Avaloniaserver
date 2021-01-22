@@ -17,7 +17,14 @@ namespace DOLDatabase.Tables
         private string m_itemTemplateId;
         private int m_craftingSkill;
         private int m_craftingValue;
-        private string m_rewardCraftingSkills;
+        private int m_rewardCraftingSkills;
+        private string m_areaId;
+        private int m_chanceFailCombine;
+        private int m_punishSpell;
+        private int m_duration;
+        private bool m_isUnique;
+        private string m_combinexObjectModel;
+        private bool m_applyRewardCraftingSkillsSystem;
 
         [DataElement(AllowDbNull = false)]
         public string ItemsIds
@@ -85,8 +92,8 @@ namespace DOLDatabase.Tables
             }
         }
 
-        [DataElement(AllowDbNull = true, Varchar = 255)]
-        public string RewardCraftingSkills
+        [DataElement(AllowDbNull = true)]
+        public int RewardCraftingSkills
         {
             get
             {
@@ -98,6 +105,105 @@ namespace DOLDatabase.Tables
                 Dirty = true;
                 m_rewardCraftingSkills = value;
             }
-        }    
+        }
+
+        /// <summary>
+        /// If not null and player is not in the area, the combination can't success
+        /// </summary>
+        [DataElement(AllowDbNull = true, Varchar = 255)]
+        public string AreaId
+        {
+            get => m_areaId;
+
+            set
+            {
+                Dirty = true;
+                m_areaId = value;
+            }
+        }
+
+        /// <summary>
+        /// If the combination have the possibility to fail
+        /// </summary>
+        [DataElement(AllowDbNull = true)]
+        public int ChanceFailCombine
+        {
+            get => m_chanceFailCombine;
+            set
+            {
+                Dirty = true;
+                m_chanceFailCombine = value;
+            } 
+        }
+
+        /// <summary>
+        /// Punish Spell if fail
+        /// </summary>
+        [DataElement(AllowDbNull = true)]
+        public int PunishSpell
+        {
+            get => m_punishSpell;
+            set
+            {
+                Dirty = true;
+                m_punishSpell = value;
+            }
+        }
+
+        /// <summary>
+        /// Time to combine
+        /// </summary>
+        [DataElement(AllowDbNull = true)]
+        public int Duration
+        {
+            get => m_duration;
+            set
+            {
+                Dirty = true;
+                m_duration = value;
+            }
+        }
+
+        /// <summary>
+        /// Tool Models to Combine the Object
+        /// </summary>
+        [DataElement(AllowDbNull = true)]
+        public string CombinexObjectModel
+        {
+            get => m_combinexObjectModel;
+            set
+            {
+                Dirty = true;
+                m_combinexObjectModel = value;
+            }
+        }
+
+        /// <summary>
+        /// Tool Models to Combine the Object
+        /// </summary>
+        [DataElement(AllowDbNull = false)]
+        public bool IsUnique
+        {
+            get => m_isUnique;
+            set
+            {
+                Dirty = true;
+                m_isUnique = value;
+            }
+        }
+
+        /// <summary>
+        /// Use the new system to calcuate points to ugrade crafting skills or not
+        /// </summary>
+        [DataElement(AllowDbNull = false)]
+        public bool ApplyRewardCraftingSkillsSystem
+        {
+            get => m_applyRewardCraftingSkillsSystem;
+            set
+            {
+                Dirty = true;
+                m_applyRewardCraftingSkillsSystem = value;
+            }
+        }
     }
 }

@@ -133,7 +133,7 @@ namespace DOL.GS
 
             public override void LoadFromDatabase(DBArea area)
             {
-                m_dbArea = area;
+                DbArea = area;
                 m_translationId = area.TranslationId;
                 Description = area.Description;
                 X = area.X;
@@ -272,6 +272,7 @@ namespace DOL.GS
 
             public override void LoadFromDatabase(DBArea area)
             {
+                DbArea = area;
                 m_translationId = area.TranslationId;
                 Description = area.Description;
                 X = area.X;
@@ -452,6 +453,7 @@ namespace DOL.GS
 
             public override void LoadFromDatabase(DBArea area)
             {
+                DbArea = area;
                 m_translationId = area.TranslationId;
                 Description = area.Description;
                 X = area.X;

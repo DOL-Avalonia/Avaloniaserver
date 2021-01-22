@@ -30,7 +30,7 @@ namespace DOL.GS
     /// </summary>
     public abstract class AbstractArea : IArea
     {
-        protected DBArea m_dbArea = null;
+        protected DBArea dbArea = null;
 
         /// <summary>
         /// Variable holding whether or not players can broadcast in this area
@@ -148,6 +148,7 @@ namespace DOL.GS
         public abstract bool IsContaining(int x, int y, int z, bool checkZ);
 
         public bool CanVol { get; protected set; }
+        public DBArea DbArea { get => dbArea; set => dbArea = value; }
 
         /// <summary>
         /// Called whenever a player leaves the given area

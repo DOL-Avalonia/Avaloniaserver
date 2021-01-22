@@ -44,9 +44,9 @@ namespace DOL.GS.Keeps
             // setting radius to default
             if (newRadius == 0 && Radius != 0)
             {
-                if (m_dbArea != null)
+                if (DbArea != null)
                 {
-                    GameServer.Database.DeleteObject(m_dbArea);
+                    GameServer.Database.DeleteObject(DbArea);
                 }
 
                 Radius = Keep is GameKeep ? (Keep.IsPortalKeep ? PK_RADIUS : KEEP_RADIUS) : TOWER_RADIUS;
@@ -57,26 +57,26 @@ namespace DOL.GS.Keeps
             if (newRadius > 0 && Radius >= 0)
             {
                 Radius = newRadius;
-                if (m_dbArea != null)
+                if (DbArea != null)
                 {
-                    m_dbArea.Radius = Radius;
-                    GameServer.Database.SaveObject(m_dbArea);
+                    DbArea.Radius = Radius;
+                    GameServer.Database.SaveObject(DbArea);
                 }
                 else
                 {
-                    m_dbArea = new DBArea();
-                    m_dbArea.CanBroadcast = CanBroadcast;
-                    m_dbArea.CheckLOS = CheckLOS;
-                    m_dbArea.ClassType = GetType().ToString();
-                    m_dbArea.Description = Description;
-                    m_dbArea.Radius = Radius;
-                    m_dbArea.Region = (ushort)Keep.Region;
-                    m_dbArea.Sound = Sound;
-                    m_dbArea.X = X;
-                    m_dbArea.Y = Y;
-                    m_dbArea.Z = Z;
+                    DbArea = new DBArea();
+                    DbArea.CanBroadcast = CanBroadcast;
+                    DbArea.CheckLOS = CheckLOS;
+                    DbArea.ClassType = GetType().ToString();
+                    DbArea.Description = Description;
+                    DbArea.Radius = Radius;
+                    DbArea.Region = (ushort)Keep.Region;
+                    DbArea.Sound = Sound;
+                    DbArea.X = X;
+                    DbArea.Y = Y;
+                    DbArea.Z = Z;
 
-                    GameServer.Database.AddObject(m_dbArea);
+                    GameServer.Database.AddObject(DbArea);
                 }
             }
         }
