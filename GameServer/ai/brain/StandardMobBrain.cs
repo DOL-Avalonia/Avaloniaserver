@@ -903,14 +903,24 @@ namespace DOL.AI.Brain
         /// </summary>
         protected virtual ushort BAFMaxRange
         {
-            get { return 2000; }
+            get
+            {
+                if (Body.CurrentRegion.VisibilityDungeon)
+                    return 1200;
+                return 2000;
+            }
         }
 
         /// Max range to try to look for nearby players.
 		/// May be overloaded for specific brain types, ie.dragons or keep guards
         protected virtual ushort BAFPlayerRange
         {
-            get { return 5000; }
+            get
+            {
+                if (Body.CurrentRegion.VisibilityDungeon)
+                    return 2500;
+                return 5000;
+            }
         }
 
         /// <summary>

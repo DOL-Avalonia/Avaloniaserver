@@ -37,7 +37,8 @@ namespace DOL.AI.Brain
                 {
                     //Full aggression against outlaws
                     AddToAggroList(pl, 1);
-                    BringReinforcements(pl);
+                    // Use new BAF system 
+                    BringFriends(pl);
                     continue;
                 }
 
@@ -46,7 +47,8 @@ namespace DOL.AI.Brain
 					continue;
 				AddToAggroList(pl, aggro);
 				if (pl.Level > Body.Level - 20 || (pl.Group != null && pl.Group.MemberCount >= 2))
-					BringReinforcements(pl);
+                    // Use new BAF system
+                    BringFriends(pl);
 			}
 		}
 
@@ -74,17 +76,7 @@ namespace DOL.AI.Brain
 
         private void BringReinforcements(GameNPC target)
         {
-            int count = (int)Math.Log(target.Level - Body.Level, 2) + 1;
-            foreach (GameNPC npc in Body.GetNPCsInRadius(WorldMgr.YELL_DISTANCE))
-            {
-                if (count <= 0)
-                    return;
-                if (npc.Brain is GuardNPCBrain == false)
-                    continue;
-                var brain = npc.Brain as GuardNPCBrain;
-                brain.AddToAggroList(target, 1);
-                brain.AttackMostWanted();
-            }
+            BringFriends(target);
         }
 
         public override int CalculateAggroLevelToTarget(GameLiving target)
