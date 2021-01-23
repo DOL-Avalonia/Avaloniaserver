@@ -85,7 +85,7 @@ namespace DOL.GS.Scripts
                 else if (args.OriginalReputation == -2)
                 {
                     cost = 900;
-                    time = TimeSpan.FromHours(30);
+                    time = TimeSpan.FromHours(32);
                     reason = "Bandit";
                 }
                 else if (args.OriginalReputation == -3)
@@ -97,13 +97,13 @@ namespace DOL.GS.Scripts
                 else if (args.OriginalReputation == -4)
                 {
                     cost = 3600;
-                    time = TimeSpan.FromHours(64);
+                    time = TimeSpan.FromHours(72);
                     reason = "Consiglière";
                 }
                 else if (args.OriginalReputation <= -5)
                 {
                     cost = 7200;
-                    time = TimeSpan.FromHours(84);
+                    time = TimeSpan.FromHours(96);
                     reason = "Parrain";
                 }
                 else
