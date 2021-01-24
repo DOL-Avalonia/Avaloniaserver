@@ -123,7 +123,7 @@ namespace DOL.spells
                 }
                 else
                 {
-                    if (player.CraftingSkills[match.CraftingSkill] <= match.CraftValue)
+                    if (player.CraftingSkills[match.CraftingSkill] < match.CraftValue)
                     {
                         player.Out.SendMessage($"Votre niveau en { match.CraftingSkill.ToString() } doit etre au moins de { match.CraftValue } ", eChatType.CT_Chat, eChatLoc.CL_SystemWindow);
                         return false;
@@ -186,6 +186,8 @@ namespace DOL.spells
 
                 FinishSpellCast(m_spellTarget);
             }
+            if (!IsCasting)
+                OnAfterSpellCastSequence();
             return true;
         }
 
@@ -420,7 +422,8 @@ namespace DOL.spells
             {
                 int gain = match.RewardCraftingSkills;
                 if (match.ApplyRewardCraftingSkillsSystem && player.CraftingSkills.ContainsKey(match.CraftingSkill))
-                    gain *= (match.CraftValue / player.CraftingSkills[match.CraftingSkill]);
+                    // round the result
+                    gain = (int)Math.Round(gain * ((double)match.CraftValue / (double)player.CraftingSkills[match.CraftingSkill]));
                 player.GainCraftingSkill(match.CraftingSkill, gain);
                 player.Out.SendUpdateCraftingSkills();
             }
