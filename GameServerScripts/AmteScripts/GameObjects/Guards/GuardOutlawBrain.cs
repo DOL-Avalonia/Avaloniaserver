@@ -29,7 +29,8 @@ namespace DOL.AI.Brain
                 {
                     //Full aggression against Non outlaws
                     AddToAggroList(pl, 1);
-                    BringReinforcements(pl);
+                    // Use new BAF system 
+                    BringFriends(pl);
                     continue;
                 }                
             }
