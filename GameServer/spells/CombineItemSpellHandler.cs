@@ -110,7 +110,7 @@ namespace DOL.spells
             if (match == null)
             {
                 // It missed a message to inform the player
-                player.Out.SendMessage("Aucune combinaison possible n'a été trouvée", eChatType.CT_Chat, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("Aucune combinaison possible n'a été trouvée", eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
                 return false;
             }
 
@@ -125,7 +125,7 @@ namespace DOL.spells
                 {
                     if (player.CraftingSkills[match.CraftingSkill] < match.CraftValue)
                     {
-                        player.Out.SendMessage($"Votre niveau en { match.CraftingSkill.ToString() } doit etre au moins de { match.CraftValue } ", eChatType.CT_Chat, eChatLoc.CL_SystemWindow);
+                        player.Out.SendMessage($"Votre niveau en { match.CraftingSkill.ToString() } doit etre au moins de { match.CraftValue } ", eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
                         return false;
                     }
                 }
@@ -151,7 +151,7 @@ namespace DOL.spells
                         checkAreaId = true;
                 if (!checkAreaId)
                 {
-                    player.Out.SendMessage("Vous ne pouvez pas combiner ces ingrédients à cet endroit", eChatType.CT_Chat, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage("Vous ne pouvez pas combiner ces ingrédients à cet endroit", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return false;
                 }
             }
@@ -357,7 +357,7 @@ namespace DOL.spells
             // Check if player fail to combine
             if (Util.Chance(match.ChanceFailCombine))
             {
-                player.Out.SendMessage("Vous échouez à combiner les objets", eChatType.CT_Chat, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage("Vous échouez à combiner les objets", eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
                 if(match.PunishSpell != 0)
                 {
                     var punishSpell = GameServer.Database.SelectObject<DBSpell>("SpellID = " + match.PunishSpell);
