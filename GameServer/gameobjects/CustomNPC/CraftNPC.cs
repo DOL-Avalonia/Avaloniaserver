@@ -16,6 +16,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+using System;
+using System.Collections.Generic;
 using DOL.GS.PacketHandler;
 using DOL.Language;
 
@@ -27,11 +29,15 @@ namespace DOL.GS
 
         public abstract string ACCEPTED_BY_ORDER_NAME { get; }
 
+        public abstract string Crafters_Profession { get; }
+
         public abstract eCraftingSkill[] TrainedSkills { get; }
 
         public abstract eCraftingSkill TheCraftingSkill { get; }
 
         public abstract string InitialEntersentence { get; }
+
+        protected readonly IList<int> maxValues = new List<int>(new int[]{99, 199, 299, 399, 499, 599, 699, 799, 899, 999, 1099});
 
         public override bool Interact(GamePlayer player)
         {
@@ -47,13 +53,65 @@ namespace DOL.GS
 
             TurnTo(player, 5000);
 
+            if (player.Client.Account.PrivLevel == 1 && player.CraftingPrimarySkill != eCraftingSkill.BasicCrafting && player.CraftingPrimarySkill != TheCraftingSkill)
+            {
+                SayTo(player, eChatLoc.CL_ChatWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "CraftNPC.Interact.NotMaster"));
+                return true;
+            }
+                
+            if(CheckIfPlayerNeedPromotion(player))
+            {
+                SayTo(player, eChatLoc.CL_ChatWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "CraftNPC.Interact.Promoted", GetNextRang(player)));
+                player.GainCraftingSkill(TheCraftingSkill, 1, true);
+                return true;
+            }
+
+
             // Dunnerholl : Basic Crafting Master does not give the option to rejoin this craft
-            if (InitialEntersentence != null)
+            if (player.CraftingPrimarySkill != TheCraftingSkill && InitialEntersentence != null)
             {
                 SayTo(player, eChatLoc.CL_PopupWindow, InitialEntersentence);
             }
+            else
+                SayTo(player, eChatLoc.CL_ChatWindow, "Je n'ai rien à vous apprendre pour le moment !");
 
             return true;
+        }
+
+        protected virtual string GetNextRang(GamePlayer player)
+        {
+            switch(player.GetCraftingSkillValue(TheCraftingSkill))
+            {
+                case 99:
+                    return LanguageMgr.GetTranslation(player.Client.Account.Language, "CraftersTitle.JuniorApprentice", Crafters_Profession);
+                case 199:
+                    return LanguageMgr.GetTranslation(player.Client.Account.Language, "CraftersTitle.Apprentice", Crafters_Profession);
+                case 299:
+                    return LanguageMgr.GetTranslation(player.Client.Account.Language, "CraftersTitle.Neophyte", Crafters_Profession);
+                case 399:
+                    return LanguageMgr.GetTranslation(player.Client.Account.Language, "CraftersTitle.Assistant", Crafters_Profession);
+                case 499:
+                    return LanguageMgr.GetTranslation(player.Client.Account.Language, "CraftersTitle.Junior", Crafters_Profession);
+                case 599:
+                    return LanguageMgr.GetTranslation(player.Client.Account.Language, "CraftersTitle.Journeyman", Crafters_Profession);
+                case 699:
+                    return LanguageMgr.GetTranslation(player.Client.Account.Language, "CraftersTitle.Senior", Crafters_Profession);
+                case 799:
+                    return LanguageMgr.GetTranslation(player.Client.Account.Language, "CraftersTitle.Master", Crafters_Profession);
+                case 899:
+                    return LanguageMgr.GetTranslation(player.Client.Account.Language, "CraftersTitle.Grandmaster", Crafters_Profession);
+                case 999:
+                    return LanguageMgr.GetTranslation(player.Client.Account.Language, "CraftersTitle.Legendary", Crafters_Profession);
+                case 1099:
+                    return LanguageMgr.GetTranslation(player.Client.Account.Language, "CraftersTitle.LegendaryGrandmaster", Crafters_Profession);
+                default:
+                    return null;
+            }
+        }
+
+        protected virtual bool CheckIfPlayerNeedPromotion(GamePlayer player)
+        {
+            return player.CraftingPrimarySkill == TheCraftingSkill && maxValues.Contains(player.GetCraftingSkillValue(TheCraftingSkill));
         }
 
         public override bool WhisperReceive(GameLiving source, string text)
