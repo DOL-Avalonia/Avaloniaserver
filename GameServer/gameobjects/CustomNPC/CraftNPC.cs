@@ -63,6 +63,9 @@ namespace DOL.GS
             {
                 SayTo(player, eChatLoc.CL_ChatWindow, LanguageMgr.GetTranslation(player.Client.Account.Language, "CraftNPC.Interact.Promoted", GetNextRang(player)));
                 player.GainCraftingSkill(TheCraftingSkill, 1, true);
+                player.Out.SendUpdatePlayer();
+                player.Out.SendUpdateCraftingSkills();
+                player.SaveIntoDatabase();
                 return true;
             }
 
@@ -72,8 +75,11 @@ namespace DOL.GS
             {
                 SayTo(player, eChatLoc.CL_PopupWindow, InitialEntersentence);
             }
-            else
+            else if (player.CraftingPrimarySkill == TheCraftingSkill)
                 SayTo(player, eChatLoc.CL_ChatWindow, "Je n'ai rien à vous apprendre pour le moment !");
+            else
+                // Only GM and Admin can see this one
+                SayTo(player, eChatLoc.CL_PopupWindow, "Voulez-vous redevenir [Basic Crafting] ? (GM and Admin Only)");
 
             return true;
         }
@@ -154,6 +160,7 @@ namespace DOL.GS
 
             player.Out.SendUpdatePlayer();
             player.Out.SendUpdateCraftingSkills();
+            player.SaveIntoDatabase();
         }
     }
 }

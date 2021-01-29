@@ -14424,7 +14424,7 @@ namespace DOL.GS
             if (fromMaster)
                 return 1;
             if (skill != CraftingPrimarySkill && (m_craftingSkills[skill] + count) > m_craftingSkills[CraftingPrimarySkill])
-                return m_craftingSkills[CraftingPrimarySkill] - m_craftingSkills[skill];
+                count = m_craftingSkills[CraftingPrimarySkill] - m_craftingSkills[skill];
             if(CraftingPrimarySkill == eCraftingSkill.BasicCrafting && skill != eCraftingSkill.BasicCrafting && (m_craftingSkills[skill]+count)>99)
                 return 99 - m_craftingSkills[skill];
             if (skill != CraftingPrimarySkill)
@@ -14558,7 +14558,8 @@ namespace DOL.GS
 
 			lock (CraftingLock)
 			{
-				if (m_craftingSkills.ContainsKey(skill))
+                // fix error when the player already contains the skill
+				if (!m_craftingSkills.ContainsKey(skill))
 				{
 					AbstractCraftingSkill craftingSkill = CraftingMgr.getSkillbyEnum(skill);
 					if (craftingSkill != null)
