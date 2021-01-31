@@ -2560,7 +2560,10 @@ namespace DOL.GS.Spells
 					if (dist >= 0)
 						ApplyEffectOnTarget(t, (effectiveness - CalculateAreaVariance(t, dist, Spell.Radius)));
 				}
-			}
+
+                if (Caster is GamePet pet && Spell.IsBuff)
+                    pet.AddBuffedTarget(target);
+            }
 
 			if (Spell.Target == "ground")
 			{
@@ -3267,14 +3270,8 @@ namespace DOL.GS.Spells
 		/// </summary>
 		public virtual bool HasPositiveEffect
 		{
-			get
-			{
-				if (m_spell.Target != "enemy" && m_spell.Target != "cone" && m_spell.Target != "area")
-					return true;
-
-				return false;
-			}
-		}
+            get { return m_spell.IsHelpful; }
+        }
 
 		/// <summary>
 		/// Is this Spell purgeable

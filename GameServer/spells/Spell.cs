@@ -311,25 +311,66 @@ namespace DOL.GS
 		}
 
         /// <summary>
-        /// Whether or not this spell is harmful.
+        /// Is this spell harmful?
         /// </summary>
         public bool IsHarmful
         {
             get
             {
-                return (Target == "enemy" || Target == "area" || Target == "cone");
+                switch (Target.ToUpper())
+                {
+                    case "ENEMY":
+                    case "AREA":
+                    case "CONE":
+                        return true;
+                    default:
+                        return false;
+                }
             }
         }
-        
-		/// <summary>
-		/// Whether or not this is a healing spell
+
+        /// <summary>
+		/// Is this spell Helpful?
 		/// </summary>
-		public bool IsHealing
+		public bool IsHelpful
+        {
+            get { return !IsHarmful; }
+        }
+
+        /// <summary>
+        /// Is this a buff spell?
+        /// </summary>
+        public bool IsBuff
+        {
+            get
+            {
+                return (IsHelpful && (Duration > 0 || Concentration > 0));
+            }
+        }
+
+        /// <summary>
+        /// Is this a healing spell?
+        /// </summary>
+        public bool IsHealing
 		{
 			get
 			{
-				return SpellType == "Heal" || SpellType == "CombatHeal" || SpellType == "HealOverTime";
-			}
+                switch (SpellType.ToUpper())
+                {
+                    case "COMBATHEAL":
+                    case "HEAL":
+                    case "HEALOVERTIME":
+                    case "HEALTHREGENBUFF":
+                    case "MERCHEAL":
+                    case "OMNIHEAL":
+                    case "PBAEHEAL":
+                    case "SPREADHEAL":
+                    case "SUMMONHEALINGELEMENTAL":
+                        return true;
+                    default:
+                        return false;
+                }
+            }
 		}
 
 		#endregion
