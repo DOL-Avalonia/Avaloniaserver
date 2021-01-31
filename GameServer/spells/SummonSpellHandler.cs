@@ -42,7 +42,7 @@ namespace DOL.GS.Spells
 	/// </summary>
 	public abstract class SummonSpellHandler : SpellHandler
 	{
-		new private static readonly log4net.ILog log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		protected GamePet m_pet = null;
 
@@ -111,21 +111,6 @@ namespace DOL.GS.Spells
 			Caster.SetControlledBrain(brain);
 		}
 
-		protected virtual byte GetPetLevel()
-		{
-			byte level;
-
-			if (Spell.Damage < 0)
-				level = (byte)(Caster.Level * Spell.Damage * -0.01);
-			else
-				level = (byte)Spell.Damage;
-
-			if (level > Spell.Value)
-				level = (byte)Spell.Value;
-
-			return Math.Max((byte)1, level);
-		}
-
 		protected virtual void AddHandlers()
 		{
 			GameEventMgr.AddHandler(m_pet, GameLivingEvent.PetReleased, new DOLEventHandler(OnNpcReleaseCommand));
@@ -167,7 +152,10 @@ namespace DOL.GS.Spells
 			//brain.WalkState = eWalkState.Stay;
 			m_pet.SetOwnBrain(brain as AI.ABrain);
 
-			int x, y, z;
+            m_pet.SummonSpellDamage = Spell.Damage;
+            m_pet.SummonSpellValue = Spell.Value;
+
+            int x, y, z;
 			ushort heading;
 			Region region;
 
@@ -181,16 +169,6 @@ namespace DOL.GS.Spells
 
 			m_pet.CurrentSpeed = 0;
 			m_pet.Realm = Caster.Realm;
-			m_pet.Level = GetPetLevel();
-
-            // Scale pet spells
-            if (DOL.GS.ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL > 0)
-            {
-                foreach (Spell spell in m_pet.Spells)
-                    m_pet.ScalePetSpell(spell);
-
-                m_pet.SortSpells(); // Do a sort of the scaled spells
-            }
 
             // Fix owner pet issue
             if (Caster is GameNPC mob && mob.Faction != null)
@@ -209,7 +187,13 @@ namespace DOL.GS.Spells
 
 			SetBrainToOwner(brain);
 
-			effect.Start(m_pet);
+            m_pet.SetPetLevel();
+            m_pet.Health = m_pet.MaxHealth;
+
+            if (DOL.GS.ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL > 0)
+                m_pet.Spells = template.Spells; // Have to scale spells again now that the pet level has been assigned
+
+            effect.Start(m_pet);
 
 			Caster.OnPetSummoned(m_pet);
 		}

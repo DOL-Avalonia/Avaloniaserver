@@ -1121,7 +1121,7 @@ namespace DOL.GS.ServerProperties
         /// Base Value to use when auto-setting STR stat.
         /// </summary>
         [ServerProperty("npc", "mob_autoset_str_base", "Base Value to use when auto-setting STR stat. ", 30.0)]
-        public static double MOB_AUTOSET_STR_BASE { get; set; }
+        public static short MOB_AUTOSET_STR_BASE { get; set; }
 
         /// <summary>
         /// Multiplier to use when auto-setting STR stat.
@@ -1133,7 +1133,7 @@ namespace DOL.GS.ServerProperties
         /// Base Value to use when auto-setting CON stat.
         /// </summary>
         [ServerProperty("npc", "mob_autoset_con_base", "Base Value to use when auto-setting CON stat. ", 30.0)]
-        public static double MOB_AUTOSET_CON_BASE { get; set; }
+        public static short MOB_AUTOSET_CON_BASE { get; set; }
 
         /// <summary>
         /// Multiplier to use when auto-setting CON stat.
@@ -1145,7 +1145,7 @@ namespace DOL.GS.ServerProperties
         /// Base Value to use when auto-setting QUI stat.
         /// </summary>
         [ServerProperty("npc", "mob_autoset_qui_base", "Base Value to use when auto-setting qui stat. ", 30.0)]
-        public static double MOB_AUTOSET_QUI_BASE { get; set; }
+        public static short MOB_AUTOSET_QUI_BASE { get; set; }
 
         /// <summary>
         /// Multiplier to use when auto-setting QUI stat.
@@ -1157,7 +1157,7 @@ namespace DOL.GS.ServerProperties
         /// Base Value to use when auto-setting DEX stat.
         /// </summary>
         [ServerProperty("npc", "mob_autoset_dex_base", "Base Value to use when auto-setting DEX stat. ", 30.0)]
-        public static double MOB_AUTOSET_DEX_BASE { get; set; }
+        public static short MOB_AUTOSET_DEX_BASE { get; set; }
 
         /// <summary>
         /// Multiplier to use when auto-setting DEX stat.
@@ -1169,7 +1169,7 @@ namespace DOL.GS.ServerProperties
         /// Base Value to use when auto-setting pet STR stat.
         /// </summary>
         [ServerProperty("npc", "pet_autoset_str_base", "Base Value to use when auto-setting Pet STR stat. ", 20.0)]
-        public static double PET_AUTOSET_STR_BASE { get; set; }
+        public static short PET_AUTOSET_STR_BASE { get; set; }
 
         /// <summary>
         /// Multiplier to use when auto-setting pet STR stat.
@@ -1180,7 +1180,7 @@ namespace DOL.GS.ServerProperties
         /// Base Value to use when auto-setting pet CON stat.
         /// </summary>
         [ServerProperty("npc", "pet_autoset_con_base", "Base Value to use when auto-setting Pet CON stat. ", 30.0)]
-        public static double PET_AUTOSET_CON_BASE { get; set; }
+        public static short PET_AUTOSET_CON_BASE { get; set; }
 
         /// <summary>
         /// Multiplier to use when auto-setting pet CON stat.
@@ -1191,7 +1191,7 @@ namespace DOL.GS.ServerProperties
         /// Base Value to use when auto-setting Pet DEX stat.
         /// </summary>
         [ServerProperty("npc", "pet_autoset_dex_base", "Base Value to use when auto-setting Pet DEX stat. ", 30.0)]
-        public static double PET_AUTOSET_DEX_BASE { get; set; }
+        public static short PET_AUTOSET_DEX_BASE { get; set; }
 
         /// <summary>
         /// Multiplier to use when auto-setting pet DEX stat.
@@ -1202,7 +1202,7 @@ namespace DOL.GS.ServerProperties
         /// Base Value to use when auto-setting Pet QUI stat.
         /// </summary>
         [ServerProperty("npc", "pet_autoset_qui_base", "Base Value to use when auto-setting Pet QUI stat. ", 30.0)]
-        public static double PET_AUTOSET_QUI_BASE { get; set; }
+        public static short PET_AUTOSET_QUI_BASE { get; set; }
 
         /// <summary>
         /// Multiplier to use when auto-setting pet QUI stat.
@@ -1223,6 +1223,12 @@ namespace DOL.GS.ServerProperties
         public static int PET_SCALE_SPELL_MAX_LEVEL { get; set; }
 
         /// <summary>
+		/// Scale pet spell values according to their level?
+		/// </summary>
+		[ServerProperty("npc", "pet_cap_bd_minion_spell_scaling_by_spec", "When scaling BD minion spells, do we cap the level they scale do by the BD's spec level?  This provides an incentive to spec darkness and suppression and use items that boost them.", false)]
+        public static bool PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC { get; set; }
+
+        /// <summary>
         /// What level to start increasing mob damage
         /// </summary>
         [ServerProperty("npc", "mob_damage_increase_startlevel", "What level to start increasing mob damage.", 30)]
@@ -1233,7 +1239,7 @@ namespace DOL.GS.ServerProperties
         /// INT is the stat used for spell damage for mobs/pets
         /// </summary>
         [ServerProperty("npc", "pet_autoset_int_base", "Multiplier to use when auto-setting Pet INT stat. ", 30)]
-        public static double PET_AUTOSET_INT_BASE { get; set; }
+        public static short PET_AUTOSET_INT_BASE { get; set; }
 
         /// <summary>
         /// Multiplier to use when auto-setting pet INT stat.
@@ -1260,7 +1266,7 @@ namespace DOL.GS.ServerProperties
 	/// Base value to use when setting strength for most necromancer pets.
 	/// </summary>
 	[ServerProperty("npc", "necro_pet_str_base", "Base value to use when setting strength for most necromancer pets.", 60)]
-	public static int NECRO_PET_STR_BASE { get; set; }
+	public static short NECRO_PET_STR_BASE { get; set; }
 
 	/// <summary>
 	/// Multiplier to use when setting strength for most necromancer pets.
@@ -1272,7 +1278,7 @@ namespace DOL.GS.ServerProperties
 	/// Base value to use when setting constitution for most necromancer pets.
 	/// </summary>
 	[ServerProperty("npc", "necro_pet_con_base", "Base value to use when setting constitution for most necromancer pets.", 60)]
-	public static int NECRO_PET_CON_BASE { get; set; }
+	public static short NECRO_PET_CON_BASE { get; set; }
 
 	/// <summary>
 	/// Multiplier to use when setting constitution for most necromancer pets.
@@ -1284,7 +1290,7 @@ namespace DOL.GS.ServerProperties
 	/// Base value to use when setting dexterity for most necromancer pets.
 	/// </summary>
 	[ServerProperty("npc", "necro_pet_dex_base", "Base value to use when setting dexterity for most necromancer pets.", 60)]
-	public static int NECRO_PET_DEX_BASE { get; set; }
+	public static short NECRO_PET_DEX_BASE { get; set; }
 
 	/// <summary>
 	/// Multiplier to use when setting dexterity for most necromancer pets.
@@ -1296,7 +1302,7 @@ namespace DOL.GS.ServerProperties
 	/// Base value to use when setting quickness for most necromancer pets.
 	/// </summary>
 	[ServerProperty("npc", "necro_pet_qui_base", "Base value to use when setting quickness for most necromancer pets.", 60)]
-	public static int NECRO_PET_QUI_BASE { get; set; }
+	public static short NECRO_PET_QUI_BASE { get; set; }
 
 	/// <summary>
 	/// Multiplier to use when setting quickness for most necromancer pets.
@@ -1308,7 +1314,7 @@ namespace DOL.GS.ServerProperties
 	/// Base value to use when setting strength for greater necroservant pets.
 	/// </summary>
 	[ServerProperty("npc", "necro_greater_pet_str_base", "Base value to use when setting strength for greater necroservant pets.", 60)]
-	public static int NECRO_GREATER_PET_STR_BASE { get; set; }
+	public static short NECRO_GREATER_PET_STR_BASE { get; set; }
 
 	/// <summary>
 	/// Multiplier to use when setting strength for greater necroservant pets.
@@ -1320,7 +1326,7 @@ namespace DOL.GS.ServerProperties
 	/// Base value to use when setting constitution forgreater necroservant pets.
 	/// </summary>
 	[ServerProperty("npc", "necro_greater_pet_con_base", "Base value to use when setting constitution for greater necroservant pets.", 60)]
-	public static int NECRO_GREATER_PET_CON_BASE { get; set; }
+	public static short NECRO_GREATER_PET_CON_BASE { get; set; }
 
 	/// <summary>
 	/// Multiplier to use when setting constitution for greater necroservant pets.
@@ -1332,7 +1338,7 @@ namespace DOL.GS.ServerProperties
 	/// Base value to use when setting dexterity for greater necroservant pets.
 	/// </summary>
 	[ServerProperty("npc", "necro_greater_pet_dex_base", "Base value to use when setting dexterity for greater necroservant pets.", 60)]
-	public static int NECRO_GREATER_PET_DEX_BASE { get; set; }
+	public static short NECRO_GREATER_PET_DEX_BASE { get; set; }
 
 	/// <summary>
 	/// Multiplier to use when setting dexterity for greater necroservant pets.
@@ -1344,7 +1350,7 @@ namespace DOL.GS.ServerProperties
 	/// Base value to use when setting quickness for greater necroservant pets.
 	/// </summary>
 	[ServerProperty("npc", "necro_greater_pet_qui_base", "Base value to use when setting quickness for greater necroservant pets.", 60)]
-	public static int NECRO_GREATER_PET_QUI_BASE { get; set; }
+	public static short NECRO_GREATER_PET_QUI_BASE { get; set; }
 
 	/// <summary>
 	/// Multiplier to use when setting quickness for greater necroservant pets.
@@ -1416,19 +1422,25 @@ namespace DOL.GS.ServerProperties
         /// Base Value to use when auto-setting INT stat.
         /// </summary>
         [ServerProperty("npc", "mob_autoset_int_base", "Base Value to use when auto-setting INT stat. ", 30)]
-        public static int MOB_AUTOSET_INT_BASE { get; set; }
+        public static short MOB_AUTOSET_INT_BASE { get; set; }
 
         /// <summary>
         /// Multiplier to use when auto-setting INT stat.
         /// </summary>
         [ServerProperty("npc", "mob_autoset_int_multiplier", "Multiplier to use when auto-setting INT stat. ", 1.0)]
         public static double MOB_AUTOSET_INT_MULTIPLIER { get; set; }
-	    
-	/// <summary>
-	/// Enable 2H weapon damage bonus for mobs?
-	/// </summary>
-	[ServerProperty("npc", "mob_2h_bonus_damage", "If true, mobs that use a 2H weapon and have a block chance get bonus damage equal to their block chance to compensate for not being able to block. ", false)]
-	public static bool MOB_2H_BONUS_DAMAGE { get; set; }
+
+        /// <summary>
+		/// Do pets level up with their owner?
+		/// </summary>
+		[ServerProperty("npc", "pet_levels_with_owner", "Do pets level up with their owner? ", false)]
+        public static bool PET_LEVELS_WITH_OWNER { get; set; }
+
+        /// <summary>
+        /// Enable 2H weapon damage bonus for mobs?
+        /// </summary>
+        [ServerProperty("npc", "mob_2h_bonus_damage", "If true, mobs that use a 2H weapon and have a block chance get bonus damage equal to their block chance to compensate for not being able to block. ", false)]
+	    public static bool MOB_2H_BONUS_DAMAGE { get; set; }
 
         /// <summary>
         /// Grace period in minutes to allow relog near enemy structure after link death

@@ -59,15 +59,15 @@ namespace DOL.Database
 		private byte m_leftHandSwingChance;
 		private string m_spells = string.Empty;
 		private string m_styles = string.Empty;
-		private int m_strength = 0;
-		private int m_constitution = 0;
-		private int m_dexterity = 0;
-		private int m_quickness = 0;
-		private int m_intelligence = 0;
-		private int m_piety = 0;
-		private int m_empathy = 0;
-		private int m_charisma = 0;
-		private int m_weapondps = 0;
+        private short m_strength = 0;
+        private short m_constitution = 0;
+        private short m_dexterity = 0;
+        private short m_quickness = 0;
+        private short m_intelligence = 0;
+        private short m_piety = 0;
+        private short m_empathy = 0;
+        private short m_charisma = 0;
+        private int m_weapondps = 0;
 		private int m_weaponspd = 30;
 		private int m_armorfactor = 0;
 		private int m_armorabsorb = 0;
@@ -426,7 +426,7 @@ namespace DOL.Database
 		}
 
 		[DataElement(AllowDbNull = false)]
-		public int Strength
+		public short Strength
 		{
 			get { return m_strength; }
 			set
@@ -437,7 +437,7 @@ namespace DOL.Database
 		}
 
 		[DataElement(AllowDbNull = false)]
-		public int Constitution
+		public short Constitution
 		{
 			get { return m_constitution; }
 			set
@@ -448,7 +448,7 @@ namespace DOL.Database
 		}
 
 		[DataElement(AllowDbNull = false)]
-		public int Dexterity
+		public short Dexterity
 		{
 			get { return m_dexterity; }
 			set
@@ -459,7 +459,7 @@ namespace DOL.Database
 		}
 
 		[DataElement(AllowDbNull = false)]
-		public int Quickness
+		public short Quickness
 		{
 			get { return m_quickness; }
 			set
@@ -470,7 +470,7 @@ namespace DOL.Database
 		}
 
 		[DataElement(AllowDbNull = false)]
-		public int Intelligence
+		public short Intelligence
 		{
 			get { return m_intelligence; }
 			set
@@ -481,7 +481,7 @@ namespace DOL.Database
 		}
 
 		[DataElement(AllowDbNull = false)]
-		public int Piety
+		public short Piety
 		{
 			get { return m_piety; }
 			set
@@ -492,7 +492,7 @@ namespace DOL.Database
 		}
 
 		[DataElement(AllowDbNull = false)]
-		public int Charisma
+		public short Charisma
 		{
 			get { return m_charisma; }
 			set
@@ -503,7 +503,7 @@ namespace DOL.Database
 		}
 
 		[DataElement(AllowDbNull = false)]
-		public int Empathy
+		public short Empathy
 		{
 			get { return m_empathy; }
 			set

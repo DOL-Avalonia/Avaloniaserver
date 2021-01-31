@@ -58,15 +58,75 @@ namespace DOL.GS
 			get
 			{
 				if (Brain is IControlledBrain)
-				{
-					return (Brain as IControlledBrain).Owner;
-				}
+                    return (Brain as IControlledBrain).Owner;
 
-				return null;
+                return null;
 			}
 		}
 
-		public override int Mana { get => 5000; set => base.Mana = value; }
+        /// <summary>
+		/// The root owner of this pet, the person at the top of the owner chain.
+		/// </summary>
+		public GameLiving RootOwner
+        {
+            get
+            {
+                if (Brain is IControlledBrain petBrain)
+                    return petBrain.GetLivingOwner();
+
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the level of this NPC
+        /// </summary>
+        public override byte Level
+        {
+            get { return base.Level; }
+            set
+            {
+                // Don't set the pet level until the owner is set
+                // This skips unnecessary calls to code in base.Level
+                if (Owner != null)
+                    base.Level = value;
+            }
+        }
+
+        // Store the info we need from the summoning spell to calculate pet level.
+        public double SummonSpellDamage { get; set; } = -88.0;
+        public double SummonSpellValue { get; set; } = 44.0;
+
+        /// <summary>
+        /// Set the pet's level based on owner's level.  Make sure Owner brain has been assigned before calling!
+        /// </summary>
+        /// <returns>Did the pet's level change?</returns>
+        public virtual bool SetPetLevel()
+        {
+            // Changing Level calls additional code, so only do it at the end
+            byte newLevel = 0;
+
+            if (SummonSpellDamage >= 0)
+                newLevel = (byte)SummonSpellDamage;
+            else if (!(Owner is GamePet))
+                newLevel = (byte)(Owner.Level * SummonSpellDamage * -0.01);
+            else if (RootOwner is GameLiving summoner)
+                newLevel = (byte)(summoner.Level * SummonSpellDamage * -0.01);
+
+            if (newLevel > SummonSpellValue)
+                newLevel = (byte)SummonSpellValue;
+
+            if (newLevel < 1)
+                newLevel = 1;
+
+            if (Level == newLevel)
+                return false;
+
+            Level = newLevel;
+            return true;
+        }
+
+        public override int Mana { get => 5000; set => base.Mana = value; }
 		public override int MaxMana => 5000;
 
 
@@ -131,6 +191,91 @@ namespace DOL.GS
         #region Spells
 
         /// <summary>
+        /// Sort spells into specific lists
+        /// </summary>
+        public override void SortSpells()
+        {
+            SortSpells(0);
+        }
+
+        /// <summary>
+        /// Sort spells into specific lists, scaling spells by scaleLevel
+        /// </summary>
+        /// <param name="casterLevel">The level to scale the pet spell to, 0 to use pet level</param>
+        public virtual void SortSpells(int scaleLevel)
+        {
+            if (Spells.Count < 1 || Level < 1)
+                return;
+
+            if (DOL.GS.ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL <= 0)
+                base.SortSpells();
+            else
+            {
+                if (scaleLevel <= 0)
+                    scaleLevel = Level;
+
+                if (DOL.GS.ServerProperties.Properties.PET_LEVELS_WITH_OWNER ||
+                    (this is BDSubPet && DOL.GS.ServerProperties.Properties.PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC))
+                {
+                    // We'll need to be able to scale spells for this pet multiple times, so we
+                    //	need to keep the original spells in Spells and only scale sorted copies.
+
+                    base.SortSpells();
+
+                    if (CanCastHarmfulSpells)
+                        for (int i = 0; i < HarmfulSpells.Count; i++)
+                        {
+                            HarmfulSpells[i] = HarmfulSpells[i].Copy();
+                            ScalePetSpell(HarmfulSpells[i], scaleLevel);
+                        }
+
+                    if (CanCastInstantHarmfulSpells)
+                        for (int i = 0; i < InstantHarmfulSpells.Count; i++)
+                        {
+                            InstantHarmfulSpells[i] = InstantHarmfulSpells[i].Copy();
+                            ScalePetSpell(InstantHarmfulSpells[i], scaleLevel);
+                        }
+
+                    if (CanCastHealSpells)
+                        for (int i = 0; i < HealSpells.Count; i++)
+                        {
+                            HealSpells[i] = HealSpells[i].Copy();
+                            ScalePetSpell(HealSpells[i], scaleLevel);
+                        }
+
+                    if (CanCastInstantHealSpells)
+                        for (int i = 0; i < InstantHealSpells.Count; i++)
+                        {
+                            InstantHealSpells[i] = InstantHealSpells[i].Copy();
+                            ScalePetSpell(InstantHealSpells[i], scaleLevel);
+                        }
+
+                    if (CanCastInstantMiscSpells)
+                        for (int i = 0; i < InstantMiscSpells.Count; i++)
+                        {
+                            InstantMiscSpells[i] = InstantMiscSpells[i].Copy();
+                            ScalePetSpell(InstantMiscSpells[i], scaleLevel);
+                        }
+
+                    if (CanCastMiscSpells)
+                        for (int i = 0; i < MiscSpells.Count; i++)
+                        {
+                            MiscSpells[i] = MiscSpells[i].Copy();
+                            ScalePetSpell(MiscSpells[i], scaleLevel);
+                        }
+                }
+                else
+                {
+                    // We don't need to keep the original spells, so don't waste memory keeping separate copies.
+                    foreach (Spell spell in Spells)
+                        ScalePetSpell(spell, scaleLevel);
+
+                    base.SortSpells();
+                }
+            }
+        }
+
+        /// <summary>
         /// Can this living cast the given spell while in combat?
         /// </summary>
         /// <param name="spell"></param>
@@ -153,17 +298,14 @@ namespace DOL.GS
         /// <summary>
         /// Scale the passed spell according to PET_SCALE_SPELL_MAX_LEVEL
         /// </summary>
-        /// <param name="spell">The spell to scale</param>
-        public void ScalePetSpell(Spell spell)
+        /// <param name="casterLevel">The level to scale the pet spell to, 0 to use pet level</param>
+		public virtual void ScalePetSpell(Spell spell, int casterLevel = 0)
         {
-            if (ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL <= 0)
+            if (ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL <= 0 || spell == null || Level < 1)
                 return;
 
-            double CasterLevel = Level;
-
-            // Cap the level we scale BD minions' spell effects to the player's modified spec for the spec line the pet is from
-            if (this is BDSubPet subpet && subpet.Owner is CommanderPet commander && commander.Owner is GamePlayer player)
-                CasterLevel = Math.Min(subpet.Level, player.GetModifiedSpecLevel(subpet.PetSpecLine));
+            if (casterLevel < 1)
+                casterLevel = Level;
 
             switch (spell.SpellType.ToString().ToLower())
             {
@@ -175,8 +317,8 @@ namespace DOL.GS
                 case "directdamagewithdebuff":
                 case "lifedrain":
                 case "damagespeeddecrease":
-                case "stylebleeding": // Style Effect
-                    spell.Damage *= CasterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL;
+                case "stylebleeding": // Style bleed effect
+                    spell.Damage *= (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL;
                     break;
                 // Scale Value
                 case "enduranceregenbuff":
@@ -213,7 +355,7 @@ namespace DOL.GS
                 case "unbreakablespeeddecrease":
                 case "speeddecrease":
                 case "stylecombatspeeddebuff": // Style attack speed debuff
-                    spell.Value *= CasterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL;
+                    spell.Value *= (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL;
                     break;
                 // Scale Duration
                 case "disease":
@@ -222,12 +364,13 @@ namespace DOL.GS
                 case "mesmerize":
                 case "stylestun": // Style stun effect
                 case "stylespeeddecrease": // Style hinder effect
-                    spell.Duration = (int)Math.Ceiling(spell.Duration * CasterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL);
+                    spell.Duration = (int)Math.Ceiling(spell.Duration * (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL);
                     break;
-                case "styletaunt": // Taunt styles already scale with damage
+                case "styletaunt": // Style taunt effects already scale with damage
+                case "curepoison":
+                case "curedisease":
                     break;
                 default:
-                    log.Warn("ScalePetSpell(): unrecognized spell type " + spell.SpellType);
                     break; // Don't mess with types we don't know
             } // switch (m_spell.SpellType.ToString().ToLower())
         }
@@ -235,51 +378,72 @@ namespace DOL.GS
 
         #region Stats
         /// <summary>
-        /// Set stats according to PET_AUTOSET values, then scale them according to the values in the DB
+        /// Set stats according to PET_AUTOSET values, then scale them according to the npcTemplate
         /// </summary>
         public override void AutoSetStats()
 		{
-			if (NPCTemplate == null || NPCTemplate.Strength < 1)
-				Strength = (short)Math.Max(1, Properties.PET_AUTOSET_STR_BASE + (Level - 1) * Properties.PET_AUTOSET_STR_MULTIPLIER);
-			else
-				Strength = (short)NPCTemplate.Strength;
+            // Assign base values
+            Strength = Properties.PET_AUTOSET_STR_BASE;
+            if (Strength < 1)
+                Strength = 1;
 
-			if (NPCTemplate == null || NPCTemplate.Constitution < 1)
-				Constitution = (short)Math.Max(1, Properties.PET_AUTOSET_CON_BASE + (Level - 1) * Properties.PET_AUTOSET_CON_MULTIPLIER);
-			else
-				Constitution = (short)NPCTemplate.Constitution;
+            Constitution = Properties.PET_AUTOSET_CON_BASE;
+            if (Constitution < 1)
+                Constitution = 1;
 
-			if (NPCTemplate == null || NPCTemplate.Quickness < 1)
-				Quickness = (short)Math.Max(1, Properties.PET_AUTOSET_QUI_BASE + (Level - 1) * Properties.PET_AUTOSET_QUI_MULTIPLIER);
-			else
-				Quickness = (short)NPCTemplate.Quickness;
+            Quickness = Properties.PET_AUTOSET_QUI_BASE;
+            if (Quickness < 1)
+                Quickness = 1;
 
-			if (NPCTemplate == null || NPCTemplate.Dexterity < 1)
-				Dexterity = (short)Math.Max(1, Properties.PET_AUTOSET_DEX_BASE + (Level - 1) * Properties.PET_AUTOSET_DEX_MULTIPLIER);
-			else
-				Dexterity = (short)NPCTemplate.Dexterity;
+            Dexterity = Properties.PET_AUTOSET_DEX_BASE;
+            if (Dexterity < 1)
+                Dexterity = 1;
 
-			if (NPCTemplate == null || NPCTemplate.Intelligence < 1)
-				Intelligence = (short)Math.Max(1, Properties.PET_AUTOSET_INT_BASE + (Level - 1) * Properties.PET_AUTOSET_INT_MULTIPLIER);
-			else
-				Intelligence = (short)NPCTemplate.Intelligence;
+            Intelligence = Properties.PET_AUTOSET_INT_BASE;
+            if (Intelligence < 1)
+                Intelligence = 1;
 
-			if (NPCTemplate == null || NPCTemplate.Empathy < 1)
-				Empathy = (short)(29 + Level);
-			else
-				Empathy = (short)NPCTemplate.Empathy;
+            Empathy = 30;
+            Piety = 30;
+            Charisma = 30;
 
-			if (NPCTemplate == null || NPCTemplate.Piety < 1)
-				Piety = (short)(29 + Level);
-			else
-				Piety = (short)NPCTemplate.Piety;
+            if (Level > 1)
+            {
+                // Now add stats for levelling
+                Strength += (short)Math.Round(10.0 * (Level - 1) * Properties.PET_AUTOSET_STR_MULTIPLIER);
+                Constitution += (short)Math.Round((Level - 1) * Properties.PET_AUTOSET_CON_MULTIPLIER);
+                Quickness += (short)Math.Round((Level - 1) * Properties.PET_AUTOSET_QUI_MULTIPLIER);
+                Dexterity += (short)Math.Round((Level - 1) * Properties.PET_AUTOSET_DEX_MULTIPLIER);
+                Intelligence += (short)Math.Round((Level - 1) * Properties.PET_AUTOSET_INT_MULTIPLIER);
+                Empathy += (short)(Level - 1);
+                Piety += (short)(Level - 1);
+                Charisma += (short)(Level - 1);
+            }
 
-			if (NPCTemplate == null || NPCTemplate.Charisma < 1)
-				Charisma = (short)(29 + Level);
-			else
-				Charisma = (short)NPCTemplate.Charisma;
+            // Now scale them according to NPCTemplate values
+			if (NPCTemplate != null)
+			{
+				if (NPCTemplate.Strength > 0)
+					Strength = (short)Math.Round(Strength * (NPCTemplate.Strength / 100.0));
+				if (NPCTemplate.Constitution > 0)
+					Constitution = (short)Math.Round(Constitution * (NPCTemplate.Constitution / 100.0));
+				if (NPCTemplate.Quickness > 0)
+					Quickness = (short)Math.Round(Quickness * (NPCTemplate.Quickness / 100.0));
+				if (NPCTemplate.Dexterity > 0)
+					Dexterity = (short)Math.Round(Dexterity * (NPCTemplate.Dexterity / 100.0));
+				if (NPCTemplate.Intelligence > 0)
+					Intelligence = (short)Math.Round(Intelligence * (NPCTemplate.Intelligence / 100.0));
 
-			if (NPCTemplate == null || NPCTemplate.WeaponDps < 1)
+				// Except for CHA, EMP, AND PIE as those don't have autoset values.
+				if (NPCTemplate.Empathy > 0)
+					Empathy = (short)NPCTemplate.Empathy;
+				if (NPCTemplate.Piety > 0)
+					Piety = (short)NPCTemplate.Piety;
+				if (NPCTemplate.Charisma > 0)
+					Charisma = (short)NPCTemplate.Charisma;
+			}
+
+            if (NPCTemplate == null || NPCTemplate.WeaponDps < 1)
 				WeaponDps = (int)((1.4 + 0.3 * Level + Level * Level * 0.002) * 10);
 			else
 				WeaponDps = NPCTemplate.WeaponDps;

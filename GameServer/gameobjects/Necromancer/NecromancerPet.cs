@@ -64,8 +64,6 @@ namespace DOL.GS
             Stun = 2165
         }
 
-;
-
         /// <summary>
         /// Create necromancer pet from template. Con and hit bonuses from
         /// items the caster was wearing when the summon started, will be
@@ -276,36 +274,79 @@ namespace DOL.GS
         }
 
         /// <summary>
-	/// Set stats according to necro pet server properties
+	    /// Set stats according to necro pet server properties
         /// </summary>
-	public override void AutoSetStats()
+	    public override void AutoSetStats()
         {
-			// Use normal pet stats for Cha, Emp, Int, and Pie.
-			base.AutoSetStats();
 
 			if (Name.ToUpper() == "GREATER NECROSERVANT")
             {
-				Strength = (short)(ServerProperties.Properties.NECRO_GREATER_PET_STR_BASE
-					+ (short)(Math.Round(ServerProperties.Properties.NECRO_GREATER_PET_STR_MULTIPLIER * Level)));
-				Constitution = (short)(ServerProperties.Properties.NECRO_GREATER_PET_CON_BASE
-					+ (short)(Math.Round(ServerProperties.Properties.NECRO_GREATER_PET_CON_MULTIPLIER * Level))
-					+ m_summonConBonus);
-				Dexterity = (short)(ServerProperties.Properties.NECRO_GREATER_PET_DEX_BASE
-					+ (short)(Math.Round(ServerProperties.Properties.NECRO_GREATER_PET_DEX_MULTIPLIER * Level)));
-				Quickness = (short)(ServerProperties.Properties.NECRO_GREATER_PET_QUI_BASE
-					+ (short)(Math.Round(ServerProperties.Properties.NECRO_GREATER_PET_QUI_MULTIPLIER * Level)));
+                Strength = ServerProperties.Properties.NECRO_GREATER_PET_STR_BASE;
+                Constitution = (short)(ServerProperties.Properties.NECRO_GREATER_PET_CON_BASE + m_summonConBonus);
+                Dexterity = ServerProperties.Properties.NECRO_GREATER_PET_DEX_BASE;
+                Quickness = ServerProperties.Properties.NECRO_GREATER_PET_QUI_BASE;
+
+                if (Level > 1)
+                {
+                    Strength += (short)(Math.Round(ServerProperties.Properties.NECRO_GREATER_PET_STR_MULTIPLIER * Level));
+                    Constitution += (short)(Math.Round(ServerProperties.Properties.NECRO_GREATER_PET_CON_MULTIPLIER * Level));
+                    Dexterity += (short)(Math.Round(ServerProperties.Properties.NECRO_GREATER_PET_DEX_MULTIPLIER * Level));
+                    Quickness += (short)(Math.Round(ServerProperties.Properties.NECRO_GREATER_PET_QUI_MULTIPLIER * Level));
+                }
             }
 			else
             {
-				Strength = (short)(ServerProperties.Properties.NECRO_PET_STR_BASE
-					+ (short)(Math.Round(ServerProperties.Properties.NECRO_PET_STR_MULTIPLIER * Level)));
-				Constitution = (short)(ServerProperties.Properties.NECRO_PET_CON_BASE
-					+ (short)(Math.Round(ServerProperties.Properties.NECRO_PET_CON_MULTIPLIER * Level))
-					+ m_summonConBonus);
-				Dexterity = (short)(ServerProperties.Properties.NECRO_PET_DEX_BASE
-					+ (short)(Math.Round(ServerProperties.Properties.NECRO_PET_DEX_MULTIPLIER * Level)));
-				Quickness = (short)(ServerProperties.Properties.NECRO_PET_QUI_BASE
-					+ (short)(Math.Round(ServerProperties.Properties.NECRO_PET_QUI_MULTIPLIER * Level)));
+                Strength = ServerProperties.Properties.NECRO_PET_STR_BASE;
+                Constitution = (short)(ServerProperties.Properties.NECRO_PET_CON_BASE + m_summonConBonus);
+                Dexterity = ServerProperties.Properties.NECRO_PET_DEX_BASE;
+                Quickness = ServerProperties.Properties.NECRO_PET_QUI_BASE;
+
+                if (Level > 1)
+                {
+                    Strength += (short)(Math.Round(ServerProperties.Properties.NECRO_PET_STR_MULTIPLIER * Level));
+                    Constitution += (short)(Math.Round(ServerProperties.Properties.NECRO_PET_CON_MULTIPLIER * Level));
+                    Dexterity += (short)(Math.Round(ServerProperties.Properties.NECRO_PET_DEX_MULTIPLIER * Level));
+                    Quickness += (short)(Math.Round(ServerProperties.Properties.NECRO_PET_QUI_MULTIPLIER * Level));
+                }
+            }
+
+            Empathy = (byte)(29 + Level);
+            Piety = (byte)(29 + Level);
+            Charisma = (byte)(29 + Level);
+
+            // Now scale them according to NPCTemplate values
+            if (NPCTemplate != null)
+            {
+                if (NPCTemplate.Strength > 0)
+                    Strength = (short)Math.Round(Strength * NPCTemplate.Strength / 100.0);
+
+                if (NPCTemplate.Constitution > 0)
+                    Constitution = (short)Math.Round(Constitution * NPCTemplate.Constitution / 100.0);
+
+                if (NPCTemplate.Quickness > 0)
+                    Quickness = (short)Math.Round(Quickness * NPCTemplate.Quickness / 100.0);
+
+                if (NPCTemplate.Dexterity > 0)
+                    Dexterity = (short)Math.Round(Dexterity * NPCTemplate.Dexterity / 100.0);
+
+                if (NPCTemplate.Intelligence > 0)
+                    Intelligence = (short)Math.Round(Intelligence * NPCTemplate.Intelligence / 100.0);
+
+                // Except for CHA, EMP, AND PIE as those don't have autoset values.
+                if (NPCTemplate.Empathy > 0)
+                    Empathy = (short)(NPCTemplate.Empathy + Level);
+
+                if (NPCTemplate.Piety > 0)
+                    Piety = (short)(NPCTemplate.Piety + Level);
+
+                if (NPCTemplate.Charisma > 0)
+                    Charisma = (short)(NPCTemplate.Charisma + Level);
+
+                // Older DBs have necro pet templates with stats at 30, so warn servers that they need to update their templates
+                if (NPCTemplate.Strength == 30 || NPCTemplate.Constitution == 30 || NPCTemplate.Quickness == 30
+                    || NPCTemplate.Dexterity == 30 || NPCTemplate.Intelligence == 30)
+                    log.Warn($"AutoSetStats(): NpcTemplate with TemplateId=[{NPCTemplate.TemplateId}] scales necro pet Str/Con/Qui/Dex/Int to 30%.  "
+                        + "If this is not intended, change stat values in template to desired percentage or set to 0 to use default.");
             }
         }
 
@@ -386,13 +427,18 @@ namespace DOL.GS
 	/// <param name="ad">information about the attack</param>
 	public override void OnAttackedByEnemy(AttackData ad)
 	{
-		if (Brain is NecromancerPetBrain necroBrain && necroBrain.SpellsQueued && !HasEffect(typeof(FacilitatePainworkingEffect)) 
-			&& ad != null && ad.Attacker != null && ChanceSpellInterrupt(ad.Attacker))
-		{
-			StopCurrentSpellcast();
-			necroBrain.ClearSpellQueue();
-			necroBrain.MessageToOwner("Your pet was attacked by " + ad.Attacker.Name + " and their spell was interrupted!", eChatType.CT_SpellResisted);
-		}
+        if (!HasEffect(typeof(FacilitatePainworkingEffect)) &&
+            ad != null && ad.Attacker != null && ChanceSpellInterrupt(ad.Attacker))
+        {
+            if (Brain is NecromancerPetBrain necroBrain)
+            {
+                StopCurrentSpellcast();
+                necroBrain.MessageToOwner("Your pet was attacked by " + ad.Attacker.Name + " and their spell was interrupted!", eChatType.CT_SpellResisted);
+
+                if (necroBrain.SpellsQueued)
+                    necroBrain.ClearSpellQueue();
+            }
+        }
 
 		base.OnAttackedByEnemy(ad);
 	}
@@ -402,13 +448,17 @@ namespace DOL.GS
 	/// </summary>
 	protected override AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield, bool ignoreLOS)
 	{
-		if (Brain is NecromancerPetBrain necroBrain && necroBrain.SpellsQueued && !HasEffect(typeof(FacilitatePainworkingEffect)))
-		{
+        if (!HasEffect(typeof(FacilitatePainworkingEffect)))
+        {
 			StopCurrentSpellcast();
-			necroBrain.ClearSpellQueue();
+            if (Brain is NecromancerPetBrain necroBrain)
+            {
+                necroBrain.MessageToOwner("Your pet attacked and interrupted their spell!", eChatType.CT_SpellResisted);
 
-			necroBrain.MessageToOwner("Your pet attacked and interrupted their spell!", eChatType.CT_SpellResisted);
-		}
+                if (necroBrain.SpellsQueued)
+                    necroBrain.ClearSpellQueue();
+            }
+        }
 
 		return base.MakeAttack(target, weapon, style, effectiveness, interruptDuration, dualWield, ignoreLOS);
 	}

@@ -266,24 +266,36 @@ namespace DOL.GS
 			get { return base.Level; }
 			set
 			{
-				base.Level = value;
+                bool bMaxHealth = (m_health == MaxHealth);
 
-				if (value > 0)
+                if (value > 0)
 					AutoSetStats();  // Always recalculate stats when level changes
 
 				if (!InCombat)
 					m_health = MaxHealth;
 
-				if (ObjectState == eObjectState.Active)
-				{
-					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
-					{
-						player.Out.SendNPCCreate(this);
-						if (m_inventory != null)
-							player.Out.SendLivingEquipmentUpdate(this);
-					}
-				}
-			}
+                if (Level != value)
+                {
+                    if (Level < 1 && ObjectState == eObjectState.Active)
+                    {
+                        // This is a newly created NPC, so notify nearby players of its creation
+                        foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
+                        {
+                            player.Out.SendNPCCreate(this);
+                            if (m_inventory != null)
+                                player.Out.SendLivingEquipmentUpdate(this);
+                        }
+                    }
+
+                    base.Level = value;
+                    AutoSetStats();  // Recalculate stats when level changes
+                }
+                else
+                    base.Level = value;
+
+                if (bMaxHealth)
+                    m_health = MaxHealth;
+            }
 		}
 
         /// <summary>
@@ -291,48 +303,9 @@ namespace DOL.GS
         /// </summary
         public virtual void AutoSetStats()
 		{
-            // We have to check both the current values and the template to account for mobs leveling up
-            if (Strength < 1 || (m_npcTemplate != null && m_npcTemplate.ReplaceMobValues && m_npcTemplate.Strength < 1))
-                Strength = (short)Math.Max(1, Properties.MOB_AUTOSET_STR_BASE + (Level - 1) * Properties.MOB_AUTOSET_STR_MULTIPLIER);
-			else
-				Strength = (short)NPCTemplate.Strength;
+            AutoSetStats(null);
 
-            if (Constitution < 1 || (m_npcTemplate != null && m_npcTemplate.ReplaceMobValues && m_npcTemplate.Constitution < 1))
-                Constitution = (short)Math.Max(1, Properties.MOB_AUTOSET_CON_BASE + (Level - 1) * Properties.MOB_AUTOSET_CON_MULTIPLIER);
-			else
-				Constitution = (short)NPCTemplate.Constitution;
-
-            if (Quickness < 1 || (m_npcTemplate != null && m_npcTemplate.ReplaceMobValues && m_npcTemplate.Quickness < 1))
-                Quickness = (short)Math.Max(1, Properties.MOB_AUTOSET_QUI_BASE + (Level - 1) * Properties.MOB_AUTOSET_QUI_MULTIPLIER);
-			else
-				Quickness = (short)NPCTemplate.Quickness;
-
-            if (Dexterity < 1 || (m_npcTemplate != null && m_npcTemplate.ReplaceMobValues && m_npcTemplate.Dexterity < 1))
-                Dexterity = (short)Math.Max(1, Properties.MOB_AUTOSET_DEX_BASE + (Level - 1) * Properties.MOB_AUTOSET_DEX_MULTIPLIER);
-			else
-				Dexterity = (short)NPCTemplate.Dexterity;
-
-            if (Intelligence < 1 || (m_npcTemplate != null && m_npcTemplate.ReplaceMobValues && m_npcTemplate.Intelligence < 1))
-                Intelligence = (short)Math.Max(1, Properties.MOB_AUTOSET_INT_BASE + (Level - 1) * Properties.MOB_AUTOSET_INT_MULTIPLIER);
-			else
-				Intelligence = (short)NPCTemplate.Intelligence;
-
-            if (Empathy < 1 || (m_npcTemplate != null && m_npcTemplate.ReplaceMobValues && m_npcTemplate.Empathy < 1))
-                Empathy = (short)(29 + Level);
-			else
-				Empathy = (short)NPCTemplate.Empathy;
-
-            if (Piety < 1 || (m_npcTemplate != null && m_npcTemplate.ReplaceMobValues && m_npcTemplate.Piety < 1))
-                Piety = (short)(29 + Level);
-			else
-				Piety = (short)NPCTemplate.Piety;
-
-            if (Charisma < 1 || (m_npcTemplate != null && m_npcTemplate.ReplaceMobValues && m_npcTemplate.Charisma < 1))
-                Charisma = (short)(29 + Level);
-			else
-				Charisma = (short)NPCTemplate.Charisma;
-
-			if (NPCTemplate == null || NPCTemplate.WeaponDps < 1)
+            if (NPCTemplate == null || NPCTemplate.WeaponDps < 1)
 				WeaponDps = (int)((1.4 + 0.3 * Level + Level * Level * 0.002) * 10);
 			else
 				WeaponDps = NPCTemplate.WeaponDps;
@@ -351,10 +324,112 @@ namespace DOL.GS
 				ArmorAbsorb = NPCTemplate.ArmorAbsorb;
 		}
 
-		/// <summary>
-		/// Gets or Sets the effective level of the Object
+        /// <summary>
+		/// Auto set stats based on DB entry, npcTemplate, and level.
 		/// </summary>
-		public override int EffectiveLevel
+		/// <param name="dbMob">Mob DB entry to load stats from, retrieved from DB if null</param>
+		public virtual void AutoSetStats(Mob dbMob = null)
+        {
+            // Don't set stats for mobs until their level is set
+            if (Level < 1)
+                return;
+
+            // We have to check both the DB and template values to account for mobs changing levels.
+            // Otherwise, high level mobs retain their stats when their level is lowered by a GM.
+            if (NPCTemplate != null && NPCTemplate.ReplaceMobValues)
+            {
+                Strength = NPCTemplate.Strength;
+                Constitution = NPCTemplate.Constitution;
+                Quickness = NPCTemplate.Quickness;
+                Dexterity = NPCTemplate.Dexterity;
+                Intelligence = NPCTemplate.Intelligence;
+                Empathy = NPCTemplate.Empathy;
+                Piety = NPCTemplate.Piety;
+                Charisma = NPCTemplate.Strength;
+            }
+            else
+            {
+                Mob mob = dbMob;
+
+                if (mob == null && !String.IsNullOrEmpty(InternalID))
+                    // This should only happen when a GM command changes level on a mob with no npcTemplate,
+                    mob = GameServer.Database.FindObjectByKey<Mob>(InternalID);
+
+                if (mob != null)
+                {
+                    Strength = mob.Strength;
+                    Constitution = mob.Constitution;
+                    Quickness = mob.Quickness;
+                    Dexterity = mob.Dexterity;
+                    Intelligence = mob.Intelligence;
+                    Empathy = mob.Empathy;
+                    Piety = mob.Piety;
+                    Charisma = mob.Charisma;
+                }
+                else
+                {
+                    // This is usually a mob about to be loaded from its DB entry,
+                    //	but it could also be a new mob created by a GM command, so we need to assign stats.
+                    Strength = 0;
+                    Constitution = 0;
+                    Quickness = 0;
+                    Dexterity = 0;
+                    Intelligence = 0;
+                    Empathy = 0;
+                    Piety = 0;
+                    Charisma = 0;
+                }
+            }
+
+            if (Strength < 1)
+            {
+                Strength = (Properties.MOB_AUTOSET_STR_BASE > 0) ? Properties.MOB_AUTOSET_STR_BASE : (short)1;
+                if (Level > 1)
+                    Strength += (byte)(10.0 * (Level - 1) * Properties.MOB_AUTOSET_STR_MULTIPLIER);
+            }
+
+            if (Constitution < 1)
+            {
+                Constitution = (Properties.MOB_AUTOSET_CON_BASE > 0) ? Properties.MOB_AUTOSET_CON_BASE : (short)1;
+                if (Level > 1)
+                    Constitution += (byte)((Level - 1) * Properties.MOB_AUTOSET_CON_MULTIPLIER);
+            }
+
+            if (Quickness < 1)
+            {
+                Quickness = (Properties.MOB_AUTOSET_QUI_BASE > 0) ? Properties.MOB_AUTOSET_QUI_BASE : (short)1;
+                if (Level > 1)
+                    Quickness += (byte)((Level - 1) * Properties.MOB_AUTOSET_QUI_MULTIPLIER);
+            }
+
+            if (Dexterity < 1)
+            {
+                Dexterity = (Properties.MOB_AUTOSET_DEX_BASE > 0) ? Properties.MOB_AUTOSET_DEX_BASE : (short)1;
+                if (Level > 1)
+                    Dexterity += (byte)((Level - 1) * Properties.MOB_AUTOSET_DEX_MULTIPLIER);
+            }
+
+            if (Intelligence < 1)
+            {
+                Intelligence = (Properties.MOB_AUTOSET_INT_BASE > 0) ? Properties.MOB_AUTOSET_INT_BASE : (short)1;
+                if (Level > 1)
+                    Intelligence += (byte)((Level - 1) * Properties.MOB_AUTOSET_INT_MULTIPLIER);
+            }
+
+            if (Empathy < 1)
+                Empathy = (short)(29 + Level);
+
+            if (Piety < 1)
+                Piety = (short)(29 + Level);
+
+            if (Charisma < 1)
+                Charisma = (short)(29 + Level);
+        }
+
+        /// <summary>
+        /// Gets or Sets the effective level of the Object
+        /// </summary>
+        public override int EffectiveLevel
 		{
 			get
 			{
@@ -2067,7 +2142,6 @@ namespace DOL.GS
 			Realm = (eRealm)dbMob.Realm;
 			Model = dbMob.Model;
 			Size = dbMob.Size;
-			Level = dbMob.Level;    // health changes when GameNPC.Level changes
 			Flags = (eFlags)dbMob.Flags;
 			m_packageID = dbMob.PackageID;
 			IsRenaissance = dbMob.IsRenaissance;
@@ -2080,18 +2154,12 @@ namespace DOL.GS
 
 			NPCTemplate = NpcTemplateMgr.GetTemplate(dbMob.NPCTemplateID);
 
-            Strength = (short)dbMob.Strength;
-            Constitution = (short)dbMob.Constitution;
-            Dexterity = (short)dbMob.Dexterity;
-            Quickness = (short)dbMob.Quickness;
-            Empathy = (short)dbMob.Empathy;
-            Intelligence = (short)dbMob.Intelligence;
-            Charisma = (short)dbMob.Charisma;
-            Piety = (short)dbMob.Piety;
+            // Skip Level.set calling AutoSetStats() so it doesn't load the DB entry we already have
+            m_level = dbMob.Level;
+            AutoSetStats(dbMob);
+            Level = dbMob.Level;
 
-            AutoSetStats();
-
-			MeleeDamageType = (eDamageType)dbMob.MeleeDamageType;
+            MeleeDamageType = (eDamageType)dbMob.MeleeDamageType;
 			if (MeleeDamageType == 0)
 			{
 				MeleeDamageType = eDamageType.Slash;
@@ -2183,9 +2251,8 @@ namespace DOL.GS
 			Gender = (eGender)dbMob.Gender;
 			OwnerID = dbMob.OwnerID;
 
-			if (NPCTemplate != null)
-				LoadTemplate(NPCTemplate);
-		}
+            LoadTemplate(NPCTemplate);
+        }
 
 		/// <summary>
 		/// Deletes the mob from the database
@@ -2355,6 +2422,18 @@ namespace DOL.GS
             this.BlockChance = template.BlockChance;
             this.LeftHandSwingChance = template.LeftHandSwingChance;
 
+            // We need level set before assigning spells to scale pet spells
+            if (template.ReplaceMobValues)
+            {
+                byte choosenLevel = 1;
+                if (!Util.IsEmpty(template.Level))
+                {
+                    var split = template.Level.SplitCSV(true);
+                    byte.TryParse(split[Util.Random(0, split.Count - 1)], out choosenLevel);
+                }
+                this.Level = choosenLevel; // Also calls AutosetStats()
+            }
+
             if (template.Spells != null) this.Spells = template.Spells;
             if (template.Styles != null) this.Styles = template.Styles;
             if (template.Abilities != null)
@@ -2412,26 +2491,6 @@ namespace DOL.GS
 					byte.TryParse(split[Util.Random(0, split.Count - 1)], out choosenSize);
 					Size = choosenSize;
 				}
-
-				if (!Util.IsEmpty(template.Level))
-				{
-					byte choosenLevel = 1;
-					var split = template.Level.SplitCSV(true);
-					byte.TryParse(split[Util.Random(0, split.Count - 1)], out choosenLevel);
-					Level = choosenLevel;
-				}
-                #endregion
-
-                #region Stats
-                Strength = (short)template.Strength;
-                Constitution = (short)template.Constitution;
-                Dexterity = (short)template.Dexterity;
-                Quickness = (short)template.Quickness;
-                Empathy = (short)template.Empathy;
-                Intelligence = (short)template.Intelligence;
-                Charisma = (short)template.Charisma;
-                Piety = (short)template.Piety;
-                AutoSetStats();
                 #endregion
 
                 #region Misc Stats
@@ -5207,8 +5266,11 @@ namespace DOL.GS
 		/// <summary>
 		/// Sort spells into specific lists
 		/// </summary>
-		public void SortSpells()
+		public virtual void SortSpells()
 		{
+            if (Spells.Count < 1)
+                return;
+
             // Clear the lists
             if (InstantHarmfulSpells != null)
                 InstantHarmfulSpells.Clear();
@@ -5230,6 +5292,7 @@ namespace DOL.GS
 			{
                 if (spell == null)
                     continue;
+
 
                 if (spell.IsHarmful)
 				{
@@ -6085,7 +6148,8 @@ namespace DOL.GS
 
 		public GameNPC(ABrain defaultBrain) : base()
 		{
-			Level = 1; // health changes when GameNPC.Level changes
+			Level = 1;
+            m_health = MaxHealth;
 			m_Realm = 0;
 			m_name = "new mob";
 			m_model = 408;

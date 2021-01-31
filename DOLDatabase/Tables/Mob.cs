@@ -50,14 +50,14 @@ namespace DOL.Database
         private int m_meleeDamageType;
         private int m_respawnInterval;
         private int m_faction;
-        private int m_Constitution;
-        private int m_Dexterity;
-        private int m_Strength;
-        private int m_Quickness;
-        private int m_Intelligence;
-        private int m_Piety;
-        private int m_Empathy;
-        private int m_Charisma;
+        private short m_Strength;
+        private short m_Constitution;
+        private short m_Dexterity;
+        private short m_Quickness;
+        private short m_Intelligence;
+        private short m_Piety;
+        private short m_Empathy;
+        private short m_Charisma;
         private string m_equipmentTemplateID;
         private string m_itemsListTemplateID;
         private int m_npcTemplateID;
@@ -381,7 +381,7 @@ namespace DOL.Database
         /// The Mob's Strength
         /// </summary>
         [DataElement(AllowDbNull = false)]
-        public int Strength
+        public short Strength
         {
             get
             {
@@ -399,7 +399,7 @@ namespace DOL.Database
         /// The Mob's Con
         /// </summary>
         [DataElement(AllowDbNull = false)]
-        public int Constitution
+        public short Constitution
         {
             get
             {
@@ -417,7 +417,7 @@ namespace DOL.Database
         /// The Mob's Dexterity
         /// </summary>
         [DataElement(AllowDbNull = false)]
-        public int Dexterity
+        public short Dexterity
         {
             get
             {
@@ -435,7 +435,7 @@ namespace DOL.Database
         /// The Mob's Quickness
         /// </summary>
         [DataElement(AllowDbNull = false)]
-        public int Quickness
+        public short Quickness
         {
             get
             {
@@ -453,7 +453,7 @@ namespace DOL.Database
         /// The Mob's Int
         /// </summary>
         [DataElement(AllowDbNull = false)]
-        public int Intelligence
+        public short Intelligence
         {
             get
             {
@@ -471,7 +471,7 @@ namespace DOL.Database
         /// The Mob's Piety
         /// </summary>
         [DataElement(AllowDbNull = false)]
-        public int Piety
+        public short Piety
         {
             get
             {
@@ -489,7 +489,7 @@ namespace DOL.Database
         /// The Mob's Empathy
         /// </summary>
         [DataElement(AllowDbNull = false)]
-        public int Empathy
+        public short Empathy
         {
             get
             {
@@ -507,7 +507,7 @@ namespace DOL.Database
         /// The Mob's Charisma
         /// </summary>
         [DataElement(AllowDbNull = false)]
-        public int Charisma
+        public short Charisma
         {
             get
             {

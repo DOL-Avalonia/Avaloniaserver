@@ -88,22 +88,22 @@ namespace DOL.GS
 		List<SpellLine> SpellLines { get; }
 		List<Ability> Abilities { get; }
 
-		/// <summary>
-		/// Gets the template npc stats
-		///</summary>
-		int Strength { get; }
-		int Constitution { get; }
-		int Dexterity { get; }
-		int Quickness { get; }
-		int Piety { get; }
-		int Intelligence { get; }
-		int Empathy { get; }
-		int Charisma { get; }
+        /// <summary>
+        /// Gets the template npc stats
+        ///</summary>
+        short Strength { get; }
+        short Constitution { get; }
+        short Dexterity { get; }
+        short Quickness { get; }
+        short Piety { get; }
+        short Intelligence { get; }
+        short Empathy { get; }
+        short Charisma { get; }
 
-		/// <summary>
-		/// Gets the template npc aggro values
-		/// </summary>
-		byte AggroLevel { get;}
+        /// <summary>
+        /// Gets the template npc aggro values
+        /// </summary>
+        byte AggroLevel { get;}
 		int AggroRange { get;}
 		
 		/// <summary>
