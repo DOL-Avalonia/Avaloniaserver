@@ -111,7 +111,8 @@ namespace DOL.AI.Brain
                     continue;
                 AddToAggroList(pl, aggro);
                 if (pl.Level > Body.Level - 20 || (pl.Group != null && pl.Group.MemberCount > 2))
-                    BringReinforcements(pl);
+                    // Use new BAF system
+                    BringFriends(pl);
             }
         }
 
@@ -134,24 +135,25 @@ namespace DOL.AI.Brain
                     continue;
                 AddToAggroList(npc, aggro);
                 if (npc.Level > Body.Level)
-                    BringReinforcements(npc);
+                    // Use new BAF system
+                    BringFriends(npc);
             }
         }
 
-        private void BringReinforcements(GameNPC target)
-        {
-            int count = (int)Math.Log(target.Level - Body.Level, 2) + 1;
-            foreach (GameNPC npc in Body.GetNPCsInRadius(WorldMgr.YELL_DISTANCE))
-            {
-                if (count <= 0)
-                    return;
-                var brain = npc.Brain as TerritoryBrain;
-                if (brain == null)
-                    continue;
-                brain.AddToAggroList(target, 1);
-                brain.AttackMostWanted();
-            }
-        }
+        //private void BringReinforcements(GameNPC target)
+        //{
+        //    int count = (int)Math.Log(target.Level - Body.Level, 2) + 1;
+        //    foreach (GameNPC npc in Body.GetNPCsInRadius(WorldMgr.YELL_DISTANCE))
+        //    {
+        //        if (count <= 0)
+        //            return;
+        //        var brain = npc.Brain as TerritoryBrain;
+        //        if (brain == null)
+        //            continue;
+        //        brain.AddToAggroList(target, 1);
+        //        brain.AttackMostWanted();
+        //    }
+        //}
 
         public override int CalculateAggroLevelToTarget(GameLiving target)
         {
