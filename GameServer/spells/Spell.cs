@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using DOL.Database;
+using DOL.AI.Brain;
 
 namespace DOL.GS
 {
@@ -357,6 +358,8 @@ namespace DOL.GS
 			{
                 switch (SpellType.ToUpper())
                 {
+                    case "CUREPOISON":
+                    case "CUREDISEASE":
                     case "COMBATHEAL":
                     case "HEAL":
                     case "HEALOVERTIME":
@@ -558,8 +561,18 @@ namespace DOL.GS
 			delve.Add(String.Format("Target: {0}", target));
 		}
 
-		#region Spell Helpers
-		
+        #region Spell Helpers
+
+        /// <summary>
+        /// Check if a target has this spell's effect already
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public bool TargetHasEffect(GameObject target)
+        {
+            return Duration > 0 && StandardMobBrain.LivingHasEffect(target as GameLiving, this);
+        }
+
         /// <summary>
         /// Whether or not the spell is instant cast.
         /// </summary>
@@ -570,9 +583,9 @@ namespace DOL.GS
                 return (CastTime <= 0);
             }
         }
-        
+
         /// <summary>
-        /// Wether or not the spell is Point Blank Area of Effect
+        /// Whether or not the spell is Point Blank Area of Effect
         /// </summary>
         public bool IsPBAoE
         {
@@ -581,9 +594,9 @@ namespace DOL.GS
         		return (Range == 0 && IsAoE);
         	}
         }
-        
+
         /// <summary>
-        /// Wether or not this spell need Instrument (and is a Song)
+        /// Whether or not this spell need Instrument (and is a Song)
         /// </summary>
         public bool NeedInstrument
         {
@@ -592,9 +605,9 @@ namespace DOL.GS
         		return InstrumentRequirement != 0;
         	}
         }
-        
+
         /// <summary>
-        /// Wether or not this spell is an Area of Effect Spell
+        /// Whether or not this spell is an Area of Effect Spell
         /// </summary>
         public bool IsAoE
         {
@@ -603,9 +616,9 @@ namespace DOL.GS
         		return Radius > 0;
         	}
         }
-        
+
         /// <summary>
-        /// Wether this spell Has valid SubSpell 
+        /// Whether this spell Has valid SubSpell 
         /// </summary>
         public bool HasSubSpell
         {
@@ -614,9 +627,9 @@ namespace DOL.GS
         		return SubSpellID > 0 || MultipleSubSpells.Count > 0;
         	}
         }
-        
+
         /// <summary>
-        /// Wether this spell has a recast delay (cooldown)
+        /// Whether this spell has a recast delay (cooldown)
         /// </summary>
         public bool HasRecastDelay
         {
@@ -625,9 +638,9 @@ namespace DOL.GS
         		return RecastDelay > 0;
         	}
         }
-        
+
         /// <summary>
-        /// Wether this spell is concentration based
+        /// Whether this spell is concentration based
         /// </summary>
         public bool IsConcentration
         {
@@ -636,9 +649,9 @@ namespace DOL.GS
         		return Concentration > 0;
         	}
         }
-        
+
         /// <summary>
-        /// Wether this spell has power usage.
+        /// Whether this spell has power usage.
         /// </summary>
         public bool UsePower
         {
@@ -649,7 +662,7 @@ namespace DOL.GS
         }
 
         /// <summary>
-        /// Wether this spell has pulse power usage.
+        /// Whether this spell has pulse power usage.
         /// </summary>
         public bool UsePulsePower
         {
@@ -658,9 +671,9 @@ namespace DOL.GS
         		return PulsePower != 0;
         	}
         }
-        
+
         /// <summary>
-        /// Wether this Spell is a pulsing spell (Song/Chant)
+        /// Whether this Spell is a pulsing spell (Song/Chant)
         /// </summary>
         public bool IsPulsing
         {
@@ -669,9 +682,9 @@ namespace DOL.GS
         		return Pulse != 0;
         	}
         }
-        
+
         /// <summary>
-        /// Wether this Spell is a Song/Chant
+        /// Whether this Spell is a Song/Chant
         /// </summary>
         public bool IsChant
         {
@@ -680,9 +693,9 @@ namespace DOL.GS
         		return Pulse != 0 && !IsFocus;
         	}
         }
-        
+
         /// <summary>
-        /// Wether this Spell is a Pulsing Effect (Dot/Hot...)
+        /// Whether this Spell is a Pulsing Effect (Dot/Hot...)
         /// </summary>
         public bool IsPulsingEffect
         {

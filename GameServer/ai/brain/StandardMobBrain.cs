@@ -1072,12 +1072,345 @@ namespace DOL.AI.Brain
 			Defensive
 		}
 
-		/// <summary>
+        /// <summary>
 		/// Checks if any spells need casting
 		/// </summary>
 		/// <param name="type">Which type should we go through and check for?</param>
 		/// <returns></returns>
-		public virtual bool TryCastASpell(eCheckSpellType type)
+		public virtual bool CheckSpells(eCheckSpellType type)
+        {
+            if (Body.IsCasting)
+                return true;
+
+            bool casted = false;
+
+            if (Body != null && Body.Spells != null && Body.Spells.Count > 0)
+            {
+                ArrayList spell_rec = new ArrayList();
+                Spell spellToCast = null;
+                bool needpet = false;
+                bool needheal = false;
+
+                if (type == eCheckSpellType.Defensive)
+                {
+                    foreach (Spell spell in Body.Spells)
+                    {
+                        if (Body.GetSkillDisabledDuration(spell) > 0) continue;
+                        if (spell.Target.ToLower() == "enemy" || spell.Target.ToLower() == "area" || spell.Target.ToLower() == "cone") continue;
+                        // If we have no pets
+                        if (Body.ControlledBrain == null)
+                        {
+                            if (spell.SpellType.ToLower() == "pet") continue;
+                            if (spell.SpellType.ToLower().Contains("summon"))
+                            {
+                                spell_rec.Add(spell);
+                                needpet = true;
+                            }
+                        }
+                        if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null)
+                        {
+                            if (Util.Chance(30) && Body.ControlledBrain != null && spell.SpellType.ToLower() == "heal" &&
+                                Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range &&
+                                Body.ControlledBrain.Body.HealthPercent < DOL.GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD
+                                && spell.Target.ToLower() != "self")
+                            {
+                                spell_rec.Add(spell);
+                                needheal = true;
+                            }
+                            if (LivingHasEffect(Body.ControlledBrain.Body, spell) && (spell.Target.ToLower() != "self")) continue;
+                        }
+                        if (!needpet && !needheal)
+                            spell_rec.Add(spell);
+                    }
+                    if (spell_rec.Count > 0)
+                    {
+                        spellToCast = (Spell)spell_rec[Util.Random((spell_rec.Count - 1))];
+                        if (!Body.IsReturningToSpawnPoint)
+                        {
+                            if (spellToCast.Uninterruptible && CheckDefensiveSpells(spellToCast))
+                                casted = true;
+                            else
+                                if (!Body.IsBeingInterrupted && CheckDefensiveSpells(spellToCast))
+                                casted = true;
+                        }
+                    }
+                }
+                else if (type == eCheckSpellType.Offensive)
+                {
+                    foreach (Spell spell in Body.Spells)
+                    {
+
+                        if (Body.GetSkillDisabledDuration(spell) == 0)
+                        {
+                            if (spell.CastTime > 0)
+                            {
+                                if (spell.Target.ToLower() == "enemy" || spell.Target.ToLower() == "area" || spell.Target.ToLower() == "cone")
+                                    spell_rec.Add(spell);
+                            }
+                        }
+                    }
+                    if (spell_rec.Count > 0)
+                    {
+                        spellToCast = (Spell)spell_rec[Util.Random((spell_rec.Count - 1))];
+
+
+                        if (spellToCast.Uninterruptible && CheckOffensiveSpells(spellToCast))
+                            casted = true;
+                        else
+                            if (!Body.IsBeingInterrupted && CheckOffensiveSpells(spellToCast))
+                            casted = true;
+                    }
+                }
+
+                return casted;
+            }
+            return casted;
+        }
+
+        /// <summary>
+        /// Checks defensive spells.  Handles buffs, heals, etc.
+        /// </summary>
+        protected virtual bool CheckDefensiveSpells(Spell spell)
+        {
+            if (spell == null) return false;
+            if (Body.GetSkillDisabledDuration(spell) > 0) return false;
+
+            bool casted = false;
+
+            // clear current target, set target based on spell type, cast spell, return target to original target
+            GameObject lastTarget = Body.TargetObject;
+
+            Body.TargetObject = null;
+            switch (spell.SpellType.ToUpper())
+            {
+                #region Buffs
+                case "AcuityBuff":
+                case "AFHITSBUFF":
+                case "ALLMAGICRESISTSBUFF":
+                case "ARMORABSORPTIONBUFF":
+                case "ARMORFACTORBUFF":
+                case "BODYRESISTBUFF":
+                case "BODYSPIRITENERGYBUFF":
+                case "BUFF":
+                case "CELERITYBUFF":
+                case "COLDRESISTBUFF":
+                case "COMBATSPEEDBUFF":
+                case "CONSTITUTIONBUFF":
+                case "COURAGEBUFF":
+                case "CRUSHSLASHTHRUSTBUFF":
+                case "DEXTERITYBUFF":
+                case "DEXTERITYQUICKNESSBUFF":
+                case "EFFECTIVENESSBUFF":
+                case "ENDURANCEREGENBUFF":
+                case "ENERGYRESISTBUFF":
+                case "FATIGUECONSUMPTIONBUFF":
+                case "FELXIBLESKILLBUFF":
+                case "HASTEBUFF":
+                case "HEALTHREGENBUFF":
+                case "HEATCOLDMATTERBUFF":
+                case "HEATRESISTBUFF":
+                case "HEROISMBUFF":
+                case "KEEPDAMAGEBUFF":
+                case "MAGICRESISTSBUFF":
+                case "MATTERRESISTBUFF":
+                case "MELEEDAMAGEBUFF":
+                case "MESMERIZEDURATIONBUFF":
+                case "MLABSBUFF":
+                case "PALADINARMORFACTORBUFF":
+                case "PARRYBUFF":
+                case "POWERHEALTHENDURANCEREGENBUFF":
+                case "POWERREGENBUFF":
+                case "SAVAGECOMBATSPEEDBUFF":
+                case "SAVAGECRUSHRESISTANCEBUFF":
+                case "SAVAGEDPSBUFF":
+                case "SAVAGEPARRYBUFF":
+                case "SAVAGESLASHRESISTANCEBUFF":
+                case "SAVAGETHRUSTRESISTANCEBUFF":
+                case "SPIRITRESISTBUFF":
+                case "STRENGTHBUFF":
+                case "STRENGTHCONSTITUTIONBUFF":
+                case "SUPERIORCOURAGEBUFF":
+                case "TOHITBUFF":
+                case "WEAPONSKILLBUFF":
+                case "DAMAGEADD":
+                case "OFFENSIVEPROC":
+                case "DEFENSIVEPROC":
+                case "DAMAGESHIELD":
+                    {
+                        // Buff self, if not in melee, but not each and every mob
+                        // at the same time, because it looks silly.
+                        if (!LivingHasEffect(Body, spell) && !Body.AttackState && Util.Chance(40) && spell.Target.ToLower() != "pet")
+                        {
+                            Body.TargetObject = Body;
+                            break;
+                        }
+                        if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null && Util.Chance(40) && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && !LivingHasEffect(Body.ControlledBrain.Body, spell) && spell.Target.ToLower() != "self")
+                        {
+                            Body.TargetObject = Body.ControlledBrain.Body;
+                            break;
+                        }
+                        break;
+                    }
+                #endregion Buffs
+
+                #region Disease Cure/Poison Cure/Summon
+                case "CUREDISEASE":
+                    if (Body.IsDiseased)
+                    {
+                        Body.TargetObject = Body;
+                        break;
+                    }
+                    if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null && Body.ControlledBrain.Body.IsDiseased
+                        && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && spell.Target.ToLower() != "self")
+                    {
+                        Body.TargetObject = Body.ControlledBrain.Body;
+                        break;
+                    }
+                    break;
+                case "CUREPOISON":
+                    if (LivingIsPoisoned(Body))
+                    {
+                        Body.TargetObject = Body;
+                        break;
+                    }
+                    if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null && LivingIsPoisoned(Body.ControlledBrain.Body)
+                        && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && spell.Target.ToLower() != "self")
+                    {
+                        Body.TargetObject = Body.ControlledBrain.Body;
+                        break;
+                    }
+                    break;
+                case "SUMMON":
+                    Body.TargetObject = Body;
+                    break;
+                case "SUMMONMINION":
+                    //If the list is null, lets make sure it gets initialized!
+                    if (Body.ControlledNpcList == null)
+                        Body.InitControlledBrainArray(2);
+                    else
+                    {
+                        //Let's check to see if the list is full - if it is, we can't cast another minion.
+                        //If it isn't, let them cast.
+                        IControlledBrain[] icb = Body.ControlledNpcList;
+                        int numberofpets = 0;
+                        for (int i = 0; i < icb.Length; i++)
+                        {
+                            if (icb[i] != null)
+                                numberofpets++;
+                        }
+                        if (numberofpets >= icb.Length)
+                            break;
+                    }
+                    Body.TargetObject = Body;
+                    break;
+                #endregion Disease Cure/Poison Cure/Summon
+
+                #region Heals
+                case "COMBATHEAL":
+                case "HEAL":
+                case "HEALOVERTIME":
+                case "MERCHEAL":
+                case "OMNIHEAL":
+                case "PBAEHEAL":
+                case "SPREADHEAL":
+                    if (spell.Target.ToLower() == "self")
+                    {
+                        // if we have a self heal and health is less than 75% then heal, otherwise return false to try another spell or do nothing
+                        if (Body.HealthPercent < DOL.GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD)
+                        {
+                            Body.TargetObject = Body;
+                        }
+                        break;
+                    }
+
+                    // Chance to heal self when dropping below 30%, do NOT spam it.
+                    if (Body.HealthPercent < (DOL.GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD / 2.0)
+                        && Util.Chance(10) && spell.Target.ToLower() != "pet")
+                    {
+                        Body.TargetObject = Body;
+                        break;
+                    }
+
+                    if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null
+                        && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range
+                        && Body.ControlledBrain.Body.HealthPercent < DOL.GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD
+                        && spell.Target.ToLower() != "self")
+                    {
+                        Body.TargetObject = Body.ControlledBrain.Body;
+                        break;
+                    }
+                    break;
+                #endregion
+
+                //case "SummonAnimistFnF":
+                //case "SummonAnimistPet":
+                case "SUMMONCOMMANDER":
+                case "SUMMONDRUIDPET":
+                case "SUMMONHUNTERPET":
+                case "SUMMONNECROPET":
+                case "SUMMONUNDERHILL":
+                case "SUMMONSIMULACRUM":
+                case "SUMMONSPIRITFIGHTER":
+                    //case "SummonTheurgistPet":
+                    if (Body.ControlledBrain != null)
+                        break;
+                    Body.TargetObject = Body;
+                    break;
+
+                default:
+                    //log.Warn($"CheckDefensiveSpells() encountered an unknown spell type [{spell.SpellType}]");
+                    break;
+            }
+
+            if (Body.TargetObject != null && (spell.Duration == 0 || (Body.TargetObject is GameLiving living && LivingHasEffect(living, spell) == false)))
+            {
+                casted = Body.CastSpell(spell, m_mobSpellLine);
+
+                if (casted && spell.CastTime > 0)
+                {
+                    if (Body.IsMoving)
+                        Body.StopFollowing();
+
+                    if (Body.TargetObject != Body)
+                        Body.TurnTo(Body.TargetObject);
+                }
+            }
+
+            Body.TargetObject = lastTarget;
+
+            return casted;
+        }
+
+        /// <summary>
+        /// Checks offensive spells.  Handles dds, debuffs, etc.
+        /// </summary>
+        protected virtual bool CheckOffensiveSpells(Spell spell)
+        {
+            if (spell.Target.ToLower() != "enemy" && spell.Target.ToLower() != "area" && spell.Target.ToLower() != "cone")
+                return false;
+
+            bool casted = false;
+
+            if (Body.TargetObject != null && (spell.Duration == 0 || (Body.TargetObject is GameLiving living && LivingHasEffect(living, spell) == false)))
+            {
+                // Offensive spells require the caster to be facing the target
+                if (Body.TargetObject != Body)
+                    Body.TurnTo(Body.TargetObject);
+
+                casted = Body.CastSpell(spell, m_mobSpellLine);
+
+                if (casted && spell.CastTime > 0 && Body.IsMoving)
+                    Body.StopFollowing();
+            }
+            return casted;
+        }
+
+        /// <summary>
+        /// Checks if any spells need casting
+        /// </summary>
+        /// <param name="type">Which type should we go through and check for?</param>
+        /// <returns></returns>
+        public virtual bool TryCastASpell(eCheckSpellType type)
 		{
 			if (Body.IsCasting)
 				return false;
@@ -1467,7 +1800,7 @@ namespace DOL.AI.Brain
 		/// <param name="target">The target living object</param>
 		/// <param name="spell">The spell to check</param>
 		/// <returns>True if the living has the effect</returns>
-		protected bool LivingHasEffect(GameLiving target, Spell spell)
+		public static bool LivingHasEffect(GameLiving target, Spell spell)
 		{
 			if (target == null)
 				return true;
