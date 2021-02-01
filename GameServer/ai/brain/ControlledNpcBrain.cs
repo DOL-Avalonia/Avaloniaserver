@@ -403,6 +403,8 @@ namespace DOL.AI.Brain
             if (IsActive && m_aggressionState != eAggressionState.Passive)
                 CheckSpells(eCheckSpellType.Offensive);
 
+            if (!Body.AttackState && WalkState == eWalkState.Follow && Owner != null)
+                Follow(Owner);
         }
 
 		/// <summary>
