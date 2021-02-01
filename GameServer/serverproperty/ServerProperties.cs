@@ -1120,7 +1120,7 @@ namespace DOL.GS.ServerProperties
         /// <summary>
         /// Base Value to use when auto-setting STR stat.
         /// </summary>
-        [ServerProperty("npc", "mob_autoset_str_base", "Base Value to use when auto-setting STR stat. ", 30.0)]
+        [ServerProperty("npc", "mob_autoset_str_base", "Base Value to use when auto-setting STR stat. ", 30)]
         public static short MOB_AUTOSET_STR_BASE { get; set; }
 
         /// <summary>
@@ -1132,7 +1132,7 @@ namespace DOL.GS.ServerProperties
         /// <summary>
         /// Base Value to use when auto-setting CON stat.
         /// </summary>
-        [ServerProperty("npc", "mob_autoset_con_base", "Base Value to use when auto-setting CON stat. ", 30.0)]
+        [ServerProperty("npc", "mob_autoset_con_base", "Base Value to use when auto-setting CON stat. ", 30)]
         public static short MOB_AUTOSET_CON_BASE { get; set; }
 
         /// <summary>
@@ -1144,7 +1144,7 @@ namespace DOL.GS.ServerProperties
         /// <summary>
         /// Base Value to use when auto-setting QUI stat.
         /// </summary>
-        [ServerProperty("npc", "mob_autoset_qui_base", "Base Value to use when auto-setting qui stat. ", 30.0)]
+        [ServerProperty("npc", "mob_autoset_qui_base", "Base Value to use when auto-setting qui stat. ", 30)]
         public static short MOB_AUTOSET_QUI_BASE { get; set; }
 
         /// <summary>
@@ -1156,7 +1156,7 @@ namespace DOL.GS.ServerProperties
         /// <summary>
         /// Base Value to use when auto-setting DEX stat.
         /// </summary>
-        [ServerProperty("npc", "mob_autoset_dex_base", "Base Value to use when auto-setting DEX stat. ", 30.0)]
+        [ServerProperty("npc", "mob_autoset_dex_base", "Base Value to use when auto-setting DEX stat. ", 30)]
         public static short MOB_AUTOSET_DEX_BASE { get; set; }
 
         /// <summary>
@@ -1168,7 +1168,7 @@ namespace DOL.GS.ServerProperties
         /// <summary>
         /// Base Value to use when auto-setting pet STR stat.
         /// </summary>
-        [ServerProperty("npc", "pet_autoset_str_base", "Base Value to use when auto-setting Pet STR stat. ", 20.0)]
+        [ServerProperty("npc", "pet_autoset_str_base", "Base Value to use when auto-setting Pet STR stat. ", 20)]
         public static short PET_AUTOSET_STR_BASE { get; set; }
 
         /// <summary>
@@ -1179,7 +1179,7 @@ namespace DOL.GS.ServerProperties
 
         /// Base Value to use when auto-setting pet CON stat.
         /// </summary>
-        [ServerProperty("npc", "pet_autoset_con_base", "Base Value to use when auto-setting Pet CON stat. ", 30.0)]
+        [ServerProperty("npc", "pet_autoset_con_base", "Base Value to use when auto-setting Pet CON stat. ", 30)]
         public static short PET_AUTOSET_CON_BASE { get; set; }
 
         /// <summary>
@@ -1190,7 +1190,7 @@ namespace DOL.GS.ServerProperties
 
         /// Base Value to use when auto-setting Pet DEX stat.
         /// </summary>
-        [ServerProperty("npc", "pet_autoset_dex_base", "Base Value to use when auto-setting Pet DEX stat. ", 30.0)]
+        [ServerProperty("npc", "pet_autoset_dex_base", "Base Value to use when auto-setting Pet DEX stat. ", 30)]
         public static short PET_AUTOSET_DEX_BASE { get; set; }
 
         /// <summary>
@@ -1201,7 +1201,7 @@ namespace DOL.GS.ServerProperties
 
         /// Base Value to use when auto-setting Pet QUI stat.
         /// </summary>
-        [ServerProperty("npc", "pet_autoset_qui_base", "Base Value to use when auto-setting Pet QUI stat. ", 30.0)]
+        [ServerProperty("npc", "pet_autoset_qui_base", "Base Value to use when auto-setting Pet QUI stat. ", 30)]
         public static short PET_AUTOSET_QUI_BASE { get; set; }
 
         /// <summary>
@@ -1248,11 +1248,17 @@ namespace DOL.GS.ServerProperties
         [ServerProperty("npc", "pet_autoset_int_multiplier", "Multiplier to use when auto-setting Pet INT stat. ", 1.0)]
         public static double PET_AUTOSET_INT_MULTIPLIER { get; set; }
 
-	/// <summary>
-	/// Enable 2H weapon damage bonus for pets?
-	/// </summary>
-	[ServerProperty("npc", "pet_2h_bonus_damage", "If true, pets that use a 2H weapon and have a block chance get bonus damage equal to their block chance to compensate for not being able to block. ", true)]
-	public static bool PET_2H_BONUS_DAMAGE { get; set; }
+        /// <summary>
+		/// Multiplier for pet buff/debuff effects
+		/// </summary>
+		[ServerProperty("npc", "pet_buff_effect_multiplier", "Determines effectiveness of buff/debuff effects on pets.  Debuff effects are multiplier * stat / level, buffs effects are half that. ", 13)]
+        public static double PET_BUFF_EFFECT_MULTIPLIER { get; set; }
+
+        /// <summary>
+        /// Enable 2H weapon damage bonus for pets?
+        /// </summary>
+        [ServerProperty("npc", "pet_2h_bonus_damage", "If true, pets that use a 2H weapon and have a block chance get bonus damage equal to their block chance to compensate for not being able to block. ", true)]
+	    public static bool PET_2H_BONUS_DAMAGE { get; set; }
 	    
         /// <summary>
         /// How much damage to increase per level
@@ -1429,6 +1435,12 @@ namespace DOL.GS.ServerProperties
         /// </summary>
         [ServerProperty("npc", "mob_autoset_int_multiplier", "Multiplier to use when auto-setting INT stat. ", 1.0)]
         public static double MOB_AUTOSET_INT_MULTIPLIER { get; set; }
+
+        /// <summary>
+		/// Multiplier for mob buff/debuff effects
+		/// </summary>
+		[ServerProperty("npc", "mob_buff_effect_multiplier", "Determines effectiveness of buff/debuff effects on mobs.  Debuff effects are multiplier * stat / level, buffs effects are half that. ", 13)]
+        public static double MOB_BUFF_EFFECT_MULTIPLIER { get; set; }
 
         /// <summary>
 		/// Do pets level up with their owner?
@@ -1724,11 +1736,17 @@ namespace DOL.GS.ServerProperties
         [ServerProperty("keeps", "keep_guard_level_multiplier", "Multiplier used to determine keep guard levels.  This is applied to the bonus level (usually 4) and added after balance adjustments.", 1.6)]
         public static double KEEP_GUARD_LEVEL_MULTIPLIER { get; set; }
 
-	/// <summary>
-	/// Enable 2H weapon damage bonus for keep guards?
-	/// </summary>
-	[ServerProperty("keeps", "guard_2h_bonus_damage", "If true, keep guards that use a 2H weapon and have a block chance get bonus damage equal to their block chance to compensate for not being able to block. ", true)]
-	public static bool GUARD_2H_BONUS_DAMAGE { get; set; }
+        /// <summary>
+		/// Multiplier for keep guard buff/debuff effects
+		/// </summary>
+		[ServerProperty("npc", "guard_buff_effect_multiplier", "Determines effectiveness of buff/debuff effects on keep guards.  Debuff effects are multiplier * stat / level, buffs effects are half that. ", 13)]
+        public static double GUARD_BUFF_EFFECT_MULTIPLIER { get; set; }
+
+        /// <summary>
+        /// Enable 2H weapon damage bonus for keep guards?
+        /// </summary>
+        [ServerProperty("keeps", "guard_2h_bonus_damage", "If true, keep guards that use a 2H weapon and have a block chance get bonus damage equal to their block chance to compensate for not being able to block. ", true)]
+	    public static bool GUARD_2H_BONUS_DAMAGE { get; set; }
 
         /// <summary>
         /// Keeps to load. 0 for Old Keeps, 1 for new keeps, 2 for both.
@@ -2421,7 +2439,12 @@ namespace DOL.GS.ServerProperties
                 // we do this because we need "1.0" to be considered double sometimes its "1,0" in other countries
                 CultureInfo myCIintl = new CultureInfo("en-US", false);
                 IFormatProvider provider = myCIintl.NumberFormat;
-                property.SetValue(null, Convert.ChangeType(prop.Value, attrib.DefaultValue.GetType(), provider));
+
+                // Fix conversion issue from int to short
+                if(property.PropertyType.Name == "Int16")
+                    property.SetValue(null, (short)Convert.ChangeType(prop.Value, property.PropertyType, provider));
+                else
+                    property.SetValue(null, Convert.ChangeType(prop.Value, attrib.DefaultValue.GetType(), provider));
             }
             catch (Exception e)
             {

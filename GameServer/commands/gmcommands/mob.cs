@@ -1420,6 +1420,9 @@ namespace DOL.GS.Commands
             info.Add(" + Attack Speed (Melee Speed Increase %):  " + targetMob.AttackSpeed(targetMob.AttackWeapon) + " (" + (100 - targetMob.GetModified(eProperty.MeleeSpeed)) + ")");
             info.Add(" + Casting Speed Increase %:  " + targetMob.GetModified(eProperty.CastingSpeed));
 
+            if (targetMob.GetModified(eProperty.MeleeDamage) != 0)
+                info.Add($" + Damage Bonus: {targetMob.GetModified(eProperty.MeleeDamage)}");
+
             if (targetMob.LeftHandSwingChance > 0)
             {
                 info.Add(" + Left Swing %: " + targetMob.LeftHandSwingChance);
@@ -1601,6 +1604,12 @@ namespace DOL.GS.Commands
             info.Add(string.Empty);
             info.Add("Miscellaneous:");
             info.Add(string.Empty);
+
+            if (targetMob.GetModified(eProperty.MeleeDamage) != 0)
+                info.Add($" + Damage Bonus: {targetMob.GetModified(eProperty.MeleeDamage)}");
+
+            info.Add(" + Attack Speed (Melee Speed Increase %):  " + targetMob.AttackSpeed(targetMob.AttackWeapon) + " (" + (100 - targetMob.GetModified(eProperty.MeleeSpeed)) + ")");
+
             info.Add(string.Format("Maximum Health: {0}", targetMob.MaxHealth));
             info.Add(string.Format("Armor Factor (AF): {0}", targetMob.GetModified(eProperty.ArmorFactor)));
             info.Add(string.Format("Absorption (ABS): {0}", targetMob.GetModified(eProperty.ArmorAbsorption)));
