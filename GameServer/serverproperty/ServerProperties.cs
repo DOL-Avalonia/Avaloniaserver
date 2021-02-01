@@ -1223,6 +1223,12 @@ namespace DOL.GS.ServerProperties
         public static int PET_SCALE_SPELL_MAX_LEVEL { get; set; }
 
         /// <summary>
+        /// Scale pet spell values according to their level?
+        /// </summary>
+        [ServerProperty("npc", "pet_bd_commander_taunt_multiplier", "Percentage of damage that BD commanders get as extra aggro when taunting, e.g. a taunting BD commander gets 150% normal aggro at 50, 200% at 100, 250% at 150 etc. ", 150)]
+        public static int PET_BD_COMMANDER_TAUNT_VALUE { get; set; }
+
+        /// <summary>
 		/// Scale pet spell values according to their level?
 		/// </summary>
 		[ServerProperty("npc", "pet_cap_bd_minion_spell_scaling_by_spec", "When scaling BD minion spells, do we cap the level they scale do by the BD's spec level?  This provides an incentive to spec darkness and suppression and use items that boost them.", false)]

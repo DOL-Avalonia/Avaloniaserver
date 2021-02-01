@@ -24,18 +24,55 @@ namespace DOL.AI.Brain
 {
 	public abstract class BDPetBrain : ControlledNpcBrain
 	{
-		protected const int BASEFORMATIONDIST = 50;
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        protected const int BASEFORMATIONDIST = 50;
 
 		public BDPetBrain(GameLiving Owner) : base(Owner)
 		{
 			IsMainPet = false;
 		}
 
-		/// <summary>
-		/// Find the player owner of the pets at the top of the tree
-		/// </summary>
-		/// <returns>Player owner at the top of the tree.  If there was no player, then return null.</returns>
-		public override GamePlayer GetPlayerOwner()
+        /// <summary>
+        /// Are minions assisting the commander?
+        /// </summary>
+        public bool MinionsAssisting
+        {
+            get { return Owner is CommanderPet commander && commander.MinionsAssisting; }
+        }
+
+        public override void SetAggressionState(eAggressionState state)
+        {
+            if (MinionsAssisting)
+                base.SetAggressionState(state);
+            else
+                base.SetAggressionState(eAggressionState.Passive);
+
+            // Attack immediately rather than waiting for the next Think()
+            if (AggressionState != eAggressionState.Passive)
+                Attack(Owner.TargetObject);
+
+        }
+
+        /// <summary>
+        /// This method is called at the end of the attack sequence to
+        /// notify objects if they have been attacked/hit by an attack
+        /// </summary>
+        /// <param name="ad">information about the attack</param>
+        protected override void OnAttackedByEnemy(AttackData ad)
+        {
+            base.OnAttackedByEnemy(ad);
+
+            // Get help from the commander and other minions
+            if (ad.CausesCombat && Owner is GamePet own && own.Brain is CommanderBrain ownBrain)
+                ownBrain.DefendMinion(ad.Attacker);
+        }
+
+        /// <summary>
+        /// Find the player owner of the pets at the top of the tree
+        /// </summary>
+        /// <returns>Player owner at the top of the tree.  If there was no player, then return null.</returns>
+        public override GamePlayer GetPlayerOwner()
 		{
 			GameNPC commanderOwner = (GameNPC)Owner;
 			if (commanderOwner != null && commanderOwner.Brain is IControlledBrain)
@@ -167,7 +204,6 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public override void Think()
 		{
-			//edit for BD
 			GamePlayer playerowner = GetPlayerOwner();
 			if (playerowner != null && (GameTimer.GetTickCount() - playerowner.Client.GameObjectUpdateArray[new Tuple<ushort, ushort>(Body.CurrentRegionID, (ushort)Body.ObjectID)]) > ThinkInterval)
 			{

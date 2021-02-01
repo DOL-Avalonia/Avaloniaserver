@@ -301,7 +301,7 @@ namespace DOL.GS
         /// <param name="casterLevel">The level to scale the pet spell to, 0 to use pet level</param>
 		public virtual void ScalePetSpell(Spell spell, int casterLevel = 0)
         {
-            if (ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL <= 0 || spell == null || Level < 1)
+            if (Properties.PET_SCALE_SPELL_MAX_LEVEL <= 0 || spell == null || Level < 1)
                 return;
 
             if (casterLevel < 1)
@@ -314,7 +314,6 @@ namespace DOL.GS
                 case "damageshield":
                 case "damageadd":
                 case "directdamage":
-                case "directdamagewithdebuff":
                 case "lifedrain":
                 case "damagespeeddecrease":
                 case "stylebleeding": // Style bleed effect
@@ -364,6 +363,16 @@ namespace DOL.GS
                 case "mesmerize":
                 case "stylestun": // Style stun effect
                 case "stylespeeddecrease": // Style hinder effect
+                    spell.Duration = (int)Math.Ceiling(spell.Duration * (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL);
+                    break;
+                // Scale Damage and value
+                case "directdamagewithdebuff":
+                    /* Patch 1.123: For Cabalist, Enchanter, and Spiritmaster pets
+					 * The debuff component of its nuke has been as follows:
+					 *	For pet level 1-23, the debuff is now 10%.
+					 *	For pet level 24-43, the debuff is now 20%.
+					 *	For pet level 44-50, the debuff is now 30%. */
+                    spell.Value *= (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL;
                     spell.Duration = (int)Math.Ceiling(spell.Duration * (double)casterLevel / ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL);
                     break;
                 case "styletaunt": // Style taunt effects already scale with damage
@@ -481,7 +490,7 @@ namespace DOL.GS
 				}
 			}
 
-			return eDamageType.Crush;
+			return base.AttackDamageType(weapon);
 		}
 
 		/// <summary>

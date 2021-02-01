@@ -1391,7 +1391,7 @@ namespace DOL.AI.Brain
 
             bool casted = false;
 
-            if (Body.TargetObject != null && (spell.Duration == 0 || (Body.TargetObject is GameLiving living && LivingHasEffect(living, spell) == false) || spell.SpellType.ToUpper() == "DIRECTDAMAGEWITHDEBUFF"))
+            if (Body.TargetObject is GameLiving living && (spell.Duration == 0 || !living.HasEffect(spell) || spell.SpellType.ToUpper() == "DIRECTDAMAGEWITHDEBUFF"))
             {
                 // Offensive spells require the caster to be facing the target
                 if (Body.TargetObject != Body)
