@@ -30,7 +30,8 @@ namespace DOL.spells
 
         private Combinable match;
         private WorldInventoryItem combined;
-        private List<InventoryItem> removeItems;
+        // Transfor the list to a dictionary to count the number of items to remove
+        private Dictionary<InventoryItem, int> removeItems;
         InventoryItem useItem;
 
 
@@ -69,7 +70,7 @@ namespace DOL.spells
                 return false;
             }
 
-            removeItems = new List<InventoryItem>();
+            removeItems = new Dictionary<InventoryItem, int>();
 
             var backpack = player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
             match = null;
@@ -80,13 +81,17 @@ namespace DOL.spells
                 Dictionary<string, int> countIterator = new Dictionary<string, int>();
                 foreach (InventoryItem item in backpack)
                 {
-                    // check if the number of item is greater or equal than neeeded
+                    // check if the number of item is greater or equal than needed
                     if (item != null && combinable.Items.ContainsKey(item.Id_nb) && (item.Count >= combinable.Items[item.Id_nb] || (countIterator.ContainsKey(item.Id_nb) && (countIterator[item.Id_nb] + item.Count) >= combinable.Items[item.Id_nb])))
                     {
                         if (!ids.Contains(item.Id_nb))
                         {
                             ids.Add(item.Id_nb);
-                            removeItems.Add(item);
+                            // If items have already added in the remove list, substract the total of removed items, else add the number of items to delete
+                            if(countIterator.ContainsKey(item.Id_nb))
+                                removeItems.Add(item, combinable.Items[item.Id_nb] - countIterator[item.Id_nb]);
+                            else
+                                removeItems.Add(item, combinable.Items[item.Id_nb]);
                         }
                     }
                     else if (item != null && combinable.Items.ContainsKey(item.Id_nb))
@@ -95,6 +100,8 @@ namespace DOL.spells
                             countIterator[item.Id_nb] += item.Count;
                         else
                             countIterator.Add(item.Id_nb, item.Count);
+                        // fix the issue when items take several slots
+                        removeItems.Add(item, item.Count);
                     }
                 }
 
@@ -131,7 +138,9 @@ namespace DOL.spells
                 }
             }
 
-            removeItems.Add(useItem);
+            // should not pass here but keep it in case where I'm wrong
+            if(!removeItems.ContainsKey(useItem))
+                removeItems.Add(useItem, match.Items[useItem.Id_nb]);
 
             combined = WorldInventoryItem.CreateFromTemplate(match.TemplateId);
 
@@ -373,7 +382,7 @@ namespace DOL.spells
                         player.TakeDamage(player, eDamageType.Energy, (int)punishSpell.Damage, 0);
                     }
                 }
-                RemoveItems(player, removeItems, match);
+                RemoveItems(player, removeItems);
                 return;
             }
 
@@ -416,7 +425,7 @@ namespace DOL.spells
 
             player.Out.SendSpellEffectAnimation(player, player, (ushort)match.SpellEfect, 0, false, 1);
             player.Out.SendMessage($"Vous avez créé {newItem.Name } en combinant {useItem.Name} ainsi que { match.Items.Count() - 1 } autres objects.", eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
-            RemoveItems(player, removeItems, match);
+            RemoveItems(player, removeItems);
 
             if (match.RewardCraftingSkills > 0)
             {
@@ -516,15 +525,20 @@ namespace DOL.spells
             return skills;
         }
 
-        private void RemoveItems(GamePlayer player, List<InventoryItem> removeItems, Combinable match)
+        /// <summary>
+        /// Remove the needed items to combine
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="removeItems"></param>
+        private void RemoveItems(GamePlayer player, Dictionary<InventoryItem, int> removeItems)
         {
-            foreach (InventoryItem item in removeItems)
+            foreach (InventoryItem item in removeItems.Keys)
             {
                 if (item.OwnerID == null)
                     item.OwnerID = player.InternalID;
 
                 // Replace remove item by RemoveCountFromStack
-                player.Inventory.RemoveCountFromStack(item, match.Items[item.Id_nb]);
+                player.Inventory.RemoveCountFromStack(item, removeItems[item]);
             }
         }
     }
