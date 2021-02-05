@@ -222,7 +222,6 @@ namespace DOL.GS.Friends
 			}))
 				if (log.IsWarnEnabled)
 					log.WarnFormat("Gameplayer ({0}) was not registered in Friends Manager Cache while trying to Remove a Friend ({1})", Player, Friend);
-			}
 
 			if (success)
 			{
