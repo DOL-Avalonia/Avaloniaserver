@@ -389,9 +389,9 @@ namespace DOL.GS.ServerProperties
         public static bool LOG_TRADES { get; set; }
 
         /// <summary>
-	/// Property to enable crush/slash/thrust determining damage variance for polearms and 2H weapons
-	/// </summary>
-	[ServerProperty("server", "enable_albion_advanced_weapon_spec", "Set to true to determine damage variance for polearms and 2H weapons on 1H crush/slash/thrust spec.", true)]
+	    /// Property to enable crush/slash/thrust determining damage variance for polearms and 2H weapons
+	    /// </summary>
+	    [ServerProperty("server", "enable_albion_advanced_weapon_spec", "Set to true to determine damage variance for polearms and 2H weapons on 1H crush/slash/thrust spec.", true)]
         public static bool ENABLE_ALBION_ADVANCED_WEAPON_SPEC { get; set; }
 
         /// <summary>
@@ -400,17 +400,17 @@ namespace DOL.GS.ServerProperties
         [ServerProperty("server", "disable_quit_timer", "Allow players to log out without waiting?", false)]
         public static bool DISABLE_QUIT_TIMER { get; set; }
 	    
-	/// <summary>
-	/// Enable Discord Webhook?
-	/// </summary>
-	[ServerProperty("server", "Discord_Webhook_Active", "Enable Discord webhook?", false)]
-	public static bool DISCORD_ACTIVE { get; set; }
+	    /// <summary>
+	    /// Enable Discord Webhook?
+	    /// </summary>
+	    [ServerProperty("server", "Discord_Webhook_Active", "Enable Discord webhook?", false)]
+	    public static bool DISCORD_ACTIVE { get; set; }
 
-	/// <summary>
-	/// Webhook ID
-	/// </summary>
-	[ServerProperty("server", "Discord_Webhook_ID", "The id of the webhook", "")]
-	public static string DISCORD_WEBHOOK_ID { get; set; }
+	    /// <summary>
+	    /// Webhook ID
+	    /// </summary>
+	    [ServerProperty("server", "Discord_Webhook_ID", "The id of the webhook", "")]
+	    public static string DISCORD_WEBHOOK_ID { get; set; }
 
         /// <summary>
         /// Log Email Addresses
@@ -1105,17 +1105,17 @@ namespace DOL.GS.ServerProperties
         [ServerProperty("rates", "relic_owning_bonus", "Relic Owning Bonus in percent per relic (default 10%) in effect when owning enemy relic", (short)10)]
         public static short RELIC_OWNING_BONUS { get; set; }
 	    
-	/// <summary>
-	/// Doppelganger realm point value
-	/// </summary>
-	[ServerProperty("npc", "doppelganger_realm_points", "Realm point value of doppelgangers. ", 400)]
-	public static int DOPPELGANGER_REALM_POINTS { get; set; }
+	    /// <summary>
+	    /// Doppelganger realm point value
+	    /// </summary>
+	    [ServerProperty("npc", "doppelganger_realm_points", "Realm point value of doppelgangers. ", 400)]
+	    public static int DOPPELGANGER_REALM_POINTS { get; set; }
 
-	/// <summary>
-	/// Doppelganger bounty point value
-	/// </summary>
-	[ServerProperty("npc", "doppelganger_bounty_points", "Bounty point value of doppelgangers. ", 250)]
-	public static int DOPPELGANGER_BOUNTY_POINTS { get; set; }
+	    /// <summary>
+	    /// Doppelganger bounty point value
+	    /// </summary>
+	    [ServerProperty("npc", "doppelganger_bounty_points", "Bounty point value of doppelgangers. ", 250)]
+	    public static int DOPPELGANGER_BOUNTY_POINTS { get; set; }
 
         /// <summary>
         /// Base Value to use when auto-setting STR stat.
@@ -1272,103 +1272,115 @@ namespace DOL.GS.ServerProperties
         [ServerProperty("npc", "mob_damage_increase_perlevel", "How much damage to increase per level", 0.0)]
         public static double MOB_DAMAGE_INCREASE_PERLEVEL { get; set; }
 
-	// Necro pet stat properties
+        /// <summary>
+        /// New property to resolve the damges for Savage, Valkyrie and Hunter.
+        /// </summary>
+        [ServerProperty("npc", "necro_pet_resolve_domages", "New property to resolve the damges for necromancer pets.", 0.30)]
+        public static double CLASS_RESOLVE_DAMAGES { get; set; }
 
-	/// <summary>
-	/// Base value to use when setting strength for most necromancer pets.
-	/// </summary>
-	[ServerProperty("npc", "necro_pet_str_base", "Base value to use when setting strength for most necromancer pets.", 60)]
-	public static short NECRO_PET_STR_BASE { get; set; }
+        // Necro pet stat properties
 
-	/// <summary>
-	/// Multiplier to use when setting strength for most necromancer pets.
-	/// </summary>
-	[ServerProperty("npc", "necro_pet_str_multiplier", "Multiplier to use when setting strength for most necromancer pets.", 1.0)]
-	public static double NECRO_PET_STR_MULTIPLIER { get; set; }
+        /// <summary>
+        /// New property to resolve the damges for necromancer pets.
+        /// </summary>
+        [ServerProperty("npc", "necro_pet_resolve_domages", "New property to resolve the damges for necromancer pets.", 0.30)]
+        public static double NECRO_PET_RESOLVE_DAMAGES { get; set; }
 
-	/// <summary>
-	/// Base value to use when setting constitution for most necromancer pets.
-	/// </summary>
-	[ServerProperty("npc", "necro_pet_con_base", "Base value to use when setting constitution for most necromancer pets.", 60)]
-	public static short NECRO_PET_CON_BASE { get; set; }
+        /// <summary>
+        /// Base value to use when setting strength for most necromancer pets.
+        /// </summary>
+        [ServerProperty("npc", "necro_pet_str_base", "Base value to use when setting strength for most necromancer pets.", 60)]
+	    public static short NECRO_PET_STR_BASE { get; set; }
 
-	/// <summary>
-	/// Multiplier to use when setting constitution for most necromancer pets.
-	/// </summary>
-	[ServerProperty("npc", "necro_pet_con_multiplier", "Multiplier to use when setting constitution for most necromancer pets.", 0.5)]
-	public static double NECRO_PET_CON_MULTIPLIER { get; set; }
+	    /// <summary>
+	    /// Multiplier to use when setting strength for most necromancer pets.
+	    /// </summary>
+	    [ServerProperty("npc", "necro_pet_str_multiplier", "Multiplier to use when setting strength for most necromancer pets.", 1.0)]
+	    public static double NECRO_PET_STR_MULTIPLIER { get; set; }
 
-	/// <summary>
-	/// Base value to use when setting dexterity for most necromancer pets.
-	/// </summary>
-	[ServerProperty("npc", "necro_pet_dex_base", "Base value to use when setting dexterity for most necromancer pets.", 60)]
-	public static short NECRO_PET_DEX_BASE { get; set; }
+	    /// <summary>
+	    /// Base value to use when setting constitution for most necromancer pets.
+	    /// </summary>
+	    [ServerProperty("npc", "necro_pet_con_base", "Base value to use when setting constitution for most necromancer pets.", 60)]
+	    public static short NECRO_PET_CON_BASE { get; set; }
 
-	/// <summary>
-	/// Multiplier to use when setting dexterity for most necromancer pets.
-	/// </summary>
-	[ServerProperty("npc", "necro_pet_dex_multiplier", "Multiplier to use when setting dexterity for most necromancer pets.", 0.0)]
-	public static double NECRO_PET_DEX_MULTIPLIER { get; set; }
+	    /// <summary>
+	    /// Multiplier to use when setting constitution for most necromancer pets.
+	    /// </summary>
+	    [ServerProperty("npc", "necro_pet_con_multiplier", "Multiplier to use when setting constitution for most necromancer pets.", 0.5)]
+	    public static double NECRO_PET_CON_MULTIPLIER { get; set; }
 
-	/// <summary>
-	/// Base value to use when setting quickness for most necromancer pets.
-	/// </summary>
-	[ServerProperty("npc", "necro_pet_qui_base", "Base value to use when setting quickness for most necromancer pets.", 60)]
-	public static short NECRO_PET_QUI_BASE { get; set; }
+	    /// <summary>
+	    /// Base value to use when setting dexterity for most necromancer pets.
+	    /// </summary>
+	    [ServerProperty("npc", "necro_pet_dex_base", "Base value to use when setting dexterity for most necromancer pets.", 60)]
+	    public static short NECRO_PET_DEX_BASE { get; set; }
 
-	/// <summary>
-	/// Multiplier to use when setting quickness for most necromancer pets.
-	/// </summary>
-	[ServerProperty("npc", "necro_pet_qui_multiplier", "Multiplier to use when setting quickness for most necromancer pets.", 0.3333)]
-	public static double NECRO_PET_QUI_MULTIPLIER { get; set; }
+	    /// <summary>
+	    /// Multiplier to use when setting dexterity for most necromancer pets.
+	    /// </summary>
+	    [ServerProperty("npc", "necro_pet_dex_multiplier", "Multiplier to use when setting dexterity for most necromancer pets.", 0.0)]
+	    public static double NECRO_PET_DEX_MULTIPLIER { get; set; }
 
-	/// <summary>
-	/// Base value to use when setting strength for greater necroservant pets.
-	/// </summary>
-	[ServerProperty("npc", "necro_greater_pet_str_base", "Base value to use when setting strength for greater necroservant pets.", 60)]
-	public static short NECRO_GREATER_PET_STR_BASE { get; set; }
+	    /// <summary>
+	    /// Base value to use when setting quickness for most necromancer pets.
+	    /// </summary>
+	    [ServerProperty("npc", "necro_pet_qui_base", "Base value to use when setting quickness for most necromancer pets.", 60)]
+	    public static short NECRO_PET_QUI_BASE { get; set; }
 
-	/// <summary>
-	/// Multiplier to use when setting strength for greater necroservant pets.
-	/// </summary>
-	[ServerProperty("npc", "necro_greater_pet_str_multiplier", "Multiplier to use when setting strength for greater necroservant pets.", 0.0)]
-	public static double NECRO_GREATER_PET_STR_MULTIPLIER { get; set; }
+	    /// <summary>
+	    /// Multiplier to use when setting quickness for most necromancer pets.
+	    /// </summary>
+	    [ServerProperty("npc", "necro_pet_qui_multiplier", "Multiplier to use when setting quickness for most necromancer pets.", 0.3333)]
+	    public static double NECRO_PET_QUI_MULTIPLIER { get; set; }
 
-	/// <summary>
-	/// Base value to use when setting constitution forgreater necroservant pets.
-	/// </summary>
-	[ServerProperty("npc", "necro_greater_pet_con_base", "Base value to use when setting constitution for greater necroservant pets.", 60)]
-	public static short NECRO_GREATER_PET_CON_BASE { get; set; }
+	    /// <summary>
+	    /// Base value to use when setting strength for greater necroservant pets.
+	    /// </summary>
+	    [ServerProperty("npc", "necro_greater_pet_str_base", "Base value to use when setting strength for greater necroservant pets.", 60)]
+	    public static short NECRO_GREATER_PET_STR_BASE { get; set; }
 
-	/// <summary>
-	/// Multiplier to use when setting constitution for greater necroservant pets.
-	/// </summary>
-	[ServerProperty("npc", "necro_greater_pet_con_multiplier", "Multiplier to use when setting constitution for greater necroservant pets.", 0.3333)]
-	public static double NECRO_GREATER_PET_CON_MULTIPLIER { get; set; }
+	    /// <summary>
+	    /// Multiplier to use when setting strength for greater necroservant pets.
+	    /// </summary>
+	    [ServerProperty("npc", "necro_greater_pet_str_multiplier", "Multiplier to use when setting strength for greater necroservant pets.", 0.0)]
+	    public static double NECRO_GREATER_PET_STR_MULTIPLIER { get; set; }
 
-	/// <summary>
-	/// Base value to use when setting dexterity for greater necroservant pets.
-	/// </summary>
-	[ServerProperty("npc", "necro_greater_pet_dex_base", "Base value to use when setting dexterity for greater necroservant pets.", 60)]
-	public static short NECRO_GREATER_PET_DEX_BASE { get; set; }
+	    /// <summary>
+	    /// Base value to use when setting constitution forgreater necroservant pets.
+	    /// </summary>
+	    [ServerProperty("npc", "necro_greater_pet_con_base", "Base value to use when setting constitution for greater necroservant pets.", 60)]
+	    public static short NECRO_GREATER_PET_CON_BASE { get; set; }
 
-	/// <summary>
-	/// Multiplier to use when setting dexterity for greater necroservant pets.
-	/// </summary>
-	[ServerProperty("npc", "necro_greater_pet_dex_multiplier", "Multiplier to use when setting dexterity for greater necroservant pets.", 0.5)]
-	public static double NECRO_GREATER_PET_DEX_MULTIPLIER { get; set; }
+	    /// <summary>
+	    /// Multiplier to use when setting constitution for greater necroservant pets.
+	    /// </summary>
+	    [ServerProperty("npc", "necro_greater_pet_con_multiplier", "Multiplier to use when setting constitution for greater necroservant pets.", 0.3333)]
+	    public static double NECRO_GREATER_PET_CON_MULTIPLIER { get; set; }
 
-	/// <summary>
-	/// Base value to use when setting quickness for greater necroservant pets.
-	/// </summary>
-	[ServerProperty("npc", "necro_greater_pet_qui_base", "Base value to use when setting quickness for greater necroservant pets.", 60)]
-	public static short NECRO_GREATER_PET_QUI_BASE { get; set; }
+	    /// <summary>
+	    /// Base value to use when setting dexterity for greater necroservant pets.
+	    /// </summary>
+	    [ServerProperty("npc", "necro_greater_pet_dex_base", "Base value to use when setting dexterity for greater necroservant pets.", 60)]
+	    public static short NECRO_GREATER_PET_DEX_BASE { get; set; }
 
-	/// <summary>
-	/// Multiplier to use when setting quickness for greater necroservant pets.
-	/// </summary>
-	[ServerProperty("npc", "necro_greater_pet_qui_multiplier", "Multiplier to use when setting quickness for greater necroservant pets.", 1.0)]
-	public static double NECRO_GREATER_PET_QUI_MULTIPLIER { get; set; }
+	    /// <summary>
+	    /// Multiplier to use when setting dexterity for greater necroservant pets.
+	    /// </summary>
+	    [ServerProperty("npc", "necro_greater_pet_dex_multiplier", "Multiplier to use when setting dexterity for greater necroservant pets.", 0.5)]
+	    public static double NECRO_GREATER_PET_DEX_MULTIPLIER { get; set; }
+
+	    /// <summary>
+	    /// Base value to use when setting quickness for greater necroservant pets.
+	    /// </summary>
+	    [ServerProperty("npc", "necro_greater_pet_qui_base", "Base value to use when setting quickness for greater necroservant pets.", 60)]
+	    public static short NECRO_GREATER_PET_QUI_BASE { get; set; }
+
+	    /// <summary>
+	    /// Multiplier to use when setting quickness for greater necroservant pets.
+	    /// </summary>
+	    [ServerProperty("npc", "necro_greater_pet_qui_multiplier", "Multiplier to use when setting quickness for greater necroservant pets.", 1.0)]
+	    public static double NECRO_GREATER_PET_QUI_MULTIPLIER { get; set; }
 
         /// <summary>
         /// Minimum respawn time for npc's without a set respawninterval
@@ -1927,8 +1939,8 @@ namespace DOL.GS.ServerProperties
         /// <summary>
         /// Dragon Scales Loot Generator Named Boost Count
         /// </summary>
-	[ServerProperty("pve", "lootgenerator_dragonscales_named_count", "Multiplier for number of scales dropped from named mobs, including named dragons.  Must be an integer.", 2)]
-	public static int LOOTGENERATOR_DRAGONSCALES_NAMED_COUNT { get; set; }
+	    [ServerProperty("pve", "lootgenerator_dragonscales_named_count", "Multiplier for number of scales dropped from named mobs, including named dragons.  Must be an integer.", 2)]
+	    public static int LOOTGENERATOR_DRAGONSCALES_NAMED_COUNT { get; set; }
 
         /// <summary>
         /// Dreaded Seals Loot Generator Starting Level
@@ -2299,11 +2311,11 @@ namespace DOL.GS.ServerProperties
         [ServerProperty("craft", "allow_craft_norealm_items", "Allow any realm to craft items with 0 (no) realm.", false)]
         public static bool ALLOW_CRAFT_NOREALM_ITEMS { get; set; }
 	    
-	/// <summary>
-	/// Max character crafting skill?
-	/// </summary>
-	[ServerProperty("craft", "crafting_max_skills", "Set character crafting skills to max level.", false)]
-	public static bool CRAFTING_MAX_SKILLS { get; set; }
+	    /// <summary>
+	    /// Max character crafting skill?
+	    /// </summary>
+	    [ServerProperty("craft", "crafting_max_skills", "Set character crafting skills to max level.", false)]
+	    public static bool CRAFTING_MAX_SKILLS { get; set; }
 
         /// <summary>
         /// Use salvage per realm and get back material to use in chars realm

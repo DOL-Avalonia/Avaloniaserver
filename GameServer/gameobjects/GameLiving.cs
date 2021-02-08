@@ -36,6 +36,8 @@ using DOL.GS.Styles;
 using DOL.Language;
 using DOL.GS.RealmAbilities;
 using System.Threading.Tasks;
+using DOL.GS.PlayerClass;
+using DOL.GS.ServerProperties;
 
 namespace DOL.GS
 {
@@ -1794,7 +1796,11 @@ namespace DOL.GS
 					* (1.0 - enemy_resist);
 				dmg_mod = dmg_mod.Clamp(0.01, 3);
 
-				double weapon_dps = WeaponDamage(weapon);
+                double weapon_dps;
+                if(player != null && ((player.CharacterClass is ClassSavage && style.Spec == "Hand to Hand") || (style.Spec == "Spear" && (player.CharacterClass is ClassHunter || (player.CharacterClass is ClassValkyrie)))))
+                    weapon_dps = AttackDamage(weapon) * Properties.CLASS_RESOLVE_DAMAGES;
+                else
+                    weapon_dps = WeaponDamage(weapon);
 				double base_dmg = dmg_mod * weapon_dps;
 
 				double damage = base_dmg * effectiveness;
