@@ -1275,7 +1275,7 @@ namespace DOL.GS.ServerProperties
         /// <summary>
         /// New property to resolve the damges for Savage, Valkyrie and Hunter.
         /// </summary>
-        [ServerProperty("npc", "necro_pet_resolve_domages", "New property to resolve the damges for necromancer pets.", 0.30)]
+        [ServerProperty("npc", "class_resolve_domages", "New property to resolve the damges for necromancer pets.", 0.30)]
         public static double CLASS_RESOLVE_DAMAGES { get; set; }
 
         // Necro pet stat properties
