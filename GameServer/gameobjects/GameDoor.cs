@@ -21,6 +21,8 @@ using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.Language;
 using System.Threading;
+using DOL.MobGroups;
+using System.Linq;
 
 namespace DOL.GS
 {
@@ -34,6 +36,7 @@ namespace DOL.GS
         protected volatile uint m_lastUpdateTickCount = uint.MinValue;
         private readonly object m_LockObject = new object();
         private uint m_flags = 0;
+        private string m_group_mob_id;
 
         /// <summary>
         /// The time interval after which door will be closed, in milliseconds
@@ -90,6 +93,7 @@ namespace DOL.GS
             m_maxHealth = m_dbdoor.MaxHealth;
             m_locked = m_dbdoor.Locked;
             m_flags = m_dbdoor.Flags;
+            m_group_mob_id = m_dbdoor.Group_Mob_Id;
 
             AddToWorld();
         }
@@ -120,6 +124,7 @@ namespace DOL.GS
             obj.MaxHealth = MaxHealth;
             obj.Health = MaxHealth;
             obj.Locked = Locked;
+            obj.Group_Mob_Id = Group_Mob_Id;
             if (InternalID == null)
             {
                 GameServer.Database.AddObject(obj);
@@ -216,6 +221,17 @@ namespace DOL.GS
         /// </summary>
         public virtual void Open(GameLiving opener = null)
         {
+            if (!String.IsNullOrEmpty(Group_Mob_Id) && MobGroupManager.Instance.Groups.ContainsKey(Group_Mob_Id))
+            {
+                bool allDead = MobGroupManager.Instance.Groups[Group_Mob_Id].NPCs.All(m => !m.IsAlive);
+                if (!allDead)
+                {
+                    if (opener is GamePlayer player)
+                        player.Out.SendMessage("Il faut éliminer les monstres dans les alentours pour ouvrir cette porte !", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return;
+                }
+            }
+
             if (Locked == 0)
             {
                 State = eDoorState.Open;
@@ -423,6 +439,19 @@ namespace DOL.GS
                         }
                     }
                 }
+            }
+        }
+        
+        public string Group_Mob_Id
+        {
+            get
+            {
+                return m_group_mob_id;
+            }
+
+            set
+            {
+                m_group_mob_id = value;
             }
         }
 

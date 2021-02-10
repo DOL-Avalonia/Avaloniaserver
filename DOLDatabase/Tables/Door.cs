@@ -37,6 +37,7 @@ namespace DOL.Database
         private byte m_realm;
         private string m_guild;
         private uint m_flags;
+        private string m_group_mob_id;
 
         // private int m_constitution;
         private int m_locked;
@@ -295,6 +296,21 @@ namespace DOL.Database
             {
                 Dirty = true;
                 m_maxHealth = value;
+            }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public string Group_Mob_Id
+        {
+            get
+            {
+                return m_group_mob_id;
+            }
+
+            set
+            {
+                Dirty = true;
+                m_group_mob_id = value;
             }
         }
     }

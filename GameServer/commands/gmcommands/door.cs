@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.GS.PacketHandler.Client.v168;
+using DOL.MobGroups;
 
 namespace DOL.GS.Commands
 {
@@ -44,7 +45,8 @@ namespace DOL.GS.Commands
 		"Commands.GM.door.Realm",
 		"Commands.GM.door.Guild",
 		"'/door sound <soundid>'",
-		"Commands.GM.door.Info",
+        "/door groupmob <Group Mob Id>",
+        "Commands.GM.door.Info",
 		"Commands.GM.door.Heal",
 		"Commands.GM.door.Locked",
 		"Commands.GM.door.Unlocked")]
@@ -152,16 +154,36 @@ namespace DOL.GS.Commands
 				case "sound":
 					sound(client, targetDoor, args);
 					break;
+                case "groupmob":
+                    groupMob(client, targetDoor, args);
+                    break;
 
-				default:
+                default:
 					DisplaySyntax(client);
 					return;
 			}
 		}
+        #endregion
 
-		#endregion
+        /// <summary>
+        /// Method to add a groopmob to a door
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="targetDoor"></param>
+        /// <param name="args"></param>
+        private void groupMob(GameClient client, GameDoor targetDoor, string[] args)
+        {
+            string groupId = args[2];
+            if (!MobGroupManager.Instance.Groups.ContainsKey(groupId))
+            {
+                client.Out.SendMessage($"Le groupe {groupId} n'existe pas.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                return;
+            }
+            targetDoor.Group_Mob_Id = groupId;
+            targetDoor.SaveIntoDatabase();
+        }
 
-		private void add(GameClient client, GameDoor targetDoor)
+        private void add(GameClient client, GameDoor targetDoor)
 		{
 			var DOOR = GameServer.Database.SelectObjects<DBDoor>("`InternalID` = @InternalID", new QueryParameter("@InternalID", DoorID)).FirstOrDefault();
 
