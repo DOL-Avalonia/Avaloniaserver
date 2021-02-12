@@ -45,7 +45,11 @@ namespace DOL.GS.Commands
 		"Commands.GM.door.Realm",
 		"Commands.GM.door.Guild",
 		"'/door sound <soundid>'",
-        "/door groupmob <Group Mob Id>",
+        "'/door groupmob <Group Mob Id>'",
+        "'/door key <itemid>'",
+        "'/door key_chance <number between 0 and 100>'",
+        "'/door isrenaissance' toggle enable/disable IsRenaissance",
+        "'/door punishspell <spell Id>'",
         "Commands.GM.door.Info",
 		"Commands.GM.door.Heal",
 		"Commands.GM.door.Locked",
@@ -155,7 +159,19 @@ namespace DOL.GS.Commands
 					sound(client, targetDoor, args);
 					break;
                 case "groupmob":
-                    groupMob(client, targetDoor, args);
+                    GroupMob(client, targetDoor, args);
+                    break;
+                case "key":
+                    Key(client, targetDoor, args);
+                    break;
+                case "key_chance":
+                    Key_Chance(client, targetDoor, args);
+                    break;
+                case "isrenaissance":
+                    IsRenaissance(client, targetDoor, args);
+                    break;
+                case "punishspell":
+                    PunishSpell(client, targetDoor, args);
                     break;
 
                 default:
@@ -171,15 +187,74 @@ namespace DOL.GS.Commands
         /// <param name="client"></param>
         /// <param name="targetDoor"></param>
         /// <param name="args"></param>
-        private void groupMob(GameClient client, GameDoor targetDoor, string[] args)
+        private void GroupMob(GameClient client, GameDoor targetDoor, string[] args)
         {
-            string groupId = args[2];
-            if (!MobGroupManager.Instance.Groups.ContainsKey(groupId))
+            string groupId = null;
+            if (args.Length > 2)
+                groupId = args[2];
+            if (!string.IsNullOrEmpty(groupId) && !MobGroupManager.Instance.Groups.ContainsKey(groupId))
             {
                 client.Out.SendMessage($"Le groupe {groupId} n'existe pas.", eChatType.CT_System, eChatLoc.CL_ChatWindow);
                 return;
             }
             targetDoor.Group_Mob_Id = groupId;
+            targetDoor.SaveIntoDatabase();
+        }
+
+        /// <summary>
+        /// Add a itemtemplate id to open the door
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="targetDoor"></param>
+        /// <param name="args"></param>
+        private void Key(GameClient client, GameDoor targetDoor, string[] args)
+        {
+            if (args.Length == 2)
+                targetDoor.Key = null;
+            else
+                targetDoor.Key = args[2];
+            targetDoor.SaveIntoDatabase();
+        }
+
+        /// <summary>
+        /// Add a chance to fail to open the door
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="targetDoor"></param>
+        /// <param name="args"></param>
+        private void Key_Chance(GameClient client, GameDoor targetDoor, string[] args)
+        {
+            if (args.Length == 2)
+                targetDoor.Key_Chance = 0;
+            else
+                targetDoor.Key_Chance = short.Parse(args[2]);
+            targetDoor.SaveIntoDatabase();
+        }
+
+        /// <summary>
+        /// Toggle enable/disable Renaissance requirment 
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="targetDoor"></param>
+        /// <param name="args"></param>
+        private void IsRenaissance(GameClient client, GameDoor targetDoor, string[] args)
+        {
+            targetDoor.IsRenaissance = !targetDoor.IsRenaissance;
+            targetDoor.SaveIntoDatabase();
+        }
+
+        /// <summary>
+        /// Add a spell id to punish the opener
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="targetDoor"></param>
+        /// <param name="args"></param>
+        private void PunishSpell(GameClient client, GameDoor targetDoor, string[] args)
+        {
+            if (args.Length == 2)
+                targetDoor.PunishSpell = 0;
+            else
+                targetDoor.PunishSpell = int.Parse(args[2]);
             targetDoor.SaveIntoDatabase();
         }
 
@@ -415,8 +490,13 @@ namespace DOL.GS.Commands
 			info.Add(" + Y : " + targetDoor.Y);
 			info.Add(" + Z : " + targetDoor.Z);
 			info.Add(" + Heading : " + targetDoor.Heading);
+            info.Add(" + Group Mob : " + targetDoor.Group_Mob_Id);
+            info.Add(" + Key : " + targetDoor.Key);
+            info.Add(" + Key Chance : " + targetDoor.Key_Chance);
+            info.Add(" + IsRenaissance : " + targetDoor.IsRenaissance);
+            info.Add(" + Punish Spell : " + targetDoor.PunishSpell);
 
-			client.Out.SendCustomTextWindow("Door Information", info);
+            client.Out.SendCustomTextWindow("Door Information", info);
 		}
 
 		private void heal(GameClient client, GameDoor targetDoor)

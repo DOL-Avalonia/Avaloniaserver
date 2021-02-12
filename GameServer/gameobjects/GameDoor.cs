@@ -94,6 +94,10 @@ namespace DOL.GS
             m_locked = m_dbdoor.Locked;
             m_flags = m_dbdoor.Flags;
             m_group_mob_id = m_dbdoor.Group_Mob_Id;
+            m_key = m_dbdoor.Key;
+            m_key_Chance = m_dbdoor.Key_Chance;
+            m_isRenaissance = m_dbdoor.IsRenaissance;
+            m_punishSpell = m_dbdoor.PunishSpell;
 
             AddToWorld();
         }
@@ -125,6 +129,10 @@ namespace DOL.GS
             obj.Health = MaxHealth;
             obj.Locked = Locked;
             obj.Group_Mob_Id = Group_Mob_Id;
+            obj.Key = Key;
+            obj.Key_Chance = Key_Chance;
+            obj.IsRenaissance = IsRenaissance;
+            obj.PunishSpell = PunishSpell;
             if (InternalID == null)
             {
                 GameServer.Database.AddObject(obj);
@@ -216,20 +224,73 @@ namespace DOL.GS
             }
         }
 
+        private void TriggerPunishSpell(GameLiving opener)
+        {
+            if (PunishSpell > 0 && opener != null)
+            {
+                DBSpell punishspell = GameServer.Database.SelectObjects<DBSpell>("`SpellID` = @SpellID", new QueryParameter("@SpellID", PunishSpell)).FirstOrDefault();
+
+                // check if the player is punished
+                if (punishspell != null)
+                {
+                    foreach (GamePlayer pl in opener.GetPlayersInRadius(5000))
+                    {
+                        pl.Out.SendSpellEffectAnimation(opener, opener, (ushort)PunishSpell, 0, false, 5);
+                    }
+                    if (opener is GamePlayer player)
+                        player.Out.SendSpellEffectAnimation(opener, opener, (ushort)PunishSpell, 0, false, 5);
+                    opener.TakeDamage(opener, eDamageType.Energy, (int)punishspell.Damage, 0);
+                }
+            }
+        }
+
         /// <summary>
         /// Call this function to open the door
         /// </summary>
         public virtual void Open(GameLiving opener = null)
         {
+            GamePlayer player = opener as GamePlayer;
+
+            // Check if the all the mob in groupmob are dead
             if (!String.IsNullOrEmpty(Group_Mob_Id) && MobGroupManager.Instance.Groups.ContainsKey(Group_Mob_Id))
             {
                 bool allDead = MobGroupManager.Instance.Groups[Group_Mob_Id].NPCs.All(m => !m.IsAlive);
                 if (!allDead)
                 {
-                    if (opener is GamePlayer player)
+                    if (player != null)
                         player.Out.SendMessage("Il faut éliminer les monstres dans les alentours pour ouvrir cette porte !", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    TriggerPunishSpell(opener);
                     return;
                 }
+            }
+
+            // Check if the opener have the renaissance status
+            if (IsRenaissance && player != null && !player.IsRenaissance)
+            {
+                player.Out.SendMessage("Vous n'avez pas aquis le pouvoir de la Pierre Philosophale, vous ne pouvez pas entrer ici !", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                TriggerPunishSpell(opener);
+                return;
+            }
+
+            // Check if a key is required
+            if (!String.IsNullOrEmpty(Key) && opener != null && opener.Inventory.GetFirstItemByID(Key, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) == null)
+            {
+                if (player != null)
+                    player.Out.SendMessage("Vous avez besoin d'une clé pour ouvrir cette porte !", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                TriggerPunishSpell(opener);
+                return;
+            }
+            else if(!String.IsNullOrEmpty(Key) && opener != null && Key.StartsWith("oneuse"))
+            {
+                opener.Inventory.RemoveCountFromStack(opener.Inventory.GetFirstItemByID(Key, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack), 1);
+            }
+
+            // Check the opener fail to open the door
+            if (Util.Chance(Key_Chance))
+            {
+                if (player != null)
+                    player.Out.SendMessage("Vous échouez à ouvrir cette porte !", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return;
             }
 
             if (Locked == 0)
@@ -353,6 +414,10 @@ namespace DOL.GS
         }
 
         private static long m_healthregentimer = 0;
+        private int m_punishSpell;
+        private bool m_isRenaissance;
+        private short m_key_Chance;
+        private string m_key;
 
         public virtual void RegenDoorHealth()
         {
@@ -442,6 +507,9 @@ namespace DOL.GS
             }
         }
         
+        /// <summary>
+        /// Link a group mob at the door
+        /// </summary>
         public string Group_Mob_Id
         {
             get
@@ -452,6 +520,70 @@ namespace DOL.GS
             set
             {
                 m_group_mob_id = value;
+            }
+        }
+
+        /// <summary>
+        /// Itemtemplate id to open the door
+        /// </summary>
+        public string Key
+        {
+            get
+            {
+                return m_key;
+            }
+
+            set
+            {
+                m_key = value;
+            }
+        }
+
+        /// <summary>
+        /// Chance of fail to open the door
+        /// </summary>
+        public short Key_Chance
+        {
+            get
+            {
+                return m_key_Chance;
+            }
+
+            set
+            {
+                m_key_Chance = value;
+            }
+        }
+
+        /// <summary>
+        /// If need the Renaissance state
+        /// </summary>
+        public bool IsRenaissance
+        {
+            get
+            {
+                return m_isRenaissance;
+            }
+
+            set
+            {
+                m_isRenaissance = value;
+            }
+        }
+
+        /// <summary>
+        /// Spell Id to punish the opener
+        /// </summary>
+        public int PunishSpell
+        {
+            get
+            {
+                return m_punishSpell;
+            }
+
+            set
+            {
+                m_punishSpell = value;
             }
         }
 
