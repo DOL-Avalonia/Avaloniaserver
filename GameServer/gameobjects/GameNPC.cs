@@ -5871,7 +5871,7 @@ namespace DOL.GS
 
 			// grab random sentence
 			var chosen = mxa[Util.Random(mxa.Count - 1)];
-			if (!Util.Chance(chosen.Chance)) return;
+			if ((chosen.HP <=0 && chosen.Chance > 0 && !Util.Chance(chosen.Chance)) || (chosen.HP > 0 && chosen.Chance <= 0 && Health > chosen.HP) || (chosen.HP > 0 && chosen.Chance > 0 && Health > chosen.HP && !Util.Chance(chosen.Chance))) return;
 
 			string controller = string.Empty;
 			if (Brain is IControlledBrain)
@@ -5880,6 +5880,23 @@ namespace DOL.GS
 				if (playerOwner != null)
 					controller = playerOwner.Name;
 			}
+
+            if(chosen.Spell > 0)
+            {
+                DBSpell dbspell = GameServer.Database.SelectObject<DBSpell>("SpellID = " + chosen.Spell);
+                // check if the player is punished
+                if (dbspell != null)
+                {
+                    foreach (GamePlayer pl in GetPlayersInRadius(5000))
+                    {
+                        pl.Out.SendSpellEffectAnimation(this, this, (ushort)chosen.Spell, 0, false, 5);
+                    }
+                    if (living is GamePlayer player)
+                        player.Out.SendSpellEffectAnimation(this, this, (ushort)chosen.Spell, 0, false, 5);
+                    living.TakeDamage(this, eDamageType.Energy, (int)dbspell.Damage, 0);
+                }
+            }
+                
 
 			string text = chosen.Text.Replace("{sourcename}", Name).Replace("{targetname}", living == null ? string.Empty : living.Name).Replace("{controller}", controller);
 
