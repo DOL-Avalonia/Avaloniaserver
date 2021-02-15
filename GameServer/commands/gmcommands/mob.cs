@@ -121,7 +121,7 @@ namespace DOL.GS.Commands
          "'/mob load <Mob_ID>' load the Mob_ID from the DB and update the Mob cache.",
          "'/mob reload <name>' reload the targetted or named mob(s) from the database.",
          "'/mob findname <name> <#>' search for a mob with a name like <name> with maximum <#> (def. 10) matches.",
-         "'/mob trigger <type> <chance> <emote> <text>' adds a trigger to targeted mob class.  Use '/mob trigger help' for more info.",
+         "'/mob trigger <type> <chance> <emote> <spell> <hp> <text>' adds a trigger to targeted mob class.  Use '/mob trigger help' for more info.",
          "'/mob trigger info' Give trigger informations.",
          "'/mob trigger remove <id>' Remove a trigger.",
          "'/mob ownerid <id>' Sets and saves the OwnerID for this mob.",
@@ -3521,7 +3521,7 @@ namespace DOL.GS.Commands
             client.Out.SendMessage("Ex: /mob trigger aggro 100 0 {y}I really hate {class}'s like you!", eChatType.CT_System, eChatLoc.CL_PopupWindow);
             client.Out.SendMessage("Ex: /mob trigger roam 5 12 Prepare to die {targetname}!", eChatType.CT_System, eChatLoc.CL_PopupWindow);
             client.Out.SendMessage("Ex: /mob trigger aggro 5 0 {b}I've been waiting for this moment ever since I was a young {sourcename}!", eChatType.CT_System, eChatLoc.CL_PopupWindow);
-            client.Out.SendMessage("Usage: '/mob trigger <type(die,aggro,spawn,fight,kill,roam)> <chance in percent> <emote (0 for no emote)> <sentence(can include {targetname},{sourcename},{class},{race}, {controller})(can also be formatted with {y} for yelled and {b} for broadcasted sentence)>'", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+            client.Out.SendMessage("Usage: '/mob trigger <type(die,aggro,spawn,fight,kill,roam)> <chance in percent> <emote (0 for no emote)> <spell (0 for no spell)> <hp (<1 for no hp)> <sentence(can include {targetname},{sourcename},{class},{race}, {controller})(can also be formatted with {y} for yelled and {b} for broadcasted sentence)>'", eChatType.CT_System, eChatLoc.CL_PopupWindow);
             client.Out.SendMessage("Usage: '/mob trigger info' Give trigger informations", eChatType.CT_System, eChatLoc.CL_PopupWindow);
             client.Out.SendMessage("Usage: '/mob trigger remove <id>' Remove a trigger", eChatType.CT_System, eChatLoc.CL_PopupWindow);
         }

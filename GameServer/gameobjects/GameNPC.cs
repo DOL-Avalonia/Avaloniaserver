@@ -3818,6 +3818,7 @@ namespace DOL.GS
 			moving,
 			interact,
 			seeing,
+            hurting
 		}
 
 		/// <summary>
@@ -4247,10 +4248,17 @@ namespace DOL.GS
 			return damage;
 		}
 
-		/// <summary>
-		/// Gets/sets the object health
-		/// </summary>
-		public override int Health
+        public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
+        {
+            if(source is GameLiving living && damageAmount > 0)
+                FireAmbientSentence(eAmbientTrigger.hurting, living);
+            base.TakeDamage(source, damageType, damageAmount, criticalAmount);
+        }
+
+        /// <summary>
+        /// Gets/sets the object health
+        /// </summary>
+        public override int Health
 		{
 			get
 			{
@@ -5871,7 +5879,7 @@ namespace DOL.GS
 
 			// grab random sentence
 			var chosen = mxa[Util.Random(mxa.Count - 1)];
-			if ((chosen.HP <=0 && chosen.Chance > 0 && !Util.Chance(chosen.Chance)) || (chosen.HP > 0 && chosen.Chance <= 0 && Health > chosen.HP) || (chosen.HP > 0 && chosen.Chance > 0 && Health > chosen.HP && !Util.Chance(chosen.Chance))) return;
+			if ((chosen.HP <=0 && chosen.Chance > 0 && !Util.Chance(chosen.Chance)) || (chosen.HP > 0 && chosen.Chance <= 0 && HealthPercent > chosen.HP) || (chosen.HP > 0 && chosen.Chance > 0 && HealthPercent > chosen.HP && !Util.Chance(chosen.Chance))) return;
 
 			string controller = string.Empty;
 			if (Brain is IControlledBrain)
