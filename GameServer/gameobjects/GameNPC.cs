@@ -5879,9 +5879,19 @@ namespace DOL.GS
 
 			// grab random sentence
 			var chosen = mxa[Util.Random(mxa.Count - 1)];
-			if ((chosen.HP <=0 && chosen.Chance > 0 && !Util.Chance(chosen.Chance)) || (chosen.HP > 0 && chosen.Chance <= 0 && HealthPercent > chosen.HP) || (chosen.HP > 0 && chosen.Chance > 0 && HealthPercent > chosen.HP && !Util.Chance(chosen.Chance))) return;
+            bool continueProcess = false;
+            if (chosen.HP < 1 && chosen.Chance > 0)
+                if (Util.Chance(chosen.Chance))
+                    continueProcess = true;
+                else
+                    return;
+            else if (!continueProcess && HealthPercent > chosen.HP)
+                return;
+            else if (!continueProcess && chosen.Chance > 0 && !Util.Chance(chosen.Chance))
+                return;
 
-			string controller = string.Empty;
+
+            string controller = string.Empty;
 			if (Brain is IControlledBrain)
 			{
 				GamePlayer playerOwner = (Brain as IControlledBrain).GetPlayerOwner();

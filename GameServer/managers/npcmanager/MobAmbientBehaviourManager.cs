@@ -31,7 +31,7 @@ namespace DOL.GS
         /// <summary>
         /// Mob X Ambient Behaviour Cache indexed by Mob Name
         /// </summary>
-        private List<MobXAmbientBehaviour> AmbientBehaviour { get; }
+        private List<MobXAmbientBehaviour> ambientBehaviour;
 
         /// <summary>
         /// Retrieve MobXambiemtBehaviour Objects from Mob Name
@@ -45,10 +45,23 @@ namespace DOL.GS
                     return new MobXAmbientBehaviour[0];
                 }
 
-                return AmbientBehaviour
+                return ambientBehaviour
                     .Where(x => x.Source.Equals(index, StringComparison.InvariantCultureIgnoreCase))
                     .ToArray();
             }
+        }
+
+        /// <summary>
+        /// Call it after delete or add a trigger
+        /// </summary>
+        public void Reload(IObjectDatabase database)
+        {
+            if (database == null)
+            {
+                throw new ArgumentNullException(nameof(database));
+            }
+
+            ambientBehaviour = database.SelectAllObjects<MobXAmbientBehaviour>().ToList();
         }
 
         /// <summary>
@@ -56,12 +69,7 @@ namespace DOL.GS
         /// </summary>
         public MobAmbientBehaviourManager(IObjectDatabase database)
         {
-            if (database == null)
-            {
-                throw new ArgumentNullException(nameof(database));
-            }
-
-            AmbientBehaviour = database.SelectAllObjects<MobXAmbientBehaviour>().ToList();
+            Reload(database);
         }
     }
 }

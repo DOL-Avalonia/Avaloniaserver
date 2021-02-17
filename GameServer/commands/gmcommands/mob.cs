@@ -3469,6 +3469,8 @@ namespace DOL.GS.Commands
 
                 text = text.Replace("{b}", string.Empty).Replace("{y}", string.Empty);
                 GameServer.Database.AddObject(new MobXAmbientBehaviour(targetMob.Name, trig.ToString(), emote, text, chance, voice, spell, hp) { Dirty = true, AllowAdd = true });
+                GameServer.Instance.NpcManager.AmbientBehaviour.Reload(GameServer.Instance.IDatabase);
+                targetMob.ambientTexts = GameServer.Instance.NpcManager.AmbientBehaviour[targetMob.Name];
                 client.Out.SendMessage(" Trigger added to mobs with name " + targetMob.Name + " when they " + type + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
@@ -3496,6 +3498,8 @@ namespace DOL.GS.Commands
 
             var trigger = triggers[i - 1];
             GameServer.Database.DeleteObject(trigger);
+            GameServer.Instance.NpcManager.AmbientBehaviour.Reload(GameServer.Instance.IDatabase);
+            targetMob.ambientTexts = GameServer.Instance.NpcManager.AmbientBehaviour[targetMob.Name];
             ChatUtil.SendSystemMessage(client, "Trigger: \"" + trigger.Trigger + ", chance: " + trigger.Chance + ", voice: " + trigger.Voice + ", emote: " + trigger.Emote + ", text: " + trigger.Text + "\" has been removed.");
         }
 
@@ -3507,7 +3511,7 @@ namespace DOL.GS.Commands
             var i = 0;
             foreach (var trigger in triggers)
             {
-                ChatUtil.SendSystemMessage(client, ++i + ". " + trigger.Trigger + ", chance: " + trigger.Chance + ", voice: " + trigger.Voice + ", emote: " + trigger.Emote + ", text: " + trigger.Text);
+                ChatUtil.SendSystemMessage(client, ++i + ". " + trigger.Trigger + ", chance: " + trigger.Chance + ", voice: " + trigger.Voice + ", emote: " + trigger.Emote + ", spell: " + trigger.Spell + ", hp: " + trigger.HP + ", text: " + trigger.Text);
             }
         }
 
