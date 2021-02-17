@@ -74,9 +74,10 @@ namespace DOL.GS.PacketHandler.Client.v168
                 player.Out.SendTime();
 
                 bool checkInstanceLogin = false;
-
+				bool updateTempProperties = false;
                 if (!player.EnteredGame)
                 {
+					updateTempProperties = true;
                     player.EnteredGame = true;
                     player.Notify(GamePlayerEvent.GameEntered, player);
                     player.EffectList.RestoreAllEffects();
@@ -168,6 +169,34 @@ namespace DOL.GS.PacketHandler.Client.v168
                 }
 
                 player.Client.ClientState = GameClient.eClientState.Playing;
+
+				if (updateTempProperties)
+				{
+					if (ServerProperties.Properties.ACTIVATE_TEMP_PROPERTIES_MANAGER_CHECKUP)
+					{
+						try
+						{
+							IList<TempPropertiesManager.TempPropContainer> TempPropContainerList = TempPropertiesManager.TempPropContainerList.Where(item => item.OwnerID == player.DBCharacter.ObjectId).ToList();
+
+							foreach (TempPropertiesManager.TempPropContainer container in TempPropContainerList)
+							{
+								long longresult = 0;
+								if (long.TryParse(container.Value, out longresult))
+								{
+									player.TempProperties.setProperty(container.TempPropString, longresult);
+
+									if (ServerProperties.Properties.ACTIVATE_TEMP_PROPERTIES_MANAGER_CHECKUP_DEBUG)
+										Log.Debug("Container " + container.TempPropString + " with value " + container.Value + " for player " + player.Name + " was removed from container list, tempproperties added");
+								}
+									TempPropertiesManager.TempPropContainerList.TryRemove(container);
+							}
+						}
+						catch (Exception e)
+						{
+							Log.Debug("Error in TempProproperties Manager when searching TempProperties to apply: " + e.ToString());
+						}
+					}
+				}
             }
 
             private static void CheckBgLevelCapForPlayerAndMoveIfNecessary(GamePlayer player)

@@ -9,7 +9,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>DOLConfig</RootNamespace>
     <AssemblyName>DOLConfig</AssemblyName>
-    <TargetFrameworkVersion Condition=" '$(OS)' != 'Unix' ">v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition=" '$(OS)' != 'Unix' ">v4.8</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition=" '$(OS)' == 'Unix' ">v4.5</TargetFrameworkVersion>
     <FileAlignment>4096</FileAlignment>
     <ApplicationIcon>icon.ico</ApplicationIcon>
@@ -73,11 +73,15 @@
     <OutputPath>..\Debug\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MySql.Data">
-      <HintPath>..\packages\MySql.Data.6.9.8\lib\net45\MySql.Data.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="MySql.Data, Version=6.10.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.10.9\lib\net452\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -96,6 +100,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq">
@@ -146,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="serverconfig_extraproperties.xml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>

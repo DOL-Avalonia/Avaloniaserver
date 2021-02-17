@@ -43,7 +43,7 @@ namespace DOL.GS.DatabaseUpdate
         /// <summary>
         /// Enable or Disable the Auto XML Database Update Script
         /// </summary>
-        [ServerProperty("xmlautoload", "xml_autoload_update_enable", "Enable or disable Auto XML Dataase Update Packages (Should be enabled for first run...)", true)]
+        [ServerProperty("xmlautoload", "xml_autoload_update_enable", "Enable or disable Auto XML Dataase Update Packages (Should be enabled for first run...)", false)]
         public static bool XML_AUTOLOAD_UPDATE_ENABLE { get; set; }
 
         /// <summary>
