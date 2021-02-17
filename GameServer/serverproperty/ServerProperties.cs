@@ -1981,6 +1981,24 @@ namespace DOL.GS.ServerProperties
         [ServerProperty("pve", "lootgenerator_dreadedseals_named_chance", "Increase chance of Dreaded Seals Loot Generator drop for Named mobs. (count * lootgenerator_dreadedseals_named_chance)", 1.5)]
         public static double LOOTGENERATOR_DREADEDSEALS_NAMED_CHANCE { get; set; }
 
+	/// <summary>
+	/// Dreaded Seal multipliers by level
+	/// </summary>
+	[ServerProperty("pve", "dreadedseals_level_multiplier", "Level based multipliers for RPs and BPs awarded when turning in dreaded seals.", "21|2;26|3;31|5;36|30;41|70;46|150;50|300")]
+	public static string DREADEDSEALS_LEVEL_MULTIPLIER { get; set; }
+
+	/// <summary>
+	/// Dreaded Seal RP values before level multiplier and BP rate
+	/// </summary>
+	[ServerProperty("pve", "dreadedseals_bp_values", "BP values of dreaded seal types before level multiplier and BP rate is applied.", "glowing_dreaded_seal|3.334;sanguine_dreaded_seal|3.334;lambent_dreaded_seal|33.334;lambent_dreaded_seal2|33.334;fulgent_dreaded_seal|166.667;effulgent_dreaded_seal|833.334")]
+	public static string DREADEDSEALS_BP_VALUES { get; set; }
+
+	/// <summary>
+	/// Dreaded Seal BP values before level multiplier and RP rate
+	/// </summary>
+	[ServerProperty("pve", "dreadedseals_rp_values", "RP values of dreaded seal types before level multiplier and RP rate is applied.", "glowing_dreaded_seal|10;sanguine_dreaded_seal|10;lambent_dreaded_seal|100;lambent_dreaded_seal2|100;fulgent_dreaded_seal|500;effulgent_dreaded_seal|2500")]
+	public static string DREADEDSEALS_RP_VALUES { get; set; }
+
         /// <summary>
         /// Maximum number of houses supported on this server.  Limits the size of the housing array used for updates
         /// </summary>
