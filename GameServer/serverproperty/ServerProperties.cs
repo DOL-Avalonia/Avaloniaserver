@@ -1999,6 +1999,30 @@ namespace DOL.GS.ServerProperties
 	[ServerProperty("pve", "dreadedseals_rp_values", "RP values of dreaded seal types before level multiplier and RP rate is applied.", "glowing_dreaded_seal|10;sanguine_dreaded_seal|10;lambent_dreaded_seal|100;lambent_dreaded_seal2|100;fulgent_dreaded_seal|500;effulgent_dreaded_seal|2500")]
 	public static string DREADEDSEALS_RP_VALUES { get; set; }
 
+	/// <summary>
+	/// Allow currency exchange?
+	/// </summary>
+	[ServerProperty("pve", "currency_exchange_allow", "Allow players to exchange diamondseals/aurulite/blood seals/glass/scales by giving them to a merchant who takes the desired currency, i.e. you can give glass to dragon merchants to get scales?", true)]
+	public static bool CURRENCY_EXCHANGE_ALLOW { get; set; }
+
+	/// <summary>
+	/// Currency exchange values, i.e. you need 10 aurulite to get 1 dragon scale.
+	/// </summary>
+	[ServerProperty("pve", "currency_exchange_values", "Value of special currencies for currency conversion.", "AtlanteanGlass|1;DiamondSeal|4;Aurulite|4;dragonscales|40;BloodSeal|1000")]
+	public static string CURRENCY_EXCHANGE_VALUES { get; set; }
+
+	/// <summary>
+	/// Allow currencies to be exchanged for BPs?
+	/// </summary>
+	[ServerProperty("pve", "bp_exchange_allow", "Allow players to exchange special currencies for BPs by giving them to BP merchants?", true)]
+	public static bool BP_EXCHANGE_ALLOW { get; set; }
+
+	/// <summary>
+	/// BP exchange values.  Each item grants x BPs.
+	/// </summary>
+	[ServerProperty("pve", "bp_exchange_values", "Value of special currencies in BPs.", "AtlanteanGlass|5;DiamondSeal|20;Aurulite|20;dragonscales|200;BloodSeal|2500")]
+	public static string BP_EXCHANGE_VALUES { get; set; }
+
         /// <summary>
         /// Maximum number of houses supported on this server.  Limits the size of the housing array used for updates
         /// </summary>
