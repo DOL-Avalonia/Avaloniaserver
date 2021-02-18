@@ -1040,7 +1040,7 @@ namespace DOL.GS
 						long longresult = 0;
 						if (long.TryParse(v.ToString(), out longresult))
 						{
-							if (ServerProperties.Properties.ACTIVATE_TEMP_PROPERTIES_MANAGER_CHECKUP_DEBUG)
+							if (Properties.ACTIVATE_TEMP_PROPERTIES_MANAGER_CHECKUP_DEBUG)
 								log.Debug("On Disconnection found and was saved: " + p + " with value: " + v.ToString() + " for player: " + Name);
 
 							TempPropertiesManager.TempPropContainerList.Add(new TempPropertiesManager.TempPropContainer(DBCharacter.ObjectId, p, v.ToString()));
@@ -1048,7 +1048,7 @@ namespace DOL.GS
 						}
 						else
 						{
-							if (ServerProperties.Properties.ACTIVATE_TEMP_PROPERTIES_MANAGER_CHECKUP_DEBUG)
+							if (Properties.ACTIVATE_TEMP_PROPERTIES_MANAGER_CHECKUP_DEBUG)
 								log.Debug("On Disconnection found but was not saved (not a long value): " + p + " with value: " + v.ToString() + " for player: " + Name);
 						}
 					}
