@@ -1057,7 +1057,11 @@ namespace DOL.GS
 						 || bonusCat == (int)eProperty.StyleAbsorb
 						 || bonusCat == (int)eProperty.ArcaneSyphon
 						 || bonusCat == (int)eProperty.BountyPoints
-						 || bonusCat == (int)eProperty.XpPoints)
+						 || bonusCat == (int)eProperty.XpPoints
+                         || (bonusCat >= 145 && bonusCat <= 156)
+                         || (bonusCat >= 169 && bonusCat <= 200)
+                         || (bonusCat >= 231 && bonusCat <= 235)
+                         || (bonusCat >= 247 && bonusCat <= 254))
                         ? ((bonusCat == (int)eProperty.PowerPool) ? LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteBonusLine.PowerPool") : "%")
                         : LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteBonusLine.Points")
 					));

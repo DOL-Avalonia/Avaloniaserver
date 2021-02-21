@@ -810,7 +810,8 @@ namespace DOL.GS.PropertyCalc
         public override int CalcValue(GameLiving living, eProperty property)
         {
             int percent = 100
-                +living.BaseBuffBonusCategory[(int)property];
+                +living.BaseBuffBonusCategory[(int)property]
+                +living.ItemBonus[(int)property];
 
             return percent;
         }
