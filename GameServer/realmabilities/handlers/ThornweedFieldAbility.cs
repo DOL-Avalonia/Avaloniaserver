@@ -98,7 +98,7 @@ namespace DOL.GS.RealmAbilities
                 Callback = new RegionTimerCallback(EndCast)
             };
 
-            caster.RealmAbilityCastTimer.Start(2000);
+            caster.RealmAbilityCastTimer.Start(0);
         }
 
         protected virtual int EndCast(RegionTimer timer)
