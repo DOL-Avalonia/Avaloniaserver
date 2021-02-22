@@ -734,6 +734,9 @@ namespace DOL.GS.PacketHandler
                                             value2 = item.Weight;
                                             break;
                                         }
+                                    case (int)eObjectType.Instrument:
+                                        value1 = (item.DPS_AF == 2 ? 0 : item.DPS_AF); // 0x00 = Lute ; 0x01 = Drum ; 0x03 = Flute ; 0x02 = Corn
+                                        value2 = item.Weight; break; // unused
                                     default:
                                         {
                                             value1 = item.DPS_AF;
