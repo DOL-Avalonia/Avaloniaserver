@@ -2423,6 +2423,7 @@ namespace DOL.GS
 
 		/// <summary>
 		/// Translate Given Race/Gender Combo in Client Language
+        /// Fix: translation error (remove the prefix "GameObject")
 		/// </summary>
 		/// <param name="client"></param>
 		/// <param name="race"></param>
@@ -2431,17 +2432,17 @@ namespace DOL.GS
 		public static string RaceToTranslatedName(this GameClient client, int race, int gender)
 		{
 			eRace r = (eRace)race;
-			string translationID = string.Format("GameObjects.GamePlayer.PlayerRace.{0}", r.ToString("F")); //Returns 'Unknown'
+			string translationID = string.Format("GamePlayer.PlayerRace.{0}", r.ToString("F")); //Returns 'Unknown'
 
 			if (r != 0)
 			{
 				switch ((eGender)gender)
 				{
 					case eGender.Female:
-						translationID = string.Format("GameObjects.GamePlayer.PlayerRace.Female.{0}", r.ToString("F"));
+						translationID = string.Format("GamePlayer.PlayerRace.Female.{0}", r.ToString("F"));
 						break;
 					default:
-						translationID = string.Format("GameObjects.GamePlayer.PlayerRace.Male.{0}", r.ToString("F"));
+						translationID = string.Format("GamePlayer.PlayerRace.Male.{0}", r.ToString("F"));
 						break;
 				}
 			}
