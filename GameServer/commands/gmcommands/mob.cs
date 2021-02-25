@@ -120,7 +120,7 @@ namespace DOL.GS.Commands
          "'/mob select' select the mob within 100 radius (used for selection of non-targettable GameNPC).",
          "'/mob load <Mob_ID>' load the Mob_ID from the DB and update the Mob cache.",
          "'/mob reload <name>' reload the targetted or named mob(s) from the database.",
-         "'/mob reload radisu <number>' reload the mobs in radius from the database.",
+         "'/mob reload radius <number>' reload the mobs in radius from the database.",
          "'/mob findname <name> <#>' search for a mob with a name like <name> with maximum <#> (def. 10) matches.",
          "'/mob trigger <type> <chance> <emote> <spell> <hp> <text>' adds a trigger to targeted mob class.  Use '/mob trigger help' for more info.",
          "'/mob trigger info' Give trigger informations.",
