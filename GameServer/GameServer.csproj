@@ -186,6 +186,7 @@
     <Compile Include="commands\admincommands\Account.cs" />
     <Compile Include="commands\admincommands\BenchmarkCommand.cs" />
     <Compile Include="commands\admincommands\code.cs" />
+    <Compile Include="commands\gmcommands\earthquake.cs" />
     <Compile Include="commands\admincommands\Freeze.cs" />
     <Compile Include="commands\admincommands\RefreshCommand.cs" />
     <Compile Include="commands\admincommands\Reload.cs" />
