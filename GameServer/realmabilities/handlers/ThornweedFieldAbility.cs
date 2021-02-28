@@ -83,7 +83,7 @@ namespace DOL.GS.RealmAbilities
                     iPlayer.MessageFromArea(caster, $"{caster.Name} casts a spell!", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
                 }
 
-                iPlayer.Out.SendSpellCastAnimation(caster, 7028, 0);
+                iPlayer.Out.SendSpellCastAnimation(caster, 7028, 10);
             }
 
             if (caster.RealmAbilityCastTimer != null)
