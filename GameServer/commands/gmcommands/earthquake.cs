@@ -7,8 +7,7 @@ namespace DOL.GS.Scripts
 {
     [CmdAttribute(
    "&earthquake",
-   new string[] { "&earthquake" },
-  ePrivLevel.GM,
+   ePrivLevel.GM,
    "earthquake [radius] [intensity] [duration] [delay]",
    "/earthquake")]
     public class EarthQuakeCommandHandler : AbstractCommandHandler, ICommandHandler
