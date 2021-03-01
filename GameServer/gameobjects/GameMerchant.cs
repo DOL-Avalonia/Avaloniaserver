@@ -788,6 +788,12 @@ namespace DOL.GS
 				&& m_currencyValues.TryGetValue(item.Id_nb, out int receiveCost)
 				&& m_currencyValues.TryGetValue(MoneyKey, out int giveCost))
 			{
+                if(item.Id_nb == MoneyKey)
+                {
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(((GamePlayer)source).Client.Account.Language, "GameLiving.ReceiveItem", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return false;
+                }
+
 				int giveCount = item.Count * receiveCost / giveCost;
 
 				if (giveCount > 0)
@@ -837,12 +843,12 @@ namespace DOL.GS
 
     public class GameAuruliteMerchant : GameItemCurrencyMerchant
     {
-		public override string MoneyKey { get { return "aurulite"; } }
+		public override string MoneyKey { get { return "Aurulite"; } }
     }
 
     public class GameAtlanteanGlassMerchant : GameItemCurrencyMerchant
     {
-		public override string MoneyKey { get { return "atlanteanglass"; } }
+		public override string MoneyKey { get { return "AtlanteanGlass"; } }
     }
 
     public class GameDragonMerchant : GameItemCurrencyMerchant
