@@ -824,7 +824,8 @@ namespace DOL.GS
 				member.Client.Out.SendCharResistsUpdate();
                 if (remover != null && remover.Account.PrivLevel != 1)
                     return true;
-                m_leave_Players.Add(member, DateTime.Now);
+                if(!m_leave_Players.ContainsKey(member))
+                    m_leave_Players.Add(member, DateTime.Now);
 			}
 			catch (Exception e)
 			{
