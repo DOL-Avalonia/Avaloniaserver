@@ -35,31 +35,54 @@ namespace DOL.GS.PropertyCalc
     {
         public override int CalcValue(GameLiving living, eProperty property)
         {
-            if (living is GameNPC)
+            int step = 0;
+            try
             {
-                // NPC buffs effects are halved compared to debuffs, so it takes 2% debuff to mitigate 1% buff
-                // See PropertyChangingSpell.ApplyNpcEffect() for details.
-                int buffs = living.BaseBuffBonusCategory[property] << 1;
-                int debuff = Math.Abs(living.DebuffCategory[property]);
-                int specDebuff = Math.Abs(living.SpecDebuffCategory[property]);
+                if (living is GameNPC)
+                {
+                    // NPC buffs effects are halved compared to debuffs, so it takes 2% debuff to mitigate 1% buff
+                    // See PropertyChangingSpell.ApplyNpcEffect() for details.
+                    int buffs = living.BaseBuffBonusCategory[property] << 1;
+                    step = 1;
+                    int debuff = Math.Abs(living.DebuffCategory[property]);
+                    step = 2;
+                    int specDebuff = Math.Abs(living.SpecDebuffCategory[property]);
+                    step = 3;
 
-                buffs -= specDebuff;
-                if (buffs > 0)
-                    buffs = buffs >> 1;
-                buffs -= debuff;
+                    buffs -= specDebuff;
+                    step = 4;
+                    if (buffs > 0)
+                    {
+                        buffs = buffs >> 1;
+                        step = 5;
+                    }
+                        
+                    buffs -= debuff;
+                    step = 6;
 
-                return living.AbilityBonus[property] + buffs;
+                    return living.AbilityBonus[property] + buffs;
+                }
+
+                // hardcap at 10%
+                int itemPercent = Math.Min(10, living.ItemBonus[(int)property]);
+                step = 7;
+                int debuffPercent = Math.Min(10, Math.Abs(living.DebuffCategory[(int)property]));
+                step = 8;
+                int percent = living.BaseBuffBonusCategory[(int)property] + living.SpecBuffBonusCategory[(int)property] + itemPercent - debuffPercent;
+                step = 9;
+
+                // Apply RA bonus
+                percent += living.AbilityBonus[(int)property];
+
+                return percent;
             }
-
-            // hardcap at 10%
-            int itemPercent = Math.Min(10, living.ItemBonus[(int)property]);
-            int debuffPercent = Math.Min(10, Math.Abs(living.DebuffCategory[(int)property]));
-            int percent = living.BaseBuffBonusCategory[(int)property] + living.SpecBuffBonusCategory[(int)property] + itemPercent - debuffPercent;
-
-            // Apply RA bonus
-            percent += living.AbilityBonus[(int)property];
-
-            return percent;
+            catch (Exception e)
+            {
+                Log.Error(String.Format("MeleeDamagePercentCalculator CalcValue at step {0}, name {1}", step, living.Name), e);
+                // Default value
+                return 1;
+            }
+            
         }
     }
 }
