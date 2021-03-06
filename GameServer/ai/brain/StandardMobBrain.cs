@@ -969,7 +969,7 @@ namespace DOL.AI.Brain
 
                 if (!Properties.BAF_MOBS_ATTACK_PULLER)
                 {
-                    if (DOL.GS.ServerProperties.Properties.BAF_MOBS_ATTACK_BG_MEMBERS && bg != null)
+                    if (Properties.BAF_MOBS_ATTACK_BG_MEMBERS && bg != null)
                     {
                         // We need a large enough victims list for group and BG, and also need to check for duplicate victims
                         victims = new List<GamePlayer>(group.MemberCount + bg.PlayerCount - 1);
@@ -1020,9 +1020,17 @@ namespace DOL.AI.Brain
             if (numAttackers == 0)
                 // Player is alone
                 numAttackers = 1;
-            
-            int percentBAF = Properties.BAF_INITIAL_CHANCE
-                + ((numAttackers - 1) * Properties.BAF_ADDITIONAL_CHANCE);
+
+            int additionalChance = Properties.BAF_ADDITIONAL_CHANCE;
+
+            if (attacker.ControlledBrain is TurretFNFBrain && Properties.LIMIT_BAF_ADDITIONAL_CHANCE_TURRET > 0)
+                // in dungeon LIMIT_BAF_ADDITIONAL_CHANCE_TURRET / 2
+                if (Body.CurrentRegion.VisibilityDungeon)
+                    additionalChance = (int)(additionalChance/(Properties.LIMIT_BAF_ADDITIONAL_CHANCE_TURRET / 2));
+                else
+                    additionalChance = (int)(additionalChance / Properties.LIMIT_BAF_ADDITIONAL_CHANCE_TURRET);
+
+            int percentBAF = Properties.BAF_INITIAL_CHANCE + ((numAttackers - 1) * additionalChance);
 
             int maxAdds = percentBAF / 100; // Multiple of 100 are guaranteed BAFs
 
