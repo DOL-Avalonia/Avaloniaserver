@@ -1,3 +1,0 @@
-Commands.Players.Summon.Description:	Invoque votre cheval
-Commands.Players.Summon.Incorrect:		Le format de la commande est incorrecte.
-Commands.Players.Summon.Usage:			Usage : '/summon'

@@ -1,2 +1,0 @@
-Commands.Players.Dropmr.Description:	Drops the Minotaurrelic.
-Commands.Players.Dropmr.Usage:			Usage : '/dropmr'

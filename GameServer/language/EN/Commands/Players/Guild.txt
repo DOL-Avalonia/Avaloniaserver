@@ -1,6 +1,6 @@
 
 Commands.Players.Guild.AccountRemoved:            {0} a été retiré par {1} de la guilde.
-Commands.Players.Guild.ActiveBuff:			    Your guild already has an improvement spell. You must wait for the spell to expire to re-cast it. Remaining time: {0} hours, {1} minutes.
+Commands.Players.Guild.ActiveBuff:			    Votre guilde possède déjà un sort d'amélioration. Vous devez attendre que le sort expire pour le relancer. Temps restant : {0} heures, {1} minutes.
 Commands.Players.Guild.AllianceAlreadyOther:      Cette guilde possède déjà une alliance.
 Commands.Players.Guild.AllianceAlreadyIn:		    Cette guilde fait déjà partie de votre alliance.
 Commands.Players.Guild.AllianceAnsCancel:		    L'offre d'alliance a été annulée.
@@ -17,10 +17,13 @@ Commands.Players.Guild.AllianceMember:		    {0} - {1}
 Commands.Players.Guild.AllianceMembers:		    Membres de l'alliance :
 Commands.Players.Guild.AllianceMemNotSel:		    Vous devez choisir un joueur parmi la même alliance.
 Commands.Players.Guild.AllianceNoGMSelected:	    Vous devez choisir un Maître de guilde que vous voulez inviter.
+Commands.Players.Guild.NotAbleToBeInvited:		Vous ne pouvez pas entrer dans cette guilde avant {0} minutes.
+Commands.Players.Guild.NotAbleToLeave:			Vous ne pouvez quitter cette guilde avant {0} minutes.
+Commands.Players.Guild.NotAbleToBeExpelled:		Vous ne pouvez pas expulser ce joueur avant {0} minutes.
 Commands.Players.Guild.AllianceNoLeader:		    Pas de chef d'alliance.
 Commands.Players.Guild.AllianceNotLeader:		    Vous devez être la guilde du chef de l'alliance pour pouvoir enlever une guilde de l'alliance.
 Commands.Players.Guild.AllianceNotMember:		    Vous devez être dans une alliance pour le faire.
-Commands.Players.Guild.AlreadyInGuild:		    {0} est un membre de votre guilde.
+Commands.Players.Guild.AlreadyInGuildName:		    {0} est un membre de votre guilde.
 Commands.Players.Guild.AlreadyInGuild:		    Il est déjà membre d'une guilde.
 Commands.Players.Guild.AMotdSet:				    Vous avez mis le message d'alliance à jour.
 Commands.Players.Guild.BannerAlready:			    Votre guilde possède déjà une bannière.
@@ -116,6 +119,7 @@ Commands.Players.Guild.Help.GuildEditView:		'/gc edit <rang#> view <y|n>' # Per
 Commands.Players.Guild.Help.GuildEditWithdraw:	'/gc edit <rang#> withdraw <y|n>' # Permet de donner l'autorisation de retirer les fonds de votre caisse de guilde.
 Commands.Players.Guild.Help.GuildEmail:			'/gc email <contact@guildpage.com>' # Affiche l'adresse internet des contacts au sein de la guilde.
 Commands.Players.Guild.Help.GuildEmblem:			'/gc emblem' # Présentation de l'emblème.
+Commands.Players.Guild.Help.TerritoryBanner:			'/gc territorybanner' # Permet de poser sa bannière dans un territoire conquis.
 Commands.Players.Guild.Help.GuildForm:			'/gc form <nom de guilde>' # Création d'une guilde (8 joueurs requis dans le groupe).
 Commands.Players.Guild.Help.GuildGMAddPlayer:		'/gc addplayer <nom de joueur> to <noum de guilde>' # Ajoute un joueur à la guilde.
 Commands.Players.Guild.Help.GuildGMCommands:		Game Master commandes :
@@ -151,6 +155,8 @@ Commands.Players.Guild.InfoMotd:				    Message : {0}
 Commands.Players.Guild.InfoOMotd:				    Message des officiers : {0}
 Commands.Players.Guild.InfoRPBPMP:			    Points de Royaume : {0} Primes de Royaume : {1} Points de Mérite : {2}
 Commands.Players.Guild.InfoWebpage:			    Site internet : {0}
+Commands.Players.Guild.InfoMerit:               Points de Mérite: {0}
+Commands.Players.Guild.InfoEmail:               Email: {0}
 Commands.Players.Guild.InvalidLetters:			Les lettres mises sont invalides.
 Commands.Players.Guild.InvalidRank:			    Ce n'est pas un rang valide.
 Commands.Players.Guild.InviteDead:				Vous ne pouvez pas inviter un joueur mort à rejoindre la guilde.
@@ -182,6 +188,7 @@ Commands.Players.Guild.NoPlayerSelected:		Sélectionnez un joueur.
 Commands.Players.Guild.NoPlayersInAcc:			Il n'y a pas de joueur du compte demandé dans votre guilde.
 Commands.Players.Guild.NoPrivileges:			Votre rang de guilde ne possède pas assez de priviléges pour utiliser cette commande.
 Commands.Players.Guild.NoteSet:					La note de guilde est : {0}
+Commands.Players.Guild.NoPlayerWithName:        Il n'y a pas de joueur avec le nom {0}
 Commands.Players.Guild.NotInYourGuild:			Ce joueur n'est pas dans la guilde.
 Commands.Players.Guild.NotMember:				Vous devez être dans une guilde pour utiliser cette commande.
 Commands.Players.Guild.OMotdSet:				Le message des officiers est maintenant actualisé.
@@ -189,10 +196,7 @@ Commands.Players.Guild.PlayerNotFound:			Ce joueur n'est pas en ligne ou se trou
 Commands.Players.Guild.PromotedOther:			{0} est promu(e) au rang {1}.
 Commands.Players.Guild.PromotedSelf:			Vous êtes promu(e) au rang {0}.
 Commands.Players.Guild.PromoteHigherThanPlayer:	Vous pouvez seulement promouvoir un joueur à un rang inférieur au votre.
-Commands.Players.Guild.PromoteHaveToUseDemote:	You cannot demote this player with the command promote. Use '/gc demote joueur <rang#>'.
-Commands.Players.Guild.NotAbleToBeInvited:		You cannot enter this guild for {0} minutes.
-Commands.Players.Guild.NotAbleToLeave:			You cannot leave this guild for {0} minutes.
-Commands.Players.Guild.NotAbleToBeExpelled:		You cannot expel this player for {0} minutes.
+Commands.Players.Guild.PromoteHaveToUseDemote:	Vous ne pouvez pas rétrograder le rank de ce joueur avec la commande promote. Utiliser '/gc demote joueur <rang#>'.
 Commands.Players.Guild.Purged:					{0} est purgé.
 Commands.Players.Guild.RankACHearSet:			Vous avez {0} l'accés à ACHear au rang {1}.
 Commands.Players.Guild.RankACSpeakSet:			Vous avez {0} l'ACSpeak au rang {1}.
@@ -254,6 +258,7 @@ Commands.Players.Guild.Alliance.NoGMSelected:		Vous devez selectionner un GM de 
 Commands.Players.Guild.Alliance.NoLeader:			Il n'y pas de leader d'Alliance
 Commands.Players.Guild.Alliance.NotLeader:			Avant de pouvoir supprimer une guilde d'Alliance vous devez etre la guilde leader de cette Alliance	
 Commands.Players.Guild.Alliance.NotMember:			Vous devez etre dans l'Alliance pour faire cela	
+Commands.Players.Guild.TotalMemberOnline:   Nombre de joueurs online dans la guilde
 
 
 # Ancienne references ne fonctionnant pas mais contenant les textes à traduires (si besoin)

@@ -1,2 +1,0 @@
-Commands.Players.News.Description:	Affiche l'actualité sur le panneau social.
-Commands.Players.News.Usage:		Usage : '/news'

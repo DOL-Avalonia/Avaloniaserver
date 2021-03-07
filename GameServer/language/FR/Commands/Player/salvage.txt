@@ -1,2 +1,0 @@
-Commands.Players.Salvage.Description:	Lorsque vous êtes un artisan, vous avez la possibilité de recycler
-Commands.Players.Salvage.Usage:			Usage : '/salvage'
