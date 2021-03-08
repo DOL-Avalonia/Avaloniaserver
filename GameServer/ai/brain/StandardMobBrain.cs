@@ -894,7 +894,7 @@ namespace DOL.AI.Brain
         /// </summary>
         protected virtual ushort BAFInitialRange
         {
-            get { return 250; }
+            get { return Properties.INITIAL_BAF_RANGE; }
         }
 
         /// <summary>
@@ -906,8 +906,8 @@ namespace DOL.AI.Brain
             get
             {
                 if (Body.CurrentRegion.VisibilityDungeon)
-                    return 1200;
-                return 2000;
+                    return Properties.MAX_BAF_RANGE_DUNGEON;
+                return Properties.MAX_BAF_RANGE;
             }
         }
 

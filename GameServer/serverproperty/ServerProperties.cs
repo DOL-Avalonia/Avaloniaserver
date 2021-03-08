@@ -1854,6 +1854,24 @@ namespace DOL.GS.ServerProperties
         public static int BAF_ADDITIONAL_CHANCE { get; set; }
 
         /// <summary>
+        /// Initial range to BAF
+        /// </summary>
+        [ServerProperty("pve", "INITIAL_BAF_RANGE", "Initial range to BAF", 250)]
+        public static ushort INITIAL_BAF_RANGE { get; set; }
+
+        /// <summary>
+        /// Max range to BAF
+        /// </summary>
+        [ServerProperty("pve", "MAX_BAF_RANGE", "Max range to BAF", 1500)]
+        public static ushort MAX_BAF_RANGE { get; set; }
+
+        /// <summary>
+        /// Max range to BAF (Dungeon)
+        /// </summary>
+        [ServerProperty("pve", "MAX_BAF_RANGE_DUNGEON", "Max range to BAF (Dungeon)", 1200)]
+        public static ushort MAX_BAF_RANGE_DUNGEON { get; set; }
+
+        /// <summary>
         /// Limit the additional chance for the turret (additional chance / LIMIT_BAF_ADDITIONAL_CHANCE_TURRET)
         /// </summary>
         [ServerProperty("pve", "limit_baf_additional_chance_turret", "Limit the additional chance for the turret (additional chance / LIMIT_BAF_ADDITIONAL_CHANCE_TURRET)", 6)]
