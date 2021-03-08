@@ -23,8 +23,8 @@ namespace DOL.GS.Commands
     [Cmd(
         "&clientlist",
         ePrivLevel.GM,
-        "Commands.GM.Cast.Usage",
-        "Commands.GM.Cast.Description")]
+        "Commands.GM.ClientList.Usage",
+        "Commands.GM.ClientList.Description")]
     public class ClientListCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
