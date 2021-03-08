@@ -29,6 +29,10 @@ namespace DOL.GS.Commands
         "&Reload",
         ePrivLevel.Admin,
         "Reload various elements",
+        "Commands.Admin.Reload.Usage.Mob",
+        "Commands.Admin.Reload.Usage.Object",
+        "Commands.Admin.Reload.Usage.Specs",
+        "Commands.Admin.Reload.Usage.Spells",
         "/reload mob|object|specs|spells")]
     public class ReloadCommandHandler : ICommandHandler
     {

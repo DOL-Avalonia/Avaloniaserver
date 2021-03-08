@@ -9,3 +9,4 @@ Commands.GM.Cast.Spell.CastOnLiving:	Vous lancez {0} sur {1}.
 Commands.GM.Cast.Spell.CastOnSelf:		Vous vous lancez {0}.
 Commands.GM.Cast.Spell.GMCastOnYou:		{0} {1} vous a lancé {2}.
 Commands.GM.Cast.Usage:					'/cast <id> <effect|cast|spell|sound|style>' # Lance le Sort/EffetVisuel associé avec le <SpellID>
+Commands.GM.Cast.Usage.Load:			/cast loadspell <spellid> Load a spell from the DB into the global spell cache

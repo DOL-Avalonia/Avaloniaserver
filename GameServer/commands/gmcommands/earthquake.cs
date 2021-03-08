@@ -8,8 +8,8 @@ namespace DOL.GS.Scripts
     [CmdAttribute(
    "&earthquake",
    ePrivLevel.GM,
-   "earthquake [radius] [intensity] [duration] [delay]",
-   "/earthquake")]
+   "Commands.GM.door.Description",
+   "Commands.GM.door.Usage")]
     public class EarthQuakeCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)

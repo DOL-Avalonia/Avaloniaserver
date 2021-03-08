@@ -11,3 +11,9 @@ Commands.GM.door.Name:			'/door name <texte>' # Change le nom de la porte.
 Commands.GM.door.Realm:			'/door realm <valeur>' # Change le royaume de la porte. ! Attention si realm 0 la porte ne s'ouvre pas tant qu'elle est pas tuée
 Commands.GM.door.Unlocked:		'/door unlocked ' # Déverrouille la porte.
 Commands.GM.door.Update:		'/door update ' # MÀJ de la porte avec X Y Z de l'admin.
+Commands.GM.door.Usage.Sound:		'/door sound <soundid>'
+Commands.GM.door.Usage.GroupMob:		'/door groupmob <Group Mob Id>'
+Commands.GM.door.Usage.Key:		'/door key <itemid>'
+Commands.GM.door.Usage.KeyChance:		'/door key_chance <number between 0 and 100>'
+Commands.GM.door.Usage.IsRenaissance:		'/door isrenaissance' toggle enable/disable IsRenaissance
+Commands.GM.door.Usage.PunishSpell:		'/door punishspell <spell Id>'

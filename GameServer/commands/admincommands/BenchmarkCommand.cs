@@ -24,8 +24,8 @@ namespace DOL.GS.Commands
     [Cmd(
         "&benchmark",
         ePrivLevel.Admin,
-        "Benchmark some aspects of DOL Server.",
-        "/benchmark listskills|listspells|styles|respawns|deaths|tooltips")]
+        "Commands.Admin.Benchmark.Description",
+        "Commands.Admin.Benchmark.Usage")]
     public class BenchmarkCommand : AbstractCommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)

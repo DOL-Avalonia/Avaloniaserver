@@ -23,8 +23,8 @@ namespace DOL.GS.Commands
     [Cmd(
         "&clientlist",
         ePrivLevel.GM,
-        "Usage: /clientlist [full] - full option includes IP's and accounts",
-        "Show a list of currently playing clients and their ID's")]
+        "Commands.GM.Cast.Usage",
+        "Commands.GM.Cast.Description")]
     public class ClientListCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)

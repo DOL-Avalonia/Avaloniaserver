@@ -31,18 +31,18 @@ namespace DOL.GS.Commands
         "&gmappeal",
         new string[] { "&gmhelp" },
         ePrivLevel.GM,
-        "Commands for server staff to assist players with their Appeals.",
-        "/gmappeal view <player name> - Views the appeal of a specific player.",
-        "/gmappeal list - Lists all the current Appeals from online players only, in a window.",
-        "/gmappeal listall - Will list Appeals of both offline and online players, in a window.",
-        "/gmappeal assist <player name> - Take ownership of the player's appeal and lets other staff know you are helping this player.",
-        "/gmappeal jumpto - Will jump you to the player you are currently assisting (must use /gmappeal assist first).",
-        "/gmappeal jumpback - Will jump you back to where you were after you've helped the player (must use /gmappeal jumpto first).",
-        "/gmappeal close <player name> - Closes the appeal and removes it from the queue.",
-        "/gmappeal closeoffline <player name> - Closes an appeal of a player who is not online.",
-        "/gmappeal release <player name> - Releases ownership of the player's appeal so someone else can help them.",
-        "/gmappeal mute - Toggles receiving appeal notices, for yourself, for this session.",
-        "/gmappeal commands - Lists all the commands in a pop up window.")]
+        "Commands.GM.GMAppeal.Description",
+        "Commands.GM.GMAppeal.Usage.View",
+        "Commands.GM.GMAppeal.Usage.List",
+        "Commands.GM.GMAppeal.Usage.ListAll",
+        "Commands.GM.GMAppeal.Usage.Assist",
+        "Commands.GM.GMAppeal.Usage.JumpTo",
+        "Commands.GM.GMAppeal.Usage.JumpBack",
+        "Commands.GM.GMAppeal.Usage.Close",
+        "Commands.GM.GMAppeal.Usage.CloseOffLine",
+        "Commands.GM.GMAppeal.Usage.Release",
+        "Commands.GM.GMAppeal.Usage.Mute",
+        "Commands.GM.GMAppeal.Usage.Commands")]
 
     public class GMAppealCommandHandler : AbstractCommandHandler, ICommandHandler
     {
