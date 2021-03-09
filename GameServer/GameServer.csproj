@@ -513,6 +513,9 @@
     <Compile Include="craft\WoodWorking.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="craft\Recipe.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="effects\BerserkEffect.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -2237,6 +2240,7 @@
     <Compile Include="spells\Teleport\UniPortal.cs" />
     <Compile Include="spells\UnpetrifySpellHandler.cs" />
     <Compile Include="spells\Valkyrie\FrontalAOEConeHandler.cs" />
+    <Compile Include="spells\Valkyrie\PowerRendSpellHandler.cs" />
     <Compile Include="spells\Valkyrie\ValkyrieProc.cs" />
     <Compile Include="spells\Vampiir\VampArmorDebuff.cs">
       <SubType>Code</SubType>
