@@ -16,7 +16,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System.Collections.Generic;
 using DOL.Database;
 using DOL.Language;
 using DOL.GS.PacketHandler;
@@ -28,15 +27,7 @@ namespace DOL.GS
     /// </summary>
     public abstract class AdvancedCraftingSkill : AbstractProfession
     {
-        /// <summary>
-        /// Check if the player is near the needed tools (forge, lathe, etc)
-        /// </summary>
-        /// <param name="player">the crafting player</param>
-        /// <param name="recipe">the recipe being used</param>
-        /// <param name="itemToCraft">the item to make</param>
-        /// <param name="rawMaterials">a list of raw materials needed to create this item</param>
-        /// <returns>true if required tools are found</returns>
-        protected override bool CheckForTools(GamePlayer player, DBCraftedItem recipe, ItemTemplate itemToCraft, IList<DBCraftedXItem> rawMaterials)
+        protected override bool CheckForTools(GamePlayer player, Recipe recipe)
         {
             foreach (GameStaticItem item in player.GetItemsInRadius(CRAFT_DISTANCE))
             {
@@ -46,8 +37,8 @@ namespace DOL.GS
                 }
             }
 
-            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Crafting.CheckTool.NotHaveTools", itemToCraft.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Crafting.CheckTool.FindAlchemyTable"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Crafting.CheckTool.NotHaveTools", recipe.Product.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Crafting.CheckTool.FindAlchemyTable"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
             if (player.Client.Account.PrivLevel > 1)
             {
