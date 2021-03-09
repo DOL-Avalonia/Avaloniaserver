@@ -2359,6 +2359,21 @@ namespace DOL.GS.ServerProperties
         [ServerProperty("guild", "guild_banner_lost_time", "When a banner is lost to the enemy how many minutes is the wait before purchase is allowed?", (ushort)1440)]
         public static ushort GUILD_BANNER_LOST_TIME { get; set; }
 
+	/// <summary>
+	/// The crafting sellback price control at each craft (calculate a percent of raw materials used)
+	/// </summary>
+	[ServerProperty("craft", "crafting_adjust_product_price", "Change price to recommended value in database for product itemtemplate", false)]
+	public static bool CRAFTING_ADJUST_PRODUCT_PRICE { get; set; }
+	/// <summary>
+	/// The crafting price control for secondary craft (trinketing) modifier
+	/// </summary>
+	[ServerProperty("craft", "crafting_secondary_sellback_percent", "How many percent of raw materials cost is SellBack values", 98.572)]
+	public static double CRAFTING_SECONDARYCRAFT_SELLBACK_PERCENT { get; set; }
+	/// <summary>
+	/// The crafting price control for craft modifier
+	/// </summary>
+	[ServerProperty("craft", "crafting_sellback_percent", "How many percent of raw materials cost is SellBack values", 95)]
+	public static int CRAFTING_SELLBACK_PERCENT { get; set; }
         /// <summary>
         /// The crafting speed modifier
         /// </summary>
@@ -2392,11 +2407,11 @@ namespace DOL.GS.ServerProperties
         [ServerProperty("craft", "allow_craft_norealm_items", "Allow any realm to craft items with 0 (no) realm.", false)]
         public static bool ALLOW_CRAFT_NOREALM_ITEMS { get; set; }
 	    
-	    /// <summary>
-	    /// Max character crafting skill?
-	    /// </summary>
-	    [ServerProperty("craft", "crafting_max_skills", "Set character crafting skills to max level.", false)]
-	    public static bool CRAFTING_MAX_SKILLS { get; set; }
+	/// <summary>
+	/// Max character crafting skill?
+	/// </summary>
+	[ServerProperty("craft", "crafting_max_skills", "Set character crafting skills to max level.", false)]
+	public static bool CRAFTING_MAX_SKILLS { get; set; }
 
         /// <summary>
         /// Use salvage per realm and get back material to use in chars realm
