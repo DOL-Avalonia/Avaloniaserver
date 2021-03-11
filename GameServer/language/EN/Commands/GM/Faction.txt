@@ -1,14 +1,14 @@
-Commands.GM.Faction.Assign.MobHasJoinedFact:	Le NPC "{0}" à rejoint la faction de "{1}".
-Commands.GM.Faction.Assign.MustSelectMob:		Vous devez d'abord sélectioner un NPC.
-Commands.GM.Faction.Create.BAMustBeNumber:		Le « baseaggro » doit être un nombre.
-Commands.GM.Faction.Create.NewCreated:			Nouvelle faction crée
-Commands.GM.Faction.Description:				Créer une faction et assigner ami et ennemi de faction.
-Commands.GM.Faction.FactionNotLoaded:			La faction n'est pas charger.
-Commands.GM.Faction.IndexMustBeNumber:			Seulement des nombres.
-Commands.GM.Faction.MustSelectFaction:			Vous devez d'abord sélectioner une faction.
-Commands.GM.Faction.Usage.AddEnemy:				'/faction addenemy <factionid>' # Ajoute une faction ennemi à une autre faction
-Commands.GM.Faction.Usage.AddFriend:			'/faction addfriend <factionid>' # Ajoute une faction allié à une autre faction
-Commands.GM.Faction.Usage.Assign:				'/faction assign' # Pour assigner le NPC à une faction
-Commands.GM.Faction.Usage.Create:				'/faction create <name> <baseAggroLevel>' # Créer une faction
-Commands.GM.Faction.Usage.List:					'/faction list' # Affiche la liste des factions
-Commands.GM.Faction.Usage.Select:				'/faction select <factionid>' # Sélectionne une faction
+Commands.GM.Faction.Assign.MobHasJoinedFact:	The mob "{0}" has joined the faction of "{1}".
+Commands.GM.Faction.Assign.MustSelectMob:		You must select a mob first.
+Commands.GM.Faction.Create.BAMustBeNumber:		The BaseAggro must be a number.
+Commands.GM.Faction.Create.NewCreated:			New faction created.
+Commands.GM.Faction.Description:				Create a faction and assign friend and enemy faction.
+Commands.GM.Faction.FactionNotLoaded:			This Faction is not loaded.
+Commands.GM.Faction.IndexMustBeNumber:			The index must be a number.
+Commands.GM.Faction.MustSelectFaction:			You must select a faction first.
+Commands.GM.Faction.Usage.AddEnemy:				'/faction addenemy <factionid>' # To add enemy to the current faction.
+Commands.GM.Faction.Usage.AddFriend:			'/faction addfriend <factionid>' # To add faction friend to current faction.
+Commands.GM.Faction.Usage.Assign:				'/faction assign' # To assign a faction to the target mob.
+Commands.GM.Faction.Usage.Create:				'/faction create <name> <baseAggroLevel>' # To create a faction.
+Commands.GM.Faction.Usage.List:					'/faction list' # To show the list of all factions.
+Commands.GM.Faction.Usage.Select:				'/faction select <factionid>' # To select the faction with this id.
