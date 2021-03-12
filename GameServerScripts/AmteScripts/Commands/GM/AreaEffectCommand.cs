@@ -8,17 +8,17 @@ namespace DOL.GS.Commands
 	[CmdAttribute(
 		"&areaeffect",
 		ePrivLevel.GM,
-		"Gestion d'AreaEffect",
-		"'/areaeffect create <radius> <ID de l'effet>'",
-		"'/areaeffect <heal/harm> <valeur>'",
-        "'/areaeffect <mana> <valeur>'",
-        "'/areaeffect <endurance> <valeur>'",
-		"'/areaeffect radius <newRadius>'",
-		"'/areaeffect effect <newEffect>'",
-		"'/areaeffect interval <min> [max]'",
-		"'/areaeffect missChance <chance %>'",
-		"'/areaeffect message <message>' {0} = les points de vie ajouté/retiré, {1} = mana ajouté/retiré, {2} = endu ajouté/retiré.",
-		"'/areaeffect info' Donne les informations sur l'areaeffect sélectionné")]
+        "Commands.GM.AmteNpc.Description",
+        "Commands.GM.AmteNpc.Usage.Create",
+        "Commands.GM.AmteNpc.Usage.HealHarm",
+        "Commands.GM.AmteNpc.Usage.Mana",
+        "Commands.GM.AmteNpc.Usage.Endurance",
+        "Commands.GM.AmteNpc.Usage.Radius",
+        "Commands.GM.AmteNpc.Usage.Effect",
+        "Commands.GM.AmteNpc.Usage.Interval",
+        "Commands.GM.AmteNpc.Usage.MissChance",
+        "Commands.GM.AmteNpc.Usage.Message",
+        "Commands.GM.AmteNpc.Usage.Info")]
 	public class AreaEffectCommand : AbstractCommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)

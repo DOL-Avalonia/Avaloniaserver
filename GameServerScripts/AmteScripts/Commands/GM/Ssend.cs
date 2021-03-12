@@ -5,8 +5,8 @@ namespace DOL.GS.Commands
 	[CmdAttribute(
 		"&ssend",
 		ePrivLevel.GM,
-		"Répondre aux report",
-		"/ssend <nick> <message>")]
+        "Commands.GM.Ssend.Description",
+        "Commands.GM.Ssend.Usage")]
 	public class SsendCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
         public void OnCommand(GameClient client, string[] args)

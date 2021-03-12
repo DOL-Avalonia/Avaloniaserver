@@ -26,8 +26,8 @@ namespace DOL.GS.Commands
     [Cmd(
         "&afk",
         ePrivLevel.Player,
-         "Activer ou désactiver l'absence. Se désactive au déplacement du personnage.",
-          "/afk <text> (AFk par défaut)")]
+         "Commands.Players.Afk.Description",
+          "Commands.Players.Afk.Usage")]
     public class AFKCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)

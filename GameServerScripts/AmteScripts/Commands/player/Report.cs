@@ -5,8 +5,8 @@ namespace DOL.GS.Commands
 	[CmdAttribute(
 		"&report",
 		ePrivLevel.Player,
-		"Faire un report au staff",
-		"/report <message>")]
+        "Commands.Players.Report.Description",
+        "Commands.Players.Report.Usage")]
 	public class ReportCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
         public void OnCommand(GameClient client, string[] args)

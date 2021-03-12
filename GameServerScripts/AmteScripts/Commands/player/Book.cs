@@ -10,8 +10,8 @@ namespace DOL.GS.Scripts
 	[CmdAttribute(
 		 "&book",
 		 ePrivLevel.Player,
-		 "Créer un livre vierge",
-		 "/book <titre>")]
+         "Commands.Players.Book.Description",
+         "Commands.Players.Book.Usage")]
 	public class BookCommandHandler : ICommandHandler
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);

@@ -6,8 +6,8 @@ namespace DOL.GS.Commands
 		"&rvrinfo",
         new[] { "/score" },
 		ePrivLevel.Player,
-		"Avoir des informations sur le rvr",
-		"'/rvrinfo' Donne des informations à propos du rvr")]
+        "Commands.Players.RvRInfo.Description",
+        "Commands.Players.RvRInfo.Usage")]
 	public class RvRInfoCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
         public void OnCommand(GameClient client, string[] args)

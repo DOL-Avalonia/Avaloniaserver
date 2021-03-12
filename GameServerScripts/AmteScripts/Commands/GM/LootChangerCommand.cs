@@ -8,10 +8,10 @@ namespace DOL.GS.Commands
     [CmdAttribute(
         "&lootchanger",
         ePrivLevel.GM,
-        "Gestion des loots changer",
-        "'/lootchanger add <receive item> <give item> '",
-        "'/lootchanger remove <receive item/all>'",
-        "'/lootchanger info'")]
+        "Commands.GM.LootChanger.Description",
+        "Commands.GM.LootChanger.Usage.Add",
+        "Commands.GM.LootChanger.Usage.Remove",
+        "Commands.GM.LootChanger.Usage.Info")]
     public class LootChangerCommand : AbstractCommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)

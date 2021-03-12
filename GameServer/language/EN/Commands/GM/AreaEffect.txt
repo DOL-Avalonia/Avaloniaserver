@@ -1,0 +1,11 @@
+Commands.GM.AreaEffect.Description:		Gestion d'AreaEffect
+Commands.GM.AreaEffect.Usage.Create:		'/areaeffect create <radius> <ID de l'effet>'
+Commands.GM.AreaEffect.Usage.HealHarm:		'/areaeffect <heal/harm> <valeur>'
+Commands.GM.AreaEffect.Usage.Mana:			'/areaeffect <mana> <valeur>'
+Commands.GM.AreaEffect.Usage.Endurance:	'/areaeffect <endurance> <valeur>'
+Commands.GM.AreaEffect.Usage.Radius:		'/areaeffect radius <newRadius>'
+Commands.GM.AreaEffect.Usage.Effect:		'/areaeffect effect <newEffect>'
+Commands.GM.AreaEffect.Usage.Interval:		'/areaeffect interval <min> [max]'
+Commands.GM.AreaEffect.Usage.MissChance:	'/areaeffect missChance <chance %>'
+Commands.GM.AreaEffect.Usage.Message:		'/areaeffect message <message>' {0} = les points de vie ajouté/retiré, {1} = mana ajouté/retiré, {2} = endu ajouté/retiré.
+Commands.GM.AreaEffect.Usage.Info:			'/areaeffect info' Donne les informations sur l'areaeffect sélectionné

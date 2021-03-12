@@ -25,8 +25,8 @@ namespace DOL.GS.Commands
     [Cmd(
       "&anonymous",
       ePrivLevel.Player,
-      "Toggle anonymous mode (name doesn't show up in /who)",
-      "/anonymous")]
+      "Commands.Players.Anonymous.Description",
+      "Commands.Players.Anonymous.Usage")]
     public class AnonymousCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         /// <summary>

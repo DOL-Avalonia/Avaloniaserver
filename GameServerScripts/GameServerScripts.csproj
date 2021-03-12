@@ -111,7 +111,9 @@
     <Compile Include="Amtescripts\Blacklist\BlacklistLog.cs" />
     <Compile Include="Amtescripts\Blacklist\BlacklistMgr.cs" />
     <Compile Include="Amtescripts\Blacklist\BlacklistPlayer.cs" />
+    <Compile Include="Amtescripts\Commands\GM\ChestCommand.cs" />
     <Compile Include="Amtescripts\Commands\player\afk.cs" />
+    <Compile Include="Amtescripts\Commands\player\StealCommand.cs" />
     <Compile Include="Amtescripts\Commands\player\VolCommand.cs" />
     <Compile Include="Amtescripts\GameObjects\Coffre\DBCoffre.cs" />
     <Compile Include="Amtescripts\GameObjects\Coffre\GameCoffre.cs" />

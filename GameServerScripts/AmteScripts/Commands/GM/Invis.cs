@@ -6,8 +6,8 @@ namespace DOL.GS.Commands
 	[CmdAttribute(
 		"&invis",
 		ePrivLevel.GM,
-		"Rend invisible",
-		"/invis Rend invisible")]
+        "Commands.GM.Invis.Description",
+        "Commands.GM.Invis.Usage")]
 	public class InvisCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
         public void OnCommand(GameClient client, string[] args)
