@@ -1,8 +1,8 @@
-Commands.GM.KeepComponents.Create.KCCreated:	Vous avez créé un composant de donjon.
-Commands.GM.KeepComponents.Delete.YDeleteKC:	Vous supprimé le composant.
-Commands.GM.KeepComponents.Description:			Diverses commandes de création de composant de donjon !
-Commands.GM.KeepComponents.Skin.YChangeSkin:	Vous changez l'apparence du composant de donjon !
-Commands.GM.KeepComponents.Usage.Create.TID:	'/keepcomponent create <type> <keepid>' # Créer un composant dans un donjon (<keppid>)
-Commands.GM.KeepComponents.Usage.Create.T:		'/keepcomponent create <type>' # Créer un composant dans le donjon le plus proche.
-Commands.GM.KeepComponents.Usage.Delete:		'/keepcomponent delete' # Supprime un composant.
-Commands.GM.KeepComponents.Usage.Skin:			'/keepcomponent skin <skin>' # Change l’apparence de l’objet.
+Commands.GM.KeepComponents.Create.KCCreated:	You have created a keep component.
+Commands.GM.KeepComponents.Delete.YDeleteKC:	You delete the current component.
+Commands.GM.KeepComponents.Description:			Various keep component creation commands!
+Commands.GM.KeepComponents.Skin.YChangeSkin:	You change the skin of current keep component.
+Commands.GM.KeepComponents.Usage.Create.TID:	'/keepcomponent create <type> <keepid>' # To create a keep component. (<keppid>)
+Commands.GM.KeepComponents.Usage.Create.T:		'/keepcomponent create <type>' # To create a keep component and assign to nearest keep.
+Commands.GM.KeepComponents.Usage.Delete:		'/keepcomponent delete' # To delete the component.
+Commands.GM.KeepComponents.Usage.Skin:			'/keepcomponent skin <skin>' # To change the skin of an object.
