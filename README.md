@@ -40,5 +40,3 @@ Documentation
  - Homepage: http://www.dolserver.net
  - Getting Started: [Official Forum](http://www.dolserver.net/index.php)
  - Coding: [Wiki Home](https://github.com/Dawn-of-Light/DOLSharp/wiki)
-
-CEci est un test de commit source tree
