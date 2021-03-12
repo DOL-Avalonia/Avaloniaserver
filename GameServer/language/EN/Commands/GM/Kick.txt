@@ -1,5 +1,5 @@
-Commands.GM.Kick.Description:			Dégage un joueurs (le déconnecte).
-Commands.GM.Kick.NoPlayerOnLine:		Le joueur à dégager est introuvable !
-Commands.GM.Kick.RemovedFromServerByGM:	Vous avez été dégagé du serveur par un GM {0} !
-Commands.GM.Kick.RemovedFromServer:		Vous avez été dégagé du serveur !
-Commands.GM.Kick.Usage:					'/kick <PlayerName>' # Dégage le joueur (le déconnecte).
+Commands.GM.Kick.Description:			Kicks the player offline of whom you select.
+Commands.GM.Kick.NoPlayerOnLine:		No one with that name is online to Kick!
+Commands.GM.Kick.RemovedFromServerByGM:	You have been removed from the server by GM {0}!
+Commands.GM.Kick.RemovedFromServer:		You have been removed from the server!
+Commands.GM.Kick.Usage:					'/kick <PlayerName>' # To kick the player.
