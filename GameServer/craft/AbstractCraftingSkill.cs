@@ -69,7 +69,7 @@ namespace DOL.GS
         /// </summary>
         public const string RECIPE_RAW_MATERIAL_LIST = "RECIPE_RAW_MATERIAL_LIST";
 
-		public const int subSkillCap = 1300;
+        public const int subSkillCap = 1300;
 
         public virtual string CRAFTER_TITLE_PREFIX
         {
@@ -118,7 +118,7 @@ namespace DOL.GS
             }
         }
 
-	public virtual void CraftItem(GamePlayer player, Recipe recipe)
+        public virtual void CraftItem(GamePlayer player, Recipe recipe)
         {
             if (!CanPlayerStartToCraftItem(player, recipe))
             {
@@ -127,7 +127,7 @@ namespace DOL.GS
 
             if (player.IsCrafting)
             {
-		StopCraftingCurrentItem(player, recipe.Product);
+                StopCraftingCurrentItem(player, recipe.Product);
                 return;
             }
 
@@ -142,7 +142,7 @@ namespace DOL.GS
             StartCraftingTimerAndSetCallBackMethod(player, recipe, craftingTime);
         }
 
-            protected virtual void StartCraftingTimerAndSetCallBackMethod(GamePlayer player, Recipe recipe, int craftingTime)
+        protected virtual void StartCraftingTimerAndSetCallBackMethod(GamePlayer player, Recipe recipe, int craftingTime)
         {
             player.CraftTimer = new RegionTimer(player);
             player.CraftTimer.Callback = new RegionTimerCallback(MakeItem);
@@ -256,7 +256,7 @@ namespace DOL.GS
             {
                 ItemTemplate material = ingredient.Material;
 
-                switch (template.Model)
+                switch (material.Model)
                 {
                     case 522: // "cloth square"
                     case 537: // "heavy thread"
@@ -380,45 +380,43 @@ namespace DOL.GS
                 {
                     case 522:   //"cloth square"
                     case 537:   //"heavy thread"
-                    {
-                        if (player.GetCraftingSkillValue(eCraftingSkill.ClothWorking) < subSkillCap)
+                        {
+                            if (player.GetCraftingSkillValue(eCraftingSkill.ClothWorking) < subSkillCap)
                             {
-                               player.GainCraftingSkill(eCraftingSkill.ClothWorking, 1);
+                                player.GainCraftingSkill(eCraftingSkill.ClothWorking, 1);
                             }
                             break;
                         }
-                        case 521: // "leather square"
+                    case 521: // "leather square"
+                        {
+                            if (player.GetCraftingSkillValue(eCraftingSkill.LeatherCrafting) < subSkillCap)
                             {
-                                if (player.GetCraftingSkillValue(eCraftingSkill.LeatherCrafting) < subSkillCap)
-                                {
-                                    player.GainCraftingSkill(eCraftingSkill.LeatherCrafting, 1);
-                                }
-                                break;
+                                player.GainCraftingSkill(eCraftingSkill.LeatherCrafting, 1);
+                            }
+                            break;
+                        }
+
+                    case 519: // "metal bars"
+                        {
+                            if (player.GetCraftingSkillValue(eCraftingSkill.MetalWorking) < subSkillCap)
+                            {
+                                player.GainCraftingSkill(eCraftingSkill.MetalWorking, 1);
                             }
 
-                        case 519: // "metal bars"
-                            {
-                                if (player.GetCraftingSkillValue(eCraftingSkill.MetalWorking) < subSkillCap)
-                                {
-                                    player.GainCraftingSkill(eCraftingSkill.MetalWorking, 1);
-                                }
+                            break;
+                        }
 
-                                break;
+                    case 520: // "wooden boards"
+                        {
+                            if (player.GetCraftingSkillValue(eCraftingSkill.WoodWorking) < subSkillCap)
+                            {
+                                player.GainCraftingSkill(eCraftingSkill.WoodWorking, 1);
                             }
 
-                        case 520: // "wooden boards"
-                            {
-                                if (player.GetCraftingSkillValue(eCraftingSkill.WoodWorking) < subSkillCap)
-                                {
-                                    player.GainCraftingSkill(eCraftingSkill.WoodWorking, 1);
-                                }
-
-                                break;
-                            }
-                    }
+                            break;
+                        }
                 }
             }
-
             player.Out.SendUpdateCraftingSkills();
         }
 
@@ -497,7 +495,7 @@ namespace DOL.GS
         protected virtual void BuildCraftedItem(GamePlayer player, Recipe recipe)
         {
             var product = recipe.Product;
-		
+
             Dictionary<int, int> changedSlots = new Dictionary<int, int>(5); // key : > 0 inventory ; < 0 ground || value: < 0 = new item count; > 0 = add to old
 
             lock (player.Inventory)
