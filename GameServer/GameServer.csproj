@@ -203,7 +203,7 @@
     <Compile Include="commands\gmcommands\ClientList.cs" />
     <Compile Include="commands\gmcommands\GMEvent.cs" />
     <Compile Include="commands\gmcommands\gmstealth.cs" />
-    <Compile Include="commands\gmcommands\GMTerritoires.cs" />
+    <Compile Include="commands\gmcommands\GMTerritories.cs" />
     <Compile Include="commands\gmcommands\GroupMob.cs" />
     <Compile Include="commands\gmcommands\MoneyNPC.cs" />
     <Compile Include="commands\gmcommands\translate.cs" />

@@ -15,17 +15,17 @@ namespace DOL.commands.gmcommands
 	[CmdAttribute(
 		  "&GroupMob",
 		  ePrivLevel.GM,
-		  "Commandes GroupMob",
-		  "'/GroupMob add <groupId>' Ajoute le mob en target au group donné (créer le groupe si besoin)",
-		  "'/GroupMob add <groupId> spawner' Ajoute le group <groupId> au Spawner en target (créer le SpawnerTemplate si besoin)",
-		  "'/GroupMob remove <groupId>' Supprime le mob en target de son groupe",
-		  "'/GroupMob group remove <groupId>' Supprime le groupe et tous les mobs associés à celui-ci",
-		  "'/GroupMob info <GroupId>' Affiche les infos sur un GroupMob en fournissant son <GroupId>",
-		  "'/GroupMob status <GroupId> set <StatusId> <SlaveGroupId> Affecte un GroupMobStatus<StatusId> à un <GroupId>(master) envers un <GroupId>(slave)'",
-		  "'/GroupMob status origin set <StatusId> <GroupId>' Attribut un Status d'origine à un GroupMob en donnant son <GroupdId> et le <StatusId> souhaité",
-		  "'/GroupMob status create <SpellId|null>(Effect) <FlagsValue|null>(Flags) <true|false|null>(IsInvicible) <id|null>(Model) <value|null>(VisibleWeapon) <id|null>(Race)' - Créer un GroupStatus et renvoie en sortie <StatusId>)",
-		  "'/GroupMob quest <GroupId> <QuestId> <Count> <true|false>' Associer un GroupMob à une Quest en spécifiant le Count(nb de fois) et WillbeFriendly <true|false> pour spécifier son aggrésivité",
-		  "'/GroupMob status reset <GroupId>'  Reset le status ainsi que ses interractions")]
+          "Commands.GM.GroupMob.Description",
+          "Commands.GM.GroupMob.Usage.Add",
+          "Commands.GM.GroupMob.Usage.Add.Spawner",
+          "Commands.GM.GroupMob.Usage.Remove",
+          "Commands.GM.GroupMob.Usage.Group",
+          "Commands.GM.GroupMob.Usage.Info",
+          "Commands.GM.GroupMob.Usage.Status",
+          "Commands.GM.GroupMob.Usage.Status.Origin",
+          "Commands.GM.GroupMob.Usage.Status.Create",
+          "Commands.GM.GroupMob.Usage.Status.Quest",
+          "Commands.GM.GroupMob.Usage.Status.Reset")]
 
 	public class GroupMob
 		  : AbstractCommandHandler, ICommandHandler

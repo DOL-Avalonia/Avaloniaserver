@@ -15,18 +15,18 @@ namespace DOL.GS.Commands
 	[CmdAttribute(
 		"&GMEvent",
 		ePrivLevel.GM,
-		"Commands.Players.Event.Description",
-		"'/GMEvent info [id]' Affiche les informations sur les Events, [id] pour un event sinon tous sont affichés",
-		"'/GMEvent infolight' Affiche les informations sur les Events, plus succin",
-		"'/GMEvent start <id>' Lance l'event avec son <id>",
-		"'/GMEvent reset <id>' Reset l'event avec son <id>, reset également les events qui ont lancés cet event",
-		"'/GMEvent add <eventId> <xpFactor>' Ajoute la cible (mob ou coffre) à l'event et le fait disparaitre du monde, <xpFactor> optionnel pour les mob (1 par défaut si omis)",
-		"'/GMEvent add <mob|coffre> <name> <region> <eventId> <xpFactor>'Ajoute un <mob|coffre> par son nom et sa region à un event, <xpFactor> optionnel pour les mob (1 par défaut si omis)",	
-		"'/GMEvent respawn <mob|coffre> <name> <eventId> <true|false>'Change la valeur de CanRespawn du <mob|coffre> par son <name> dans un event par son <eventId> <true|false>",		
-		"'/GMEvent starteffect <mob|coffre> <name> <eventId> <spellId>'Change la valeur starteffectId du <mob|coffre> par son <name> dans un event <eventId> en spécifiant le <spellId>",
-		"'/GMEvent endeffect <mob|coffre> <name> <eventId> <spellId>'Change la valeur endeffectId du <mob|coffre> par son <name> dans un event <eventId> en spécifiant le <spellId>",
-		"'/GMEvent refresh region <regionid>'Cherche les mobs et les coffres de la région <regionid> avec des EventID récemment ajoutés et les ajoute à cet évent'",
-		"'/GMEvent annonce <screen|windowed|send|log|confirm> <id>'Change le type d'annonce de l'event spécifié par <id>")]
+        "Commands.GM.GMEvent.Description",
+        "Commands.GM.GMEvent.Usage.Info",
+        "Commands.GM.GMEvent.Usage.Infolight",
+        "Commands.GM.GMEvent.Usage.Start",
+        "Commands.GM.GMEvent.Usage.Reset",
+        "Commands.GM.GMEvent.Usage.Add.Event",
+        "Commands.GM.GMEvent.Usage.Add.MobChest",
+        "Commands.GM.GMEvent.Usage.Respawn",
+        "Commands.GM.GMEvent.Usage.StartEffect",
+        "Commands.GM.GMEvent.Usage.EndEffect",
+        "Commands.GM.GMEvent.Usage.Reresh",
+        "Commands.GM.GMEvent.Usage.Annonce")]
 	
 	public class GMEvent
 		: AbstractCommandHandler, ICommandHandler

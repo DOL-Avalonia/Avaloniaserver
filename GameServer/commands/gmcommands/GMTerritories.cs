@@ -15,16 +15,16 @@ using System.Threading.Tasks;
 namespace DOL.commands.gmcommands
 {
     [CmdAttribute(
-        "&GMTerritoires",
+        "&GMTerritories",
         ePrivLevel.GM,
-        "GM Territoires Cmd",
-        "'/GMTerritoires add <areaId> <zoneId> <name> <groupId>' Ajoute un territoire en spécifant l'<areaId>, la <zoneId>, le <name> et le <groupId> à utiliser et pour ce territoire",
-        "'/GMTerritoires info <areaId>' Donne les infos relatives au territoire par son <areaId>",
-        "'/GMTerritoires clear <areadId>' Remet le territoire sélectionné par <areaId> en état neutre",
-        "'/GMTerritoires bonus add <resist> <areaId>' Ajoute une resist pour l'<areaId> sélectionné",
-        "'/GMTerritoires bonus remove <resist> <areaId>' Supprime une resist pour l'<areaId> sélectionné",
-         "resist: <nature|crush|slash|thrust|body|cold|energy|heat|matter|spirit>")]
-    public class GMTerritoires
+        "Commands.GM.GMTerritories.Description",
+        "Commands.GM.GMTerritories.Usage.GroupMob",
+        "Commands.GM.GMTerritories.Usage.Key",
+        "Commands.GM.GMTerritories.Usage.KeyChance",
+        "Commands.GM.GMTerritories.Usage.IsRenaissance",
+        "Commands.GM.GMTerritories.Usage.PunishSpell",
+         "Commands.GM.GMTerritories.Resist")]
+    public class GMTerritories
         : AbstractCommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
