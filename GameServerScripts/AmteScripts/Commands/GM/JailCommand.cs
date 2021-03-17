@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.Commands;
 using DOL.GS.PacketHandler;
+using DOL.Language;
 
 namespace DOL.GS.Scripts
 {
@@ -254,9 +255,9 @@ namespace DOL.GS.Scripts
             {
                 if (att.Cmd == args[0])
                 {
-                    client.Out.SendMessage(att.Description, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, att.Description), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     foreach (string str in att.Usage)
-                        client.Out.SendMessage(str, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, str), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return;
                 }
             }

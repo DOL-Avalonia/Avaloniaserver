@@ -8,17 +8,17 @@ namespace DOL.GS.Commands
 	[CmdAttribute(
 		"&areaeffect",
 		ePrivLevel.GM,
-        "Commands.GM.AmteNpc.Description",
-        "Commands.GM.AmteNpc.Usage.Create",
-        "Commands.GM.AmteNpc.Usage.HealHarm",
-        "Commands.GM.AmteNpc.Usage.Mana",
-        "Commands.GM.AmteNpc.Usage.Endurance",
-        "Commands.GM.AmteNpc.Usage.Radius",
-        "Commands.GM.AmteNpc.Usage.Effect",
-        "Commands.GM.AmteNpc.Usage.Interval",
-        "Commands.GM.AmteNpc.Usage.MissChance",
-        "Commands.GM.AmteNpc.Usage.Message",
-        "Commands.GM.AmteNpc.Usage.Info")]
+        "Commands.GM.AreaEffect.Description",
+        "Commands.GM.AreaEffect.Usage.Create",
+        "Commands.GM.AreaEffect.Usage.HealHarm",
+        "Commands.GM.AreaEffect.Usage.Mana",
+        "Commands.GM.AreaEffect.Usage.Endurance",
+        "Commands.GM.AreaEffect.Usage.Radius",
+        "Commands.GM.AreaEffect.Usage.Effect",
+        "Commands.GM.AreaEffect.Usage.Interval",
+        "Commands.GM.AreaEffect.Usage.MissChance",
+        "Commands.GM.AreaEffect.Usage.Message",
+        "Commands.GM.AreaEffect.Usage.Info")]
 	public class AreaEffectCommand : AbstractCommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)

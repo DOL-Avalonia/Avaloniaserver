@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.Commands;
 using DOL.GS.PacketHandler;
+using DOL.Language;
 
 namespace DOL.GS.Scripts
 {
@@ -361,9 +362,10 @@ namespace DOL.GS.Scripts
                 return;
 
             int i = 0;
-            string lines = attrib[0].Description + "\n\n";
-            foreach (string str in attrib[0].Usage)
+            string lines = LanguageMgr.GetTranslation(client.Account.Language, attrib[0].Description) + "\n\n";
+            foreach (string usage in attrib[0].Usage)
             {
+                var str = LanguageMgr.GetTranslation(client.Account.Language, usage);
                 i += str.Length;
                 if (i > 2000)
                 {

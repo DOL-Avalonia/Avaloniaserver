@@ -24,7 +24,7 @@ Commands.GM.Coffre.Usage.TPIsRenaissance:	'/coffre tpisrenaissance' Alterne l'ét
 Commands.GM.Coffre.Usage.IsOpeningRenaissance:		'/coffre isOpeningRenaissance' Alterne l'état isOpeningRenaissanceType du coffre
 Commands.GM.Coffre.Usage.PunishSpellId:		'/coffre punishSpellId <SpellId>' Définit le SpellID pour punir le joueur si il n'est pas Isrenaissance
 Commands.GM.Coffre.Usage.PickableAnim:	'/coffre pickableAnim' Alterne l'état de HasPickableAnim ou Activer ou désactiver l'emote pickup
-Commands.GM.Coffre.Usage.InfoInterval		'/coffre interval <minutes>' Change l'interval d'ouverture d'un coffre en minutes
+Commands.GM.Coffre.Usage.InfoInterval:		'/coffre interval <minutes>' Change l'interval d'ouverture d'un coffre en minutes
 Commands.GM.Coffre.Usage.LongDistance:	'/coffre longdistance <true|false>' Change la distance d'interraction du coffre. (utile pour les gros coffres)
 
 Commands.GM.Chest.Description:	Gestions des coffres
@@ -53,5 +53,5 @@ Commands.GM.Chest.Usage.TPIsRenaissance:	'/chest tpisrenaissance' Alterne l'état
 Commands.GM.Chest.Usage.IsOpeningRenaissance:		'/chest isOpeningRenaissance' Alterne l'état isOpeningRenaissanceType du chest
 Commands.GM.Chest.Usage.PunishSpellId:		'/chest punishSpellId <SpellId>' Définit le SpellID pour punir le joueur si il n'est pas Isrenaissance
 Commands.GM.Chest.Usage.PickableAnim:	'/chest pickableAnim' Alterne l'état de HasPickableAnim ou Activer ou désactiver l'emote pickup
-Commands.GM.Chest.Usage.InfoInterval		'/chest interval <minutes>' Change l'interval d'ouverture d'un chest en minutes
+Commands.GM.Chest.Usage.InfoInterval:		'/chest interval <minutes>' Change l'interval d'ouverture d'un chest en minutes
 Commands.GM.Chest.Usage.LongDistance:	'/chest longdistance <true|false>' Change la distance d'interraction du coffre. (utile pour les gros coffres)
