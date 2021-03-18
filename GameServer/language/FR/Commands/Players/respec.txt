@@ -1,4 +1,4 @@
-﻿Commands.Players.Respec.Available.All.Use:		Target any trainer and use /respec ALL
+Commands.Players.Respec.Available.All.Use:		Target any trainer and use /respec ALL
 Commands.Players.Respec.Available.All:			You have {0} full skill respecs available.
 Commands.Players.Respec.Available.Dol.Use:		Target any trainer and use /respec DOL
 Commands.Players.Respec.Available.DOL:			You have {0} DOL ( full skill ) respecs available.

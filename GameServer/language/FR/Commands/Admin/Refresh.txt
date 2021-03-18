@@ -1,4 +1,4 @@
-﻿Commands.Admin.Refresh.Available:		Modules disponible :
+Commands.Admin.Refresh.Available:		Modules disponible :
 Commands.Admin.Refresh.ClassName:		'/refresh <ClassName>.<MethodName> # Rafraîchi un module.
 Commands.Admin.Refresh.Description:		Rafraîchi une partie du cache de donnée stocké dans les scripts ou autres objets.
 Commands.Admin.Refresh.List:			'/refresh list' # Liste les modules disponibles.

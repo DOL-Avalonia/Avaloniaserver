@@ -1,4 +1,4 @@
-﻿
+
 
 # General Sentences
 GMCommands.Error:							Errore: {0}

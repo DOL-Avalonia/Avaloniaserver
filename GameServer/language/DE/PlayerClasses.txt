@@ -1,4 +1,4 @@
-﻿PlayerClass.Name.Acolyte:			Novize
+PlayerClass.Name.Acolyte:			Novize
 PlayerClass.Name.AlbionRogue:			Gauner
 PlayerClass.Name.Animist:			Animist
 PlayerClass.Name.Armsman:			Waffenmeister

@@ -1,4 +1,4 @@
-﻿# /AbstractServerRules/PlayerStatistics
+# /AbstractServerRules/PlayerStatistics
 # /Kills
 PlayerStatistic.Kill.Title:				Kill-Report
 PlayerStatistic.Kill.AlbionPlayer:			Albion-Spieler getötet

@@ -1,4 +1,4 @@
-﻿Effects.BannerOfBesiegingEffect.Name:		Banner der Belagerung
+Effects.BannerOfBesiegingEffect.Name:		Banner der Belagerung
 Effects.BannerOfBesiegingEffect.Description:	Senkt die Feuerrate von Belagerungswaffen um 6%.
 
 Effects.BannerOfFreedomEffect.Name		Banner der Freiheit

@@ -1,4 +1,4 @@
-﻿Commands.Players.Boat.AlreadyOnBoat:			Ce joueur est déjà sur le bateau !
+Commands.Players.Boat.AlreadyOnBoat:			Ce joueur est déjà sur le bateau !
 Commands.Players.Boat.BoardingDenied:			Votre demande pour {0} est refusée.
 Commands.Players.Boat.BoardingGranted:			Vous avez accepté la demande de contrôle du navire.
 Commands.Players.Boat.BoardingRequest:			{0} essaye de prendre contrôle de votre bateau. Accepter ?

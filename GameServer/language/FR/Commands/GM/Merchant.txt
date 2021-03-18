@@ -1,4 +1,4 @@
-﻿Commands.GM.Merchant.Articles.Add.ItemAdded:				Objet ajouté à la liste d’article du marchand !
+Commands.GM.Merchant.Articles.Add.ItemAdded:				Objet ajouté à la liste d’article du marchand !
 Commands.GM.Merchant.Articles.Add.ItemTemplateNoFound:		ItemTemplate ayant pour ID {0} n’a pu être trouvé !
 Commands.GM.Merchant.Articles.Add.PageAndSlotInvalid:		Le numéro de page ({0}) doit être entre 0 et {1} et l’emplacement ({2}) doit être entre 0 et {3}.
 Commands.GM.Merchant.Articles.Delete.DeletingListTemp:		Supprime un modèle de liste d’article...

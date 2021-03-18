@@ -1,4 +1,4 @@
-﻿# /Advice
+# /Advice
 Scripts.Players.Advice.Advice:				[Anfrage{0}] {1}: "{2}"
 Scripts.Players.Advice.AdvicersOn:			Es sind {0} Ratgeber online!
 

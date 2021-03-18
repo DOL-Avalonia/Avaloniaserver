@@ -1,4 +1,4 @@
-﻿Alb.NoHopeForTheHopeful.CheckPlayerAbortQuest.Text1:	Gut, macht also weiter und beendet Eure Aufgabe!
+Alb.NoHopeForTheHopeful.CheckPlayerAbortQuest.Text1:	Gut, macht also weiter und beendet Eure Aufgabe!
 Alb.NoHopeForTheHopeful.CheckPlayerAbortQuest.Text2:	Quest "{0}" abgebrochen. Ihr könnt jeder Zeit wieder beginnen.
 Alb.NoHopeForTheHopeful.Conclusion.Text1:		Ausgezeichnet, {0}! Das habt Ihr gut gemacht.
 Alb.NoHopeForTheHopeful.Conclusion.Text2:		Vielleicht wird es sich unter den Banditen herumsprechen, dass die Einwohner von Cotswold es nicht länger hinnehmen, bedroht zu werden.

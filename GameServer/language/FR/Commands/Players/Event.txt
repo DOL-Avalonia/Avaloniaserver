@@ -1,4 +1,4 @@
-﻿#Game Event
+#Game Event
 Commands.Players.Event.Description:          Information sur les Events en cours
 Commands.Players.Event.EventStarted:         L'evenement avec l'id {0} a été lancé 
 Commands.Players.Event.EventNotFound:        L'évenement avec l'id {0} n'a pas été trouvés

@@ -1,4 +1,4 @@
-﻿Hib.SearchForKnowledge.CheckPlayerAbortQuest.Text1:	Gut, macht also weiter und beendet Eure Aufgabe!
+Hib.SearchForKnowledge.CheckPlayerAbortQuest.Text1:	Gut, macht also weiter und beendet Eure Aufgabe!
 Hib.SearchForKnowledge.CheckPlayerAbortQuest.Text2:	Quest "{0}" abgebrochen. Ihr könnt jeder Zeit wieder beginnen.
 Hib.SearchForKnowledge.Conclusion.Text1:		Ich danke Euch, {0}. Ich werde nach meinen Lehrlingen in Lough Gur schicken. Der Krieg lässt unsere Vorräte zur Neige gehen und wir haben an allen Fronten viel zu tun. Ich habe gewiss mehr zu tun, als ich bewältigen kann. Lasst mich wissen, wenn Ihr aushelfen könnt.
 Hib.SearchForKnowledge.Init.Text1:			Rekruten-Umhang

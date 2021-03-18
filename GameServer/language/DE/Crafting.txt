@@ -1,4 +1,4 @@
-﻿# /AbstractCraftingSkill
+# /AbstractCraftingSkill
 AbstractCraftingSkill.BuildCraftedItem.BackpackFull:	Euer Rucksack ist voll. {0} wurde auf dem Boden abgelegt.
 AbstractCraftingSkill.BuildCraftedItem.Masterpiece:	Es ist ein Meisterstück!
 AbstractCraftingSkill.BuildCraftedItem.Successfully:	Ihr habt es geschafft, {0} wurde erfolgreich hergestellt. ({1})

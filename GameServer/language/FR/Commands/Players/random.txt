@@ -1,4 +1,4 @@
-﻿Commands.Players.Random.Description:	Tire au sort un numéro aléatoire entre 1 et le nombre spécifié.
+Commands.Players.Random.Description:	Tire au sort un numéro aléatoire entre 1 et le nombre spécifié.
 Commands.Players.Random.Help:			Vous devez sélectionner un nombre maximum pour pouvoir tirer au sort !
 Commands.Players.Random.LowNumber:		Votre numéro maximum doit-être supérieur à 1 !
 Commands.Players.Random.Result.Other:	{0} choisi un numéro aléatoire entre 1 et {1}. Résultat : « {2} »

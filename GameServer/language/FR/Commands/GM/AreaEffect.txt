@@ -1,4 +1,4 @@
-﻿Commands.GM.AreaEffect.Description:		Gestion d'AreaEffect
+Commands.GM.AreaEffect.Description:		Gestion d'AreaEffect
 Commands.GM.AreaEffect.Usage.Create:		'/areaeffect create <radius> <ID de l'effet>'
 Commands.GM.AreaEffect.Usage.HealHarm:		'/areaeffect <heal/harm> <valeur>'
 Commands.GM.AreaEffect.Usage.Mana:			'/areaeffect <mana> <valeur>'

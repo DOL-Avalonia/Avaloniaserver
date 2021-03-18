@@ -1,4 +1,4 @@
-﻿# LANGUAGEMGR
+# LANGUAGEMGR
 System.LanguagesName.CZ:		Tschechisch
 System.LanguagesName.EN:		Englisch
 System.LanguagesName.FR:		Französisch

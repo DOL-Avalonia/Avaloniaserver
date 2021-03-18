@@ -1,1 +1,1 @@
-﻿Commands.Players.Stats.Description:	Displays player statistics
+Commands.Players.Stats.Description:	Displays player statistics

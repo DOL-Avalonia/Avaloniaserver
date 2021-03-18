@@ -1,4 +1,4 @@
-﻿Enchanter.EnchanterDialogResponse.Text1:	Falscher Gegenstand.
+Enchanter.EnchanterDialogResponse.Text1:	Falscher Gegenstand.
 Enchanter.EnchanterDialogResponse.Text2:	Ich bekomme aber {0}, für die Verzauberung.
 Enchanter.EnchanterDialogResponse.Text3:	
 Enchanter.EnchanterDialogResponse.Text4:	{0} erhält von Euch {1}.

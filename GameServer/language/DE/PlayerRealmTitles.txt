@@ -1,4 +1,4 @@
-﻿# Unknown
+# Unknown
 GamePlayer.RealmTitle.UnknownRealm:					Unbekanntes Reich
 
 # Starter titles

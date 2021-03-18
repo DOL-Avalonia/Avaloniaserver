@@ -1,4 +1,4 @@
-﻿Mid.StolenEggs.CheckPlayerAbortQuest.Text1:	Das ist gut, dann geht und beendet Euren Auftrag!
+Mid.StolenEggs.CheckPlayerAbortQuest.Text1:	Das ist gut, dann geht und beendet Euren Auftrag!
 Mid.StolenEggs.CheckPlayerAbortQuest.Text2:	Quest "{0}" abgebrochen. Ihr könnt jeder Zeit wieder anfangen.
 Mid.StolenEggs.CheckPlayerAcceptQuest.Text1:	Auch gut, falls Ihr Eure Meinung ändert, wisst Ihr, wo ich mich findet!
 Mid.StolenEggs.CheckPlayerAcceptQuest.Text2:	Danke. Sprecht mit Hyndla, der Wikingerin, in der Nähe der Jordheimtore. Passanten berichteten, sie hätten seltsame Kreaturen an den Straßenrändern gesehen, als sie dort entlang reisten. Fragt sie nach dem genauen Gebiet. Nochmals Dank, {0}.

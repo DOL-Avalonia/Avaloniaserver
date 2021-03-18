@@ -1,4 +1,4 @@
-﻿Commands.GM.GroupMob.Description:	Commandes GroupMob
+Commands.GM.GroupMob.Description:	Commandes GroupMob
 Commands.GM.GroupMob.Usage.Add:		'/GroupMob add <groupId>' Ajoute le mob en target au group donn� (cr�er le groupe si besoin)
 Commands.GM.GroupMob.Usage.Add.Spawner:		'/GroupMob add <groupId> spawner' Ajoute le group <groupId> au Spawner en target (cr�er le SpawnerTemplate si besoin)
 Commands.GM.GroupMob.Usage.Remove:		'/GroupMob remove <groupId>' Supprime le mob en target de son groupe

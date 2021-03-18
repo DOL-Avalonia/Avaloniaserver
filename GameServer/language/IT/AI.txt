@@ -1,4 +1,4 @@
-﻿
+
 AI.Brain.Necromancer.CastSpellAfterAction:	Incantesimo {0} verrà lanciato dopo che l'azione corrente è finita.
 AI.Brain.Necromancer.ServantFarAwayToCast:	Il tuo pet è troppo lontano dal bersaglio per lanciare questo incantesimo!!
 AI.Brain.Necromancer.PetCantSeeTarget:		Il tuo pet {0} non riesce a vedere il suo obiettivo.

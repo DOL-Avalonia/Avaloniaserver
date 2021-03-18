@@ -1,4 +1,4 @@
-﻿# Necromancer
+# Necromancer
 AI.Brain.Necromancer.CastSpellAfterAction:	{0} wird den Zauberspruch auslösen, wenn die aktuelle Aktion abgeschlossen ist.
 AI.Brain.Necromancer.ServantFarAwayToCast:	Euer Diener ist zu weit weg von Eurem Ziel für diesen Zauberspruch!
 AI.Brain.Necromancer.PetCantSeeTarget:		Euer kontrollierter {0} kann das Ziel nicht sehen!

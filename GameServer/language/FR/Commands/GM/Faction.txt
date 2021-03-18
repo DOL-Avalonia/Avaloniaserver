@@ -1,4 +1,4 @@
-﻿Commands.GM.Faction.Assign.MobHasJoinedFact:	Le NPC "{0}" à rejoint la faction de "{1}".
+Commands.GM.Faction.Assign.MobHasJoinedFact:	Le NPC "{0}" à rejoint la faction de "{1}".
 Commands.GM.Faction.Assign.MustSelectMob:		Vous devez d'abord sélectioner un NPC.
 Commands.GM.Faction.Create.BAMustBeNumber:		Le « baseaggro » doit être un nombre.
 Commands.GM.Faction.Create.NewCreated:			Nouvelle faction crée

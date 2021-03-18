@@ -1,4 +1,4 @@
-﻿Commands.GM.Cast.CastExecuted:			Animation du sort a été executé. Id={0}
+Commands.GM.Cast.CastExecuted:			Animation du sort a été executé. Id={0}
 Commands.GM.Cast.Description:			Lance l'effet visuel d'un sort
 Commands.GM.Cast.EffectExecuted:		Effet du sort a été executé. Id={0}
 Commands.GM.Cast.IdNegative:			L'ID ne peut être négative.

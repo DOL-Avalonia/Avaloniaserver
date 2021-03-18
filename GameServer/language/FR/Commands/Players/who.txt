@@ -1,4 +1,4 @@
-﻿Commands.Players.Who.Description:		Montre qui est en ligne
+Commands.Players.Who.Description:		Montre qui est en ligne
 Commands.Players.Who.Help:				Utilisez '/who help' pour afficher les possibilités de cette commande.
 Commands.Players.Who.List.Admin:		<Admin>
 Commands.Players.Who.List.ADV:			<ADV>

@@ -1,4 +1,4 @@
-﻿# DelveInfo
+# DelveInfo
 DelveInfo.CastingTime:					Zauberzeit: {0}
 DelveInfo.ConcentrationCost:				Konzentrationsaufwand: {0} Punkte
 DelveInfo.Damage:					Schaden: {0}

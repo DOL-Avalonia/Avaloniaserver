@@ -1,4 +1,4 @@
-﻿## Albion
+## Albion
 # /FriarTrainer
 FriarTrainer.Interact.Text1:				{0} sagt: "Willkommen, {1}. Möchtet Ihr den [Verteidigern Albions] beitreten und ein Ordensbruder werden? Ihr solltet jedoch keine unüberlegte Entscheidung treffen. Lasst mich Euch zuerst ein wenig über das Leben erzählen, dass ein Ordensbruder führt. Als ein Mitglied der Verteidiger Albions und der Brüder und Schwestern innerhalb der Kirche haben Ordensbrüder Zugang zu Verbesserungen und Heilzaubern, die auch die Kleriker nutzen. Ordensbrüder sind bekannt als kämpfende Kleriker. Ihre Heilfähigkeiten machen sie nützlich für Gruppen, aber ihre Kampffertigkeiten machen sie zu wunderbaren Gefährten sowohl bei der Monsterjagd als auch im Krieg der Reiche. Da Ordensbrüder in vielerlei Hinsicht offensiv ausgerichtet sind, tragen sie nur leichte Lederrüstung. Sie können jedoch lernen, feindlichen Hieben auszuweichen und haben fortgeschrittene Verbesserungszauber für sich selbst entdeckt, die ihre Überlebenschancen in schwierigen Situationen steigern."
 FriarTrainer.Interact.Text2:				{0} sagt: "Ich soll Euch also ausbilden, was?"

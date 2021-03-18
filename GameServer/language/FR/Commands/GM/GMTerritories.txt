@@ -1,4 +1,4 @@
-﻿Commands.GM.GMTerritories.Description:	GM Territoires Cmd
+Commands.GM.GMTerritories.Description:	GM Territoires Cmd
 Commands.GM.GMTerritories.Usage.GroupMob:		'/GMTerritories add <areaId> <zoneId> <name> <groupId>' Ajoute un territoire en sp�cifant l'<areaId>, la <zoneId>, le <name> et le <groupId> � utiliser et pour ce territoire
 Commands.GM.GMTerritories.Usage.Key:		'/GMTerritories info <areaId>' Donne les infos relatives au territoire par son <areaId>
 Commands.GM.GMTerritories.Usage.KeyChance:		'/GMTerritories clear <areadId>' Remet le territoire s�lectionn� par <areaId> en �tat neutre

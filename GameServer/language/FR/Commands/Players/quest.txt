@@ -1,4 +1,4 @@
-﻿Commands.Players.Quest.Completed:		Vous avez complété les quêtes suivantes :
+Commands.Players.Quest.Completed:		Vous avez complété les quêtes suivantes :
 Commands.Players.Quest.Description:		Affiche les quêtes complété par le joueur.
 Commands.Players.Quest.NoPending:		Vous n’avez pas de quêtes en attente.
 Commands.Players.Quest.NotComplete:		Pour le moment, vous n’avez complété·e aucune quête.

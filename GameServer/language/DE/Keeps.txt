@@ -1,4 +1,4 @@
-﻿# Managers/Player Manager
+# Managers/Player Manager
 PlayerManager.BroadcastCapture.Captured:		Die Streitmacht von {0} kontrolliert nun {1}!
 PlayerManager.BroadcastCapture.CapturedR0:		{0} wurde besetzt!
 PlayerManager.BroadcastClaim.Claimed:			Die Gilde "{0}" hat {1} in Besitz genommen!

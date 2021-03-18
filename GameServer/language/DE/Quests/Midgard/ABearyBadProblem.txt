@@ -1,4 +1,4 @@
-﻿Mid.ABearyBadProblem.EnemyKilled:	Schwarzmalmerjunges
+Mid.ABearyBadProblem.EnemyKilled:	Schwarzmalmerjunges
 Mid.ABearyBadProblem.GoodJob:		Gute Arbeit!
 Mid.ABearyBadProblem.NPCKreimhilde:	Kreimhilde die Wikingerin
 Mid.ABearyBadProblem.OfferQuest:	Nehmt Ihr die Quest "Ein bärig-böses Problem" an?

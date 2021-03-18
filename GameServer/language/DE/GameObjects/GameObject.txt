@@ -1,4 +1,4 @@
-﻿GameObject.Casting.CastsASpell:				{0} zaubert!
+GameObject.Casting.CastsASpell:				{0} zaubert!
 GameObject.GetExamineMessages.YouTarget:		Es wird {0} als Ziel erfasst.
 GameObject.GetName.Article1:				{0}
 GameObject.GetName.Article2:				{0}

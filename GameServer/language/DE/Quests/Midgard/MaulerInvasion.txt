@@ -1,4 +1,4 @@
-﻿Mid.MaulerInvasion.EnemyKilled:		Schwarzmalmerjunges
+Mid.MaulerInvasion.EnemyKilled:		Schwarzmalmerjunges
 Mid.MaulerInvasion.NPCKreimhilde:	Kreimhilde die Wikingerin
 Mid.MaulerInvasion.OfferQuest:		Werdet Ihr Kreimhilde der Wikingerin dabei helfen, die Schwarzmalmerjungen-Population zu reduzieren? [Stufen 1- 5]
 Mid.MaulerInvasion.QuestTitle:		Malmerinvasion

@@ -1,4 +1,4 @@
-﻿Commands.GM.MinoRelic.Description:			Divers commande pour les reliques du minotaures
+Commands.GM.MinoRelic.Description:			Divers commande pour les reliques du minotaures
 Commands.GM.MinoRelic.Info.CurrentXP:		- XP de la relique : {0}
 Commands.GM.MinoRelic.Info.Effect:			- Effet : {0}
 Commands.GM.MinoRelic.Info.ID:				- ID : {0}

@@ -1,4 +1,4 @@
-﻿#TemplateManager
+#TemplateManager
 #All
 SetGuardName.Commander:		Kommandant von {0}
 SetGuardName.Hastener:		Antreiber

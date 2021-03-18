@@ -1,4 +1,4 @@
-﻿Alb.DredgeUpAPledge.CheckPlayerAbortQuest.Text1:	Gut, macht also weiter und beendet Eure Aufgabe!	
+Alb.DredgeUpAPledge.CheckPlayerAbortQuest.Text1:	Gut, macht also weiter und beendet Eure Aufgabe!	
 Alb.DredgeUpAPledge.CheckPlayerAbortQuest.Text2:	Quest "{0}" abgebrochen. Ihr könnt jeder Zeit wieder beginnen.
 Alb.DredgeUpAPledge.Conclusion.Text1:			Gute Arbeit, {0}! 
 Alb.DredgeUpAPledge.Conclusion.Text2:			Vielleicht denken diese Schurken das nächste Mal zweimal nach, wem sie sich verpflichten. Hier ist eine kleine Entschädigung für Eure Mühen.

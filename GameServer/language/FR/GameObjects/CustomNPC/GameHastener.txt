@@ -1,4 +1,4 @@
-﻿# GameHastener
+# GameHastener
 
 GameHastener.BorderKeepPortOffer:		Je vous transporter vers le [borderkeep] pour que tu puisses assister aux combats. 
 GameHastener.Greeting:					Salutations,

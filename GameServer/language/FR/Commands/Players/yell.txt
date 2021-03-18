@@ -1,4 +1,4 @@
-﻿Commands.Players.Yell.Description:	Hurle quelque chose aux joueurs des environs.
+Commands.Players.Yell.Description:	Hurle quelque chose aux joueurs des environs.
 Commands.Players.Yell.East:			Est
 Commands.Players.Yell.From:			{0} appel à l’aide depuis le « {1} »
 Commands.Players.Yell.Muted:		Vous avez été mis en sourdine et ne pouvez appeler à l’aide.

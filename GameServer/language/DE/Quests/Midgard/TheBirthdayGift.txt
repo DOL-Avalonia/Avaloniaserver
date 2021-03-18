@@ -1,4 +1,4 @@
-﻿Mid.TheBirthdayGift.EnemyKilled:	rappelndes Skelett
+Mid.TheBirthdayGift.EnemyKilled:	rappelndes Skelett
 Mid.TheBirthdayGift.NPCBarkeepNognar:	Schankwirt Nognar
 Mid.TheBirthdayGift.NPCBarkeepPrugar:	Schankwirt Prugar
 Mid.TheBirthdayGift.OfferQuest:		Werdet Ihr Prugar helfen und ihm das Geburtstagsgeschenk besorgen? (Stufen 1-4)

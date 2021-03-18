@@ -1,4 +1,4 @@
-﻿# /AdrenalineRushAbility
+# /AdrenalineRushAbility
 AdrenalineRushAbility.AddEffectsInfo.Info1:	Stufe 1: Dauer: 20 Sekunden
 AdrenalineRushAbility.AddEffectsInfo.Info2:	Stufe 2: Dauer: 20 Sekunden
 AdrenalineRushAbility.AddEffectsInfo.Info3:	Stufe 3: Dauer: 20 Sekunden

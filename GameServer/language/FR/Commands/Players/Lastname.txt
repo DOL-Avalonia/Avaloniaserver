@@ -1,4 +1,4 @@
-﻿Commands.Players.Lastname.Clear:			Voulez-vous retirer votre nom de famille ?
+Commands.Players.Lastname.Clear:			Voulez-vous retirer votre nom de famille ?
 Commands.Players.Lastname.Cost:				Changez votre nom de famille coûte {0} !
 Commands.Players.Lastname.Declined.Clear:	Vous avez refusé de retirer votre nom de famille.
 Commands.Players.Lastname.Declined.Take:	Vous avez refuser de prendre {0} comme nom de famille.

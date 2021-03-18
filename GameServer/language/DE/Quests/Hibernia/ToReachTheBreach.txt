@@ -1,4 +1,4 @@
-﻿Hib.ToReachTheBreach.CheckPlayerAbortQuest.Text1:	Gut, macht also weiter und beendet Eure Aufgabe!
+Hib.ToReachTheBreach.CheckPlayerAbortQuest.Text1:	Gut, macht also weiter und beendet Eure Aufgabe!
 Hib.ToReachTheBreach.CheckPlayerAbortQuest.Text2:	Quest "{0}" abgebrochen. Ihr könnt jeder Zeit wieder beginnen.
 Hib.ToReachTheBreach.Conclusion.Text1:			Ihr habt den Weg zum Dämonenbruch gefunden, was? Merkt Euch die Stelle gut, {0}, denn Eure Hilfe könnte dort eines Tages benödigt werden. Wir können nicht zulassen, dass Horden von Dämonen, Albionern und Midgardern frei in unserem Land herumlaufen!
 Hib.ToReachTheBreach.Init.Text1:			einfühlsamer Rekruten-Gürtel

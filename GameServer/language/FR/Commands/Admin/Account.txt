@@ -1,4 +1,4 @@
-﻿Commands.Admin.Account.AccNameForChar:					Le nom de compte de jeu pour le joueur "{0}" est: {1}
+Commands.Admin.Account.AccNameForChar:					Le nom de compte de jeu pour le joueur "{0}" est: {1}
 Commands.Admin.Account.AccountCreated:					Compte créé!
 Commands.Admin.Account.AccountDeleted:					Le compte de jeu "{0}" a été supprimé!
 Commands.Admin.Account.AccountHasNoFreeSlots:			Le compte de jeu "{0}" n'a plus d'emplacement de personnage dsiponible pour ce royaume!

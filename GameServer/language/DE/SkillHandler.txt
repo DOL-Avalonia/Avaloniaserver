@@ -1,4 +1,4 @@
-﻿# /SkillBase
+# /SkillBase
 SkillBase.RegisterPropertyNames.Acuity:			Sinnesschärfe
 SkillBase.RegisterPropertyNames.AcuityBonusCap:		Bonus auf Sinnesschärfebonuslimit
 SkillBase.RegisterPropertyNames.AllArcherySkills:	ALLE Bogenfähigkeiten

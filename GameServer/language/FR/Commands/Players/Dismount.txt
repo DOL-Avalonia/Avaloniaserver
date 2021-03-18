@@ -1,4 +1,4 @@
-﻿# /Dismount
+# /Dismount
 Commands.Players.Dismount:				
 Commands.Players.Dismount.Description:	Descendez de votre monture
 Commands.Players.Dismount.NotRiding:	Vous n'êtes pas à cheval.

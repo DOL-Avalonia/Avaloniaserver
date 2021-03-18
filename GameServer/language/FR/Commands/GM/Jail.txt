@@ -1,4 +1,4 @@
-﻿Commands.GM.jailrp.Description:			Pour emprisonner un joueur de fa�on RP.
+Commands.GM.jailrp.Description:			Pour emprisonner un joueur de fa�on RP.
 Commands.GM.jailrp.Usage:		/jailrp <nom du joueur> pour rel�cher un joueur (connect� ou non)
 Commands.GM.jailrp.Usage.Free:	/jailrp <nom du joueur> <raison> <amende en or> [heures] [jours] pour emprisonner un joueur
 Commands.GM.jailhrp.Description:			Pour emprisonner un joueur de fa�on HRP.

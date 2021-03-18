@@ -1,4 +1,4 @@
-﻿Commands.GM.Boat.Description:	Boat Commands
+Commands.GM.Boat.Description:	Boat Commands
 Commands.GM.Boat.Usage.Info:		/amteboat info - affiche les infos du GameBoatAmte cibl�
 Commands.GM.Boat.Usage.Create:	/amteboat create [model] - cr�� un GameBoatAmte
 Commands.GM.Boat.Usage.Speed:	/amteboat speed <newspeed> - change la vitesse du mob pour le trajet

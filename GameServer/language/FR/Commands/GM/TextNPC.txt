@@ -1,4 +1,4 @@
-﻿Commands.GM.TextNPC.Description:			Gestions des TextNPC
+Commands.GM.TextNPC.Description:			Gestions des TextNPC
 Commands.GM.TextNPC.Usage.Create:		'/textnpc create [isRenaissance]' cr�� un nouveau pnj. [isRenaissance] d�finit si ce marchand a besoin de la renaissance du joueur pour int�rragir
 Commands.GM.TextNPC.Usage.CreateMerchant:	'/textnpc createmerchant [isRenaissance]' cr�� un nouveau marchand qui parle
 Commands.GM.TextNPC.Usage.CreateGuard:	'/textnpc createguard [isRenaissance]' cr�� un garde qui parle

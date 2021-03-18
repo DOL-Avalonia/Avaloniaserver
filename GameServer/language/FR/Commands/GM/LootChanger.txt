@@ -1,4 +1,4 @@
-﻿Commands.GM.LootChanger.Description:	Gestion des loots changer
+Commands.GM.LootChanger.Description:	Gestion des loots changer
 Commands.GM.LootChanger.Usage.Add:		'/lootchanger add <receive item> <give item> '
 Commands.GM.LootChanger.Usage.Remove:	'/lootchanger remove <receive item/all>'
 Commands.GM.LootChanger.Usage.Info:		'/lootchanger info'

@@ -1,4 +1,4 @@
-﻿# GameHastener
+# GameHastener
 
 GameHastener.BorderKeepPortOffer:	Falls Ihr die zehnte Stufe noch nicht erreicht habt, kann ich Euch zur [Borderkeep] befördern, so dass Ihr auf dem Schlachtfeld kämpfen könnt.
 GameHastener.Greeting:			Seid gegrüßt,

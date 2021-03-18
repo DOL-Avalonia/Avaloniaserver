@@ -1,4 +1,4 @@
-﻿Commands.GM.EchangeurNPC.Description:	Gestions des echangeurs (TextNPC)
+Commands.GM.EchangeurNPC.Description:	Gestions des echangeurs (TextNPC)
 Commands.GM.EchangeurNPC.Usage.Add:		add <nombre d'item> <ID de l'item a donner>' Ajoute un item que le pnj accepte
 Commands.GM.EchangeurNPC.Usage.Remove:	remove <ID de l'item a donner>' Retire un item
 Commands.GM.EchangeurNPC.Usage.Money:		money <ID de l'item a donner> <quantit�>' Echange de l'argent

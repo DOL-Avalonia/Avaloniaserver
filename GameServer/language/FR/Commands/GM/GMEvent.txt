@@ -1,4 +1,4 @@
-﻿Commands.GM.GMEvent.Description:	Commands.Players.Event.Description
+Commands.GM.GMEvent.Description:	Commands.Players.Event.Description
 Commands.GM.GMEvent.Usage.Info:		'/GMEvent info [id]' Affiche les informations sur les Events, [id] pour un event sinon tous sont affich�s
 Commands.GM.GMEvent.Usage.Infolight:		'/GMEvent infolight' Affiche les informations sur les Events, plus succin
 Commands.GM.GMEvent.Usage.Start:		'/GMEvent start <id>' Lance l'event avec son <id>

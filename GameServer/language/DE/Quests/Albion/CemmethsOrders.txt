@@ -1,4 +1,4 @@
-﻿Alb.CemmethsOrders.CheckPlayerAbortQuest.Text1:	Gut, macht also weiter und beendet Eure Aufgabe!
+Alb.CemmethsOrders.CheckPlayerAbortQuest.Text1:	Gut, macht also weiter und beendet Eure Aufgabe!
 Alb.CemmethsOrders.CheckPlayerAbortQuest.Text2:	Quest "{0}" abgebrochen. Ihr könnt jeder Zeit wieder beginnen.
 Alb.CemmethsOrders.Conclusion.Text1:		Gut gemacht, {0}, gut gemacht! Unser Auftrag wurde also ausgeführt, trotz des untoten Gesindels da draußen. Ihr seid ein gutes Vorbild für die anderen Möchtegern-Helden und Abenteurer. Bitte nehmt dieses kleine Zeichen der Dankbarkeit.
 Alb.CemmethsOrders.Init.Text1:			Rekruten-Steppweste

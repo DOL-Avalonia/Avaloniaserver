@@ -1,15 +1,15 @@
 Commands.GM.TeleportNPC.Description:			Gestions des TeleportNPC
-Commands.GM.TeleportNPC.Usage.Create:			'/teleportnpc create [isRenaissance]' créé un nouveau TeleportNPC [isRenaissance] définit si ce npc a besoin de la renaissance du joueur pour intérragir
-Commands.GM.TeleportNPC.Usage.Create.Douanier:			'/teleportnpc create douanier <gold> [isRenaissance]' gold étant le montant du cout du jump, [isRenaissance] définit si ce npc  a besoin de la renaissance du joueur pour intérragir
-Commands.GM.TeleportNPC.Usage.Text:			'/teleportnpc text <texte>' texte affiché lorsque le joueur peut se téléporter, le texte doit contenir {5}
-Commands.GM.TeleportNPC.Usage.Refuse:			'/teleportnpc refuse <texte>' texte affiché lorsque le joueur ne peut pas être téléporté
-Commands.GM.TeleportNPC.Usage.Radius:			'/teleportnpc radius <0 - 500>' rayon dans lequel les joueurs seront téléportés (pas de texte)
-Commands.GM.TeleportNPC.Usage.Level:			'/teleportnpc level <min level>' règle le niveau minimum pour être téléporter
+Commands.GM.TeleportNPC.Usage.Create:			'/teleportnpc create [isRenaissance]' crï¿½ï¿½ un nouveau TeleportNPC [isRenaissance] dï¿½finit si ce npc a besoin de la renaissance du joueur pour intï¿½rragir
+Commands.GM.TeleportNPC.Usage.Create.Douanier:			'/teleportnpc create douanier <gold> [isRenaissance]' gold ï¿½tant le montant du cout du jump, [isRenaissance] dï¿½finit si ce npc  a besoin de la renaissance du joueur pour intï¿½rragir
+Commands.GM.TeleportNPC.Usage.Text:			'/teleportnpc text <texte>' texte affichï¿½ lorsque le joueur peut se tï¿½lï¿½porter, le texte doit contenir {5}
+Commands.GM.TeleportNPC.Usage.Refuse:			'/teleportnpc refuse <texte>' texte affichï¿½ lorsque le joueur ne peut pas ï¿½tre tï¿½lï¿½portï¿½
+Commands.GM.TeleportNPC.Usage.Radius:			'/teleportnpc radius <0 - 500>' rayon dans lequel les joueurs seront tï¿½lï¿½portï¿½s (pas de texte)
+Commands.GM.TeleportNPC.Usage.Level:			'/teleportnpc level <min level>' rï¿½gle le niveau minimum pour ï¿½tre tï¿½lï¿½porter
 Commands.GM.TeleportNPC.Usage.AddJump:			'/teleportnpc addjump <X> <Y> <Z> <Heading> <RegionID> <Name>' ajoute un jump (ATTENTION Gloc, \"Area\" comme nom pour un teleporteur automatique)
 Commands.GM.TeleportNPC.Usage.Jump:			'/teleportnpc jump' liste les jumps avec leurs conditions
 Commands.GM.TeleportNPC.Usage.RemoveJump:			'/teleportnpc removejump <Name>' supprime un lieu
-Commands.GM.TeleportNPC.Usage.Conditions.Visible:		'/teleportnpc conditions <nom du jump> visible <on/off>' Détermine si le jump est dans la liste des jumps lorsqu'on clique sur le PNJ
-Commands.GM.TeleportNPC.Usage.Conditions.Item:				'/teleportnpc conditions <nom du jump> item <template>' Item nécessaire pour être téléporté
+Commands.GM.TeleportNPC.Usage.Conditions.Visible:		'/teleportnpc conditions <nom du jump> visible <on/off>' Dï¿½termine si le jump est dans la liste des jumps lorsqu'on clique sur le PNJ
+Commands.GM.TeleportNPC.Usage.Conditions.Item:				'/teleportnpc conditions <nom du jump> item <template>' Item nï¿½cessaire pour ï¿½tre tï¿½lï¿½portï¿½
 Commands.GM.TeleportNPC.Usage.Conditions.Niveaux:		'/teleportnpc conditions <nom du jump> niveaux <min> [max]' Niveau mini et max du jump
-Commands.GM.TeleportNPC.Usage.Conditions.Bind:		'/teleportnpc conditions <nom du jump> bind <on/off>' Bind le joueur après l'avoir jump
+Commands.GM.TeleportNPC.Usage.Conditions.Bind:		'/teleportnpc conditions <nom du jump> bind <on/off>' Bind le joueur aprï¿½s l'avoir jump
 Commands.GM.TeleportNPC.Usage.AdditionalDescription:		Dans chaque texte: {0} = nom du joueur, {1} = nom de famille, {2} = nom de sa guilde, {3} = nom de sa classe, {4} = nom de sa race, {5} liste des jumps (sauf refuse)

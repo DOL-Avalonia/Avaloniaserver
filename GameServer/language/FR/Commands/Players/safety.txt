@@ -1,4 +1,4 @@
-﻿Commands.Players.Safety.Description:	Désactive votre filet de sécurité PvP
+Commands.Players.Safety.Description:	Désactive votre filet de sécurité PvP
 Commands.Players.Safety.Message.1:		Votre filet de sécurité vous empèche de participer à un combat
 Commands.Players.Safety.Message.2:		avec des joueurs non-allié dans les zones dédiés lorsque vous êtes sous le niveau 10
 Commands.Players.Safety.Message.3:		Utilisez '/safety off' pour commencer à participer aux combats PvP dans ces zones. Attention, une fois désactivé il n’est plus possible de le réactivé !

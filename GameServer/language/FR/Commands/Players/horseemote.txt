@@ -1,4 +1,4 @@
-﻿Commands.Players.HorseEmote.Description:					Horse emotes
+Commands.Players.HorseEmote.Description:					Horse emotes
 Commands.Players.HorseEmote.Help:							Available emote: halt, pet, trick, courbette, startle, nod, graze, rear.
 Commands.Players.HorseEmote.MustBeOnMount:					Vous devez chevaucher votre monture pour utiliser cette commande !
 Commands.Players.HorseEmote.Usage:							'/horse <emote>'

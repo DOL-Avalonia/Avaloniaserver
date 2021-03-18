@@ -1,4 +1,4 @@
-﻿GamePlayer.AddAbility.YouLearn:				Ihr erlernt {0}.
+GamePlayer.AddAbility.YouLearn:				Ihr erlernt {0}.
 
 GamePlayer.AddSpecialisation.YouLearn:			Ihr erlernt die Fähigkeit "{0}"!
 

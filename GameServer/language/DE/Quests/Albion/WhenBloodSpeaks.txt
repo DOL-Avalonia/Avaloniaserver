@@ -1,4 +1,4 @@
-﻿Alb.WhenBloodSpeaks.CheckPlayerAbortQuest.Text1:	Gut, macht also weiter und beendet Eure Aufgabe!
+Alb.WhenBloodSpeaks.CheckPlayerAbortQuest.Text1:	Gut, macht also weiter und beendet Eure Aufgabe!
 Alb.WhenBloodSpeaks.CheckPlayerAbortQuest.Text2:	Quest "{0}" abgebrochen. Ihr könnt jeder Zeit wieder beginnen.
 Alb.WhenBloodSpeaks.Conclusion.Text1:			Ah, Ihr habt das Spriggarnblut, ausgezeichnet! Hoffentlich ist es nur eine Frage der Zeit, bis ich alle Teile dieses Rätsels zusammenfügen kann. Danke für Eure Hilfe, {0}!
 Alb.WhenBloodSpeaks.Init.Text1:				Rekruten-Steppbeinlinge

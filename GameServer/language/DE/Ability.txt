@@ -1,4 +1,4 @@
-﻿Skill.Ability.CannotUseDead:			Ihr könnt das nicht machen, da Ihr tot seid!
+Skill.Ability.CannotUseDead:			Ihr könnt das nicht machen, da Ihr tot seid!
 Skill.Ability.CannotUseMezzed:			Ihr seid hypnotisiert und könnt das jetzt nicht machen!
 Skill.Ability.CannotUseStunned:			Ihr seid betäubt und könnt das jetzt nicht machen!
 Skill.Ability.CannotUseStanding:		Ihr müsst stehen um die Fähigkeit anwenden zu können!

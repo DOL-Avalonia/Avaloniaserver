@@ -1,4 +1,4 @@
-﻿Commands.GM.TeleportNPC.Description:			Gestions des TeleportNPC
+Commands.GM.TeleportNPC.Description:			Gestions des TeleportNPC
 Commands.GM.TeleportNPC.Usage.Create:			'/teleportnpc create [isRenaissance]' cr�� un nouveau TeleportNPC [isRenaissance] d�finit si ce npc a besoin de la renaissance du joueur pour int�rragir
 Commands.GM.TeleportNPC.Usage.Create.Douanier:			'/teleportnpc create douanier <gold> [isRenaissance]' gold �tant le montant du cout du jump, [isRenaissance] d�finit si ce npc  a besoin de la renaissance du joueur pour int�rragir
 Commands.GM.TeleportNPC.Usage.Text:			'/teleportnpc text <texte>' texte affich� lorsque le joueur peut se t�l�porter, le texte doit contenir {5}

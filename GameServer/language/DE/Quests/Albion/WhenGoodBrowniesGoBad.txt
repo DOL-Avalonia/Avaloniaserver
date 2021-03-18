@@ -1,4 +1,4 @@
-﻿Alb.WhenGoodBrowniesGoBad.CheckPlayerAbortQuest.Text1:	Gut, macht also weiter und beendet Eure Aufgabe!
+Alb.WhenGoodBrowniesGoBad.CheckPlayerAbortQuest.Text1:	Gut, macht also weiter und beendet Eure Aufgabe!
 Alb.WhenGoodBrowniesGoBad.CheckPlayerAbortQuest.Text2:	Quest "{0}" abgebrochen. Ihr könnt jeder Zeit wieder beginnen.
 Alb.WhenGoodBrowniesGoBad.Conclusion.Text1:		Ah, Ihr seid mit dem Blut zurückgekehrt! Ich hasse es, mit anzusehen, wie irgendeinen Wesen, das nicht vom Innersten her böse ist, Leid zugefügt wird. Aber es wurde notwendig, drastische Maßnahmen durchzuführen, um die Wurzel dieses Problems feststellen zu können.
 Alb.WhenGoodBrowniesGoBad.Init.Text1:			hellrote Stofffarbe

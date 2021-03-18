@@ -1,4 +1,4 @@
-﻿Commands.Admin.Reload.Command.Failed:			La commande '/reload' a échoué. Vérifié vos paramètres !
+Commands.Admin.Reload.Command.Failed:			La commande '/reload' a échoué. Vérifié vos paramètres !
 Commands.Admin.Reload.Description:				Recharge divers éléments du serveur.
 Commands.Admin.Reload.NotSupported.Console:		Le rechargement régionnal n'est pas supporté depuis la console.
 Commands.Admin.Reload.Reloaded.Mobs:			{0} mobs rechargés!

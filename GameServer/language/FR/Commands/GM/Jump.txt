@@ -1,4 +1,4 @@
-﻿# ]jump Command
+# ]jump Command
 Commands.GM.DebugJump.Description:				Téléporte au coordonnées spécifiées.
 Commands.GM.DebugJump.InvalidZoneID:			Zone ID non valide : {0}
 Commands.GM.DebugJump.RegionNotSuppByClient:	La région ({0}) n'est pas supportée par votre client.

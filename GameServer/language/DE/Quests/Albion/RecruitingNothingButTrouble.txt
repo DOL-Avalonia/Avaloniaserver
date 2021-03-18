@@ -1,4 +1,4 @@
-﻿Alb.RecruitingNothingButTrouble.CheckPlayerAbortQuest.Text1:	Gut, macht also weiter und beendet Eure Aufgabe!
+Alb.RecruitingNothingButTrouble.CheckPlayerAbortQuest.Text1:	Gut, macht also weiter und beendet Eure Aufgabe!
 Alb.RecruitingNothingButTrouble.CheckPlayerAbortQuest.Text2:	Quest "{0}" abgebrochen. Ihr könnt jeder Zeit wieder beginnen.
 Alb.RecruitingNothingButTrouble.Conclusion.Text1:		Nun, das werde ich! Ihr habt es tatsächlich geschafft, mein Schwert zurückzubekommen! Ich muss zugeben, ich hätte nicht gedacht, es je wieder zu sehen. Bitte nehmt diese bescheidene Belohnung für Eure Dienste.
 Alb.RecruitingNothingButTrouble.Init.Text1:			Rekruten-Kurzschwert

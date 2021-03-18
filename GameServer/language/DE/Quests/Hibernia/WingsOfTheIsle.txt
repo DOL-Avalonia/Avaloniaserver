@@ -1,4 +1,4 @@
-﻿# Quest: Wings Of The Isle
+# Quest: Wings Of The Isle
 
 Hib.WingsOfTheIsle.Story:	Entschuldigt bitte {0}. Kann ich Euch um einen Gefallen bitten? Meine Tochter Jessica hat eine schreckliche Zeit durchlitten, seit die Kämpfe ausbrachen. Früher fuhr sie gerne mit einem Boot zur Insel um zu spielen, aber jetzt schlendert sie nur noch traurig durch die  Wälder nördlich der Stadt. Vielleicht könntet Ihr Euch die Zeit nehmen, um mit ihr zu sprechen. Sie redet schon lange nicht mehr mit Ihrem Vater, aber Ihr könntet eventuell herausfinden, was sie bedrückt.
 Hib.WingsOfTheIsle.Summary:	Besucht Jessica nördlich der Stadt, findet heraus, was ihr fehlt und versucht ihr zu helfen für Baeth.

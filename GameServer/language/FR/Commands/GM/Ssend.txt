@@ -1,2 +1,2 @@
-﻿Commands.GM.Ssend.Description:	R�pondre aux report
+Commands.GM.Ssend.Description:	R�pondre aux report
 Commands.GM.Ssend.Usage:		/ssend <nick> <message>

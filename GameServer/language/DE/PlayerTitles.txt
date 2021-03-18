@@ -1,4 +1,4 @@
-﻿#All
+#All
 PlayerClass.GetTitle.none:		Keiner
 
 PlayerClass.Mauler.GetTitle.50:		Meistermalmer

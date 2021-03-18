@@ -1,4 +1,4 @@
-﻿Commands.Players.Spacing.Description:		Change l’espacement de vos serviteurs.
+Commands.Players.Spacing.Description:		Change l’espacement de vos serviteurs.
 Commands.Players.Spacing.Help.Big:			'/spacing big'    # L’espacement entre vos serviteurs sera grand.
 Commands.Players.Spacing.Help.Huge:			'/spacing huge'   # L’espacement entre vos serviteurs sera énorme.
 Commands.Players.Spacing.Help.Normal:		'/spacing normal' # L’espacement entre vos serviteurs sera normal.

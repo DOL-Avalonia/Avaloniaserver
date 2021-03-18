@@ -1,1 +1,1 @@
-﻿Commands.GM.Error:	Erreur: {0}
+Commands.GM.Error:	Erreur: {0}

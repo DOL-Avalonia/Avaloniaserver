@@ -1,4 +1,4 @@
-﻿# Language file for DOL
+# Language file for DOL
 # Language used : SPANISH / Español
 #
 # #-Beginning and Empty lines are ignored

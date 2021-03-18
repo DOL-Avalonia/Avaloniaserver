@@ -1,4 +1,4 @@
-﻿# /DetailDisplayHandler
+# /DetailDisplayHandler
 DetailDisplayHandler.GetShortItemInfo.CrafterName:	Handwerker : {0}
 DetailDisplayHandler.GetShortItemInfo.NoDrop:		 Nicht ablegbar.
 DetailDisplayHandler.GetShortItemInfo.NoSell:		 Nicht verkaufbar.

@@ -1,4 +1,4 @@
-﻿#GameKeepGuard
+#GameKeepGuard
 GameKeepGuard.GetExamineMessages.Balancing:	{0} hat die Festungsstufe angeglichen ({1}).
 GameKeepGuard.GetExamineMessages.Upgraded:	{0} hat die Ausrüstung angepasst ({1}).
 GameKeepGuard.GetExamineMessages.YouExamine:	Es interessiert Euch {0}. {1} ist Euch {2} gesonnen und gehört der Reichswache an.

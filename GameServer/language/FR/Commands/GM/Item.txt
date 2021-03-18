@@ -1,4 +1,4 @@
-﻿Commands.GM.Item.Blank.CreationError:			Erreur lors de la création de l’objet.
+Commands.GM.Item.Blank.CreationError:			Erreur lors de la création de l’objet.
 Commands.GM.Item.Blank.ItemCreated:				Une objet vide (Blank item) a été créé dans le premier emplacement vide de votre sac.
 Commands.GM.Item.Count.NoItemInSlot:			Pas d’objet à l’emplacement {0} !
 Commands.GM.Item.Count.NotStackable:			{0} n’est pas empilable.

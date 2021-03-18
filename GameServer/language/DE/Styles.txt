@@ -1,4 +1,4 @@
-﻿# /StyleProcessor
+# /StyleProcessor
 StyleProcessor.ExecuteStyle.BackStrike:			Ihr führt einen kritischen Schlag auf den Rücken Eures Zieles aus.
 StyleProcessor.ExecuteStyle.ExecuteFail:		Ihr führt den Kampfstil "{0}" nicht richtig aus!
 StyleProcessor.ExecuteStyle.PerformPerfectly:		Ihr führt den Kampfstil "{0}" perfekt aus.{1}

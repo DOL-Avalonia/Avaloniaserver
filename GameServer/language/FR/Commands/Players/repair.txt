@@ -1,4 +1,4 @@
-﻿Commands.Players.Repair.Component.FullHealth:	The component is already at full health!
+Commands.Players.Repair.Component.FullHealth:	The component is already at full health!
 Commands.Players.Repair.Component.InCombat:		You can't repair the keep component while it is under attack!
 Commands.Players.Repair.Component.RaizedTower:	You cannot repair a raized tower!
 Commands.Players.Repair.Dead:					You can't repair while dead.

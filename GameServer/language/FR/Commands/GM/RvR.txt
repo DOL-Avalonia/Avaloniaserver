@@ -1,4 +1,4 @@
-﻿Commands.GM.RvR.Description:	Gestion du rvr et du PvP
+Commands.GM.RvR.Description:	Gestion du rvr et du PvP
 Commands.GM.RvR.Usage.Open:		'/rvr open' Force l'ouverture des rvr (ne se ferme jamais)
 Commands.GM.RvR.Usage.Close:		'/rvr close' Force la fermeture des rvr
 Commands.GM.RvR.Usage.Unforce:		'/rvr unforce' Permet apr�s un '/rvr open' de fermer les rvr s'il ne sont pas dans les bonnes horaires

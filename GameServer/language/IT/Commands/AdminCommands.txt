@@ -1,4 +1,4 @@
-﻿
+
 # /serverproperties Command
 AdminCommands.ServerProperties.Description:			Ricarica le proprietà del server dal database
 AdminCommands.ServerProperties.Usage:				/serverproperties

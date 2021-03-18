@@ -1,4 +1,4 @@
-﻿
+
 Effects.DelveInfo.MinutesRemaining:				- Rimangono {0}: {1} minuti
 Effects.DelveInfo.SecondsRemaining:				- Rimangono {0} secondi.
 Effects.DelveInfo.Seconds:				{0} secondi.

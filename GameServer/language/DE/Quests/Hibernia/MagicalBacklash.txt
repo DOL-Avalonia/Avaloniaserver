@@ -1,4 +1,4 @@
-﻿Hib.MagicalBacklash.CheckPlayerAbortQuest.Text1:	Gut, macht also weiter und beendet Eure Aufgabe!
+Hib.MagicalBacklash.CheckPlayerAbortQuest.Text1:	Gut, macht also weiter und beendet Eure Aufgabe!
 Hib.MagicalBacklash.CheckPlayerAbortQuest.Text2:	Quest "{0}" abgebrochen. Ihr könnt jeder Zeit wieder beginnen.
 Hib.MagicalBacklash.Conclusion.Text1:			Ich danke Euch. Nicht einmal in Gedanken hätte ich an diesen Ort gehen können. Ihr seid tapferer, als ich es jemals sein werde. Ihr solltet mit einigen anderen Dorfbewohnern reden, ich bin sicher, einige könnten Eure Hilfe gebrauchen.
 Hib.MagicalBacklash.Init.Text1:				Rekruten-Kurzschwert

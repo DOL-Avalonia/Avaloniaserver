@@ -1,4 +1,4 @@
-﻿# /Arbiter
+# /Arbiter
 Albion.Arbiter.Interact.BeginTrials:			Willkommen in Atlantis, {0}. Sobald Ihr bereit seid, könnt Ihr mit den Prüfungen beginnen. Kommt dann zu mir.
 Albion.Arbiter.Interact.Welcome:			Ah, {0}, willkommen bei dem, was von Atlantis noch übrig ist. Was für ein großer Fund dies ist! Wir wissen nicht, warum wir Botschaften von Atlantis erhielten, doch als wir sie bekamen, setzten wir uns sofort in Bewegung. Wir haben von Atlantis seit vielen Jahren nichts gehört. Mehr Jahre, als unser Land eine Geschichte hat. Doch wir gingen los, und wisst Ihr warum? Die [Versprechen] von Atlantis!
 Albion.Arbiter.WhisperReceive.Case1:			versprechen

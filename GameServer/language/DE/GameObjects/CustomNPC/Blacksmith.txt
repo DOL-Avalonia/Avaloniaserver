@@ -1,4 +1,4 @@
-﻿Scripts.Blacksmith.AbortRepair:				Ihr weigert Euch {0} reparieren zu lassen.
+Scripts.Blacksmith.AbortRepair:				Ihr weigert Euch {0} reparieren zu lassen.
 Scripts.Blacksmith.CantRepairThat:			So was kann ich nicht reparieren.
 Scripts.Blacksmith.GiveObject:				(Gebt einen Gegenstand aus Eurem Gepäck zum Reparieren.)
 Scripts.Blacksmith.InvalidItem:				Falscher Gegenstand.

@@ -1,2 +1,2 @@
-﻿Commands.GM.Invis.Description:			Rend invisible
+Commands.GM.Invis.Description:			Rend invisible
 Commands.GM.Invis.Usage:		/invis Rend invisible
