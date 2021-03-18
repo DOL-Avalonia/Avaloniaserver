@@ -1,4 +1,4 @@
-Commands.Players.Autosplit.Coins.Off:	Le chef de groupe a désactivé la répartition automatique des sacs d’or.
+﻿Commands.Players.Autosplit.Coins.Off:	Le chef de groupe a désactivé la répartition automatique des sacs d’or.
 Commands.Players.Autosplit.Coins.On:	Le chef de groupe a activé la répartition automatique des sacs d’or.
 Commands.Players.Autosplit.Coins:		Le chef de groupe a basculé
 Commands.Players.Autosplit.Description:	Définit la répartition des butins et des sacs d’or parmis les membres du groupe.

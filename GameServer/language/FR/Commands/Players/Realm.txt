@@ -1,4 +1,4 @@
-Commands.Players.Realm.AlbKeeps:		Forts Albionnais
+﻿Commands.Players.Realm.AlbKeeps:		Forts Albionnais
 Commands.Players.Realm.DarknessFalls:	Les Abysses
 Commands.Players.Realm.Description:		Affiche le status courant du royaume.
 Commands.Players.Realm.HibKeeps:		Forts Hiberniens

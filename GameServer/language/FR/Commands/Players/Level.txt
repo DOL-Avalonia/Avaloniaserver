@@ -1,4 +1,4 @@
-Commands.Players.Level.CantUseSlashLevel:	Vous ne possédez pas de niveau {0} sur votre compte.
+﻿Commands.Players.Level.CantUseSlashLevel:	Vous ne possédez pas de niveau {0} sur votre compte.
 Commands.Players.Level.Description:			Vous permet de monter niveau 20 instantannement, si vous avez un niveau 50.
 Commands.Players.Level.Disabled.Class:		Votre classe ne peut pas utiliser la commande /level.
 Commands.Players.Level.Disabled:			/level est désactivé sur ce serveur.

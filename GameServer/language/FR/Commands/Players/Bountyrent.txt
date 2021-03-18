@@ -1,4 +1,4 @@
-Commands.Players.Bountyrent.AlreadyMaxMoney:		This house already has the maximum amount of money placed in the lockbox!
+﻿Commands.Players.Bountyrent.AlreadyMaxMoney:		This house already has the maximum amount of money placed in the lockbox!
 Commands.Players.Bountyrent.CmdUsage:				1 bounty point currently converts to {0} copper. Use /bountyrent personal/guild <amount> to pay.
 Commands.Players.Bountyrent.CorrectFormat:			Correct format is /bountyrent personal | guild <amount>
 Commands.Players.Bountyrent.Description:			Pay house rent with bountypoints

@@ -1,4 +1,4 @@
-Commands.GM.GMAppeal.Description:			Commands for server staff to assist players with their Appeals.
+﻿Commands.GM.GMAppeal.Description:			Commands for server staff to assist players with their Appeals.
 Commands.GM.GMAppeal.Usage.View:			/gmappeal view <player name> - Views the appeal of a specific player.
 Commands.GM.GMAppeal.Usage.List:			/gmappeal list - Lists all the current Appeals from online players only, in a window.
 Commands.GM.GMAppeal.Usage.ListAll:			/gmappeal listall - Will list Appeals of both offline and online players, in a window.

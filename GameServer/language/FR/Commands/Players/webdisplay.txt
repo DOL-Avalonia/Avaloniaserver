@@ -1,4 +1,4 @@
-Commands.Players.Webdisplay.Craft.Off:		Vos compétences d’artisant ne sont pas affiché.
+﻿Commands.Players.Webdisplay.Craft.Off:		Vos compétences d’artisant ne sont pas affiché.
 Commands.Players.Webdisplay.Craft.On:		Vos compétences d’artisant sont affiché.
 Commands.Players.Webdisplay.Description:	Définit les information à afficher dans le « herald »
 Commands.Players.Webdisplay.Equipment.Off:	Votre équipement n’est pas affiché.

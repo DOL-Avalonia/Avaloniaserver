@@ -1,4 +1,4 @@
-Commands.Players.Duel.ChallengesYou:			{0} vous défie en duel! '/duel accept' pour accepter, '/duel decline' pour refuser.
+﻿Commands.Players.Duel.ChallengesYou:			{0} vous défie en duel! '/duel accept' pour accepter, '/duel decline' pour refuser.
 Commands.Players.Duel.ConsideringDuel:			Vous n'êtes pas défié·e en duel.
 Commands.Players.Duel.Description:				Lance un duel avec un autre joueur.
 Commands.Players.Duel.DuelOptions:				'/duel <challenge|decline|cancel|surrender|accept> # Option du duel

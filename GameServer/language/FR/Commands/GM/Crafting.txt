@@ -1,4 +1,4 @@
-Commands.GM.Crafting.AlreadyHaveSkill:		{0} possède déjà la compétence d’artisanat {1}.
+﻿Commands.GM.Crafting.AlreadyHaveSkill:		{0} possède déjà la compétence d’artisanat {1}.
 Commands.GM.Crafting.Description:			Change le niveau d’artisanat de votre cible.
 Commands.GM.Crafting.InvalidSkill:			Vous devez indiquer un identifiant d’une compétence d’artisanat valide. '/crafting' pour plus d’information sur la commande.
 Commands.GM.Crafting.NoPlayerTarget:		Vous devez sélectionner un joueur.

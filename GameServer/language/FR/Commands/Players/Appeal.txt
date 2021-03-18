@@ -1,4 +1,4 @@
-Commands.Players.Appeal.AlreadyActiveAppeal:	You already have an active appeal, please wait for server staff to address your appeal before submitting another.
+﻿Commands.Players.Appeal.AlreadyActiveAppeal:	You already have an active appeal, please wait for server staff to address your appeal before submitting another.
 Commands.Players.Appeal.AppealSubmitted:		Your appeal has been submitted successfully...  use /checkappeal to check the status of your appeal.
 Commands.Players.Appeal.BeingHelped:			That player is already being helped.
 Commands.Players.Appeal.CanceledYourAppeal:		You have canceled your appeal.

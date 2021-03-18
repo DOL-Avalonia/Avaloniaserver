@@ -1,4 +1,4 @@
-Commands.GM.KeepGuard.Create.GuardAdded:		Guarde ajouté !
+﻿Commands.GM.KeepGuard.Create.GuardAdded:		Guarde ajouté !
 Commands.GM.KeepGuard.Create.NoKCompTarget:		Vous devez cibler une composant de donjon pour créer une patrouille !
 Commands.GM.KeepGuard.Description:				Diverses commandes de guarde de donjon !
 Commands.GM.KeepGuard.Information:				Utilisez la commande '/mob' pour changer les autres paramêtres du guarde.

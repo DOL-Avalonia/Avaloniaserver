@@ -1,4 +1,4 @@
-Commands.Players.Range.Description:		Affiche la distance de la cible.
+﻿Commands.Players.Range.Description:		Affiche la distance de la cible.
 Commands.Players.Range.InvalidObject:	Cette commande fonctionne uniquement sur les objets.
 Commands.Players.Range.NeedTarget:		Distance de la cible : Vous n'avez pas une cible valide sélectionnée.
 Commands.Players.Range.NotVisible:		(Cible hors champ de vision)

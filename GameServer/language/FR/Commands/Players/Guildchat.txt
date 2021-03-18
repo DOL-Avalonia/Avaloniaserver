@@ -1,4 +1,4 @@
-Commands.Players.Asend.Description:			Envoi un message au canal d’alliance
+﻿Commands.Players.Asend.Description:			Envoi un message au canal d’alliance
 Commands.Players.Asend.Muted:				Vous avez été mis en sourdine. Impossible de parler.
 Commands.Players.Asend.NoAlliance:			Votre guilde n’appartient pas à une alliance
 Commands.Players.Asend.NoPermission:		Vous ne pouvez pas parler dans le canal de guilde.

@@ -1,2 +1,2 @@
-Commands.GM.Place.Description:	Commande pour les places assises
-Commands.GM.Place.Usage.Create:		'/place create' Pour créer une place assise
+ï»¿Commands.GM.Place.Description:	Commande pour les places assises
+Commands.GM.Place.Usage.Create:		'/place create' Pour crï¿½er une place assise

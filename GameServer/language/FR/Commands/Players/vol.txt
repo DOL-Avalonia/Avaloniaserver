@@ -1,4 +1,4 @@
-Commands.Players.Vol.Description:			Permet de voler un joueur
+﻿Commands.Players.Vol.Description:			Permet de voler un joueur
 Commands.Players.Vol.Usage: 				'/vol [joueur]'
 Commands.Players.Steal.Description:			Permet de voler un joueur
 Commands.Players.Steal.Usage: 				'/steal [player]'

@@ -1,4 +1,4 @@
-Commands.Players.Train.CantTrainSpec:	Vous ne pouvez pas vous entraîner sur cette spécialisation à ce niveau !
+﻿Commands.Players.Train.CantTrainSpec:	Vous ne pouvez pas vous entraîner sur cette spécialisation à ce niveau !
 Commands.Players.Train.Complete:		Entraînement terminé !
 Commands.Players.Train.Cost:			Cette spécialisation coûte {0} poînt de spécialisation !
 Commands.Players.Train.Description:		Entraîne une ligne de spécialisation par le nombre indiqué.

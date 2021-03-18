@@ -1,2 +1,2 @@
-Commands.Players.Hood.Description:	Pour mettre ou retirer votre capuche.
+﻿Commands.Players.Hood.Description:	Pour mettre ou retirer votre capuche.
 Commands.Players.Hood.Usage:		Usage : '/hood'

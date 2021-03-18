@@ -1,4 +1,4 @@
-Commands.GM.Keep.AddTeleport.StoneAdded:		Téléporteur ajouté!
+﻿Commands.GM.Keep.AddTeleport.StoneAdded:		Téléporteur ajouté!
 Commands.GM.Keep.BaseLevel.YouChangeBaseLev:	Vous changez le niveau de base du donjon actuel à {0}.
 Commands.GM.Keep.Description:					Diverses commandes de création de donjon.
 Commands.GM.Keep.FastCreate.CompCreated:		CompID={0}; KeepID={1}

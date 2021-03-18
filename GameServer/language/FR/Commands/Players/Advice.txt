@@ -1,4 +1,4 @@
-# /advice
+﻿# /advice
 Commands.Players.Advice.Advice:			[CONSEIL {0}] {1}: "{2}"
 Commands.Players.Advice.Advice.Online:	Il y a {0} conseiller·s en ligne!
 Commands.Players.Advice.Description1:	Les conseillers répondent par `/send`

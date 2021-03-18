@@ -1,2 +1,2 @@
-Commands.Players.Namemount.Description:	Pour nommer votre cheval.
+﻿Commands.Players.Namemount.Description:	Pour nommer votre cheval.
 Commands.Players.Namemount.Usage:		Usage : '/namemount'
