@@ -1004,6 +1004,54 @@ namespace DOL.GS.ServerProperties
         public static int HEAL_PVP_DAMAGE_VALUE_RP { get; set; }
 
         /// <summary>
+        /// The % value of gainrps when heal a players recently damaged in rvr.
+        /// </summary>
+        [ServerProperty("pve", "power_regeneration_0", "Power Regeneration for mob level 0-45", 5)]
+        public static short POWER_REGENERATION_0 { get; set; }
+
+        /// <summary>
+        /// The % value of gainrps when heal a players recently damaged in rvr.
+        /// </summary>
+        [ServerProperty("pve", "power_regeneration_45", "Power Regeneration for mob level 45-60", 7)]
+        public static short POWER_REGENERATION_45 { get; set; }
+
+        /// <summary>
+        /// The % value of gainrps when heal a players recently damaged in rvr.
+        /// </summary>
+        [ServerProperty("pve", "power_regeneration_60", "Power Regeneration for mob level 60-80", 9)]
+        public static short POWER_REGENERATION_60 { get; set; }
+
+        /// <summary>
+        /// The % value of gainrps when heal a players recently damaged in rvr.
+        /// </summary>
+        [ServerProperty("pve", "power_regeneration_80", "Power Regeneration for mob level 80+", 12)]
+        public static short POWER_REGENERATION_80 { get; set; }
+
+        /// <summary>
+        /// The % value of gainrps when heal a players recently damaged in rvr.
+        /// </summary>
+        [ServerProperty("pve", "power_regeneration_0_combat", "Power Regeneration for mob level 0-45 in combat", 2)]
+        public static short POWER_REGENERATION_0_COMBAT { get; set; }
+
+        /// <summary>
+        /// The % value of gainrps when heal a players recently damaged in rvr.
+        /// </summary>
+        [ServerProperty("pve", "power_regeneration_45_combat", "Power Regeneration for mob level 45-60 in combat", 3)]
+        public static short POWER_REGENERATION_45_COMBAT { get; set; }
+
+        /// <summary>
+        /// The % value of gainrps when heal a players recently damaged in rvr.
+        /// </summary>
+        [ServerProperty("pve", "power_regeneration_60_combat", "Power Regeneration for mob level 60-80 in combat", 5)]
+        public static short POWER_REGENERATION_60_COMBAT { get; set; }
+
+        /// <summary>
+        /// The % value of gainrps when heal a players recently damaged in rvr.
+        /// </summary>
+        [ServerProperty("pve", "power_regeneration_80_combat", "Power Regeneration for mob level 80+ in combat", 6)]
+        public static short POWER_REGENERATION_80_COMBAT { get; set; }
+
+        /// <summary>
         /// The highest possible Block Rate against an Enemy (Hard Cap)
         /// </summary>
         [ServerProperty("rates", "block_cap", "Block Rate Cap Modifier - Edit this to change the highest possible block rate against an enemy (Hard Cap) in game e.g .60 = 60%", 0.60)]

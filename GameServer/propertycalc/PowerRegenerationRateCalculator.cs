@@ -17,6 +17,8 @@
  *
  */
 
+using DOL.GS.ServerProperties;
+
 namespace DOL.GS.PropertyCalc
 {
     /// <summary>
@@ -41,15 +43,36 @@ namespace DOL.GS.PropertyCalc
 
             double regen = 5 + (living.Level / 2.75);
 
-            if (living is GameNPC && living.InCombat)
+            if (living is GameNPC)
             {
-                regen /= 2.0;
+                if(living.InCombat)
+                {
+                    if (living.Level < 45)
+                        regen = living.MaxMana * Properties.POWER_REGENERATION_0_COMBAT / 100;
+                    else if (living.Level < 60)
+                        regen = living.MaxMana * Properties.POWER_REGENERATION_45_COMBAT / 100;
+                    else if (living.Level < 80)
+                        regen = living.MaxMana * Properties.POWER_REGENERATION_60_COMBAT / 100;
+                    else 
+                        regen = living.MaxMana * Properties.POWER_REGENERATION_80_COMBAT / 100;
+                }
+                else
+                {
+                    if (living.Level < 45)
+                        regen = living.MaxMana * Properties.POWER_REGENERATION_0 / 100;
+                    else if (living.Level < 60)
+                        regen = living.MaxMana * Properties.POWER_REGENERATION_45 / 100;
+                    else if (living.Level < 80)
+                        regen = living.MaxMana * Properties.POWER_REGENERATION_60 / 100;
+                    else
+                        regen = living.MaxMana * Properties.POWER_REGENERATION_80 / 100;
+                }
             }
 
             // tolakram - there is no difference per tic between combat and non combat
-            if (regen != 0 && ServerProperties.Properties.MANA_REGEN_RATE != 1)
+            if (living is GamePlayer && regen != 0 && Properties.MANA_REGEN_RATE != 1)
             {
-                regen *= ServerProperties.Properties.MANA_REGEN_RATE;
+                regen *= Properties.MANA_REGEN_RATE;
             }
 
             double decimals = regen - (int)regen;

@@ -4259,41 +4259,42 @@ namespace DOL.GS
         /// Gets/sets the object health
         /// </summary>
         public override int Health
-		{
-			get
-			{
-				return base.Health;
-			}
-			set
-			{
-				base.Health = value;
-				//Slow mobs down when they are hurt!
-				short maxSpeed = MaxSpeed;
-				if (CurrentSpeed > maxSpeed)
-					CurrentSpeed = maxSpeed;
-			}
-		}
+        {
+            get
+            {
+                return base.Health;
+            }
+            set
+            {
+                base.Health = value;
+                //Slow mobs down when they are hurt!
+                short maxSpeed = MaxSpeed;
+                if (CurrentSpeed > maxSpeed)
+                    CurrentSpeed = maxSpeed;
+            }
+        }
 
-		/// <summary>
-		/// npcs can always have mana to cast
-		/// </summary>
-		public override int Mana
-		{
-			get { return 5000; }
-		}
+        protected override int PowerRegenerationTimerCallback(RegionTimer selfRegenerationTimer)
+        {
+            if (Mana < MaxMana)
+            {
+                ChangeMana(this, eManaChangeType.Regenerate, GetModified(eProperty.PowerRegenerationRate));
+            }
 
-		/// <summary>
-		/// The Max Mana for this NPC
-		/// </summary>
-		public override int MaxMana
-		{
-			get { return 1000; }
-		}
+            //If we are full, we stop the timer
+            if (Mana >= MaxMana)
+            {
+                return 0;
+            }
 
-		/// <summary>
-		/// Gets the concentration left
-		/// </summary>
-		public override int Concentration
+            //regen at standard rate
+            return PowerRegenerationPeriod;
+        }
+
+        /// <summary>
+        /// Gets the concentration left
+        /// </summary>
+        public override int Concentration
 		{
 			get { return MaxConcentration - ConcentrationEffects.UsedConcentration; }
 		}
