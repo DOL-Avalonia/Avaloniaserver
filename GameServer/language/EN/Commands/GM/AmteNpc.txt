@@ -1,3 +1,3 @@
-Commands.GM.AmteNpc.Description:	Gestion des param�tres sur les PNJ
-Commands.GM.AmteNpc.Usage.Info:		'/amtenpc info' Affiche les informations du mob s�lectionn�
-Commands.GM.AmteNpc.Usage.Param:		'/amtenpc param <id> <value>' Change la valeur d'un param�tre du mob s�lectionn
+Commands.GM.AmteNpc.Description:	NPC's parameters management:
+Commands.GM.AmteNpc.Usage.Info:		'/amtenpc info' Shows special infos of the selected mob.
+Commands.GM.AmteNpc.Usage.Param:		'/amtenpc param <id> <value>' Change the parameter's value of a selected mob.

@@ -1,2 +1,2 @@
 Commands.Players.RvRInfo.Description:	Avoir des informations sur le rvr
-Commands.Players.RvRInfo.Usage:			'/rvrinfo' Donne des informations � propos du rvr
+Commands.Players.RvRInfo.Usage:			'/rvrinfo' Donne des informations à propos du rvr

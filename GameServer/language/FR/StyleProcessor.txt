@@ -11,7 +11,7 @@ StyleProcessor.ExecuteStyle.StyleNamePerforateArtery:   Perfore Artère
 StyleProcessor.ExecuteStyle.ThroatStrike:      Vous infligez un coup critique à la gorge de votre cible.
 StyleProcessor.TryToUseStyle.AlreadyPreparing:      Vous êtes déjà en train de préparer cette attaquer ! Tapez '/cancelstyle' pour arrêter l'attaque en cours.
 StyleProcessor.TryToUseStyle.AlreadySelectedStyles:   Vous avez déjà choisi votre attaque pour ce tour !
-StyleProcessor.TryToUseStyle.BackupStyle:      Vous vous préparer maintenant à exécuter un {0} attaque à la place de {1} !
+StyleProcessor.TryToUseStyle.BackupStyle:      Vous vous préparez maintenant à exécuter un {0} attaque à la place de {1} !
 StyleProcessor.TryToUseStyle.CantCombatMode:      Vous ne pouvez pas entrer en mode combat tout en étant assis(e) !
 StyleProcessor.TryToUseStyle.CantMeleeCombat:      Vous ne pouvez pas entrer en combat de mêlée avec une arme à distance !
 StyleProcessor.TryToUseStyle.DualWielding:      Vous devez être en deux mains pour utiliser cette attaque !

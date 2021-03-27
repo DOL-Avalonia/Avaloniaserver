@@ -1,6 +1,6 @@
 GamePlayer.CastSpell.MustWaitBeforeCast:	Vous devez attendre {0} secondes pour lancer un sort !
 SpellHandler.DelveInfo.Sec:	sec
-SpellHandler.CasterMove:	Vous bougez et interromper votre sort !
+SpellHandler.CasterMove:	Vous bougez et interrompez votre sort !
 
 # DelveInfo
 DelveInfo.CastingTime:          Temps d'incantation : {0}
@@ -8,7 +8,7 @@ DelveInfo.ConcentrationCost:    Coûts en concentration : {0}
 DelveInfo.Damage:               Dommages : {0}
 DelveInfo.Duration:             Durée : 
 DelveInfo.Focus:                Sort de type Focus. S'annule à la première action.
-DelveInfo.Frequency:            Frequence : {0}
+DelveInfo.Frequency:            Fréquence : {0}
 DelveInfo.HealthReturned:       Vie retourné : {0}% des dommages
 DelveInfo.InstrumentRequire:    Instrument requis : {0}
 DelveInfo.PowerCost:            Coût en mana : {0}
@@ -35,10 +35,10 @@ CharmSpellHandler.DelveInfo.Function:			Fonction: {0}
 DamageAddAndShield.EventHandlerDA.DamageToYou:		{0} vous touche pour {1} points de dommage additionels!
 DamageAddAndShield.EventHandlerDA.YouHitExtra:		Vous touchez {0} pour {1} points de dommage additionels!
 DamageAddAndShield.EventHandlerDA.YouHitFor:		Vous touchez {0} pour {1} points de dommage additionels!
-DamageAddAndShield.EventHandlerDA.YourHitFor:		Votre {0} touche {1} pour {2} points de dommage additionels!
+DamageAddAndShield.EventHandlerDA.YourHitFor:		Votre {0} touche {1} pour {2} points de dommages additionels!
 DamageAddAndShield.EventHandlerDS.DamageToYou:		{0} vous touche pour {1} points de dommage additionels!
 DamageAddAndShield.EventHandlerDS.YouHitFor:		Vous touchez {0} pour {1} points de dommage additionels!
-DamageAddAndShield.EventHandlerDS.YourHitFor:		Votre {0} touche {1} pour {2} points de dommage additionels!
+DamageAddAndShield.EventHandlerDS.YourHitFor:		Votre {0} touche {1} pour {2} points de dommages additionels!
 
 # DirectDamageDebuffSpellHandler
 DirectDamageDebuffSpellHandler.DelveInfo.Decrease:	Diminution de résistance ({0}): {1}%
@@ -119,10 +119,10 @@ AblativeArmor.DelveInfo.Absorption3:			Absorption: 25%
 AblativeArmor.DelveInfo.CastingTime:			Instantanné
 
 # Petrify
-Petrify.Target.Absorbs:  Votre cible est pétrifiée et absorbe {0} domages.
+Petrify.Target.Absorbs:  Votre cible est pétrifiée et absorbe {0} dommages.
 Petrify.Target.Resist:    {0} est pétrifiée et est insensible à ce sort.
 Petrify.Self.Message:	La cilbe est pétrifiée.
-Petrify.Self.Absorb:		Vous êtes pétrifié(e) et absorbez {0} domages.
+Petrify.Self.Absorb:		Vous êtes pétrifié(e) et absorbez {0} dommages.
 Petrify.Self.Unpetrify:		Vous êtes libéré(e) de Petrify.
 
 # Damnation

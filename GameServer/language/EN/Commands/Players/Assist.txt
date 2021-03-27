@@ -1,11 +1,11 @@
-Commands.Players.Assist.Description:		Assiste une cible.
-Commands.Players.Assist.CantAssistYourself:	Vous ne pouvez pas vous assister vous-même.
-Commands.Players.Assist.DoesntHaveTarget:	{0} n'a pas de cible actuellement.
-Commands.Players.Assist.DontSee:			Vous ne voyez pas {0} aux alentours !
-Commands.Players.Assist.MemberNotFound:		Il n’y a personne avec ce nom dans les alentours.
-Commands.Players.Assist.NoRealmMember:		{0} n’est pas membre de votre royaume!
-Commands.Players.Assist.NoTarget:			Vous n'avez pas de cible.
-Commands.Players.Assist.NotValid:			La cible n'est pas valide.
-Commands.Players.Assist.SelectMember:		Vous devez sélectionner le membre de votre royaume que vous souhaitez assister.
+Commands.Players.Assist.Description:		Assist a target.
+Commands.Players.Assist.CantAssistYourself:	You cannot assist yourself.
+Commands.Players.Assist.DoesntHaveTarget:	{0} has currently no target.
+Commands.Players.Assist.DontSee:			You don't see {0} around!
+Commands.Players.Assist.MemberNotFound:		There is nobody with that name around.
+Commands.Players.Assist.NoRealmMember:		{0} is not a member of your realm!
+Commands.Players.Assist.NoTarget:			You don't have any target.
+Commands.Players.Assist.NotValid:			The target is not valid.
+Commands.Players.Assist.SelectMember:		You must select the member of your realm you wish to assist.
 Commands.Players.Assist.Usage:				Usage : '/assist <playerName>'
-Commands.Players.Assist.YouAssist:			Vous assistez {0}.
+Commands.Players.Assist.YouAssist:			You assist {0}.

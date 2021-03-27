@@ -1,5 +1,5 @@
-Commands.GM.Boat.Description:	Boat Commands
-Commands.GM.Boat.Usage.Info:		/amteboat info - affiche les infos du GameBoatAmte cibl�
-Commands.GM.Boat.Usage.Create:	/amteboat create [model] - cr�� un GameBoatAmte
-Commands.GM.Boat.Usage.Speed:	/amteboat speed <newspeed> - change la vitesse du mob pour le trajet
-Commands.GM.Boat.Usage.Path:		/amteboat path <path name> - change le nom du trajet que le mob doit suivre
+Commands.GM.Boat.Description:	Commandes pour la création de bateaux:
+Commands.GM.Boat.Usage.Info:		/amteboat info - Affiche les infos du GameBoatAmte ciblé
+Commands.GM.Boat.Usage.Create:	/amteboat create [model] - Crée un GameBoatAmte
+Commands.GM.Boat.Usage.Speed:	/amteboat speed <newspeed> - Change la vitesse du mob pour le trajet
+Commands.GM.Boat.Usage.Path:		/amteboat path <path name> - Change le nom du trajet que le mob doit suivre

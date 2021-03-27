@@ -1,11 +1,11 @@
-Commands.GM.AreaEffect.Description:		Gestion d'AreaEffect
-Commands.GM.AreaEffect.Usage.Create:		'/areaeffect create <radius> <ID de l'effet>'
-Commands.GM.AreaEffect.Usage.HealHarm:		'/areaeffect <heal/harm> <valeur>'
-Commands.GM.AreaEffect.Usage.Mana:			'/areaeffect <mana> <valeur>'
-Commands.GM.AreaEffect.Usage.Endurance:	'/areaeffect <endurance> <valeur>'
-Commands.GM.AreaEffect.Usage.Radius:		'/areaeffect radius <newRadius>'
-Commands.GM.AreaEffect.Usage.Effect:		'/areaeffect effect <newEffect>'
-Commands.GM.AreaEffect.Usage.Interval:		'/areaeffect interval <min> [max]'
-Commands.GM.AreaEffect.Usage.MissChance:	'/areaeffect missChance <chance %>'
-Commands.GM.AreaEffect.Usage.Message:		'/areaeffect message <message>' {0} = les points de vie ajout�/retir�, {1} = mana ajout�/retir�, {2} = endu ajout�/retir�.
-Commands.GM.AreaEffect.Usage.Info:			'/areaeffect info' Donne les informations sur l'areaeffect s�lectionn
+Commands.GM.AreaEffect.Description:		Areaeffects management:
+Commands.GM.AreaEffect.Usage.Create:		'/areaeffect create <radius> <ID of the effect>' Create an Areaeffect with specified radius and ClientEffectID
+Commands.GM.AreaEffect.Usage.HealHarm:		'/areaeffect <heal/harm> <value>' Configure heal/harm value per tick of an areaeffect
+Commands.GM.AreaEffect.Usage.Mana:			'/areaeffect <mana> <value>' Configure mana addition/removal value per tick of an areaeffect
+Commands.GM.AreaEffect.Usage.Endurance:	'/areaeffect <endurance> <value>' Configure endurance addition/removal value per tick of an areaeffect
+Commands.GM.AreaEffect.Usage.Radius:		'/areaeffect radius <newRadius>' To change the radius of an areaeffect
+Commands.GM.AreaEffect.Usage.Effect:		'/areaeffect effect <newEffect>' To change the ClientEffectID of an areaeffect
+Commands.GM.AreaEffect.Usage.Interval:		'/areaeffect interval <min> [max]' To change the tick interval of an areaeffect with MIN value and MAX value
+Commands.GM.AreaEffect.Usage.MissChance:	'/areaeffect missChance <chance %>' To add a MISS chance to an areaeffect
+Commands.GM.AreaEffect.Usage.Message:		'/areaeffect message <message>' {0} = HP points have increased/decreased, {1} = mana has increased/decreased, {2} = endurance has increased/decreased.
+Commands.GM.AreaEffect.Usage.Info:			'/areaeffect info' Gives informations about the selected Areaeffect.

@@ -1,5 +1,5 @@
-Commands.Players.Advisor.Description:	Bascule le status de conseiller.
-Commands.Players.Advisor.Muted:			Vous êtes muet et ne pouvez pas parler sur ce canal.
-Commands.Players.Advisor.Off:			Vous ne recevrez désormais plus de message du canal conseil.
-Commands.Players.Advisor.On:			Vous recevrez désormais des messages du canal conseil.
+Commands.Players.Advisor.Description:	Toggles advisor status.
+Commands.Players.Advisor.Muted:			You are muted and you cannot talk on this channel.
+Commands.Players.Advisor.Off:			You will no longer receive messages from the advisor channel.
+Commands.Players.Advisor.On:			You will now receive messages from the advisor channel.
 Commands.Players.Advisor.Usage:			Usage : '/advisor'

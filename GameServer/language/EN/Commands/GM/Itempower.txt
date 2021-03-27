@@ -1,2 +1,2 @@
-Commands.GM.Itempower.Description:	Donne des informations sur la puissance des items
-Commands.GM.Itempower.Usage:		'/itempower [slot]' Affiche les informations de l'item
+Commands.GM.Itempower.Description:	Gives informations related to the power of items
+Commands.GM.Itempower.Usage:		'/itempower [slot]' Displays informations related to the item's bonuses
