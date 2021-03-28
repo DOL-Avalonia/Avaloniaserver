@@ -4,6 +4,8 @@ using DOL.Events;
 using DOL.GameEvents;
 using DOL.GS;
 using DOL.GS.PacketHandler;
+using DOL.GS.ServerProperties;
+using DOL.Language;
 using DOL.MobGroups;
 using DOLDatabase.Tables;
 using log4net;
@@ -13,6 +15,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using static DOL.GS.Area;
 using static DOL.GS.GameObject;
 
@@ -27,6 +30,7 @@ namespace DOL.Territory
         private static readonly int DAILY_TAX = GS.ServerProperties.Properties.DAILY_TAX;
         private static readonly int TERRITORY_BANNER_PERCENT_OFF = GS.ServerProperties.Properties.TERRITORY_BANNER_PERCENT_OFF;
         private static readonly int DAILY_MERIT_POINTS = GS.ServerProperties.Properties.DAILY_MERIT_POINTS;
+        private static Dictionary<Timer, Territory> m_TerritoriesAttacked;
 
         public static TerritoryManager Instance => instance ?? (instance = new TerritoryManager());
 
@@ -37,7 +41,8 @@ namespace DOL.Territory
 
         private TerritoryManager()
         {
-            this.Territories = new List<Territory>();
+            Territories = new List<Territory>();
+            m_TerritoriesAttacked = new Dictionary<Timer, Territory>();
         }
 
         public bool Init()
@@ -45,6 +50,25 @@ namespace DOL.Territory
             return true;
         }
 
+        public void TerritoryAttacked(Territory territory)
+        {
+            if(!m_TerritoriesAttacked.ContainsValue(territory))
+            {
+                Timer timer = new Timer(20000);
+                timer.Elapsed += TerritoryAttackedCallback;
+                timer.Enabled = true;
+                m_TerritoriesAttacked.Add(timer, territory);
+                GuildMgr.GetGuildByName(territory.GuildOwner).SendMessageToGuildMembersKey("TerritoryManager.Territory.Attacked", eChatType.CT_YouWereHit, eChatLoc.CL_SystemWindow, territory.Name);
+            }
+        }
+
+        private void TerritoryAttackedCallback(object sender, ElapsedEventArgs e)
+        {
+            Timer timer = sender as Timer;
+            timer.Stop();
+            timer.Dispose();
+            m_TerritoriesAttacked.Remove(timer);
+        }
 
         [GameEventLoaded]
         public static void LoadTerritories(DOLEvent e, object sender, EventArgs arguments)

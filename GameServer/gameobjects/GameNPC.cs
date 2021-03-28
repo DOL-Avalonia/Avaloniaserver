@@ -4250,8 +4250,15 @@ namespace DOL.GS
 
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
-            if(source is GameLiving living && damageAmount > 0)
-                FireAmbientSentence(eAmbientTrigger.hurting, living);
+            if(source is GameLiving living)
+            {
+                Territory.Territory currentTerritory = TerritoryManager.Instance.GetCurrentTerritory(living.CurrentAreas);
+                if (currentTerritory != null && currentTerritory.GuildOwner == GuildName && ((living is GamePlayer player && player.GuildName != GuildName) || (living.ControlledBrain != null && living.ControlledBrain.Owner.GuildName != GuildName)))
+                    TerritoryManager.Instance.TerritoryAttacked(currentTerritory);
+                
+                if(damageAmount > 0)
+                    FireAmbientSentence(eAmbientTrigger.hurting, living);
+            }
             base.TakeDamage(source, damageType, damageAmount, criticalAmount);
         }
 

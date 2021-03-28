@@ -979,12 +979,33 @@ namespace DOL.GS
 			}
 		}
 
-		/// <summary>
-		/// Called when this guild loose bounty points
-		/// returns true if BPs were reduced and false if BPs are smaller than param amount
-		/// if false is returned, no BPs were removed.
+        /// <summary>
+		/// Sends a message to all guild members with key to translate
 		/// </summary>
-		public virtual bool RemoveBountyPoints(long amount)
+		/// <param name="msg">message string</param>
+		/// <param name="type">message type</param>
+		/// <param name="loc">message location</param>
+		public void SendMessageToGuildMembersKey(string msg, eChatType type, eChatLoc loc, params object[] args)
+        {
+            lock (m_onlineGuildPlayers)
+            {
+                foreach (GamePlayer pl in m_onlineGuildPlayers.Values)
+                {
+                    if (!HasRank(pl, Guild.eRank.GcHear))
+                    {
+                        continue;
+                    }
+                    pl.Out.SendMessage(LanguageMgr.GetTranslation(pl.Client.Account.Language, msg, args), type, loc);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Called when this guild loose bounty points
+        /// returns true if BPs were reduced and false if BPs are smaller than param amount
+        /// if false is returned, no BPs were removed.
+        /// </summary>
+        public virtual bool RemoveBountyPoints(long amount)
 		{
 			if (amount > m_DBguild.BountyPoints)
 				return false;
