@@ -3,6 +3,7 @@ using DOL.events.server;
 using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
+using DOL.GS.ServerProperties;
 using DOL.MobGroups;
 using DOLDatabase.Tables;
 using log4net;
@@ -647,7 +648,7 @@ namespace DOL.GameEvents
 
             if (e.DebutText != null && e.EventZones?.Any() == true)
             {                
-                NotifyPlayersInEventZones(e.AnnonceType, e.DebutText, e.EventZones);              
+                SendEventNotification(e, e.DebutText);
             }
 
             if (e.HasHandomText)
@@ -724,6 +725,16 @@ namespace DOL.GameEvents
             }
         }
 
+        private void SendEventNotification(GameEvent e, string message)
+        {
+            NotifyPlayersInEventZones(e.AnnonceType, message, e.EventZones);
+            if (e.Discord == 2 || e.Discord == 3)
+            {
+                var hook = new DolWebHook(Properties.DISCORD_WEBHOOK_ID);
+                hook.SendMessage(message);
+            }
+        }
+
         public async Task StopEvent(GameEvent e, EndingConditionType end)
         {
             e.EndTime = DateTimeOffset.UtcNow;
@@ -751,7 +762,56 @@ namespace DOL.GameEvents
 
             if (e.EndText != null && e.EventZones?.Any() == true)
             {
-                NotifyPlayersInEventZones(e.AnnonceType, e.EndText, e.EventZones);
+                string message = e.EndText;
+                if (message.Contains("<guilde>"))
+                {
+                    if (e.Owner != null && e.Owner.Guild != null)
+                    {
+                        message = message.Replace("<guilde>", e.Owner.GuildName);
+                        SendEventNotification(e, message);
+                    }         
+                }
+                else if (message.Contains("<player>"))
+                {
+                    if (e.Owner != null)
+                    {
+                        message = message.Replace("<player>", e.Owner.Name);
+                        SendEventNotification(e, message);
+
+                    }
+                }
+                else if (message.Contains("<group>"))
+                {
+                    if (e.Owner != null && e.Owner.Group != null)
+                    {
+                        message = message.Replace("<group>", e.Owner.Group.Leader.Name);
+                        SendEventNotification(e, message);
+
+                    }
+                } 
+                else if (message.Contains("<race>"))
+                {
+                    if (e.Owner != null)
+                    {
+                        message = message.Replace("<race>", e.Owner.RaceName);
+                        SendEventNotification(e, message);
+
+                    }
+                }
+                else if (message.Contains("<class>"))
+                {
+                    if (e.Owner != null)
+                    {
+                        message = message.Replace("<class>", e.Owner.CharacterClass.Name);
+                        SendEventNotification(e, message);
+
+                    }
+                }
+                else
+                {
+                    SendEventNotification(e, message);
+
+                }
                 //Enjoy the message
                 await Task.Delay(TimeSpan.FromSeconds(5));
             }

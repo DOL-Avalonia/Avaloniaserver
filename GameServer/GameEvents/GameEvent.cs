@@ -15,6 +15,7 @@ namespace DOL.GameEvents
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private object _db;
+        private GamePlayer owner;
 
         public Timer RandomTextTimer { get; }
         public Timer RemainingTimeTimer { get; }
@@ -68,6 +69,7 @@ namespace DOL.GameEvents
             Status = Enum.TryParse(db.Status.ToString(), out EventStatus stat) ? stat : EventStatus.NotOver;
             ChanceLastTimeChecked = db.ChanceLastTimeChecked > 0 ? DateTimeOffset.FromUnixTimeSeconds(db.ChanceLastTimeChecked) : (DateTimeOffset?)null;
             AnnonceType = Enum.TryParse(db.AnnonceType.ToString(), out AnnonceType a) ? a : AnnonceType.Center;
+            Discord = db.Discord;
 
             //Handle invalid ChronoType
             if (TimerType == TimerType.ChronoType && ChronoTime <= 0)
@@ -243,6 +245,12 @@ namespace DOL.GameEvents
             set;
         }
 
+        public int Discord
+        {
+            get;
+            set;
+        }
+
         public int WantedMobsCount 
         {
             get;
@@ -344,6 +352,7 @@ namespace DOL.GameEvents
         {
             get;
         }
+        public GamePlayer Owner { get => owner; set => owner = value; }
 
         public void Clean()
         {
@@ -398,6 +407,7 @@ namespace DOL.GameEvents
             db.ResetEventId = ResetEventId;
             db.ChanceLastTimeChecked = ChanceLastTimeChecked.HasValue ? ChanceLastTimeChecked.Value.ToUnixTimeSeconds() : 0;
             db.AnnonceType = (byte)AnnonceType;
+            db.Discord = Discord;
 
             if (ID == null)
             {

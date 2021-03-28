@@ -4437,7 +4437,13 @@ namespace DOL.GS
 
 						if (ev.WantedMobsCount == 0)
 						{
-							isStoppingEvent = true;
+                            GamePlayer player = killer as GamePlayer;
+                            GamePlayer controller = null;
+                            if(killer is GameLiving living && living.ControlledBrain != null && living.ControlledBrain.Owner is GamePlayer)
+                                controller = living.ControlledBrain.Owner as GamePlayer;
+                            if (player != null || controller != null)
+                                ev.Owner = player ?? controller;
+                            isStoppingEvent = true;
 							Task.Run(() => GameEventManager.Instance.StopEvent(ev, EndingConditionType.Kill));
 						}
 					}			

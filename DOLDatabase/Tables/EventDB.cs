@@ -36,6 +36,7 @@ namespace DOLDatabase.Tables
         private string m_resetEventId;
         private long m_chanceLastTimeChecked;
         private byte m_AnnonceType;
+        private int m_Discord;
 
         [DataElement(AllowDbNull = false, Varchar = 255)]
         public string EventName
@@ -473,6 +474,19 @@ namespace DOLDatabase.Tables
             }
         }
 
+        [DataElement(AllowDbNull = false)]
+        public int Discord
+        {
+            get
+            {
+                return m_Discord;
+            }
 
+            set
+            {
+                m_Discord = value;
+                Dirty = true;
+            }
+        }
     }
 }
