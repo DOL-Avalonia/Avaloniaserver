@@ -15295,6 +15295,7 @@ namespace DOL.GS
 
             set
             {
+                int oldValue = m_reputation;
 				bool changed = m_reputation != value;
 				m_reputation = value;
 
@@ -15313,6 +15314,11 @@ namespace DOL.GS
 
 				if (Properties.IS_REPUTATION_RECOVERY_ACTIVATED && m_reputation < 0 && OutlawTimeStamp == 0)
                 {
+                    if(oldValue >= 0)
+                    {
+                        var hook = new DolWebHook(Properties.DISCORD_WEBHOOK_ID);
+                        hook.SendMessage(Name + " is now wanted for his crimes and his felony") ;
+                    }
 					OutlawTimeStamp = DateTimeOffset.Now.ToUnixTimeSeconds();
 					this.ConfigureReputationTimer();
                 }
