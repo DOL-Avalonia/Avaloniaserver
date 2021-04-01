@@ -1760,7 +1760,7 @@ namespace DOL.GS.Commands
 										}
 
 										player.Guild.RemoveMeritPoints(Properties.GUILD_BANNER_MERIT_PRICE);
-										TerritoryManager.ApplyEmblemToTerritory(territory, player.Guild);
+										TerritoryManager.ApplyEmblemToTerritory(territory, player.Guild, true);
 									}
 								});
 							}

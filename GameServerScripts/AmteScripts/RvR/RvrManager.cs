@@ -123,7 +123,7 @@ namespace AmteScripts.Managers
 
             if (territory != null && territory.RvRTerritory != null)
             {
-                TerritoryManager.ApplyEmblemToTerritory(territory.RvRTerritory, guild, territory.RvRTerritory.Boss);
+                TerritoryManager.ApplyEmblemToTerritory(territory.RvRTerritory, guild, true, territory.RvRTerritory.Boss);
                 territory.RvRTerritory.Mobs.ForEach(m => 
                 {
                     m.GuildName = guild.Name;

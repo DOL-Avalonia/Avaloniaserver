@@ -441,7 +441,7 @@ namespace DOL.GS
 				{
 					var territory = TerritoryManager.Instance.Territories.FirstOrDefault(t => t.AreaId.Equals(area));
 					
-					if (territory != null)
+					if (territory != null && string.IsNullOrEmpty(territory.GuildOwner))
 					{
 						TerritoryManager.Instance.ChangeGuildOwner(this, territory);
 					}					

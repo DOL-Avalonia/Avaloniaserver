@@ -16,7 +16,7 @@ namespace DOL.Territory
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private string id;
 
-        public Territory(IArea area, string areaId, ushort regionId, ushort zoneId, string groupId, GameNPC boss, string bonus = null, string id = null)
+        public Territory(IArea area, string areaId, ushort regionId, ushort zoneId, string groupId, GameNPC boss, bool IsBannerSummoned, string guild = null, string bonus = null, string id = null)
         {
             this.id = id;
             this.Area = area;
@@ -35,6 +35,8 @@ namespace DOL.Territory
             this.SetBossAndMobsInEventInTerritory();
             this.SaveOriginalGuilds();
             this.LoadBonus(bonus);
+            this.IsBannerSummoned = IsBannerSummoned;
+            GuildOwner = guild;
         }      
 
         /// <summary>
@@ -266,6 +268,7 @@ namespace DOL.Territory
                 " Bonus: " + (this.Bonus?.Any() == true ? (string.Join(" | ", this.Bonus.Select(b => b.ToString()))) : "-"), 
                 "",
                 " Mobs -- Count( " + this.Mobs.Count() + " )",
+                " Is Banner Summoned: " + this.IsBannerSummoned,
                 "",
                  string.Join("\n", this.Mobs.Select(m => " * Name: " + m.Name + " |  Id: " + m.InternalID))
             }; 
@@ -298,6 +301,7 @@ namespace DOL.Territory
                 db.RegionId = this.RegionId;
                 db.ZoneId = this.ZoneId;
                 db.Bonus = this.SaveBonus();
+                db.IsBannerSummoned = this.IsBannerSummoned;
 
                 if (isNew)
                 {

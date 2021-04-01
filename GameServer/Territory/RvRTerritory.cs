@@ -11,7 +11,7 @@ namespace DOL.Territory
         : Territory
     {
         public RvRTerritory(IArea area, string areaId, ushort regionId, ushort zoneId, GameNPC boss)
-            : base(area, areaId, regionId, zoneId, null, boss)
+            : base(area, areaId, regionId, zoneId, null, boss, false)
         {
             //add new area to region
             //only in memory
