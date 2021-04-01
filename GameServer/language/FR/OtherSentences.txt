@@ -10,7 +10,7 @@ System.LanguagesName.CZ:			    Czech
 
 # SYSTEM
 System.NoSense:									Cela n'aurait aucun sens !
-System.MustSelectTarget:						Vous devez selectionner une cible !
+System.MustSelectTarget:						Vous devez sélectionner une cible !
 System.ReleaseTimer:							Délai de résurrection
 
 

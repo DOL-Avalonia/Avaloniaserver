@@ -1,29 +1,29 @@
-Commands.Players.Vol.Description:			Permet de voler un joueur
-Commands.Players.Vol.Usage: 				'/vol [joueur]'
-Commands.Players.Steal.Description:			Permet de voler un joueur
+Commands.Players.Vol.Description:			Let's steal a player!
+Commands.Players.Vol.Usage: 				'/vol [player]'
+Commands.Players.Steal.Description:			Let's steal a player!
 Commands.Players.Steal.Usage: 				'/steal [player]'
-Commands.Players.Vol.Move: 					Votre vol a échoué car vous avez bougé !
-Commands.Players.Vol.UnknownCommand: 		Cette commande n'existe pas.
-Commands.Players.Vol.Area: 					Vous ne pouvez pas voler ici...
-Commands.Players.Vol.Distance: 				Vous etes trop loin de la cible pour la voler !
-Commands.Players.Vol.Hypnotized: 			Vous ne pouvez voler étant hypnotisé !
-Commands.Players.Vol.Stunned:				Vous ne pouvez voler étant assomé !
-Commands.Players.Vol.AFK:					Vous ne pouvez voler lorsque vous êtes afk ! Tapez /afk pour le désactiver.
-Commands.Players.Vol.Dead:					Vous ne pouvez voler étant mort !
-Commands.Players.Vol.AlreadyStealing:		Vous êtes déjà en train de voler quelqu'un !
-Commands.Players.Vol.TargetAFK: 			Vous ne pouvez pas voler un joueur afk !
-Commands.Players.Vol.Time: 					Vous devez attendre {0} secondes avant de pouvoir voler à nouveau !
-Commands.Players.Vol.Steal: 				Vous commencez à voler {0}
-Commands.Players.Vol.StealWindow: 			Vous êtes actuellement en train de voler {0}
-Commands.Players.Vol.CantSteal: 			Vous ne pouvez volez ce personnage !
-Commands.Players.Vol.StealSleeping: 		Vous perdez 1 point de réputation pour avoir tenté de voler un joueur endormi.
-Commands.Players.Vol.StealSleapingPartner:	Vous perdez 1 point de réputation pour avoir contribué à un vol en endormant un joueur.
-Commands.Players.Vol.Fail:					Vous n'avez pas réussi à voler ce personnage !
-Commands.Players.Vol.LostRep:				Vous perdez 1 point de réputation pour avoir tenté de voler un joueur.
-Commands.Players.Vol.BeStealed:				Vous venez d'etre dérobé de {0}
-Commands.Players.Vol.StealGain: 			Vous venez de voler la somme de {0}
-Commands.Players.Vol.FullInventory: 		Votre inventaire est plein, il va etre difficle de voler quelque chose
-Commands.Players.Vol.NothingToSteal: 		Il n'y avait rien a voler !
-Commands.Players.Vol.FullBag: 				Vous avez vos sacs pleins, impossible de voler quoi que ce soit !
-Commands.Players.Vol.StealItem: 			Vous avez volé {0} à {1} !
-Commands.Players.Vol.BeStealedItem: 		{0} vous a volé {1} !
+Commands.Players.Vol.Move: 					Your attempted theft failed because you moved!
+Commands.Players.Vol.UnknownCommand: 		This command does not exist.
+Commands.Players.Vol.Area: 					You cannot steal here...
+Commands.Players.Vol.Distance: 				You are too far from the target to steal it!
+Commands.Players.Vol.Hypnotized: 			You cannot steal while being mesmerized!
+Commands.Players.Vol.Stunned:				You cannot steal while being stunned!
+Commands.Players.Vol.AFK:					You cannot steal while being afk ! Type /afk to disable it.
+Commands.Players.Vol.Dead:					You cannot steal once dead!
+Commands.Players.Vol.AlreadyStealing:		You are already stealing someone!
+Commands.Players.Vol.TargetAFK: 			You cannot steal a player who is afk!
+Commands.Players.Vol.Time: 					You must wait {0} seconds to be able to steal again!
+Commands.Players.Vol.Steal: 				You start a theft attempt {0}
+Commands.Players.Vol.StealWindow: 			You are currently stealing {0}
+Commands.Players.Vol.CantSteal: 			You cannot steal this player!
+Commands.Players.Vol.StealSleeping: 		You lose 1 reputation point for trying to steal a sleeping player.
+Commands.Players.Vol.StealSleapingPartner:	You lose 1 reputation point for contributing to a theft while mesmerizing a player.
+Commands.Players.Vol.Fail:					Your theft attempt has failed on this player!
+Commands.Players.Vol.LostRep:				You lose 1 reputation point for trying to steal a player.
+Commands.Players.Vol.BeStealed:				You have just been stolen from {0}
+Commands.Players.Vol.StealGain: 			You just stole the amount of {0}
+Commands.Players.Vol.FullInventory: 		Your inventory is full, it will be challenging to steal something.
+Commands.Players.Vol.NothingToSteal: 		There is nothing to steal on this player!
+Commands.Players.Vol.FullBag: 				Your bags are full, you can't steal anything!
+Commands.Players.Vol.StealItem: 			You just stole {0} to {1}!
+Commands.Players.Vol.BeStealedItem: 		{0} stole you {1}!

@@ -1,4 +1,4 @@
-Commands.Players.Noqueue.Description:	Vous permet d’activer ou de désactiver la file d’attente.
-Commands.Players.Noqueue.Off:			Vous n’utilisez plus votre file d’attente ! Pour la réactiver, utilisez '/noqueue'.
-Commands.Players.Noqueue.On:			Vous utilisez maintenant votre file d’attente ! Pour la désactiver, utilisez '/noqueue'
+Commands.Players.Noqueue.Description:	Allows you to activate or deactivate the queue.
+Commands.Players.Noqueue.Off:			You are no longer using your queue! To reactivate it, use '/noqueue'.
+Commands.Players.Noqueue.On:			You are now using your queue! To deactivate it, use '/noqueue'
 Commands.Players.Noqueue.Usage:			Usage : '/noqueue'

@@ -1,4 +1,4 @@
-Commands.Players.Time.Description:	Heure dans le jeu.
-Commands.Players.Time.Print:		Il est {0}:{1}:{2}{3}
-Commands.Players.Time.Usage.Admin:	Utilisation Admin : '/time <vitesse> <Heure>' # Vitesse : 24 est normal, un nombre plus haut accèlère la journée. Heure : [1 - 1000] - Réinitialise les jours avec une nouvelle durée en commencant par l’heure indiqué.
+Commands.Players.Time.Description:	Time in the game.
+Commands.Players.Time.Print:		It is {0}:{1}:{2}{3}
+Commands.Players.Time.Usage.Admin:	Usage Admin : '/time <Speed> <Hour>' # Speed : 24 is normal, a higher value speeds up the day. Hour : [1 - 1000] - Resets the days with a new duration starting with the indicated time.
 Commands.Players.Time.Usage:		Usage : '/time'

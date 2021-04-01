@@ -1,7 +1,7 @@
-Commands.Players.Roll.Description:	Simule un lancer de dés.
-Commands.Players.Roll.Help:			Vous devez indiquer le nombre de dés à lancer.
-Commands.Players.Roll.Result.Other:	{0} lance {1} dé·s. Il en résulte : {2}
-Commands.Players.Roll.Result.Self:	Vous lancez {0} dé·s. Il en résulte : {1}
-Commands.Players.Roll.SlowDown:		Doucement!
-Commands.Players.Roll.Usage:		Usage : '/roll [#]' # Pour jeter un nombre spécifique de dés.
-Commands.Players.Roll.WrongNumber:	Vous devez sélectionner un nombre de dés entre 1 et {0}!
+Commands.Players.Roll.Description:	Simulates a dice roll.
+Commands.Players.Roll.Help:			You must indicate the number of dices to roll.
+Commands.Players.Roll.Result.Other:	{0} rolls {1} dice·s. Result : {2}
+Commands.Players.Roll.Result.Self:	You roll {0} dice·s. Result : {1}
+Commands.Players.Roll.SlowDown:		Slowly!
+Commands.Players.Roll.Usage:		Usage : '/roll [#]' # To roll a specific number of dices.
+Commands.Players.Roll.WrongNumber:	You must select a number of dice between 1 and {0}!

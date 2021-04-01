@@ -1,8 +1,8 @@
 #Game Event
-Commands.Players.Event.Description:          Information sur les Events en cours
-Commands.Players.Event.EventStarted:         L'evenement avec l'id {0} a été lancé 
-Commands.Players.Event.EventNotFound:        L'évenement avec l'id {0} n'a pas été trouvés
-Commands.Players.Event.EventAlreadyStarted:  L'évenement avec l'id {0} a déja démarré. Vous pouvez forcez le reset à la place
-Commands.Players.Event.ItemAdded:            {0} a été ajouté avec succés à l'event {1}
-Commands.Players.Event.ItemNotFound:         L'item avec l'id {0} n'a pas été trouvé
-Commands.Players.Event.ItemModified:         L'item Name: {0} a bien été modifié
+Commands.Players.Event.Description:          Informations regarding current events:
+Commands.Players.Event.EventStarted:         The event with id {0} has started 
+Commands.Players.Event.EventNotFound:        The event with id {0} was not found
+Commands.Players.Event.EventAlreadyStarted:  The event with id {0} has already started. You can force it to reset instead
+Commands.Players.Event.ItemAdded:            {0} has been successfully added to the event {1}
+Commands.Players.Event.ItemNotFound:         Item with id {0} was not found
+Commands.Players.Event.ItemModified:         Item with name: {0} has been successfully modified

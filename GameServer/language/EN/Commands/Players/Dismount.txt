@@ -1,5 +1,5 @@
 # /Dismount
 Commands.Players.Dismount:				
-Commands.Players.Dismount.Description:	Descendez de votre monture
-Commands.Players.Dismount.NotRiding:	Vous n'êtes pas à cheval.
-Commands.Players.Dismount.Usage:		Usage : '/dismount' # Lorsque vous êtes à cheval.
+Commands.Players.Dismount.Description:	Getting off your mount.
+Commands.Players.Dismount.NotRiding:	You are not on your mount.
+Commands.Players.Dismount.Usage:		Usage : '/dismount' # Once you are on your mount.

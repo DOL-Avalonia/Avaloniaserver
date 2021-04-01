@@ -17,4 +17,4 @@ System.LanguagesName.CZ:					Tchèque
 System.LanguagesName.IT:					Italien 
 
 
-PlayerPickUpRequestHandler.HandlePacket.Target:		Vous devez avoir une cible valide a ramassé.
+PlayerPickUpRequestHandler.HandlePacket.Target:		Vous devez avoir une cible valide à ramasser.

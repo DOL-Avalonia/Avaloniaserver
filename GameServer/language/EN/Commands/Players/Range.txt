@@ -1,6 +1,6 @@
-Commands.Players.Range.Description:		Affiche la distance de la cible.
-Commands.Players.Range.InvalidObject:	Cette commande fonctionne uniquement sur les objets.
-Commands.Players.Range.NeedTarget:		Distance de la cible : Vous n'avez pas une cible valide sélectionnée.
-Commands.Players.Range.NotVisible:		(Cible hors champ de vision)
-Commands.Players.Range.Result:			Distance de la cible : {0} unités. {1}
+Commands.Players.Range.Description:		Displays distance to target.
+Commands.Players.Range.InvalidObject:	This command only works on objects.
+Commands.Players.Range.NeedTarget:		Target Distance: You did not select a valid target.
+Commands.Players.Range.NotVisible:		(Target out of sight)
+Commands.Players.Range.Result:			Distance to the target : {0} units. {1}
 Commands.Players.Range.Usage:			Usage : '/range'

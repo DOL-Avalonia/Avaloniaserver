@@ -1,7 +1,7 @@
-Commands.Players.Random.Description:	Tire au sort un numéro aléatoire entre 1 et le nombre spécifié.
-Commands.Players.Random.Help:			Vous devez sélectionner un nombre maximum pour pouvoir tirer au sort !
-Commands.Players.Random.LowNumber:		Votre numéro maximum doit-être supérieur à 1 !
-Commands.Players.Random.Result.Other:	{0} choisi un numéro aléatoire entre 1 et {1}. Résultat : « {2} »
-Commands.Players.Random.Result.Self:	Vous avez choisi un numéro entre 1 et {0}. Résultat : « {1} »
-Commands.Players.Random.SlowDown:		Doucement bijoux!
-Commands.Players.Random.Usage:			Usage: '/random <#>' # Pour choisir un numéro entre 1 et le nombre spécifié.
+Commands.Players.Random.Description:	Randomly draws a number between 1 and the specified number.
+Commands.Players.Random.Help:			You must select a maximum number to be able to draw lots!
+Commands.Players.Random.LowNumber:		Your maximum number must be greater than 1!
+Commands.Players.Random.Result.Other:	{0} chooses a random number between 1 and {1}. Result: « {2} »
+Commands.Players.Random.Result.Self:	You have chosen a number between 1 and {0}. Result: « {1} »
+Commands.Players.Random.SlowDown:		Slow down!
+Commands.Players.Random.Usage:			Usage: '/random <#>' # To choose a number between 1 and the specified number.

@@ -1,2 +1,2 @@
-Commands.Players.Show.Description:	Montres toutes vos cartes aux autres joueurs. (Toutes les cartes seront dévoilés)
+Commands.Players.Show.Description:	Show all your cards to other players. (All cards will be revealed)
 Commands.Players.Show.Usage:		Usage: '/show'

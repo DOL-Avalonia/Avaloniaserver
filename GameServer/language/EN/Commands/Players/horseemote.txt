@@ -1,37 +1,37 @@
 Commands.Players.HorseEmote.Description:					Horse emotes
 Commands.Players.HorseEmote.Help:							Available emote: halt, pet, trick, courbette, startle, nod, graze, rear.
-Commands.Players.HorseEmote.MustBeOnMount:					Vous devez chevaucher votre monture pour utiliser cette commande !
+Commands.Players.HorseEmote.MustBeOnMount:					You must ride your mount to use this command!
 Commands.Players.HorseEmote.Usage:							'/horse <emote>'
-Commands.Players.HorseEmote.You:							Vous
-Commands.Players.HorseEmote.courbette.NoTargetToOthers:		La monture de {0} effectue une courbette.
-Commands.Players.HorseEmote.courbette.NoTargetToSource:		Votre monture effectue une courbette.
-Commands.Players.HorseEmote.courbette.ToOthers:				La monture de {0} fait une courbette.
-Commands.Players.HorseEmote.courbette.ToSource:				-
-Commands.Players.HorseEmote.graze.NoTargetToOthers:			{0} laisse sa monture brouter.
-Commands.Players.HorseEmote.graze.NoTargetToSource:			Vous laissez votre monture brouter.
-Commands.Players.HorseEmote.graze.ToOthers:					La monture de {0} broute
-Commands.Players.HorseEmote.graze.ToSource:					-
-Commands.Players.HorseEmote.halt.NoTargetToOthers:			{0} fait signe à tout le monde de s'arrêter.
-Commands.Players.HorseEmote.halt.NoTargetToSource:			Vous faites signe à tout le monde de s'arrêter.
-Commands.Players.HorseEmote.halt.ToOthers:					{0} fait signe à {1} de s'arrêter.
-Commands.Players.HorseEmote.halt.ToSource:					Vous faites signe à {0} de s'arrêter.
-Commands.Players.HorseEmote.nod.NoTargetToOthers:			La monture de {0} incline la tête.
-Commands.Players.HorseEmote.nod.NoTargetToSource:			Votre monture incline la tête.
-Commands.Players.HorseEmote.nod.ToOthers:					La monture de {0} incline la tête devant {1} !
-Commands.Players.HorseEmote.nod.ToSource:					Votre monture incline la tête devant {0}.
-Commands.Players.HorseEmote.pet.NoTargetToOthers:			{0} caresse sa monture.
-Commands.Players.HorseEmote.pet.NoTargetToSource:			Vous caressez votre monture.
+Commands.Players.HorseEmote.You:							You
+Commands.Players.HorseEmote.courbette.NoTargetToOthers:		{0}'s mount does a courbette.
+Commands.Players.HorseEmote.courbette.NoTargetToSource:		Your mount does a courbette.
+Commands.Players.HorseEmote.courbette.ToOthers:				{0}'s mount does a courbette.
+Commands.Players.HorseEmote.courbette.ToSource:				Your mount is doing a courbette in front of {0}.
+Commands.Players.HorseEmote.graze.NoTargetToOthers:			{0} let his mount graze.
+Commands.Players.HorseEmote.graze.NoTargetToSource:			You let your mount graze.
+Commands.Players.HorseEmote.graze.ToOthers:					{0}'s mount is grazing in front of {1}.
+Commands.Players.HorseEmote.graze.ToSource:					Your mount is grazing in front of {0}.
+Commands.Players.HorseEmote.halt.NoTargetToOthers:			{0} flag to everyone to halt.
+Commands.Players.HorseEmote.halt.NoTargetToSource:			You flag to everyone to halt.
+Commands.Players.HorseEmote.halt.ToOthers:					{0} flag to {1} to halt.
+Commands.Players.HorseEmote.halt.ToSource:					You flag to {0} to halt.
+Commands.Players.HorseEmote.nod.NoTargetToOthers:			{0}'s mount nods its head.
+Commands.Players.HorseEmote.nod.NoTargetToSource:			Your mount nods its head.
+Commands.Players.HorseEmote.nod.ToOthers:					{0}'s mount nods its head in front of {1}!
+Commands.Players.HorseEmote.nod.ToSource:					Your mount nods its head in front of {0}.
+Commands.Players.HorseEmote.pet.NoTargetToOthers:			{0} pet his mount.
+Commands.Players.HorseEmote.pet.NoTargetToSource:			You pet your mount.
 Commands.Players.HorseEmote.pet.ToOthers:					-
 Commands.Players.HorseEmote.pet.ToSource:					-
-Commands.Players.HorseEmote.rear.NoTargetToOthers:			La monture de {0} se cabre.
-Commands.Players.HorseEmote.rear.NoTargetToSource:			Votre monture se cabre.
-Commands.Players.HorseEmote.rear.ToOthers:					La monture de {0} se cabre face à {1} !
-Commands.Players.HorseEmote.rear.ToSource:					Votre monture se cabre face à {0}.
-Commands.Players.HorseEmote.startle.NoTargetToOthers:		La monture de {0} a un mouvement de crainte.
-Commands.Players.HorseEmote.startle.NoTargetToSource:		Votre monture a un mouvement de crainte.
-Commands.Players.HorseEmote.startle.ToOthers:				La monture de {0} a un mouvement de crainte face à {1} !
-Commands.Players.HorseEmote.startle.ToSource:				Votre monture a un mouvement de crainte face à {0}.
-Commands.Players.HorseEmote.trick.NoTargetToOthers:			{0} se tient debout sur sa monture pour impressionner l'assistance.
-Commands.Players.HorseEmote.trick.NoTargetToSource:			Vous vous tenez debout sur votre monture pour impressionner l'assistance.
-Commands.Players.HorseEmote.trick.ToOthers:					{0} se tient debout sur sa monture pour impressionner {1} !
-Commands.Players.HorseEmote.trick.ToSource:					Vous vous tenez debout sur votre monture pour impressionner {0}.
+Commands.Players.HorseEmote.rear.NoTargetToOthers:			{0}'s mount rears up
+Commands.Players.HorseEmote.rear.NoTargetToSource:			Your mount rears up.
+Commands.Players.HorseEmote.rear.ToOthers:					{0}'s mount rears up in front of {1}!
+Commands.Players.HorseEmote.rear.ToSource:					Your mount rears up in front of {0}.
+Commands.Players.HorseEmote.startle.NoTargetToOthers:		{0}'s mount is startled.
+Commands.Players.HorseEmote.startle.NoTargetToSource:		Your mount is startled.
+Commands.Players.HorseEmote.startle.ToOthers:				{0}'s mount is startled in front of {1}!
+Commands.Players.HorseEmote.startle.ToSource:				Your mount is startled in front of {0}.
+Commands.Players.HorseEmote.trick.NoTargetToOthers:			{0} stand on his mount to trick his audience.
+Commands.Players.HorseEmote.trick.NoTargetToSource:			You stand on your mount to trick your audience.
+Commands.Players.HorseEmote.trick.ToOthers:					{0} stand on his mount to trick {1}!
+Commands.Players.HorseEmote.trick.ToSource:					You stand on your mount to trick {0}.

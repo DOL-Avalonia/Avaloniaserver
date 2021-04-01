@@ -187,4 +187,4 @@ PlayerPositionUpdateHandler.Entered:		Vous êtes entré·e dans {0}.
 PlayerPositionUpdateHandler.FallingDamage:	Vous encaissez des dégats de chute !
 PlayerPositionUpdateHandler.FallPercent:	Vous perdez {0}% de votre total de points de vie.
 PlayerPositionUpdateHandler.SafeFall:		Les dommages ont été réduits grâce à votre abilité de chute contrôlée !
-PlayerPositionUpdateHandler.UnknownZone:	Zone inconnue ! Vous êtes ramenez à votre pierre dernière pierre d'âme.
+PlayerPositionUpdateHandler.UnknownZone:	Zone inconnue ! Vous êtes ramené à la pierre d'âme.

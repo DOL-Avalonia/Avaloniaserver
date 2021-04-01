@@ -1,5 +1,5 @@
-Commands.Players.Whisper.Description:	Chuchote quelque chose à une cible, si elle est assez proche.
-Commands.Players.Whisper.NotYourself:	Hmmmm... Tu ne devrais pas parler seul !
-Commands.Players.Whisper.SelectTarget:	Sélectionne la cible à laquelle tu veux chuchotter !
-Commands.Players.Whisper.SlowDown:		Doucement!
+Commands.Players.Whisper.Description:	Whispers something to a selected target, if it is close enough.
+Commands.Players.Whisper.NotYourself:	Hmmmm ... You should not be talking alone!
+Commands.Players.Whisper.SelectTarget:	Select the target you want to whisper to!
+Commands.Players.Whisper.SlowDown:		Slowly!
 Commands.Players.Whisper.Usage:			Usage : '/whisper <message>'

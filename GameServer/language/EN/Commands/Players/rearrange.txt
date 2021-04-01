@@ -1,10 +1,10 @@
-Commands.Players.Rearrange.Description:					Vous permet de réorganiser vos personnages.
-commands.Players.Rearrange.Slot.Changed:				L’emplacement du personnage {0} a été mis à jour. (Ancien emplacement = {1}, nouvel emplacement = {2})
-Commands.Players.Rearrange.Slot.DiffRealm:				Vous ne pouvez changer l’emplacement du personnage dans un autre royaume ! (Royaume de départ = {0}, Royaume d’arrivé = {1})
-Commands.Players.Rearrange.Slot.Empty:					L’emplacement donné ({0}) est.
-Commands.Players.Rearrange.Slot.Invalid:				L’emplacement du personnage est invalide : {0}
-Commands.Players.Rearrange.Slot.Invalids:				Les emplacements du personnage sont invalides : {0}
-commands.Players.Rearrange.Slot.List.characterSlot:		Emplacement des personnages :
-Commands.Players.Rearrange.Slot.List.slotEmpty:			Emplacement vide
-Commands.Players.Rearrange.Usage.List:					'/rearrange list' # Liste tous les personnages de ce compte et leurs emplacements associés.
-Commands.Players.Rearrange.Usage.Setslot:				'/rearrange setslot <Source#> <Cible#>' # Définit l’emplacement source à l’emplacement cible.
+Commands.Players.Rearrange.Description:					Allows you to rearrange your character's slots.
+commands.Players.Rearrange.Slot.Changed:				The slot of character {0} has been updated. (Old slot = {1}, New slot = {2})
+Commands.Players.Rearrange.Slot.DiffRealm:				You cannot change the character's slot to another realm! (Original realm = {0}, Final realm = {1})
+Commands.Players.Rearrange.Slot.Empty:					The given slot ({0}) is.
+Commands.Players.Rearrange.Slot.Invalid:				The character's slot is invalid: {0}
+Commands.Players.Rearrange.Slot.Invalids:				Character slots are invalid: {0}
+commands.Players.Rearrange.Slot.List.characterSlot:		Character slots:
+Commands.Players.Rearrange.Slot.List.slotEmpty:			Empty slot
+Commands.Players.Rearrange.Usage.List:					'/rearrange list' # List all characters on this account and their associated slots.
+Commands.Players.Rearrange.Usage.Setslot:				'/rearrange setslot <Source#> <Target#>' # Set the source slot to the target slot.

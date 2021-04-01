@@ -1,16 +1,16 @@
-Commands.Players.Asend.Description:			Envoi un message au canal d’alliance
-Commands.Players.Asend.Muted:				Vous avez été mis en sourdine. Impossible de parler.
-Commands.Players.Asend.NoAlliance:			Votre guilde n’appartient pas à une alliance
-Commands.Players.Asend.NoPermission:		Vous ne pouvez pas parler dans le canal de guilde.
-Commands.Players.Asend.NotGuilded:			Vous n’appartenez pas à une guilde.
+Commands.Players.Asend.Description:			Send a message to the alliance channel:
+Commands.Players.Asend.Muted:				You have been muted, so you cannot talk.
+Commands.Players.Asend.NoAlliance:			Your guild does not belong to an alliance.
+Commands.Players.Asend.NoPermission:		You cannot talk in the guild channel.
+Commands.Players.Asend.NotGuilded:			You do not belong to a guild.
 Commands.Players.Asend.Usage:				Usage : '/as <text>'
-Commands.Players.Guildchat.Description:		Commande du canal de Guilde
-Commands.Players.Guildchat.NoPermission:	Vous n’avez pas la permission de parler dans ce canal.
-Commands.Players.Guildchat.NotGuilded:		Vous n’appartenez pas à une guilde.
-Commands.Players.Guildchat.SlowDown:		Doucement bijoux !
+Commands.Players.Guildchat.Description:		Guild Channel Command:
+Commands.Players.Guildchat.NoPermission:	You are not allowed to talk in this channel.
+Commands.Players.Guildchat.NotGuilded:		You do not belong to a guild.
+Commands.Players.Guildchat.SlowDown:		Slowly!
 Commands.Players.Guildchat.Usage:			Usage : '/gu <text>'
-Commands.Players.Osend.Description:			Envoi un message dans le canal des officier (Réservé aux officiers de guilde)
-Commands.Players.Osend.NoPermission:		Vous n’avez pas la permission de discuter dans le canal d’officier.
-Commands.Players.Osend.NotGuilded:			Vous n’appartenez pas à une guilde.
-Commands.Players.Osend.SlowDown:			Doucement bijoux !
+Commands.Players.Osend.Description:			Send a message in the officers channel (For Guild Officers only)
+Commands.Players.Osend.NoPermission:		You are not allowed to chat in the officers channel.
+Commands.Players.Osend.NotGuilded:			You do not belong to a guild.
+Commands.Players.Osend.SlowDown:			Slowly!
 Commands.Players.Osend.Usage:				usage : '/o <text>'
