@@ -1,8 +1,8 @@
-Commands.Players.Disband.Description:	Se séparer d’un groupe.
-Commands.Players.Disband.Disbanded:		{0} a quitté le groupe.
-Commands.Players.Disband.NoPlayer:		Pas de joueur de ce nom dans le groupe.
-Commands.Players.Disband.NotInGroup:	Vous n'êtes pas dans un groupe.
-Commands.Players.Disband.NotLeader:		Vous n'êtes pas le chef du groupe.
-Commands.Players.Disband.NoYourself:	Vous ne pouvez pas vous dégrouper de cette manière.
-Commands.Players.Disband.Usage:			'/disband' # Disband yourself from the group
-Commands.Players.Disband.Usage.Name:	'/disband <name> # Disband specified player from the group
+Commands.Players.Disband.Description:	To disband from a group.
+Commands.Players.Disband.Disbanded:		{0} has left the group.
+Commands.Players.Disband.NoPlayer:		There is no player of that name in the group.
+Commands.Players.Disband.NotInGroup:	You are not in a group.
+Commands.Players.Disband.NotLeader:		You are not the group leader.
+Commands.Players.Disband.NoYourself:	You cannot disband yourself this way this way.
+Commands.Players.Disband.Usage:			'/disband' # Disband yourself from the group.
+Commands.Players.Disband.Usage.Name:	'/disband <name> # Disband a specified player from the group.

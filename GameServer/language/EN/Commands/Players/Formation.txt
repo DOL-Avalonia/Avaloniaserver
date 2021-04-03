@@ -1,10 +1,10 @@
-Commands.Players.Formation.Argument.Error:		Argument non reconnu : {0}
-Commands.Players.Formation.Commander.Missing:	Vous n’avez pas de commandant.
-Commands.Players.Formation.Description:			Change la formation de vos serviteurs.
-Commands.Players.Formation.Minion.Missing:		Vous n’avez pas de serviteurs.
-Commands.Players.Formation.OnlyBonedancer:		Seuls les prêtres de Bogdards peuvent utiliser cette commande.
+Commands.Players.Formation.Argument.Error:		Unknown argument: {0}
+Commands.Players.Formation.Commander.Missing:	You don't have any commander.
+Commands.Players.Formation.Description:			Change the formation of your servants.
+Commands.Players.Formation.Minion.Missing:		You don't have any servant.
+Commands.Players.Formation.OnlyBonedancer:		Bonedancers only can use this command.
 Commands.Players.Formation.Usage.Formation:		Commandes de formation :
 Commands.Players.Formation.Usage:				'/formation <type>'
-Commands.Players.Formation.Usage.Line:			'/formation line' # Les serviteurs se placent en ligne.
-Commands.Players.Formation.Usage.Protect:		'/formation protect' # Les serviveurs se placent en formation protection entourant le commandant.
-Commands.Players.Formation.Usage.Triangle:		'/formation triangle' # Les serviteurs se placent en formation triangle.
+Commands.Players.Formation.Usage.Line:			'/formation line' # Servants are lining up.
+Commands.Players.Formation.Usage.Protect:		'/formation protect' # The servants place themselves in a protective formation surrounding the commander.
+Commands.Players.Formation.Usage.Triangle:		'/formation triangle' # The servants are standing in a triangle formation.

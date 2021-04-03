@@ -7,7 +7,7 @@ Commands.Players.Guild.AllianceAnsCancel:		    L'offre d'alliance a été annul�
 Commands.Players.Guild.AllianceDeclined:		    Vous déclinez la proposition d'alliance.
 Commands.Players.Guild.AllianceDeclinedOther:	    L'offre d'alliance a été annulée.
 Commands.Players.Guild.AllianceDisabled:		    Les Alliances ne sont pas actives sur ce serveur.
-Commands.Players.Guild.AllianceIndexNotVal:	    La valeur de l'alliance n'est pas un nombre valide.
+Commands.Players.Guild.AllianceIndexNotVal:	    La valeur de l'alliance ne correspond pas à un nombre valide.
 Commands.Players.Guild.AllianceInfo:			    Information d'alliance sur {0} :
 Commands.Players.Guild.AllianceInvite:		    Vous avez invité une guilde à rejoindre votre alliance.
 Commands.Players.Guild.AllianceInvited:		    Vous avez été invité(e) à rejoindre l'alliance de {0}.
@@ -20,7 +20,7 @@ Commands.Players.Guild.AllianceNoGMSelected:	    Vous devez choisir un Maître d
 Commands.Players.Guild.NotAbleToBeInvited:		Vous ne pouvez pas entrer dans cette guilde avant {0} minutes.
 Commands.Players.Guild.NotAbleToLeave:			Vous ne pouvez quitter cette guilde avant {0} minutes.
 Commands.Players.Guild.NotAbleToBeExpelled:		Vous ne pouvez pas expulser ce joueur avant {0} minutes.
-Commands.Players.Guild.AllianceNoLeader:		    Pas de chef d'alliance.
+Commands.Players.Guild.AllianceNoLeader:		    Il n'y a pas de chef d'alliance.
 Commands.Players.Guild.AllianceNotLeader:		    Vous devez être la guilde du chef de l'alliance pour pouvoir enlever une guilde de l'alliance.
 Commands.Players.Guild.AllianceNotMember:		    Vous devez être dans une alliance pour le faire.
 Commands.Players.Guild.AlreadyInGuildName:		    {0} est un membre de votre guilde.
@@ -36,41 +36,41 @@ Commands.Players.Guild.BannerNotAfford:		    Vous avez besoin de 50,000 points d
 Commands.Players.Guild.BannerSummoned:		    Vous avez invoqué votre bannière de guilde.
 Commands.Players.Guild.BannerUnsummoned.You:		Vous avez retiré votre bannière de guilde.
 Commands.Players.Guild.BannerUnsummoned:		    {0} a retiré votre bannière de guilde.
-Commands.Players.Guild.BannerNotRvR:			    Vous devez vous trouvés dans une zone RvR pour invoqué une bannière !
-Commands.Players.Guild.Banner.BuyPrice:             Vous devez payer la somme de {0} pour acheter une bannière
+Commands.Players.Guild.BannerNotRvR:			    Vous devez vous trouver dans une zone RvR pour invoquer une bannière !
+Commands.Players.Guild.Banner.BuyPrice:             Vous devez payer la somme de {0} pour acheter une bannière.
 Commands.Players.Guild.BannerCarriyng.None:         Vous ne portez pas de bannière.
-Commands.Players.Guild.Banner.LostMinutes           Votre bannière a été perdue à l'énemie. Vous devez attendre {0} minute(s) !
-Commands.Players.Guild.Banner.LostHours:            Votre bannière a été perdue à l'énemie. Vous devez attendre {0} Heure(s) !
+Commands.Players.Guild.Banner.LostMinutes           Votre bannière a été prise par l'ennemi. Vous devez attendre {0} minute(s) !
+Commands.Players.Guild.Banner.LostHours:            Votre bannière a été prise par l'ennemi. Vous devez attendre {0} Heure(s) !
 Commands.Players.Guild.BuffActivated:			    [Guild Buff] {0} a utilisé  1000 Points de Mérite de Guilde et a activé une Amélioration de Guilde !
-Commands.Players.Guild.BuffBountyPoints:		    Votre guilde gagnera maintenant 5 % aux primes de royaume de plus pendant 24 heures !
-Commands.Players.Guild.BuffBPActivated:		    [Guild Buff] Votre guilde recevra un bonus aux primes de royaume pendant 24 heures !
-Commands.Players.Guild.BuffMPActivated:		    [Guild Buff] Votre guilde recevra un bonus aux points de mérite de guilde pendant 24 heures !
-Commands.Players.Guild.BuffRealmPoints:		    Votre guilde gagnera maintenant 5 % aux points de royaume de plus pendant 24 heures !
+Commands.Players.Guild.BuffBountyPoints:		    Votre guilde gagnera maintenant 5 % aux primes de royaume de plus pendant 6 heures !
+Commands.Players.Guild.BuffBPActivated:		    [Guild Buff] Votre guilde recevra un bonus aux primes de royaume pendant 6 heures !
+Commands.Players.Guild.BuffMPActivated:		    [Guild Buff] Votre guilde recevra un bonus aux points de mérite de guilde pendant 6 heures !
+Commands.Players.Guild.BuffRealmPoints:		    Votre guilde gagnera maintenant 5 % de points de royaume en plus pendant 6 heures !
 Commands.Players.Guild.ClaimNotNear:			    Vous devez être près du Lord pour revendiquer ce fort.
 Commands.Players.Guild.ConfirmLeave:			    Voulez-vous vraiment partir {0} ?
-Commands.Players.Guild.DemotedHigherThanPlayer:   Vous pouvez seulement rétrograder les grades au-dessous du votre.
+Commands.Players.Guild.DemotedHigherThanPlayer:   Vous pouvez seulement rétrograder les grades au-dessous du vôtre.
 Commands.Players.Guild.Demoted.Other:			    {0} a rétrogradé au rang {1}.
 Commands.Players.Guild.Demoted.Self:			    Vous avez été rétrogradé(e) au rang {0}.
 Commands.Players.Guild.DepositAmount:			    Vous déposez {0} dans la caisse de guilde.
 Commands.Players.Guild.DepositFull:			    La caisse de guilde semble être pleine.
 Commands.Players.Guild.DepositInvalid:			Ce n'est pas un dépôt valide.
 Commands.Players.Guild.DepositTooMuch:		    Vous n'avez pas assez d'argent pour le faire !
-Commands.Players.Guild.DuesOff:				    La cotisation de guilde n'est actuellement pas fonctionnelle.	
-Commands.Players.Guild.DuesOn:				    La cotisation de guilde est de {0} pourcent.	
+Commands.Players.Guild.DuesOff:				    La côtisation de guilde n'est actuellement pas fonctionnelle.	
+Commands.Players.Guild.DuesOn:				    La côtisation de guilde est de {0} pourcent.	
 Commands.Players.Guild.EmailSet:				    L'e-mail de guilde est maintenant fixé : {0}.
-Commands.Players.Guild.EmblemAlready:			    Votre guilde a déjà un emblème mais vous pouvez le changer pour 100 pièces d'or. Vous devez choisir l'EmblemNPC de nouveau pour effectuer cette procédure.
+Commands.Players.Guild.EmblemAlready:			    Votre guilde a déjà une emblème mais vous pouvez la changer pour 100 pièces d'or. Vous devez de nouvea choisir « l'EmblemNPC » pour effectuer cette procédure.
 Commands.Players.Guild.EmblemNeedGold:			Vous devez avoir 200 piéces d'or pour changer de nouveau votre emblème de guilde.
-Commands.Players.Guild.EmblemNeedNPC:			    Vous devez sélectionner l'EmblemNPC.
-Commands.Players.Guild.EmblemNPCNotSelected:		Vous devez sélectionner l'EmblemNPC.
+Commands.Players.Guild.EmblemNeedNPC:			    Vous devez sélectionner « l'EmblemNPC ».
+Commands.Players.Guild.EmblemNPCNotSelected:		Vous devez sélectionner « l'EmblemNPC ».
 Commands.Players.Guild.EmblemRedo:			    Vous voulez refaire votre emblème pour 100 pièces d'or ?
 Commands.Players.Guild.FormNoGroup:			    Vous devez être dans un groupe pour former une guilde.
 Commands.Players.Guild.FormNoMembers:			    Vous avez besoin de {0} membres dans votre groupe pour créer une guilde.
-Commands.Players.Guild.FormNoRegistrar:            Vous devez etre pret d'un registrar de Guilde pour faire cette commande.
-Commands.Players.Guild.Form.NoLeader:               Seul le leader du groupe peut créér une guilde.
-Commands.Players.Guild.Form.TooLong:                Le nom de guilde est trop long
-Commands.Players.Guild.Form.NotSameRealm:           Tous les membres du groupe doivent etre du meme royaume pour créer une guilde.        
-Commands.Players.Guild.Form.ConfirmCreate:          Etes vous sur de vouloir créer la guilde {0} avec comme guilde leader {1} ?
-Commands.Players.Guild.FormNoMoney:                 Cela coûte 1 pièce d'or pour créer une guilde
+Commands.Players.Guild.FormNoRegistrar:            Vous devez etre près d'un « Registrar de Guilde » pour faire cette commande.
+Commands.Players.Guild.Form.NoLeader:               Seul le leader du groupe peut créer une guilde.
+Commands.Players.Guild.Form.TooLong:                Le nom de guilde est trop long.
+Commands.Players.Guild.Form.NotSameRealm:           Tous les membres du groupe doivent être du meme royaume pour créer une guilde.        
+Commands.Players.Guild.Form.ConfirmCreate:          Etes vous sûr de vouloir créer la guilde {0} avec pour chef {1} ?
+Commands.Players.Guild.FormNoMoney:                 Cela coûte 1 pièce d'or pour créer une guilde.
 Commands.Players.Guild.GuildCreated:			    La guilde {0} vient d'être créée avec {1} comme chef.
 Commands.Players.Guild.GuildExists:			    Cette guilde ne peut être créée car elle existe déjà.
 Commands.Players.Guild.GuildForceLeave:			{0} est retiré·e de la guilde par {1}.
@@ -96,22 +96,22 @@ Commands.Players.Guild.Help.GuildClaim:			'/gc claim' # Réclame une tour ou un
 Commands.Players.Guild.Help.GuildDecline:			'/gc decline' # Décline une invitation à rejoindre la guilde.
 Commands.Players.Guild.Help.GuildDemote:			'/gc demote [nom de joueur] <rang#>' # Rétrograde le joueur indiqué au rang désiré.
 Commands.Players.Guild.Help.GuildDeposit:			'/gc deposit <montant>' # Dépose une somme dans la caisse de guilde.
-Commands.Players.Guild.Help.GuildDues:			'/gc dues <montant>' # Active ou désactive le système de taxation de la guilde (x% de l'argent gagné sur des créatures) (x = 0 à 10).
-Commands.Players.Guild.Help.GuildEdit:			'/gc edit' # Listes les parties modifiables de la structure de guilde.
+Commands.Players.Guild.Help.GuildDues:			'/gc dues <montant>' # Active ou désactive le système de taxation de la guilde (x% de l'argent gagné sur des créatures) (x = 0 à 50).
+Commands.Players.Guild.Help.GuildEdit:			'/gc edit' # Liste les parties modifiables de la structure de guilde.
 Commands.Players.Guild.Help.GuildEditACHear:		'/gc edit <rang#> achear <y|n>' # Permet à un rang de pouvoir lire le canal d'alliance.
 Commands.Players.Guild.Help.GuildEditACSpeak:		'/gc edit <rang#> acspeak <y|n>' # Permet à un rang de pouvoir parler sur le canal alliance.
-Commands.Players.Guild.Help.GuildEditAlli:		'/gc edit <rang#> alli <y|n>' # Permet au chef de guilde d'accorder à un rang la possibilité d'intégrer ou quitter une alliance.
+Commands.Players.Guild.Help.GuildEditAlli:		'/gc edit <rang#> alli <y|n>' # Permet au chef de guilde d'accorder à un rang la possibilité d'intégrer ou de quitter une alliance.
 Commands.Players.Guild.Help.GuildEditClaim:		'/gc edit <rang#> claim <y|n>' # Permet au chef de guilde d'accorder à un rang la possibilité de capturer un fort ou une tour pour la guilde.
 Commands.Players.Guild.Help.GuildEditDues:		'/gc edit <rang#> dues <y|n>' # Permet de changer la valeur de la taxation de guilde.
 Commands.Players.Guild.Help.GuildEditEmblem:		'/gc edit <rang#> emblem <y|n>' # Permet à un rang de pouvoir porter l'emblème de la guilde.
 Commands.Players.Guild.Help.GuildEditGCHear:		'/gc edit <rang#> gchear <y|n>' # Permet à un rang de pouvoir lire le canal de guilde.
 Commands.Players.Guild.Help.GuildEditGCSpeak:		'/gc edit <rang#> gcspeak <y|n>' # Permet à un rang de pouvoir parler sur le canal guilde.
 Commands.Players.Guild.Help.GuildEditInvite:		'/gc edit <rang#> invite <y|n>' # Permet au chef de guilde d'accorder à un rang la possibilité d'inviter de nouveaux membres.
-Commands.Players.Guild.Help.GuildEditOCHear:		'/gc edit <rang#> ochear <y|n>' # Permet à un rang de pouvoir lire le canal Officier.
+Commands.Players.Guild.Help.GuildEditOCHear:		'/gc edit <rang#> ochear <y|n>' # Permet à un rang de pouvoir lire le canal des Officiers.
 Commands.Players.Guild.Help.GuildEditOCSpeak:		'/gc edit <rang#> ocspeak <y|n>' # Permet à un rang de pouvoir parler sur le canal Officier.
 Commands.Players.Guild.Help.GuildEditPromote:		'/gc edit <rang#> promote <y|n>' # Permet de promouvoir ou rétrograder le joueur sélectionné.
 Commands.Players.Guild.Help.GuildEditRankLevel:	'/gc edit <rang#> ranklevel <level>' # Permet de hiérarchiser les rangs.
-Commands.Players.Guild.Help.GuildEditRelease:		'/gc edit <rang#> release <y|n>' # Libére le contrôle de la tour/fort de guilde.
+Commands.Players.Guild.Help.GuildEditRelease:		'/gc edit <rang#> release <y|n>' # Libère le contrôle de la tour/fort de guilde.
 Commands.Players.Guild.Help.GuildEditRemove:		'/gc edit <rang#> remove <y|n>' # Permet de pouvoir retirer le joueur sélectionné de la guilde.
 Commands.Players.Guild.Help.GuildEditTitle:		'/gc edit <rang#> title <text>' # Crée un titre au rang choisi <#> pour la guilde.
 Commands.Players.Guild.Help.GuildEditUpgrade:		'/gc edit <rang#> upgrade <y|n>' # Permet au chef de guilde d'accorder à un rang la possibilité d'intégrer ou quitter une alliance.
@@ -119,25 +119,25 @@ Commands.Players.Guild.Help.GuildEditView:		'/gc edit <rang#> view <y|n>' # Per
 Commands.Players.Guild.Help.GuildEditWithdraw:	'/gc edit <rang#> withdraw <y|n>' # Permet de donner l'autorisation de retirer les fonds de votre caisse de guilde.
 Commands.Players.Guild.Help.GuildEmail:			'/gc email <contact@guildpage.com>' # Affiche l'adresse internet des contacts au sein de la guilde.
 Commands.Players.Guild.Help.GuildEmblem:			'/gc emblem' # Présentation de l'emblème.
-Commands.Players.Guild.Help.TerritoryBanner:			'/gc territorybanner' # Permet de poser sa bannière dans un territoire conquis.
-Commands.Players.Guild.Help.GuildForm:			'/gc form <nom de guilde>' # Création d'une guilde (8 joueurs requis dans le groupe).
+Commands.Players.Guild.Help.TerritoryBanner:			'/gc territorybanner' # Permet de montrer sa bannière de guilde dans un territoire conquis, réduit les coûts d'entretien du territoire, et améliore sa défense.
+Commands.Players.Guild.Help.GuildForm:			'/gc form <nom de guilde>' # Création d'une guilde (4 joueurs au minimum requis dans le groupe).
 Commands.Players.Guild.Help.GuildGMAddPlayer:		'/gc addplayer <nom de joueur> to <noum de guilde>' # Ajoute un joueur à la guilde.
 Commands.Players.Guild.Help.GuildGMCommands:		Game Master commandes :
 Commands.Players.Guild.Help.GuildGMCreate:		'/gc create <nom de guilde>' # Crée une guilde et désigne le joueur sélectionné comme chef.
-Commands.Players.Guild.Help.GuildGMPurge:			'/gc purge <nom de guilde>' # Purge complétement une guilde.
+Commands.Players.Guild.Help.GuildGMPurge:			'/gc purge <nom de guilde>' # Purge complètement une guilde.
 Commands.Players.Guild.Help.GuildGMRemovePlayer:	'/gc removeplayer <nom de joueur> from <nom de guilde>' # Retire un joueur de la guilde.
 Commands.Players.Guild.Help.GuildGMRename:		'/gc rename <ancien nom> to <nouveau nom>' # Renomme une guilde <ancien nom> <nouveau nom>.
-Commands.Players.Guild.Help.GuildInfo:			'/gc info' # Liste des informations de cette guilde.
+Commands.Players.Guild.Help.GuildInfo:			'/gc info' # Liste les informations à propos de cette guilde.
 Commands.Players.Guild.Help.GuildInvite:			'/gc invite <nom de joueur>' # Invite un joueur à rejoindre la guilde.
-Commands.Players.Guild.Help.GuildLeader:			'/gc leader <nom de joueur>' # Choisi le nouveau chef de guilde.
-Commands.Players.Guild.Help.GuildList:			'/gc list' # Informe le joueur de toutes les guildes sur le royaume.
+Commands.Players.Guild.Help.GuildLeader:			'/gc leader <nom de joueur>' # Choisis le nouveau chef de guilde.
+Commands.Players.Guild.Help.GuildList:			'/gc list' # Informe le joueur de toutes les guildes présentes dans le royaume.
 Commands.Players.Guild.Help.GuildMotd:			'/gc motd <texte>' # Modifie le message du jour de la guilde.
 Commands.Players.Guild.Help.GuildNoteSelf:		'/gc noteself <note>' # Crée une note à votre propos.
 Commands.Players.Guild.Help.GuildOMotd:			'/gc omotd <texte>' # Définit le message du jour des officiers de votre guilde.
 Commands.Players.Guild.Help.GuildPromote:			'/gc promote [name] <rang#>' # Promeut le personnage indiqué au rang désiré.
 Commands.Players.Guild.Help.GuildQuit:			'/gc quit' # Pour quitter une guilde.
 Commands.Players.Guild.Help.GuildRanks:			'/gc ranks' # Affiche les rangs de la guilde. Les chefs de guilde peuvent aussi utiliser cette commande pour modifier les rangs.
-Commands.Players.Guild.Help.GuildRemAccount:		'/gc removeaccount <nom du compte>' # Retire d'une guilde tous les personnages du compte sur lequel se trouve le personnage sélectionné.
+Commands.Players.Guild.Help.GuildRemAccount:		'/gc removeaccount <nom du compte>' # Retire d'une guilde tous les personnages du compte lié au personnage sélectionné.
 Commands.Players.Guild.Help.GuildRemove:			'/gc remove <nom du joueur>' # Retire le joueur de la guilde.
 Commands.Players.Guild.Help.GuildUsage:			Usage :
 Commands.Players.Guild.Help.GuildWebpage:			'/gc webpage <la.pagedeguilde.fr>' # Option non obligatoire qui permet d'indiquer le site de guilde aux membres et sur le herald officiel.
@@ -145,9 +145,9 @@ Commands.Players.Guild.Help.GuildWho:			    '/gc who' # Montre les joueurs de l
 Commands.Players.Guild.Help.GuildWithdraw:		'/gc withdraw <montant>' # Retire les fonds de votre caisse de guilde.
 Commands.Players.Guild.InCombat:				    Vous ne pouvez pas invoquer la bannière de guilde en combat !
 Commands.Players.Guild.InfoAMotd:				    Message de l'alliance : {0}
-Commands.Players.Guild.InfoBanner.Lost:         La bannière est tombée dans les mains de l'énemie
-Commands.Players.Guild.InfoBanner.PurchaseAvailable:    l'achat de bannière est disponible
-Commands.Players.Guild.InfoCEmail:			    Contact Email : {0}
+Commands.Players.Guild.InfoBanner.Lost:         La bannière est tombée entre les mains de l'ennemi.
+Commands.Players.Guild.InfoBanner.PurchaseAvailable:    l'achat de bannière est disponible.
+Commands.Players.Guild.InfoCEmail:			    Email de contact : {0}
 Commands.Players.Guild.InfoGDuesBank:			    Taxe : {0} Banque de guilde : {1} pièces de cuivre.
 Commands.Players.Guild.InfoGuild:				    Informations de la guilde {0} :
 Commands.Players.Guild.InfoGuildLevel:			Niveau de la guilde : {0}
@@ -155,16 +155,16 @@ Commands.Players.Guild.InfoMotd:				    Message : {0}
 Commands.Players.Guild.InfoOMotd:				    Message des officiers : {0}
 Commands.Players.Guild.InfoRPBPMP:			    Points de Royaume : {0} Primes de Royaume : {1} Points de Mérite : {2}
 Commands.Players.Guild.InfoWebpage:			    Site internet : {0}
-Commands.Players.Guild.InfoMerit:               Points de Mérite: {0}
-Commands.Players.Guild.InfoEmail:               Email: {0}
-Commands.Players.Guild.InvalidLetters:			Les lettres mises sont invalides.
+Commands.Players.Guild.InfoMerit:               Points de Mérite : {0}
+Commands.Players.Guild.InfoEmail:               Email : {0}
+Commands.Players.Guild.InvalidLetters:			Les lettres écrites sont invalides.
 Commands.Players.Guild.InvalidRank:			    Ce n'est pas un rang valide.
 Commands.Players.Guild.InviteDead:				Vous ne pouvez pas inviter un joueur mort à rejoindre la guilde.
 Commands.Players.Guild.InviteNoSelected:		Vous devez sélectionner un joueur.
 Commands.Players.Guild.InviteNoSelf:			Vous ne pouvez pas vous inviter.
 Commands.Players.Guild.InviteNotThis:			Ce membre ne peut être invité.
 Commands.Players.Guild.InviteRecieved:			{0} vous invite à rejoindre la guilde.
-Commands.Players.Guild.InviteSent:				Vous lancez l'invitation pour {0} rejoindre la guilde.
+Commands.Players.Guild.InviteSent:				Vous lancez l'invitation à {0} afin de rejoindre la guilde.
 Commands.Players.Guild.Keep:					Votre guilde possède déjà un fort {0}.
 Commands.Players.Guild.LevelUp:					[Guilde] Votre guilde a atteint le niveau {0} !
 Commands.Players.Guild.LoginsOff:				Vous avez désactivé la fonction qui vous permet de voir les membres de la guilde se connecter, tappez '/gc logins' pour activer la fonction.
@@ -175,28 +175,28 @@ Commands.Players.Guild.MemberLogin:				{0} est maintenant connecté(e).
 Commands.Players.Guild.MemberLogoff:			{0} est maintenant déconnecté(e).
 Commands.Players.Guild.MemberRemoved:			{0} a retiré {1} de la guilde.
 Commands.Players.Guild.MeritPointReq:			Votre guilde ne possède pas les points de mérite nécessaires à cette action.
-Commands.Players.Guild.Buff.Activate.RP:        Etes vous sur de vouloir activer un buff de guilde RP pour 1000 points de mérite ?
-Commands.Players.Guild.Buff.NotAvailable:       Ce type de buff n'est pas disponible
-Commands.Players.Guild.Buff.Buy:                Etes vous sur de vouloir activer un buff de guilde BP pour 1000 points de mérite ?
-Commands.Players.Guild.Buff.Activate.Crafting:  Etes vous sur de vouloir activer un buff de guilde Hâte de Craft pour 1000 points de mérite ?
-Commands.Players.Guild.Buff.Activate.XP:        Etes vous sur de vouloir activer un buff de guilde XP pour 1000 points de mérite ?
-Commands.Players.Guild.Buff.Activate.Artifact:  Etes vous sur de vouloir activer un buff de guilde Artefact XP pour 1000 points de mérite ?
-Commands.Players.Guild.Buff.NotImplemented:     Ce buff n'a pas été implémenté
-Commands.Players.Guild.MotdSet:					Vous changez le message de jour de guilde.
-Commands.Players.Guild.NoKeep:					Vous n'avez pas actuellement de fort pour utiliser cette commande.
+Commands.Players.Guild.Buff.Activate.RP:        Etes-vous sûr de vouloir activer un buff de guilde RP pour 1000 points de mérite ?
+Commands.Players.Guild.Buff.NotAvailable:       Ce type de buff n'est pas disponible.
+Commands.Players.Guild.Buff.Buy:                Etes-vous sûr de vouloir activer un buff de guilde BP pour 1000 points de mérite ?
+Commands.Players.Guild.Buff.Activate.Crafting:  Etes-vous sûr de vouloir activer un buff de guilde Hâte de Craft pour 1000 points de mérite ?
+Commands.Players.Guild.Buff.Activate.XP:        Etes-vous sûr de vouloir activer un buff de guilde XP pour 1000 points de mérite ?
+Commands.Players.Guild.Buff.Activate.Artifact:  Etes-vous sûr de vouloir activer un buff de guilde Artefact XP pour 1000 points de mérite ?
+Commands.Players.Guild.Buff.NotImplemented:     Ce buff n'a pas été implémenté.
+Commands.Players.Guild.MotdSet:					Vous changez le message du jour de la guilde.
+Commands.Players.Guild.NoKeep:					Vous n'avez pas de fort actuellement pour pouvoir utiliser cette commande.
 Commands.Players.Guild.NoPlayerSelected:		Sélectionnez un joueur.
-Commands.Players.Guild.NoPlayersInAcc:			Il n'y a pas de joueur du compte demandé dans votre guilde.
-Commands.Players.Guild.NoPrivileges:			Votre rang de guilde ne possède pas assez de priviléges pour utiliser cette commande.
+Commands.Players.Guild.NoPlayersInAcc:			Il n'y a aucun joueur du compte demandé dans votre guilde.
+Commands.Players.Guild.NoPrivileges:			Votre rang de guilde ne possède pas assez de privilèges pour utiliser cette commande.
 Commands.Players.Guild.NoteSet:					La note de guilde est : {0}
 Commands.Players.Guild.NoPlayerWithName:        Il n'y a pas de joueur avec le nom {0}
 Commands.Players.Guild.NotInYourGuild:			Ce joueur n'est pas dans la guilde.
 Commands.Players.Guild.NotMember:				Vous devez être dans une guilde pour utiliser cette commande.
 Commands.Players.Guild.OMotdSet:				Le message des officiers est maintenant actualisé.
-Commands.Players.Guild.PlayerNotFound:			Ce joueur n'est pas en ligne ou se trouve sur un autre royaume.
+Commands.Players.Guild.PlayerNotFound:			Ce joueur n'est pas en ligne ou se trouve dans un autre royaume.
 Commands.Players.Guild.PromotedOther:			{0} est promu(e) au rang {1}.
 Commands.Players.Guild.PromotedSelf:			Vous êtes promu(e) au rang {0}.
-Commands.Players.Guild.PromoteHigherThanPlayer:	Vous pouvez seulement promouvoir un joueur à un rang inférieur au votre.
-Commands.Players.Guild.PromoteHaveToUseDemote:	Vous ne pouvez pas rétrograder le rank de ce joueur avec la commande promote. Utiliser '/gc demote joueur <rang#>'.
+Commands.Players.Guild.PromoteHigherThanPlayer:	Vous pouvez seulement promouvoir un joueur à un rang inférieur au vôtre.
+Commands.Players.Guild.PromoteHaveToUseDemote:	Vous ne pouvez pas rétrograder le rang de ce joueur avec la commande promote. Utiliser '/gc demote joueur <rang#>'.
 Commands.Players.Guild.Purged:					{0} est purgé.
 Commands.Players.Guild.RankACHearSet:			Vous avez {0} l'accés à ACHear au rang {1}.
 Commands.Players.Guild.RankACSpeakSet:			Vous avez {0} l'ACSpeak au rang {1}.
@@ -214,7 +214,7 @@ Commands.Players.Guild.RankOCSpeakSet:			Vous avez {0} le OCSpeak au rang {1}.
 Commands.Players.Guild.RankPromoteSet:			Vous avez {0} les promotions/rétrogradations au rang {1}.
 Commands.Players.Guild.RankReleaseSet:			Vous avez {0} l'abandon du contrôle des forts au rang {1}.
 Commands.Players.Guild.RankRemoveSet:			Vous avez {0} le Remove au rang {1}.
-Commands.Players.Guild.RankTitleSet:			Vous avez pour changer les titres de rang de guilde au rang {0}.
+Commands.Players.Guild.RankTitleSet:			Vous avez {0} pour changer les titres de rang de guilde au rang {0}.
 Commands.Players.Guild.RankUpgradeSet:			Vous avez {0} les mise à jour des forts au rang {1}.
 Commands.Players.Guild.RankViewSet:				Vous avez {0} l'apperçu de la guilde au rang {1}.
 Commands.Players.Guild.RankWithdrawSet:			Vous avez {0} la caisse de guilde au rang {1}.
@@ -222,7 +222,7 @@ Commands.Players.Guild.Rank.ErrorChanging:      Erreur durant le changement de r
 Commands.Players.Guild.ThirdArgNotNum:			Cet argument n'est pas un nombre valide.
 Commands.Players.Guild.UnableToCreate:			La guilde {0} vient d'être créée.
 Commands.Players.Guild.UnableToCreateLead:		La guilde {0} vient d'être créée, {1} est le chef de guilde.
-Commands.Players.Guild.UnknownCommand:			Commande Inconnue. Tappez '/gc help' pour les informations.
+Commands.Players.Guild.UnknownCommand:			Commande Inconnue. Tappez '/gc help' pour plus d'informations.
 Commands.Players.Guild.UpgradeNoLevel:			Vous devez spécifier un niveau pour les améliorations des tours/forts.
 Commands.Players.Guild.UpgradeScndArg:			Le deuxième argument doit être un nombre.
 Commands.Players.Guild.WebpageSet:				Vous avez défini la page internet de la guilde comme {0}.
@@ -240,25 +240,25 @@ Commands.Players.Guild.TerritoryMeritPoints:   L'occupation de vos territoires v
 
 
 # /Guilds a traduire:
-Commands.Players.Guild.Alliance.AlreadyOther:		La guilde a déja une alliance
+Commands.Players.Guild.Alliance.AlreadyOther:		La guilde a déjà une alliance
 Commands.Players.Guild.Alliance.AnsCancel:			L'alliance a été annulée	
 Commands.Players.Guild.Alliance.Declined:			Vous avez refusé l'offre d'alliance	
 Commands.Players.Guild.Alliance.DeclinedOther:		L'offre d'alliance a été refusée	
-Commands.Players.Guild.Alliance.Disabled:			Alliances are disabled on this server.	
+Commands.Players.Guild.Alliance.Disabled:			Les alliances sont désactivées sur ce serveur.	
 Commands.Players.Guild.Alliance.IndexNotVal:		L'index d'alliance n'est pas valide	
 Commands.Players.Guild.Alliance.Info:			Informations pour l'alliance {0} :
 Commands.Players.Guild.Alliance.Invite:			Vous avez invité une guilde à joindre votre alliance	
-Commands.Players.Guild.Alliance.Invited:			Vous avez invité à joindre l'alliance de guilde de {0}	
-Commands.Players.Guild.Alliance.Leader:			Alliance leader {0}	
-Commands.Players.Guild.Alliance.Max:			Vous avez deja atteinds le nombre Max d'alliances permises, vous ne pouvez pas inviter cette guilde.	
+Commands.Players.Guild.Alliance.Invited:			Vous avez été invité à joindre l'alliance de guilde de {0}	
+Commands.Players.Guild.Alliance.Leader:			Chef de l'alliance {0}	
+Commands.Players.Guild.Alliance.Max:			Vous avez deja atteint le nombre Max d'alliances permises, vous ne pouvez pas inviter cette guilde.	
 Commands.Players.Guild.Alliance.Member:			{0} - {1}	
 Commands.Players.Guild.Alliance.Members:			Membres d'Alliance:	
 Commands.Players.Guild.Alliance.MemNotSel:			Vous devez choisir un joueur de la même Alliance	
-Commands.Players.Guild.Alliance.NoGMSelected:		Vous devez selectionner un GM de la guilde que vous voulez inviter.	
+Commands.Players.Guild.Alliance.NoGMSelected:		Vous devez sélectionner un GM de la guilde que vous voulez inviter.	
 Commands.Players.Guild.Alliance.NoLeader:			Il n'y pas de leader d'Alliance
-Commands.Players.Guild.Alliance.NotLeader:			Avant de pouvoir supprimer une guilde d'Alliance vous devez etre la guilde leader de cette Alliance	
-Commands.Players.Guild.Alliance.NotMember:			Vous devez etre dans l'Alliance pour faire cela	
-Commands.Players.Guild.TotalMemberOnline:   Nombre de joueurs online dans la guilde
+Commands.Players.Guild.Alliance.NotLeader:			Avant de pouvoir supprimer une guilde d'Alliance vous devez être la guilde leader de cette Alliance.
+Commands.Players.Guild.Alliance.NotMember:			Vous devez être dans l'Alliance pour pouvoir faire cela	.
+Commands.Players.Guild.TotalMemberOnline:   Nombre de joueurs en ligne dans la guilde.
 
 
 # Ancienne references ne fonctionnant pas mais contenant les textes à traduires (si besoin)

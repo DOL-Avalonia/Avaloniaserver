@@ -1,5 +1,5 @@
-Commands.Players.CheckAppeal.Description:	Checks the status of your appeal or cancels it.
-Commands.Players.CheckAppeal.Usage.Appeal:	Use /appeal to file an appeal.
-Commands.Players.CheckAppeal.Usage.Cancel:	/checkappeal cancel - Cancel your appeal and remove it from the queue.
-Commands.Players.CheckAppeal.Usage.View:	/checkappeal view - View your appeal status.
-Commands.Players.Guild.UnknownCommand:		{0} is not a valid command.
+Commands.Players.CheckAppeal.Description:	Vérifie l'état de votre appel ou l'annule.
+Commands.Players.CheckAppeal.Usage.Appeal:	Faites /appeal pour lancer un appel.
+Commands.Players.CheckAppeal.Usage.Cancel:	/checkappeal cancel - Annulez votre appel et supprimez-le de la file d'attente.
+Commands.Players.CheckAppeal.Usage.View:	/checkappeal view - Affiche l'état de votre appel.
+Commands.Players.Guild.UnknownCommand:		{0} n'est pas une commande valide.

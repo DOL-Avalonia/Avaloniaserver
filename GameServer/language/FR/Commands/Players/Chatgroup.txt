@@ -1,5 +1,5 @@
 Commands.Players.Chatgroup.Chat:					[Chat]
-Commands.Players.Chatgroup.Description:				Chat group command
+Commands.Players.Chatgroup.Description:				Commandes de gestion de groupe de discussion:
 Commands.Players.Chatgroup.Help.Help:			/cg help - Affiche toutes les commandes du groupe de discussion.
 Commands.Players.Chatgroup.Help.Invite:			/cg invite <nom du joueur> - Invite le joueur spécifié à rejoindre le groupe de discussion.
 Commands.Players.Chatgroup.Help.JoinPrivate:		/cg join <moderateur> <mot de passe> - Rejoindre un groupe de discussion protégé par un mot de passe.	
@@ -16,8 +16,8 @@ Commands.Players.Chatgroup.Help.Remove:			/cg remove <nom du joueur> - Éjecte l
 Commands.Players.Chatgroup.Help.Usage:			/cg usage :
 Commands.Players.Chatgroup.Help.Who:				/cg who - Liste tous les membres du groupe de discussion.
 Commands.Players.Chatgroup.InChatGroup:			Vous devez être dans un groupe de discussion pour utiliser cette commande.
-Commands.Players.Chatgroup.InviteYourself:		Vous ne pouvez pas vous inviter vous même dans un groupe de discussion.	
-Commands.Players.Chatgroup.JoinChatGroup:		Voulez vous rejoindre le groupe de discussion de {0} ?	
+Commands.Players.Chatgroup.InviteYourself:		Vous ne pouvez pas vous inviter vous-même dans un groupe de discussion.	
+Commands.Players.Chatgroup.JoinChatGroup:		Voulez-vous rejoindre le groupe de discussion de {0} ?	
 Commands.Players.Chatgroup.LeaderCommand:		Vous devez être le modérateur du groupe de discussion pour utiliser cette commande.	
 Commands.Players.Chatgroup.LeaderInvite:			Vous devez être le modérateur du groupe de discussion pour inviter un joueur à le rejoindre.
 Commands.Players.Chatgroup.ListenMode:			Le mode d'écoute du canal de discussion a changé.
@@ -29,13 +29,13 @@ Commands.Players.Chatgroup.NotPublic:			Ce groupe de discussion n'est pas publiq
 Commands.Players.Chatgroup.OnlyModerator:		Seul le modérateur peut parler dans ce groupe de discussion.	
 Commands.Players.Chatgroup.OwnChatGroup:			Vous ne pouvez pas rejoindre votre propre groupe de discussion.
 Commands.Players.Chatgroup.PasswordChanged:		Nouveau mot de passe du groupe de discussion : {0}.	
-Commands.Players.Chatgroup.PasswordClear:			The password for this chatgroup has been cleared.
+Commands.Players.Chatgroup.PasswordClear:			Le mot de passe de ce groupe de discussion a été effacé.
 Commands.Players.Chatgroup.Password:				Mot de passe de ce groupe de discussion : {0}.
-Commands.Players.Chatgroup.PasswordUnset:			The password to this chat group is currently unset.
+Commands.Players.Chatgroup.PasswordUnset:			Le mot de passe de ce groupe de discussion n'a pas encore été configuré.
 Commands.Players.Chatgroup.PlayerInChatgroup:	{0} est déjà membre d'un groupe de discussion.	
-Commands.Players.Chatgroup.PrivateAlready:			This is already a private chat group.
+Commands.Players.Chatgroup.PrivateAlready:			Ceci est déjà un groupe de discussion privé.
 Commands.Players.Chatgroup.Private:				Le groupe de discussion est maintenant privé.
-Commands.Players.Chatgroup.PublicAlready:			This is already a public chat group.
+Commands.Players.Chatgroup.PublicAlready:			Ceci est déjà un groupe de discussion public.
 Commands.Players.Chatgroup.Public:				Le groupe de discussion est maintenant publique.
 Commands.Players.Chatgroup.Usage.CG:				/cg <option>
 Commands.Players.Chatgroup.UsageInvite:			Usage: /cg invite <nom du joueur>"

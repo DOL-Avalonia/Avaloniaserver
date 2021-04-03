@@ -1,11 +1,11 @@
 # /FreeLevel
-Commands.Players.FreeLevel.AboveMaximumLevel:	Vous êtes au dessus du niveau maximum pour obtenir un niveau supplémentaire.
-Commands.Players.Freelevel.Description:			Affiche l’état de votre niveau gratuit.
-Commands.Players.FreeLevel.EligibleFreeLevel:	Vous êtes éligible à un niveau gratuit ! Cliquer sur votre Instructeur pour le reçevoir (ou '/freelevel decline' pour l'annuler).
-Commands.Players.FreeLevel.FreeLevelIn:			Vous serez éligible à un niveau gratuit dans: {0} jour {1} heures {2} minutes.
-Commands.Players.FreeLevel.FreeLevelIn2:		Vous serez bientôt éligible à un niveau gratuit, lorsque vous gagnerez un niveau et dans: {0} jour {1} heures {2} minutes.
-Commands.Players.FreeLevel.FreeLevelSoon:		Vous serez bientôt éligible à un niveau gratuit, lorsque vous gagnerez un niveau.
-Commands.Players.FreeLevel.NoFreeLevel:			Vous n'avez aucun niveau gratuit!
-Commands.Players.FreeLevel.Removed:				Votre niveau gratuit à été supprimé.
+Commands.Players.FreeLevel.AboveMaximumLevel:	You are above the maximum level to obtain a free level.
+Commands.Players.Freelevel.Description:			Shows the status of your free level.
+Commands.Players.FreeLevel.EligibleFreeLevel:	You are eligible to get a free level! Click on your Trainer to get it (or use '/freelevel decline' to cancel it).
+Commands.Players.FreeLevel.FreeLevelIn:			You will be eligible for a free level in: {0} days {1} hours {2} minutes.
+Commands.Players.FreeLevel.FreeLevelIn2:		You will soon be eligible for a free level, next time you level up and in: {0} days {1} hours {2} minutes.
+Commands.Players.FreeLevel.FreeLevelSoon:		You will soon be eligible for a free level, next time you level up.
+Commands.Players.FreeLevel.NoFreeLevel:			You don't have any free level!
+Commands.Players.FreeLevel.Removed:				Your free level has been removed.
 Commands.Players.Freelevel.Usage:				Usage : '/freelevel'
 
