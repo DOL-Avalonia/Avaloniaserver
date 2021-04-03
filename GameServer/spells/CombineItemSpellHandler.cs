@@ -165,7 +165,7 @@ namespace DOL.spells
                 }
             }
 
-            if (match.CombinexObjectModel != null && !CheckForTools(player, match.CombinexObjectModel.Split(new char[] { '|' })))
+            if (match.CombinexObjectModel != null && !CheckForTools(player, match.CombinexObjectModel.Split(new char[] { '|' })) && !CheckToolKit(player, match.ToolKit))
                 return false;
 
             if (match.Duration > 0)
@@ -178,6 +178,20 @@ namespace DOL.spells
             }
 
             return true;
+        }
+
+        private bool CheckToolKit(GamePlayer player, string toolKit)
+        {
+            if (string.IsNullOrEmpty(toolKit))
+                return true;
+            List<InventoryItem> items = player.Inventory.GetItemRange(eInventorySlot.Min_Inv, eInventorySlot.Max_Inv).ToList();
+            foreach(InventoryItem item in items)
+            {
+                if (item.Id_nb == toolKit)
+                    return true;
+            }
+            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client, "Spell.CombineItemSpellHandler.Toolkit", toolKit), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            return false;
         }
 
         public override bool CastSpell(GameLiving targetObject)
@@ -437,6 +451,18 @@ namespace DOL.spells
                 player.Out.SendUpdateCraftingSkills();
             }
 
+            if(string.IsNullOrEmpty(match.ToolKit) && match.ToolLoseDur > 0)
+            {
+                InventoryItem toolkit = player.Inventory.GetItemRange(eInventorySlot.Min_Inv, eInventorySlot.Max_Inv).Where(item => item.Id_nb == match.ToolKit).FirstOrDefault();
+                if (toolkit != null)
+                {
+                    toolkit.Durability -= match.ToolLoseDur;
+                    if (toolkit.Durability < 0)
+                        player.Inventory.RemoveItem(toolkit);
+                }
+            }
+                
+
             if (!player.ReceiveItem(player, newItem))
             {
                 player.CreateItemOnTheGround(newItem);
@@ -481,7 +507,10 @@ namespace DOL.spells
                         CombinexObjectModel = c.CombinexObjectModel,
                         Duration = c.Duration,
                         IsUnique = c.IsUnique,
-                        ApplyRewardCraftingSkillsSystem = c.ApplyRewardCraftingSkillsSystem
+                        ApplyRewardCraftingSkillsSystem = c.ApplyRewardCraftingSkillsSystem,
+                        ToolKit = c.ToolKit,
+                        ToolLoseDur = c.ToolLoseDur,
+                        CombinationId = c.CombinationId
                     };
                 });
 
@@ -600,6 +629,21 @@ namespace DOL.spells
         /// If is unique item
         /// </summary>
         public bool ApplyRewardCraftingSkillsSystem { get; set; }
+
+        /// <summary>
+        /// Toolkit template to Combine the Object
+        /// </summary>
+        public string ToolKit { get; set; }
+
+        /// <summary>
+        /// Point of durability lost per combination
+        /// </summary>
+        public short ToolLoseDur { get; set; }
+
+        /// <summary>
+        /// Combination id to reference it in player list
+        /// </summary>
+        public string CombinationId { get; set; }
     }
 
 }

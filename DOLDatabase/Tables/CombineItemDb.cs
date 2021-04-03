@@ -25,6 +25,9 @@ namespace DOLDatabase.Tables
         private bool m_isUnique;
         private string m_combinexObjectModel;
         private bool m_applyRewardCraftingSkillsSystem;
+        private string m_toolKit;
+        private short m_ToolLoseDur;
+        private string m_CombinationID;
 
         [DataElement(AllowDbNull = false)]
         public string ItemsIds
@@ -203,6 +206,48 @@ namespace DOLDatabase.Tables
             {
                 Dirty = true;
                 m_applyRewardCraftingSkillsSystem = value;
+            }
+        }
+
+        /// <summary>
+        /// Toolkit template to Combine the Object
+        /// </summary>
+        [DataElement(AllowDbNull = true)]
+        public string ToolKit
+        {
+            get => m_toolKit;
+            set
+            {
+                Dirty = true;
+                m_toolKit = value;
+            }
+        }
+
+        /// <summary>
+        /// Point of durability lost per combination
+        /// </summary>
+        [DataElement(AllowDbNull = true)]
+        public short ToolLoseDur
+        {
+            get => m_ToolLoseDur;
+            set
+            {
+                Dirty = true;
+                m_ToolLoseDur = value;
+            }
+        }
+
+        /// <summary>
+        /// Combination id to reference it in player list
+        /// </summary>
+        [DataElement(AllowDbNull = true)]
+        public string CombinationId
+        {
+            get => m_CombinationID;
+            set
+            {
+                Dirty = true;
+                m_CombinationID = value;
             }
         }
     }
