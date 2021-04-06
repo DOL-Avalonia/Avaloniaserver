@@ -129,6 +129,7 @@
     <Compile Include="Handlers\SQLiteObjectDatabase.cs" />
     <Compile Include="LanguageDataObject.cs" />
     <Compile Include="SQLObjectDatabase.cs" />
+    <Compile Include="Tables\CharacterXCombineItem.cs" />
     <Compile Include="Tables\CharacterXDataQuest.cs" />
     <Compile Include="Tables\ClassXSpecialization.cs" />
     <Compile Include="Tables\CharacterXDQRewardQ.cs" />

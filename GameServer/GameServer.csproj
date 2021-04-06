@@ -247,6 +247,7 @@
     <Compile Include="commands\gmcommands\walk.cs" />
     <Compile Include="commands\gmcommands\weather.cs" />
     <Compile Include="commands\playercommands\afk.cs" />
+    <Compile Include="commands\playercommands\Combine.cs" />
     <Compile Include="commands\playercommands\sell.cs" />
     <Compile Include="commands\playercommands\Event.cs" />
     <Compile Include="commands\RefreshCommandAttribute.cs" />
@@ -411,6 +412,7 @@
     <Compile Include="gameobjects\CustomNPC\Doppelganger.cs" />
     <Compile Include="gameobjects\CustomNPC\GameSummoner.cs" />
     <Compile Include="gameobjects\CustomNPC\RenaissanceNPC.cs" />
+    <Compile Include="gameobjects\CustomNPC\ShadowNPC.cs" />
     <Compile Include="gameobjects\CustomNPC\StaticMob.cs" />
     <Compile Include="gameobjects\FeuDeCamp.cs" />
     <Compile Include="gameobjects\MoneyEventNPC.cs" />

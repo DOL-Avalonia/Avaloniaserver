@@ -30,6 +30,7 @@ using DOL.AI.Brain;
 using DOL.Database;
 using DOL.events.gameobjects;
 using DOL.Events;
+using DOL.gameobjects.CustomNPC;
 using DOL.GS.Effects;
 using DOL.GS.Housing;
 using DOL.GS.Keeps;
@@ -71,6 +72,8 @@ namespace DOL.GS
 		private Timer reputationRecoveryTimer;
 
         private bool stayStealth = false;
+
+        private ShadowNPC shadowNPC;
 
 		/// <summary>
 		/// This is our gameclient!
@@ -969,6 +972,9 @@ namespace DOL.GS
 
 			if (InHouse)
 				LeaveHouse();
+
+            if(ShadowNPC != null)
+                ShadowNPC.Delete();
 
 			// Dinberg: this will eventually need to be changed so that it moves them to the location they TP'ed in.
 			// DamienOphyr: Overwrite current position with Bind position in database, MoveTo() is inoperant
@@ -6472,12 +6478,12 @@ namespace DOL.GS
 			set { m_rangeAttackTarget.Target = value; }
 		}
 
-		/// <summary>
-		/// Check the range attack state and decides what to do
-		/// Called inside the AttackTimerCallback
-		/// </summary>
-		/// <returns></returns>
-		protected override eCheckRangeAttackStateResult CheckRangeAttackState(GameObject target)
+        /// <summary>
+        /// Check the range attack state and decides what to do
+        /// Called inside the AttackTimerCallback
+        /// </summary>
+        /// <returns></returns>
+        protected override eCheckRangeAttackStateResult CheckRangeAttackState(GameObject target)
 		{
 			long holdStart = TempProperties.getProperty<long>(RANGE_ATTACK_HOLD_START);
 			if (holdStart == 0)
@@ -16805,12 +16811,13 @@ namespace DOL.GS
 
 			CreateStatistics();
 			this.ConfigureReputationTimer();
+            shadowNPC = new ShadowNPC(this);
 		}
 
-		/// <summary>
-		/// Create this players inventory
-		/// </summary>
-		protected virtual void CreateInventory()
+        /// <summary>
+        /// Create this players inventory
+        /// </summary>
+        protected virtual void CreateInventory()
 		{
 			m_inventory = new GamePlayerInventory(this);
 		}
@@ -17007,6 +17014,7 @@ namespace DOL.GS
         /// </summary>
         public bool StayStealth { get => stayStealth; set => stayStealth = value; }
         public SpellHandler PulseSpell { get => m_pulseSpell; set => m_pulseSpell = value; }
+        public ShadowNPC ShadowNPC { get => shadowNPC; set => shadowNPC = value; }
         #endregion
 
 
