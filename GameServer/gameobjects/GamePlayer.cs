@@ -10795,8 +10795,10 @@ namespace DOL.GS
 						}
 					}
 				}
-			}
-			return true;
+                shadowNPC.MoveToPlayer();
+            }
+            
+            return true;
 		}
 
 		/// <summary>

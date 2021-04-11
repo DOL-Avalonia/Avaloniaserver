@@ -69,7 +69,7 @@ namespace DOL.gameobjects.CustomNPC
             AddToWorld();
         }
 
-        public override string Name { get => "Shadow"; set => base.Name = value; }
+        public override string Name { get => "Combine List"; set => base.Name = value; }
         public string KeyWord
         {
             get => keyWord;
@@ -250,25 +250,25 @@ namespace DOL.gameobjects.CustomNPC
             region = player.CurrentRegion;
         }
 
-        protected override int FollowTimerCallback(RegionTimer callingTimer)
-        {
-            if (CurrentRegionID != player.CurrentRegionID)
-                MoveToPlayer();
-            else
-            {
-                //Calculate the difference between our position and the players position
-                float diffx = (long)player.X - X;
-                float diffy = (long)player.Y - Y;
-                float diffz = (long)player.Z - Z;
+        //protected override int FollowTimerCallback(RegionTimer callingTimer)
+        //{
+        //    if (CurrentRegionID != player.CurrentRegionID)
+        //        MoveToPlayer();
+        //    else
+        //    {
+        //        //Calculate the difference between our position and the players position
+        //        float diffx = (long)player.X - X;
+        //        float diffy = (long)player.Y - Y;
+        //        float diffz = (long)player.Z - Z;
                 
-                float distance = (float)Math.Sqrt(diffx * diffx + diffy * diffy + diffz * diffz);
-                if((int)distance > m_followMaxDist)
-                {
-                    MoveToPlayer();
-                }
-            }
-            return base.FollowTimerCallback(callingTimer);
-        }
+        //        float distance = (float)Math.Sqrt(diffx * diffx + diffy * diffy + diffz * diffz);
+        //        if((int)distance > m_followMaxDist)
+        //        {
+        //            MoveToPlayer();
+        //        }
+        //    }
+        //    return base.FollowTimerCallback(callingTimer);
+        //}
 
         public virtual void MoveToPlayer()
         {
@@ -278,11 +278,7 @@ namespace DOL.gameobjects.CustomNPC
 
             GetPlayerLocation(out x, out y, out z, out heading, out region);
 
-            X = x;
-            Y = y;
-            Z = z;
-            Heading = heading;
-            CurrentRegion = region;
+            MoveTo(region.ID, x, y, z, heading);
         }
 
         public void Interact(string message)

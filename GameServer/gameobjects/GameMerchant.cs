@@ -611,9 +611,12 @@ namespace DOL.GS
                     Notify(GameObjectEvent.InteractFailed, this, new InteractEventArgs(player));
                     return false;
                 }
-                else if (string.IsNullOrEmpty(territory.GuildOwner) && player.Reputation < 0)
+                else if (string.IsNullOrEmpty(territory.GuildOwner))
                 {
-                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.Interact.Territory.Outlaws"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    if(player.Reputation < 0)
+                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.Interact.Territory.Outlaws"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    else
+                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.Interact.Territory.NotSameGuild"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
                     Notify(GameObjectEvent.InteractFailed, this, new InteractEventArgs(player));
                     return false;
