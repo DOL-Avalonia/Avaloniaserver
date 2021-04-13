@@ -15322,7 +15322,7 @@ namespace DOL.GS
 
 				if (Properties.IS_REPUTATION_RECOVERY_ACTIVATED && m_reputation < 0 && OutlawTimeStamp == 0)
                 {
-                    if(oldValue >= 0)
+                    if(oldValue >= 0 && Properties.DISCORD_ACTIVE)
                     {
                         var hook = new DolWebHook(Properties.DISCORD_WEBHOOK_ID);
                         hook.SendMessage(Name + " is now wanted for his crimes and his felony") ;

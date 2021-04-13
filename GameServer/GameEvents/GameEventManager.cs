@@ -648,7 +648,7 @@ namespace DOL.GameEvents
 
             if (e.DebutText != null && e.EventZones?.Any() == true)
             {                
-                SendEventNotification(e, e.DebutText);
+                SendEventNotification(e, e.DebutText, (e.Discord == 1 || e.Discord == 3));
             }
 
             if (e.HasHandomText)
@@ -725,10 +725,10 @@ namespace DOL.GameEvents
             }
         }
 
-        private void SendEventNotification(GameEvent e, string message)
+        private void SendEventNotification(GameEvent e, string message, bool sendDiscrod)
         {
             NotifyPlayersInEventZones(e.AnnonceType, message, e.EventZones);
-            if (e.Discord == 2 || e.Discord == 3)
+            if (Properties.DISCORD_ACTIVE && sendDiscrod)
             {
                 var hook = new DolWebHook(Properties.DISCORD_WEBHOOK_ID);
                 hook.SendMessage(message);
@@ -768,7 +768,7 @@ namespace DOL.GameEvents
                     if (e.Owner != null && e.Owner.Guild != null)
                     {
                         message = message.Replace("<guilde>", e.Owner.GuildName);
-                        SendEventNotification(e, message);
+                        SendEventNotification(e, message, (e.Discord == 2 || e.Discord == 3));
                     }         
                 }
                 else if (message.Contains("<player>"))
@@ -776,7 +776,7 @@ namespace DOL.GameEvents
                     if (e.Owner != null)
                     {
                         message = message.Replace("<player>", e.Owner.Name);
-                        SendEventNotification(e, message);
+                        SendEventNotification(e, message, (e.Discord == 2 || e.Discord == 3));
 
                     }
                 }
@@ -785,7 +785,7 @@ namespace DOL.GameEvents
                     if (e.Owner != null && e.Owner.Group != null)
                     {
                         message = message.Replace("<group>", e.Owner.Group.Leader.Name);
-                        SendEventNotification(e, message);
+                        SendEventNotification(e, message, (e.Discord == 2 || e.Discord == 3));
 
                     }
                 } 
@@ -794,7 +794,7 @@ namespace DOL.GameEvents
                     if (e.Owner != null)
                     {
                         message = message.Replace("<race>", e.Owner.RaceName);
-                        SendEventNotification(e, message);
+                        SendEventNotification(e, message, (e.Discord == 2 || e.Discord == 3));
 
                     }
                 }
@@ -803,13 +803,13 @@ namespace DOL.GameEvents
                     if (e.Owner != null)
                     {
                         message = message.Replace("<class>", e.Owner.CharacterClass.Name);
-                        SendEventNotification(e, message);
+                        SendEventNotification(e, message, (e.Discord == 2 || e.Discord == 3));
 
                     }
                 }
                 else
                 {
-                    SendEventNotification(e, message);
+                    SendEventNotification(e, message, (e.Discord == 2 || e.Discord == 3));
 
                 }
                 //Enjoy the message
