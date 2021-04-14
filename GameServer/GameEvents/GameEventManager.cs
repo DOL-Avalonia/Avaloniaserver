@@ -725,10 +725,10 @@ namespace DOL.GameEvents
             }
         }
 
-        private void SendEventNotification(GameEvent e, string message, bool sendDiscrod)
+        private void SendEventNotification(GameEvent e, string message, bool sendDiscord)
         {
             NotifyPlayersInEventZones(e.AnnonceType, message, e.EventZones);
-            if (Properties.DISCORD_ACTIVE && sendDiscrod)
+            if (Properties.DISCORD_ACTIVE && sendDiscord)
             {
                 var hook = new DolWebHook(Properties.DISCORD_WEBHOOK_ID);
                 hook.SendMessage(message);
