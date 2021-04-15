@@ -17,6 +17,12 @@ namespace DOL.GS
 		public AmtePlayer(GameClient client, DOLCharacters dbChar) : base(client, dbChar) 
 		{
 			HeadTemplate = GameServer.Database.FindObjectByKey<ItemTemplate>("head_blacklist") ?? new ItemTemplate();
+            if(RvrManager.WinnerRealm == Realm)
+            {
+                BaseBuffBonusCategory[eProperty.MythicalCoin] += 5;
+                BaseBuffBonusCategory[eProperty.XpPoints] += 10;
+                BaseBuffBonusCategory[eProperty.RealmPoints] += 5;
+            }
 		}
 
 		public override int BountyPointsValue

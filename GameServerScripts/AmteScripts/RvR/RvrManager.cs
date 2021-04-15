@@ -9,6 +9,7 @@ using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
+using DOL.Language;
 using DOL.Territory;
 using log4net;
 
@@ -45,14 +46,19 @@ namespace AmteScripts.Managers
         //const string RvRDivineMID = "RvR-Divine-MID";
 
         private static int RVR_RADIUS = Properties.RvR_AREA_RADIUS;
-        private static DateTime _startTime = DateTime.Today.AddHours(20D); //20H00
-        private static DateTime _endTime = _startTime.Add(TimeSpan.FromHours(6)); //2H00 + 1
+        private static DateTime _startTime = DateTime.Today.AddHours(0D); //20H00
+        private static DateTime _endTime = _startTime.Add(TimeSpan.FromMinutes(35)); //2H00 + 1
 		private const int _checkInterval = 30 * 1000; // 30 seconds
 		private static readonly GameLocation _stuckSpawn = new GameLocation("", 51, 434303, 493165, 3088, 1069);
         private Dictionary<ushort, IList<string>> RvrStats = new Dictionary<ushort, IList<string>>();
+        private Dictionary<string, int> Scores = new Dictionary<string, int>();
+        private int checkScore = 0;
+        private int checkNumberOfPlayer = 0;
+        private string winnerName = "";
+        private DateTime RvRBonusDate = DateTime.Now.Date;
 
-		#region Static part
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        #region Static part
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private static RvrManager _instance;
 		private static RegionTimer _timer;
@@ -91,9 +97,27 @@ namespace AmteScripts.Managers
 		public bool IsOpen { get { return _isOpen; } }
         public IEnumerable<ushort> Regions { get { return _regions; } }
 
-		/// <summary>
-		/// &lt;regionID, Tuple&lt;TPs, spawnAlb, spawnMid, spawnHib&gt;&gt;
-		/// </summary>
+        public static eRealm WinnerRealm
+        {
+            get
+            {
+                switch(Instance.winnerName)
+                {
+                    case ALBION:
+                        return eRealm.Albion;
+                    case MIDGARD:
+                        return eRealm.Midgard;
+                    case HIBERNIA:
+                        return eRealm.Hibernia;
+                    default:
+                        return eRealm.None;
+                }
+            }
+        }
+
+        /// <summary>
+        /// &lt;regionID, Tuple&lt;TPs, spawnAlb, spawnMid, spawnHib&gt;&gt;
+        /// </summary>
         private readonly Dictionary<string, RvRMap> _maps =
             new Dictionary<string, RvRMap>();
 
@@ -331,7 +355,8 @@ namespace AmteScripts.Managers
         private int _CheckRvr(RegionTimer callingtimer)
 		{
 			Console.WriteLine("Check RVR");
-			if (!_isOpen)
+            DateTime currentTime = DateTime.Now;
+            if (!_isOpen)
 			{
             	_regions.ForEach(id => WorldMgr.GetClientsOfRegion(id).Foreach(RemovePlayer));
 				if (DateTime.Now >= _startTime && DateTime.Now < _endTime)
@@ -339,6 +364,9 @@ namespace AmteScripts.Managers
 			}
 			else
 			{
+                // Count the number of player in RvR
+                int countPlayer = 0;
+
                 foreach (var id in _regions)
                 {
                     foreach (var cl in WorldMgr.GetClientsOfRegion(id))
@@ -350,18 +378,54 @@ namespace AmteScripts.Managers
                         else
                         {
                             cl.Player.IsInRvR = true;
+                            countPlayer++;
                         }
                     }
                 }
 
                 if (!_isForcedOpen)
 				{
-					if ((DateTime.Now < _startTime || DateTime.Now > _endTime) && !Close())
+					if ((currentTime < _startTime || currentTime > _endTime) && !Close())
                         _regions.ForEach(id => WorldMgr.GetClientsOfRegion(id).Foreach(RemovePlayer));                  
 				}
+
+                // check the Score every minutes and if the number of player is less than 8 pending 5 minutes stop count the point 
+                if(checkScore == 0)
+                {
+                    // check if the number of players is sufficient to count points
+                    if (countPlayer < 8)
+                        checkNumberOfPlayer++;
+                    else
+                        checkNumberOfPlayer = 0;
+
+                    if(checkNumberOfPlayer < 5)
+                    {
+                        _maps.ForEach((map) => {
+                            if (map.Value.RvRTerritory != null && !string.IsNullOrEmpty(map.Value.RvRTerritory.Boss.GuildName) && Scores.ContainsKey(map.Value.RvRTerritory.Boss.GuildName))
+                            {
+                                if(map.Key.Contains("Debutant"))
+                                    Scores[map.Value.RvRTerritory.Boss.GuildName]++;
+                                else if(map.Key.Contains("Standard"))
+                                    Scores[map.Value.RvRTerritory.Boss.GuildName]+=2;
+                                else if (map.Key.Contains("Expert"))
+                                    Scores[map.Value.RvRTerritory.Boss.GuildName] += 3;
+                                else if (map.Key.Contains("Master"))
+                                    Scores[map.Value.RvRTerritory.Boss.GuildName] += 4;
+                            }
+                        });
+                    }
+                }
+
+                checkScore = (checkScore + 1) % 2;
 			}
 
-            if (DateTime.Now > _endTime)
+            if(currentTime.Date > RvRBonusDate)
+            {
+                ClearRvRBonus();
+                RvRBonusDate = currentTime.Date;
+            }
+
+            if (currentTime > _endTime)
             {
                 _startTime = _startTime.AddHours(24D);
                 _endTime = _endTime.AddHours(24D);
@@ -369,6 +433,18 @@ namespace AmteScripts.Managers
 
 			return _checkInterval;
 		}
+
+        private void ClearRvRBonus()
+        {
+            WorldMgr.GetClientsOfRealm(WinnerRealm).Foreach((client) =>
+            {
+                client.Player.BaseBuffBonusCategory[eProperty.MythicalCoin] -= 5;
+                client.Player.BaseBuffBonusCategory[eProperty.XpPoints] -= 10;
+                client.Player.BaseBuffBonusCategory[eProperty.RealmPoints] -= 5;
+                client.Out.SendUpdatePlayer();
+            });
+            winnerName = "";
+        }
 
         public bool Open(bool force)
         {
@@ -380,6 +456,13 @@ namespace AmteScripts.Managers
             Hibernia.RealmPoints = 0;
             Albion.RealmPoints = 0;
             Midgard.RealmPoints = 0;
+
+            // Count score
+            Scores = new Dictionary<string, int>();
+            Scores.Add(ALBION, 0);
+            Scores.Add(HIBERNIA, 0);
+            Scores.Add(MIDGARD, 0);
+
             this._maps.Where(m => m.Value.RvRTerritory != null).Foreach(m => {
                 ((LordRvR)m.Value.RvRTerritory.Boss).StartRvR();
                 TerritoryManager.ClearEmblem(m.Value.RvRTerritory, m.Value.RvRTerritory.Boss);
@@ -404,12 +487,73 @@ namespace AmteScripts.Managers
             this._maps.Values.GroupBy(v => v.Location.RegionID).ForEach(region => {
                 WorldMgr.GetClientsOfRegion(region.Key).Where(player => player.Player != null).Foreach(RemovePlayer);
                 GameServer.Database.SelectObjects<DOLCharacters>("Region = " + region.Key).Foreach(RemovePlayer);
-            }); 
+            });
+            string messageScore = GetMessageScore();
+            WorldMgr.GetAllPlayingClients().Foreach((c) => 
+            {
+                string message = LanguageMgr.GetTranslation(c, "RvrManager.Score.Title") + "\n";
+                message += messageScore;
+                if (string.IsNullOrEmpty(winnerName))
+                    message += LanguageMgr.GetTranslation(c, "RvrManager.Score.NoWinner");
+                else
+                    message += LanguageMgr.GetTranslation(c, "RvrManager.Score.Winner") + ": " + winnerName;
+                c.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
+            });
 
-			return true;
+            if(Properties.DISCORD_ACTIVE)
+            {
+                string message = string.Format("RvR Scores for the {0} :\n", DateTime.Now.Date.ToString("MM/dd/yyyy"));
+                message += messageScore;
+                if (string.IsNullOrEmpty(winnerName))
+                    message += "Winner: none";
+                else
+                    message += "Winner: " + winnerName;
+                message += "\nTotal players killed : xx\n";
+                message += "Champion of the day : <playername> ( xx enemy players killed )";
+                var hook = new DolWebHook(Properties.DISCORD_WEBHOOK_ID);
+                hook.SendMessage(message);
+            }
+
+            if (!string.IsNullOrEmpty(winnerName))
+                ApplyRvRBonus();
+
+            return true;
 		}
 
-		public bool AddPlayer(GamePlayer player)
+        private void ApplyRvRBonus()
+        {
+            WorldMgr.GetClientsOfRealm(WinnerRealm).Foreach((client) =>
+            {
+                client.Player.BaseBuffBonusCategory[eProperty.MythicalCoin] += 5;
+                client.Player.BaseBuffBonusCategory[eProperty.XpPoints] += 10;
+                client.Player.BaseBuffBonusCategory[eProperty.RealmPoints] += 5;
+                client.Out.SendUpdatePlayer();
+            });
+        }
+
+        private string GetMessageScore()
+        {
+            string result = ALBION + ": " + Scores[ALBION] + " points\n";
+            result += HIBERNIA + ": " + Scores[HIBERNIA] + " points\n";
+            result += MIDGARD + ": " + Scores[MIDGARD] + " points\n";
+            result += "\n";
+            winnerName = "";
+            int max = 0;
+            foreach(KeyValuePair<string, int> score in Scores)
+            {
+                if (score.Value == max)
+                    winnerName = "";
+                else if (score.Value > max)
+                {
+                    max = score.Value;
+                    winnerName = score.Key;
+                }
+            }
+            
+            return result;
+        }
+
+        public bool AddPlayer(GamePlayer player)
 		{
 			if (!_isOpen || player.Level < 20)
 				return false;
