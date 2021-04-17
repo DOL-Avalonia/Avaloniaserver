@@ -30,6 +30,7 @@ using DOL.GS.Keeps;
 using DOL.Language;
 using log4net;
 using DOL.GS.ServerProperties;
+using DOL.gameobjects.CustomNPC;
 
 namespace DOL.AI.Brain
 {
@@ -1370,7 +1371,7 @@ namespace DOL.AI.Brain
                     break;
             }
 
-            if (Body.TargetObject != null && (spell.Duration == 0 || (Body.TargetObject is GameLiving living && LivingHasEffect(living, spell) == false)))
+            if (Body.TargetObject != null && (spell.Duration == 0 || (Body.TargetObject is GameLiving living && !(living is ShadowNPC) && LivingHasEffect(living, spell) == false)))
             {
                 casted = Body.CastSpell(spell, m_mobSpellLine);
 
@@ -1399,7 +1400,7 @@ namespace DOL.AI.Brain
 
             bool casted = false;
 
-            if (Body.TargetObject is GameLiving living && (spell.Duration == 0 || !living.HasEffect(spell) || spell.SpellType.ToUpper() == "DIRECTDAMAGEWITHDEBUFF"))
+            if (Body.TargetObject is GameLiving living && !(living is ShadowNPC) && (spell.Duration == 0 || !living.HasEffect(spell) || spell.SpellType.ToUpper() == "DIRECTDAMAGEWITHDEBUFF"))
             {
                 // Offensive spells require the caster to be facing the target
                 if (Body.TargetObject != Body)

@@ -46,6 +46,9 @@ namespace DOL.gameobjects.CustomNPC
             return checkObject is GamePlayer pl && pl == player;
         }
 
+        // never die
+        public override int Health { get => base.Health; set => base.Health = MaxHealth; }
+
         public override ushort Model { get => 667; set => base.Model = value; }
 
         public override eFlags Flags { get => eFlags.DONTSHOWNAME; set => base.Flags = value; }
@@ -250,26 +253,6 @@ namespace DOL.gameobjects.CustomNPC
             region = player.CurrentRegion;
         }
 
-        //protected override int FollowTimerCallback(RegionTimer callingTimer)
-        //{
-        //    if (CurrentRegionID != player.CurrentRegionID)
-        //        MoveToPlayer();
-        //    else
-        //    {
-        //        //Calculate the difference between our position and the players position
-        //        float diffx = (long)player.X - X;
-        //        float diffy = (long)player.Y - Y;
-        //        float diffz = (long)player.Z - Z;
-                
-        //        float distance = (float)Math.Sqrt(diffx * diffx + diffy * diffy + diffz * diffz);
-        //        if((int)distance > m_followMaxDist)
-        //        {
-        //            MoveToPlayer();
-        //        }
-        //    }
-        //    return base.FollowTimerCallback(callingTimer);
-        //}
-
         public virtual void MoveToPlayer()
         {
             int x, y, z;
@@ -294,11 +277,12 @@ namespace DOL.gameobjects.CustomNPC
     {
         public ShadowBrain(GameLiving owner) : base(owner)
         {
+            m_isMainPet = false;
         }
 
         public override GameLiving GetLivingOwner()
         {
             return Owner;
-        }
+        } 
     }
 }
