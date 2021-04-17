@@ -956,6 +956,12 @@ namespace DOL.GS.ServerProperties
         public static int RvR_OUTSIDE_AREA_RP_BONUS { get; set; }
 
         /// <summary>
+        /// The number of needed players to count points in RvR (default 10)
+        /// </summary>
+        [ServerProperty("rvr", "rvr_number_of_needed_players", "The number of needed players to count points in RvR", 10)]
+        public static int RvR_NUMBER_OF_NEEDED_PLAYERS { get; set; }
+
+        /// <summary>
         /// The Realm Points Rate
         /// </summary>
         [ServerProperty("rates", "rp_rate", "The Realm Points Rate Modifier - Edit this to change the rate at which you gain realm points e.g 1.5 is 50% more 2.0 is twice the amount (100%) 0.5 is half the amount (50%)", 1.0)]

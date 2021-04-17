@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Amte;
@@ -46,12 +47,13 @@ namespace AmteScripts.Managers
         //const string RvRDivineMID = "RvR-Divine-MID";
 
         private static int RVR_RADIUS = Properties.RvR_AREA_RADIUS;
-        private static DateTime _startTime = DateTime.Today.AddHours(0D); //20H00
-        private static DateTime _endTime = _startTime.Add(TimeSpan.FromMinutes(35)); //2H00 + 1
+        private static DateTime _startTime = DateTime.Today.AddHours(23D).Add(TimeSpan.FromMinutes(5)); //20H00
+        private static DateTime _endTime = _startTime.Add(TimeSpan.FromMinutes(20)); //2H00 + 1
 		private const int _checkInterval = 30 * 1000; // 30 seconds
 		private static readonly GameLocation _stuckSpawn = new GameLocation("", 51, 434303, 493165, 3088, 1069);
         private Dictionary<ushort, IList<string>> RvrStats = new Dictionary<ushort, IList<string>>();
         private Dictionary<string, int> Scores = new Dictionary<string, int>();
+        private Dictionary<GamePlayer, short> kills = new Dictionary<GamePlayer, short>();
         private int checkScore = 0;
         private int checkNumberOfPlayer = 0;
         private string winnerName = "";
@@ -70,6 +72,9 @@ namespace AmteScripts.Managers
 		{
 			log.Info("RvRManger: Started");
 			_instance = new RvrManager();
+            _instance.Scores.Add(ALBION, 0);
+            _instance.Scores.Add(HIBERNIA, 0);
+            _instance.Scores.Add(MIDGARD, 0);
             _timer = new RegionTimer(WorldMgr.GetRegion(1).TimeManager)
 			{
 				Callback = _instance._CheckRvr
@@ -112,6 +117,18 @@ namespace AmteScripts.Managers
                     default:
                         return eRealm.None;
                 }
+            }
+        }
+
+        public Dictionary<GamePlayer, short> Kills
+        {
+            get
+            {
+                return kills;
+            }
+            set
+            {
+                kills = value;
             }
         }
 
@@ -393,7 +410,7 @@ namespace AmteScripts.Managers
                 if(checkScore == 0)
                 {
                     // check if the number of players is sufficient to count points
-                    if (countPlayer < 8)
+                    if (countPlayer < Properties.RvR_NUMBER_OF_NEEDED_PLAYERS)
                         checkNumberOfPlayer++;
                     else
                         checkNumberOfPlayer = 0;
@@ -431,8 +448,18 @@ namespace AmteScripts.Managers
                 _endTime = _endTime.AddHours(24D);
             }
 
-			return _checkInterval;
+            SaveScore();
+
+            return _checkInterval;
 		}
+
+        private void SaveScore()
+        {
+            if (!Directory.Exists("temp"))
+                Directory.CreateDirectory("temp");
+            if (string.IsNullOrEmpty(winnerName)) File.WriteAllText("temp/RvRScore.dat", string.Format("{0}\n{1}\n{2}\n{3}", DateTime.Now.ToBinary(), Scores[ALBION], Scores[HIBERNIA], Scores[MIDGARD]));
+            else File.WriteAllText("temp/RvRScore.dat", string.Format("{0}\n{1}\n{2}\n{3}\n{4}", DateTime.Now.ToBinary(), Scores[ALBION], Scores[HIBERNIA], Scores[MIDGARD], winnerName));
+        }
 
         private void ClearRvRBonus()
         {
@@ -459,9 +486,33 @@ namespace AmteScripts.Managers
 
             // Count score
             Scores = new Dictionary<string, int>();
-            Scores.Add(ALBION, 0);
-            Scores.Add(HIBERNIA, 0);
-            Scores.Add(MIDGARD, 0);
+            if (File.Exists("temp/RvRScore.dat"))
+            {
+                var lines = File.ReadAllText("temp/RvRScore.dat").Split('\n');
+                DateTime dateOfSave;
+                if (lines.Length > 4 && DateTime.TryParse(lines[0], out dateOfSave) && dateOfSave > DateTime.Today)
+                {
+                    Scores.Add(ALBION, int.Parse(lines[1]));
+                    Scores.Add(HIBERNIA, int.Parse(lines[2]));
+                    Scores.Add(MIDGARD, int.Parse(lines[3]));
+                    if (lines.Length == 5)
+                        winnerName = lines[4];
+                }
+                else
+                {
+                    Scores.Add(ALBION, 0);
+                    Scores.Add(HIBERNIA, 0);
+                    Scores.Add(MIDGARD, 0);
+                }
+            }
+            else
+            {
+                Scores.Add(ALBION, 0);
+                Scores.Add(HIBERNIA, 0);
+                Scores.Add(MIDGARD, 0);
+            }
+            
+            kills = new Dictionary<GamePlayer, short>();
 
             this._maps.Where(m => m.Value.RvRTerritory != null).Foreach(m => {
                 ((LordRvR)m.Value.RvRTerritory.Boss).StartRvR();
@@ -478,6 +529,18 @@ namespace AmteScripts.Managers
 			_isOpen = false;
 			_isForcedOpen = false;
 
+            string messageScore = GetMessageScore();
+            WorldMgr.GetAllPlayingClients().Foreach((c) =>
+            {
+                string message = LanguageMgr.GetTranslation(c, "RvrManager.Score.Title") + "\n";
+                message += messageScore;
+                if (string.IsNullOrEmpty(winnerName))
+                    message += LanguageMgr.GetTranslation(c, "RvrManager.Score.NoWinner");
+                else
+                    message += LanguageMgr.GetTranslation(c, "RvrManager.Score.Winner") + ": " + winnerName;
+                c.Out.SendMessage(message, eChatType.CT_Help, eChatLoc.CL_SystemWindow);
+            });
+
             this._maps.Where(m => m.Value.RvRTerritory != null).Foreach(m => {
                 ((LordRvR)m.Value.RvRTerritory.Boss).StopRvR();
                 m.Value.RvRTerritory.Reset();
@@ -488,17 +551,7 @@ namespace AmteScripts.Managers
                 WorldMgr.GetClientsOfRegion(region.Key).Where(player => player.Player != null).Foreach(RemovePlayer);
                 GameServer.Database.SelectObjects<DOLCharacters>("Region = " + region.Key).Foreach(RemovePlayer);
             });
-            string messageScore = GetMessageScore();
-            WorldMgr.GetAllPlayingClients().Foreach((c) => 
-            {
-                string message = LanguageMgr.GetTranslation(c, "RvrManager.Score.Title") + "\n";
-                message += messageScore;
-                if (string.IsNullOrEmpty(winnerName))
-                    message += LanguageMgr.GetTranslation(c, "RvrManager.Score.NoWinner");
-                else
-                    message += LanguageMgr.GetTranslation(c, "RvrManager.Score.Winner") + ": " + winnerName;
-                c.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
-            });
+            
 
             if(Properties.DISCORD_ACTIVE)
             {
@@ -508,8 +561,22 @@ namespace AmteScripts.Managers
                     message += "Winner: none";
                 else
                     message += "Winner: " + winnerName;
-                message += "\nTotal players killed : xx\n";
-                message += "Champion of the day : <playername> ( xx enemy players killed )";
+
+                short countKilledPlayers = 0;
+                short maxKills = 0;
+                string champion = "";
+                foreach(KeyValuePair<GamePlayer, short> killsPerPlayer in Kills)
+                {
+                    countKilledPlayers += killsPerPlayer.Value;
+                    if (killsPerPlayer.Value > maxKills)
+                    {
+                        maxKills = killsPerPlayer.Value;
+                        champion = killsPerPlayer.Key.Name;
+                    }
+                }
+                message += string.Format("\nTotal players killed : {0}\n", countKilledPlayers);
+                if(!string.IsNullOrEmpty(champion))
+                    message += string.Format("Champion of the day : {0} ( {1} enemy players killed )", champion, maxKills);
                 var hook = new DolWebHook(Properties.DISCORD_WEBHOOK_ID);
                 hook.SendMessage(message);
             }

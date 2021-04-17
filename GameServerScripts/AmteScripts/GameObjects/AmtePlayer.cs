@@ -40,7 +40,17 @@ namespace DOL.GS
 			base.Die(killer);
 
 			if (RvrManager.Instance.IsInRvr(this))
-				return;
+            {
+                GamePlayer killerAsPlayer = killer as GamePlayer;
+                if (killerAsPlayer != null && killerAsPlayer.IsInRvR)
+                {
+                    if (RvrManager.Instance.Kills.ContainsKey(killerAsPlayer))
+                        RvrManager.Instance.Kills[killerAsPlayer]++;
+                    else
+                        RvrManager.Instance.Kills.Add(killerAsPlayer, 1);
+                }
+                return;
+            }
 
 			if (killer is AmtePlayer)
 			{

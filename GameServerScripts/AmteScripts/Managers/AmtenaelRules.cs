@@ -720,7 +720,7 @@ namespace DOL.GS.ServerRules
 
 		public override void OnPlayerKilled(GamePlayer killedPlayer, GameObject killer)
 		{
-			if (Properties.ENABLE_WARMAPMGR && killer as GamePlayer != null && killer.CurrentRegion.ID == 163)
+            if (Properties.ENABLE_WARMAPMGR && killer as GamePlayer != null && killer.CurrentRegion.ID == 163)
 				WarMapMgr.AddFight((byte)killer.CurrentZone.ID, killer.X, killer.Y, (byte)killer.Realm, (byte)killedPlayer.Realm);
 
 			killedPlayer.LastDeathRealmPoints = 0;
@@ -872,7 +872,7 @@ namespace DOL.GS.ServerRules
 									killerPlayer.Out.SendMessage(string.Format("Vous obtenez un bonus aux RP de {0}% grâce à votre capture du fort.", bonus), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 									realmPoints += realmPoints * bonus / 100;
 								}
-							}	
+							}
 						}
 
 						if (realmPoints > rpCap)
