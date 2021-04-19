@@ -17,6 +17,8 @@
  *
  */
 using System;
+using System.Linq;
+using System.Collections.Generic;
 using DOL.Database;
 
 namespace DOL.GS
@@ -29,16 +31,20 @@ namespace DOL.GS
 		protected TPPoint m_next = null;
 		protected TPPoint m_prev = null;
 		protected eTPPointType m_type;
+        private DBTPPoint dbTPPoint;
 		protected bool m_flag;
+
+        protected const ushort PLAYERS_RADIUS = 1500;
 
 		public TPPoint(TPPoint pp) : this(pp,pp.Type) {}
 
-		public TPPoint(Point3D p, eTPPointType type) : this(p.X,  p.Y,  p.Z, type) {}
-
-		public TPPoint(int x, int y, int z, eTPPointType type) : base(x, y, z)
+		public TPPoint(Point3D p, eTPPointType type) : this(p.X,  p.Y,  p.Z, type, new DBTPPoint(p.X, p.Y, p.Z)) {}
+        
+		public TPPoint(int x, int y, int z, eTPPointType type, DBTPPoint bTPPoint) : base(x, y, z)
 		{
 			m_type = type;
 			m_flag = false;
+            dbTPPoint = bTPPoint;
 		}
 
 		/// <summary>
@@ -77,24 +83,60 @@ namespace DOL.GS
 			set { m_type = value; }
 		}
 
-		public TPPoint GetNearestNextPoint(IPoint3D pos)
+        public DBTPPoint DbTPPoint { get => dbTPPoint; set => dbTPPoint = value; }
+
+        public TPPoint GetNextTPPoint()
 		{
-			var nearest = this;
-			var dist = nearest.GetDistanceTo(pos);
+            TPPoint next = null;
+            IList<DBTPPoint> tpPoints = GameServer.Database.SelectObjects<DBTPPoint>("`TPID` = @TPID", new QueryParameter("@TPID", dbTPPoint.TPID));
+            DBTP dbtp = GameServer.Database.SelectObjects<DBTP>("`TPID` = @TPID", new QueryParameter("@TPID", dbTPPoint.TPID)).FirstOrDefault();
+            DBTPPoint randomTPPoint = tpPoints[Util.Random(tpPoints.Count - 1)];
+            switch (Type)
+            {
+                case eTPPointType.Loop:
+                    if (m_next != null)
+                        next = m_next;
+                    else
+                        next = TeleportMgr.FindFirstTPPoint(this);
+                    break;
+                case eTPPointType.Smart:
+                    next = GetSmarttNextPoint();
+                    if(next == null)
+                    {
+                        next = new TPPoint(randomTPPoint.X, randomTPPoint.Y, randomTPPoint.Z, (eTPPointType)dbtp.TPType, randomTPPoint);
+                    }
+                    break;
+                case eTPPointType.Random:
+                    
+                    next = new TPPoint(randomTPPoint.X, randomTPPoint.Y, randomTPPoint.Z, (eTPPointType)dbtp.TPType, randomTPPoint);
+                    break;
+            }
 
-			var pp = this;
-			while (pp.Next != null)
-			{
-				pp = pp.Next;
-				var d = pp.GetDistanceTo(pos);
-				if (d < dist)
-				{
-					nearest = pp;
-					dist = d;
-				}
-			}
-
-			return nearest;
+			return next;
 		}
-	}
+
+        public TPPoint GetSmarttNextPoint()
+        {
+            TPPoint nearest = null;
+
+            int countPlayer = 0;
+            var pp = TeleportMgr.FindFirstTPPoint(this);
+            while (pp.Next != null)
+            { 
+                if(pp != this)
+                {
+                    // TODO : !!!! Add the region ID in tppoint table !!!!
+                    int newCount = WorldMgr.GetPlayersCloseToSpot(0, pp.X, pp.Y, pp.Z, PLAYERS_RADIUS).OfType<GamePlayer>().Count();
+                    if (newCount > countPlayer)
+                    {
+                        nearest = pp;
+                        countPlayer = newCount;
+                    }
+                }
+                pp = pp.Next;
+            }
+
+            return nearest;
+        }
+    }
 }

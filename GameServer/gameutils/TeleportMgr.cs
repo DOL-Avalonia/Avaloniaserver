@@ -133,7 +133,7 @@ namespace DOL.GS
                 }
 
                 // even if tppoint entry not found see if tppointpoints exist and try to use it
-                eTPPointType tppointType = eTPPointType.Once;
+                eTPPointType tppointType = eTPPointType.Random;
 
                 if (dbtppoint != null)
                 {
@@ -156,7 +156,7 @@ namespace DOL.GS
 
                 foreach (DBTPPoint pp in tppointPoints.Values)
                 {
-                    TPPoint p = new TPPoint(pp.X, pp.Y, pp.Z, tppointType);
+                    TPPoint p = new TPPoint(pp.X, pp.Y, pp.Z, tppointType, pp);
 
                     if (first == null)
                     {

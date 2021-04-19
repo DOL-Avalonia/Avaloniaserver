@@ -110,7 +110,7 @@ namespace DOL.GS.Commands
             // Remove old temp objects
             RemoveAllTempTPPointObjects(client);
 
-           TPPoint startpoint = new TPPoint(client.Player.X, client.Player.Y, client.Player.Z, eTPPointType.Once);
+           TPPoint startpoint = new TPPoint(client.Player.X, client.Player.Y, client.Player.Z, eTPPointType.Random, new DBTPPoint(client.Player.X, client.Player.Y, client.Player.Z));
             client.Player.TempProperties.setProperty(TEMP_TPPOINT_FIRST, startpoint);
             client.Player.TempProperties.setProperty(TEMP_TPPOINT_LAST, startpoint);
             client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.GM.TPPoint.Create.Result"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -119,14 +119,14 @@ namespace DOL.GS.Commands
 
         private void TPPointAdd(GameClient client, string[] args)
         {
-           TPPoint tppoint = (TPPoint)client.Player.TempProperties.getProperty<object>(TEMP_TPPOINT_LAST, null);
+            TPPoint tppoint = (TPPoint)client.Player.TempProperties.getProperty<object>(TEMP_TPPOINT_LAST, null);
             if (tppoint == null)
             {
                 DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Commands.GM.TPPoint.Cant"));
                 return;
             }
 
-           TPPoint newpp = new TPPoint(client.Player.X, client.Player.Y, client.Player.Z, tppoint.Type);
+            TPPoint newpp = new TPPoint(client.Player.X, client.Player.Y, client.Player.Z, tppoint.Type, new DBTPPoint(client.Player.X, client.Player.Y, client.Player.Z));
             tppoint.Next = newpp;
             newpp.Prev = tppoint;
             client.Player.TempProperties.setProperty(TEMP_TPPOINT_LAST, newpp);
@@ -161,7 +161,7 @@ namespace DOL.GS.Commands
                 return;
             }
 
-            eTPPointType tppointType = eTPPointType.Once;
+            eTPPointType tppointType = eTPPointType.Random;
             try
             {
                 tppointType = (eTPPointType)Enum.Parse(typeof(eTPPointType), args[2], true);

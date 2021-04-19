@@ -23,9 +23,9 @@ namespace DOL.Database
 {
     public enum eTPPointType : int
     {
-        Once = 1,
-        TPPoint_Reverse = 2,
-        Loop = 3,
+        Random = 1,
+        Loop = 2,
+        Smart = 3,
     }
 
     /// <summary>
