@@ -206,6 +206,7 @@
     <Compile Include="commands\gmcommands\GMTerritories.cs" />
     <Compile Include="commands\gmcommands\GroupMob.cs" />
     <Compile Include="commands\gmcommands\MoneyNPC.cs" />
+    <Compile Include="commands\gmcommands\tppoint.cs" />
     <Compile Include="commands\gmcommands\translate.cs" />
     <Compile Include="commands\gmcommands\zone.cs" />
     <Compile Include="commands\gmcommands\crafting.cs" />
@@ -436,10 +437,12 @@
     <Compile Include="gameutils\MarketSearch.cs" />
     <Compile Include="gameutils\InventoryLogging.cs" />
     <Compile Include="gameutils\MarketCache.cs" />
+    <Compile Include="gameutils\TeleportMgr.cs" />
     <Compile Include="gameutils\NPCGender.cs" />
     <Compile Include="gameutils\OutlawTradeItems.cs" />
     <Compile Include="gameutils\Params\CustomParamsExtensions.cs" />
     <Compile Include="gameutils\Params\ICustomParamsValuable.cs" />
+    <Compile Include="gameutils\TPPoint.cs" />
     <Compile Include="gameutils\ReaderWriterCollections\ReaderWriterDictionary.cs" />
     <Compile Include="gameutils\ReaderWriterCollections\ReaderWriterHashSet.cs" />
     <Compile Include="gameutils\ReaderWriterCollections\ReaderWriterList.cs" />

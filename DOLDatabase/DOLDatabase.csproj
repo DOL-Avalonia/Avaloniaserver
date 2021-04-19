@@ -150,6 +150,8 @@
     <Compile Include="Tables\LanguageNPC.cs" />
     <Compile Include="Tables\LanguageSystem.cs" />
     <Compile Include="Tables\MoneyNpcDb.cs" />
+    <Compile Include="Tables\DBTPPoint.cs" />
+    <Compile Include="Tables\DBTP.cs" />
     <Compile Include="Tables\Regions.cs" />
     <Compile Include="Tables\SalvageYield.cs" />
     <Compile Include="Tables\DropTemplateXItemTemplate.cs" />

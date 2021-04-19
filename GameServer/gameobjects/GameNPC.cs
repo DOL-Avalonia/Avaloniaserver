@@ -62,6 +62,8 @@ namespace DOL.GS
 		/// </remarks>
 		public const int CONST_WALKTOTOLERANCE = 25;
 
+        public TPPoint tPPoint;
+
 		#region Formations/Spacing
 
 		//Space/Offsets used in formations
@@ -1583,7 +1585,10 @@ namespace DOL.GS
 
 			IsReturningHome = true;
 			IsReturningToSpawnPoint = true;
-			WalkTo(SpawnPoint, speed);
+            if (tPPoint != null)
+                WalkTo(tPPoint, speed);
+            else
+			    WalkTo(SpawnPoint, speed);
 		}
 
 		/// <summary>
