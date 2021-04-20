@@ -156,7 +156,7 @@ namespace DOL.GS
 
                 foreach (DBTPPoint pp in tppointPoints.Values)
                 {
-                    TPPoint p = new TPPoint(pp.X, pp.Y, pp.Z, tppointType, pp);
+                    TPPoint p = new TPPoint(pp.Region, pp.X, pp.Y, pp.Z, tppointType, pp);
 
                     if (first == null)
                     {
@@ -208,7 +208,7 @@ namespace DOL.GS
             int i = 1;
             do
             {
-                DBTPPoint dbpp = new DBTPPoint(tppoint.X, tppoint.Y, tppoint.Z);
+                DBTPPoint dbpp = new DBTPPoint(tppoint.Region, tppoint.X, tppoint.Y, tppoint.Z);
                 dbpp.Step = i++;
                 dbpp.TPID = tpID;
                 GameServer.Database.AddObject(dbpp);
