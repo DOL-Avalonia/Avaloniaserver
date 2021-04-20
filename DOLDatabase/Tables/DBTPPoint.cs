@@ -32,16 +32,18 @@ namespace DOL.Database
         protected int m_x;
         protected int m_y;
         protected int m_z;
+        protected ushort region;
 
         public DBTPPoint()
         {
         }
 
-        public DBTPPoint(int x, int y, int z)
+        public DBTPPoint(ushort region, int x, int y, int z)
         {
             m_x = x;
             m_y = y;
             m_z = z;
+            this.region = region;
         }
 
         [DataElement(AllowDbNull = false, Index=true)]
@@ -72,6 +74,13 @@ namespace DOL.Database
         public int Z {
             get { return m_z; }
             set { m_z = value; }
+        }
+
+        [DataElement(AllowDbNull = false)]
+        public ushort Region
+        {
+            get { return region; }
+            set { region = value; }
         }
     }
 }

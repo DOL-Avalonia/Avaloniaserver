@@ -33,18 +33,20 @@ namespace DOL.GS
 		protected eTPPointType m_type;
         private DBTPPoint dbTPPoint;
 		protected bool m_flag;
+        private ushort region;
 
         protected const ushort PLAYERS_RADIUS = 1500;
 
 		public TPPoint(TPPoint pp) : this(pp,pp.Type) {}
 
-		public TPPoint(Point3D p, eTPPointType type) : this(p.X,  p.Y,  p.Z, type, new DBTPPoint(p.X, p.Y, p.Z)) {}
+		public TPPoint(Point3D p, eTPPointType type) : this(0, p.X,  p.Y,  p.Z, type, new DBTPPoint(0, p.X, p.Y, p.Z)) {}
         
-		public TPPoint(int x, int y, int z, eTPPointType type, DBTPPoint bTPPoint) : base(x, y, z)
+		public TPPoint(ushort region, int x, int y, int z, eTPPointType type, DBTPPoint bTPPoint) : base(x, y, z)
 		{
 			m_type = type;
 			m_flag = false;
             dbTPPoint = bTPPoint;
+            this.region = region;
 		}
 
 		/// <summary>
@@ -84,6 +86,7 @@ namespace DOL.GS
 		}
 
         public DBTPPoint DbTPPoint { get => dbTPPoint; set => dbTPPoint = value; }
+        public ushort Region { get => region; set => region = value; }
 
         public TPPoint GetNextTPPoint()
 		{
@@ -103,12 +106,12 @@ namespace DOL.GS
                     next = GetSmarttNextPoint();
                     if(next == null)
                     {
-                        next = new TPPoint(randomTPPoint.X, randomTPPoint.Y, randomTPPoint.Z, (eTPPointType)dbtp.TPType, randomTPPoint);
+                        next = new TPPoint(randomTPPoint.Region, randomTPPoint.X, randomTPPoint.Y, randomTPPoint.Z, (eTPPointType)dbtp.TPType, randomTPPoint);
                     }
                     break;
                 case eTPPointType.Random:
                     
-                    next = new TPPoint(randomTPPoint.X, randomTPPoint.Y, randomTPPoint.Z, (eTPPointType)dbtp.TPType, randomTPPoint);
+                    next = new TPPoint(randomTPPoint.Region, randomTPPoint.X, randomTPPoint.Y, randomTPPoint.Z, (eTPPointType)dbtp.TPType, randomTPPoint);
                     break;
             }
 
@@ -125,8 +128,7 @@ namespace DOL.GS
             { 
                 if(pp != this)
                 {
-                    // TODO : !!!! Add the region ID in tppoint table !!!!
-                    int newCount = WorldMgr.GetPlayersCloseToSpot(0, pp.X, pp.Y, pp.Z, PLAYERS_RADIUS).OfType<GamePlayer>().Count();
+                    int newCount = WorldMgr.GetPlayersCloseToSpot(pp.Region, pp.X, pp.Y, pp.Z, PLAYERS_RADIUS).OfType<GamePlayer>().Count();
                     if (newCount > countPlayer)
                     {
                         nearest = pp;
