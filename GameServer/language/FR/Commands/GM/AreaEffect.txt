@@ -1,5 +1,6 @@
 Commands.GM.AreaEffect.Description:		Gestion d'AreaEffect
 Commands.GM.AreaEffect.Usage.Create:		'/areaeffect create <radius> <ID de l'effet>'
+Commands.GM.AreaEffect.Usage.Spell:		'/areaeffect spell <spellid>' AreaEffect lance un sort à la place d'appliquer un effet
 Commands.GM.AreaEffect.Usage.HealHarm:		'/areaeffect <heal/harm> <valeur>'
 Commands.GM.AreaEffect.Usage.Mana:			'/areaeffect <mana> <valeur>'
 Commands.GM.AreaEffect.Usage.Endurance:	'/areaeffect <endurance> <valeur>'
@@ -9,3 +10,5 @@ Commands.GM.AreaEffect.Usage.Interval:		'/areaeffect interval <min> [max]'
 Commands.GM.AreaEffect.Usage.MissChance:	'/areaeffect missChance <chance %>'
 Commands.GM.AreaEffect.Usage.Message:		'/areaeffect message <message>' {0} = les points de vie ajoutés/retirés, {1} = mana ajoutée/retirée, {2} = endu ajoutée/retirée.
 Commands.GM.AreaEffect.Usage.Info:			'/areaeffect info' Donne les informations sur l'areaeffect sélectionné
+
+Commands.GM.AreaEffect.Result.Spell: 	{0} lance le sort {1} à la place de son effet

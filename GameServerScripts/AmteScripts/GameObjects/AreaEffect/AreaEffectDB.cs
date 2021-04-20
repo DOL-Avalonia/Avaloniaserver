@@ -37,6 +37,7 @@ namespace DOL.Database
 		private int m_Radius;
 		private int m_MissChance;
 		private string m_Message;
+        private int spellID;
 
 		#region Init
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -159,5 +160,16 @@ namespace DOL.Database
 				m_Message = value;
 			}
 		}
-	}
+
+        [DataElement(AllowDbNull = true)]
+        public int SpellID
+        {
+            get => spellID;
+            set
+            {
+                Dirty = true;
+                spellID = value;
+            }
+        }
+    }
 }

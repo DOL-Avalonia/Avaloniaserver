@@ -1116,7 +1116,7 @@ namespace DOL.GS.Commands
         private void remove(GameClient client, GameNPC targetMob, string[] args)
         {
             string mobName = targetMob.Name;
-
+            string typeOfMob = targetMob.GetType().FullName;
             targetMob.StopAttack();
             targetMob.StopCurrentSpellcast();
             targetMob.DeleteFromDatabase();
@@ -1139,6 +1139,9 @@ namespace DOL.GS.Commands
                     DisplayMessage(client, "Removed MobXLootTemplate and LootTemplate entries for " + mobName + " from DB.");
                 }
             }
+
+            if (typeOfMob == "DOL.GS.Scripts.AreaEffect")
+                GameServer.Database.ExecuteNonQuery("DELETE FROM `areaeffect` WHERE `MobID` = '"+ targetMob.InternalID+"';");
 
             client.Out.SendMessage("Target Mob removed from DB.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
         }
@@ -2732,9 +2735,9 @@ namespace DOL.GS.Commands
                     return;
                 }
 
-                foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+                foreach (Assembly script in ScriptMgr.GameServerScripts)
                 {
-                    mob = (GameNPC)assembly.CreateInstance(targetMob.GetType().FullName, true);
+                    mob = (GameNPC)script.CreateInstance(targetMob.GetType().FullName, false);
                     if (mob != null)
                     {
                         break;
@@ -2805,9 +2808,9 @@ namespace DOL.GS.Commands
             }
 
             ABrain brain = null;
-            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            foreach (Assembly script in ScriptMgr.GameServerScripts)
             {
-                brain = (ABrain)assembly.CreateInstance(targetMob.Brain.GetType().FullName, true);
+                brain = (ABrain)script.CreateInstance(targetMob.Brain.GetType().FullName, false);
                 if (brain != null)
                 {
                     break;

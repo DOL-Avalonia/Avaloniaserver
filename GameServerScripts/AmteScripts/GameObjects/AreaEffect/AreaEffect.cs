@@ -15,6 +15,7 @@ namespace DOL.GS.Scripts
         public int AddEndurance;
         public int Radius;
         public int MissChance;
+        public int SpellID;
         public string Message = "";
 
         private long LastApplyEffectTick;
@@ -104,6 +105,7 @@ namespace DOL.GS.Scripts
             Radius = AreaEffectDB.Radius;
             MissChance = AreaEffectDB.MissChance;
             Message = AreaEffectDB.Message;
+            SpellID = AreaEffectDB.SpellID;
         }
 
 
@@ -127,6 +129,7 @@ namespace DOL.GS.Scripts
             AreaEffectDB.Radius = Radius;
             AreaEffectDB.MissChance = MissChance;
             AreaEffectDB.Message = Message;
+            AreaEffectDB.SpellID = SpellID;
 
             if (New)
                 GameServer.Database.AddObject(AreaEffectDB);

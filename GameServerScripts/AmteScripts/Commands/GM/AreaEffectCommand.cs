@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using DOL.GS.PacketHandler;
 using DOL.GS.Scripts;
+using DOL.Language;
 
 namespace DOL.GS.Commands
 {
@@ -10,6 +11,7 @@ namespace DOL.GS.Commands
 		ePrivLevel.GM,
         "Commands.GM.AreaEffect.Description",
         "Commands.GM.AreaEffect.Usage.Create",
+        "Commands.GM.AreaEffect.Usage.Sell",
         "Commands.GM.AreaEffect.Usage.HealHarm",
         "Commands.GM.AreaEffect.Usage.Mana",
         "Commands.GM.AreaEffect.Usage.Endurance",
@@ -34,8 +36,9 @@ namespace DOL.GS.Commands
                         "Mana: " + AE.AddMana + " points de mana.",
                         "Endurance: " + AE.AddEndurance + " points d'endurance.",
 				        "Rayon: " + AE.Radius,
-				        "Spell: " + AE.SpellEffect,
-				        "Interval entre chaque effet " + AE.IntervalMin + " à " + AE.IntervalMax + " secondes",
+				        "Effect: " + AE.SpellEffect,
+                        "Spell: " + AE.SpellID,
+                        "Interval entre chaque effet " + AE.IntervalMin + " à " + AE.IntervalMax + " secondes",
 				        "Chance de miss: " + AE.MissChance + "%",
 				        "Message: " + AE.Message
 				    };
@@ -50,7 +53,8 @@ namespace DOL.GS.Commands
 			}
 
 			var player = client.Player;
-			switch (args[1].ToLower())
+
+            switch (args[1].ToLower())
 			{
 				case "create":
 					if (args.Length < 4)
@@ -83,6 +87,16 @@ namespace DOL.GS.Commands
 					client.Out.SendMessage("Création d'un AreaEffect, OID:" + AE.ObjectID, eChatType.CT_System,
 					                       eChatLoc.CL_SystemWindow);
 					break;
+
+                case "spell":
+                    if (!int.TryParse(args[2], out AE.SpellID))
+                    {
+                        DisplaySyntax(client);
+                        return;
+                    }
+                    client.Out.SendMessage(LanguageMgr.GetTranslation("Commands.GM.AreaEffect.Result.Spell", AE.Name, AE.SpellID),
+                        eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    break;
 
                 case "heal":
                 case "harm":

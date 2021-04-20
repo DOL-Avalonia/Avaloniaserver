@@ -1,5 +1,6 @@
 Commands.GM.AreaEffect.Description:		Areaeffects management:
 Commands.GM.AreaEffect.Usage.Create:		'/areaeffect create <radius> <ID of the effect>' Create an Areaeffect with specified radius and ClientEffectID
+Commands.GM.AreaEffect.Usage.Spell:		'/areaeffect spell <spellid>' AreaEffect cast a spell in place to apply an effect
 Commands.GM.AreaEffect.Usage.HealHarm:		'/areaeffect <heal/harm> <value>' Configure heal/harm value per tick of an areaeffect
 Commands.GM.AreaEffect.Usage.Mana:			'/areaeffect <mana> <value>' Configure mana addition/removal value per tick of an areaeffect
 Commands.GM.AreaEffect.Usage.Endurance:	'/areaeffect <endurance> <value>' Configure endurance addition/removal value per tick of an areaeffect
@@ -9,3 +10,5 @@ Commands.GM.AreaEffect.Usage.Interval:		'/areaeffect interval <min> [max]' To ch
 Commands.GM.AreaEffect.Usage.MissChance:	'/areaeffect missChance <chance %>' To add a MISS chance to an areaeffect
 Commands.GM.AreaEffect.Usage.Message:		'/areaeffect message <message>' {0} = HP points have increased/decreased, {1} = mana has increased/decreased, {2} = endurance has increased/decreased.
 Commands.GM.AreaEffect.Usage.Info:			'/areaeffect info' Gives informations about the selected Areaeffect.
+
+Commands.GM.AreaEffect.Result.Spell: 	{0} cast the spell with the id {1}
