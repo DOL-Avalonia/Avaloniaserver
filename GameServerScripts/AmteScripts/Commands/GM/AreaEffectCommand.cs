@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.GS.Scripts;
 using DOL.Language;
+using DOL.MobGroups;
+using System.Linq;
 
 namespace DOL.GS.Commands
 {
@@ -18,12 +21,137 @@ namespace DOL.GS.Commands
         "Commands.GM.AreaEffect.Usage.Radius",
         "Commands.GM.AreaEffect.Usage.Effect",
         "Commands.GM.AreaEffect.Usage.Interval",
+        "Commands.GM.AreaEffect.Usage.GroupMob",
+        "Commands.GM.AreaEffect.Usage.Disable",
+        "Commands.GM.AreaEffect.Usage.Enable",
+        "Commands.GM.AreaEffect.Usage.Family",
+        "Commands.GM.AreaEffect.Usage.CallAreaEffect",
+        "Commands.GM.AreaEffect.Usage.OneUSe",
         "Commands.GM.AreaEffect.Usage.MissChance",
         "Commands.GM.AreaEffect.Usage.Message",
         "Commands.GM.AreaEffect.Usage.Info")]
 	public class AreaEffectCommand : AbstractCommandHandler, ICommandHandler
 	{
-		public void OnCommand(GameClient client, string[] args)
+        /// <summary>
+        /// Method to add a groopmob to a AreaEffect
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="targetDoor"></param>
+        /// <param name="args"></param>
+        private void GroupMob(GameClient client, AreaEffect targetArea, string[] args)
+        {
+            string groupId = null;
+            // default false
+            bool turn = false;
+            if (args.Length > 3)
+            {
+                groupId = args[2];
+                if(args[3] == "ON")
+                {
+                    turn = true;
+                }
+            }
+            else
+            {
+                DisplaySyntax(client);
+                return;
+            }
+                
+            if (!string.IsNullOrEmpty(groupId) && !MobGroupManager.Instance.Groups.ContainsKey(groupId))
+            {
+                client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.GroupMob.NotFound", groupId), eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                return;
+            }
+            targetArea.Group_Mob_Id = groupId;
+            targetArea.Group_Mob_Turn = turn;
+            client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.Result.GroupMob", targetArea.Name, groupId, turn? "ON":"OFF"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            targetArea.SaveIntoDatabase();
+        }
+
+        private void Disable(GameClient client, AreaEffect targetArea, string[] args)
+        {
+            targetArea.Enable = false;
+            client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.Result.Disalbe", targetArea.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            targetArea.SaveIntoDatabase();
+        }
+
+        private void Enable(GameClient client, AreaEffect targetArea, string[] args)
+        {
+            targetArea.Enable = true;
+            client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.Result.Enable", targetArea.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            targetArea.SaveIntoDatabase();
+        }
+
+        private void OneUSe(GameClient client, AreaEffect targetArea, string[] args)
+        {
+            targetArea.OneUse = !targetArea.OneUse;
+            client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.Result.OneUSe", targetArea.Name, targetArea.OneUse), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            targetArea.SaveIntoDatabase();
+        }
+
+        private void AddFamily(GameClient client, AreaEffect targetArea, string[] args)
+        {
+            ushort familyID = 0;
+            ushort orderinfamily = 1;
+            if (args.Length > 3)
+            {
+                familyID = ushort.Parse(args[2]);
+                orderinfamily = ushort.Parse(args[3]);
+            }
+            else
+            {
+                DisplaySyntax(client);
+                return;
+            }
+
+            targetArea.AreaEffectFamily = familyID;
+            targetArea.OrderInFamily = orderinfamily;
+            client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.Result.Family", targetArea.Name, targetArea.AreaEffectFamily, targetArea.OrderInFamily), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            targetArea.SaveIntoDatabase();
+        }
+
+        /// <summary>
+        /// Enable without save
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="targetArea"></param>
+        /// <param name="args"></param>
+        private void CallAreaEffect(GameClient client, string[] args)
+        {
+            ushort familyID = 0;
+            if (args.Length > 2)
+            {
+                ushort.TryParse(args[2], out familyID);
+            }
+            else
+            {
+                DisplaySyntax(client);
+                return;
+            }
+            if(familyID == 0)
+                client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.CallAreaEffect.NotFound", familyID), eChatType.CT_System, eChatLoc.CL_ChatWindow);
+            else
+            {
+                DBAreaEffect areaEffect = GameServer.Database.SelectObjects<DBAreaEffect>("`AreaEffectFamily` = @AreaEffectFamily", new QueryParameter("@AreaEffectFamily", familyID)).OrderBy((area) => area.OrderInFamily).FirstOrDefault();
+                if(areaEffect != null)
+                {
+                    Mob mob = GameServer.Database.SelectObjects<Mob>("`Mob_ID` = @MobID", new QueryParameter("@MobID", areaEffect.MobID)).FirstOrDefault();
+                    if(mob != null && WorldMgr.GetNPCsByName(mob.Name, (eRealm)mob.Realm).FirstOrDefault() is AreaEffect areaMob)
+                    {
+                        areaMob.CallAreaEffect();
+                        client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.Result.CallAreaEffect", areaMob.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    }
+                    
+                }
+                else
+                {
+                    client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.CallAreaEffect.NotFound", familyID), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                }
+                    
+            }
+        }
+
+        public void OnCommand(GameClient client, string[] args)
 		{
 			var AE = client.Player.TargetObject as AreaEffect;
 
@@ -94,7 +222,7 @@ namespace DOL.GS.Commands
                         DisplaySyntax(client);
                         return;
                     }
-                    client.Out.SendMessage(LanguageMgr.GetTranslation("Commands.GM.AreaEffect.Result.Spell", AE.Name, AE.SpellID),
+                    client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.Result.Spell", AE.Name, AE.SpellID),
                         eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     break;
 
@@ -130,6 +258,30 @@ namespace DOL.GS.Commands
 			                eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			            break;
 			        }
+
+                case "groupmob":
+                    GroupMob(client, AE, args);
+                    break;
+
+                case "disable":
+                    Disable(client, AE, args);
+                    break;
+
+                case "enable":
+                    Enable(client, AE, args);
+                    break;
+
+                case "family":
+                    AddFamily(client, AE, args);
+                    break;
+
+                case "callareaeffect":
+                    CallAreaEffect(client, args);
+                    break;
+
+                case "oneuse":
+                    OneUSe(client, AE, args);
+                    break;
 
                 case "endu":
                 case "endurance":

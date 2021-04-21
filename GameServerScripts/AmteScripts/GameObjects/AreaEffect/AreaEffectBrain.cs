@@ -1,5 +1,3 @@
-using System.Linq;
-using DOL.Database;
 using DOL.GS;
 using DOL.GS.Scripts;
 
@@ -12,30 +10,36 @@ namespace DOL.AI.Brain
 			get { return 1000; }
 		}
 
-        protected static SpellLine m_mobSpellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells);
-
         public override void Think()
 		{
 			if(Body is AreaEffect areaEffect)
             {
-                if(areaEffect.SpellID != 0)
-                {
-                    DBSpell dbspell = GameServer.Database.SelectObjects<DBSpell>("`SpellID` = @SpellID", new QueryParameter("@SpellID", areaEffect.SpellID)).FirstOrDefault();
-                    Spell spell = new Spell(dbspell, 0);
-                    
-                    foreach (GamePlayer player in areaEffect.GetPlayersInRadius((ushort)dbspell.Radius))
-                    {
-                        if ((spell.Duration == 0 || !player.HasEffect(spell) || spell.SpellType.ToUpper() == "DIRECTDAMAGEWITHDEBUFF"))
-                        {
-                            Body.TurnTo(player);
-
-                            Body.CastSpellOnOwnerAndPets(player, spell, m_mobSpellLine);
-                        }
-                    }
-                }
+                areaEffect.CheckGroupMob();
+                if (areaEffect.SpellID != 0)
+                    areaEffect.ApplySpell();
                 else
-                    ((AreaEffect)Body).ApplyEffect();
+                    areaEffect.ApplyEffect();
+                if (areaEffect.CheckFamily() is AreaEffect nextArea)
+                    new NextAreaTimer(nextArea).Start(areaEffect.IntervalMin*1000);
             }
 		}
-	}
+
+        private class NextAreaTimer : GameTimer
+        {
+            private AreaEffect nextArea;
+
+            public NextAreaTimer(AreaEffect actionSource) : base(actionSource.CurrentRegion.TimeManager)
+            {
+                nextArea = actionSource;
+            }
+
+            protected override void OnTick()
+            {
+                nextArea.CallAreaEffect();
+                Stop();
+            }
+        }
+    }
+
+    
 }
