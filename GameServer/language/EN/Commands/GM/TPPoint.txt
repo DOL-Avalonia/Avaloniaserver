@@ -5,7 +5,7 @@ Commands.GM.TPPoint.Usage.Save:			/tppoint save <tppointname> - saves a tppoint 
 Commands.GM.TPPoint.Usage.Hide:			/tppoint hide - hides all tppoint markers but does not delete the tppoint
 Commands.GM.TPPoint.Usage.Add:			/tppoint add - adds a point at the end of the current tppoint
 Commands.GM.TPPoint.Usage.Remove:			/tppoint delete - deletes the temporary tppoint
-Commands.GM.TPPoint.Usage.Type:			/tppoint type - changes the tppoints type
+Commands.GM.TPPoint.Usage.Type:			/tppoint type - changes the tppoints type (1:random, 2:loop, 3:smart)
 
 Commands.GM.TPPoint.Create.Result: 	TPPoint creation started! You can add new tppointpoints via /tppoint add now!
 Commands.GM.TPPoint.Cant: 			No tppoint created yet! Use /tppoint create or /tppoint load first!!

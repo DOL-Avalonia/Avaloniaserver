@@ -11,7 +11,7 @@ namespace DOL.GS.Commands
 		ePrivLevel.GM,
         "Commands.GM.AreaEffect.Description",
         "Commands.GM.AreaEffect.Usage.Create",
-        "Commands.GM.AreaEffect.Usage.Sell",
+        "Commands.GM.AreaEffect.Usage.Spell",
         "Commands.GM.AreaEffect.Usage.HealHarm",
         "Commands.GM.AreaEffect.Usage.Mana",
         "Commands.GM.AreaEffect.Usage.Endurance",

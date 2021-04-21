@@ -1,13 +1,13 @@
-Commands.GM.AreaEffect.Description:		Gestion d'AreaEffect
+Commands.GM.AreaEffect.Description:		Gestion d'AreaEffect:
 Commands.GM.AreaEffect.Usage.Create:		'/areaeffect create <radius> <ID de l'effet>'
 Commands.GM.AreaEffect.Usage.Spell:		'/areaeffect spell <spellid>' AreaEffect lance un sort à la place d'appliquer un effet
-Commands.GM.AreaEffect.Usage.HealHarm:		'/areaeffect <heal/harm> <valeur>'
-Commands.GM.AreaEffect.Usage.Mana:			'/areaeffect <mana> <valeur>'
-Commands.GM.AreaEffect.Usage.Endurance:	'/areaeffect <endurance> <valeur>'
-Commands.GM.AreaEffect.Usage.Radius:		'/areaeffect radius <newRadius>'
-Commands.GM.AreaEffect.Usage.Effect:		'/areaeffect effect <newEffect>'
-Commands.GM.AreaEffect.Usage.Interval:		'/areaeffect interval <min> [max]'
-Commands.GM.AreaEffect.Usage.MissChance:	'/areaeffect missChance <chance %>'
+Commands.GM.AreaEffect.Usage.HealHarm:		'/areaeffect <heal/harm> <valeur>' Configure la valeur soin/dommages par tick d'un areaeffect
+Commands.GM.AreaEffect.Usage.Mana:			'/areaeffect <mana> <valeur>' Configure l'ajout ou le retrait de mana par tick d'un areaeffect
+Commands.GM.AreaEffect.Usage.Endurance:	'/areaeffect <endurance> <valeur>' Configure l'ajout ou le retrait d'endurance par tick d'un areaeffect
+Commands.GM.AreaEffect.Usage.Radius:		'/areaeffect radius <newRadius>' Pour changer le rayon d'effet d'un areaeffect
+Commands.GM.AreaEffect.Usage.Effect:		'/areaeffect effect <newEffect>' Pour changer l'effet visuel (ClientEffectID) d'un areaeffect
+Commands.GM.AreaEffect.Usage.Interval:		'/areaeffect interval <min> [max]' Pour changer l'intervalle de chaque tick entre une valeur MIN et une valeur MAX pour un areaeffect
+Commands.GM.AreaEffect.Usage.MissChance:	'/areaeffect missChance <chance %>' Pour ajouter un taux d'échec dommage/soin sur un areaeffect
 Commands.GM.AreaEffect.Usage.Message:		'/areaeffect message <message>' {0} = les points de vie ajoutés/retirés, {1} = mana ajoutée/retirée, {2} = endu ajoutée/retirée.
 Commands.GM.AreaEffect.Usage.Info:			'/areaeffect info' Donne les informations sur l'areaeffect sélectionné
 
