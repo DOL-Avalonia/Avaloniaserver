@@ -19,10 +19,11 @@ Commands.GM.AreaEffect.Usage.Info:			'/areaeffect info' Donne les informations s
 
 Commands.GM.AreaEffect.Result.Spell: 		{0} lance le sort {1} à la place de son effet
 Commands.GM.AreaEffect.GroupMob.NotFound: 	Le groupe {0} n'existe pas.
-Commands.GM.AreaEffect.Result.OneUSe:		La propriété 'OneUse' de l'areaeffect {0} est définie à {1}
+Commands.GM.AreaEffect.Result.OneUse:		La propriété 'OneUse' de l'areaeffect {0} est définie à {1}
 Commands.GM.AreaEffect.Result.Family:		L'areaeffect {0} est associé à la chaine {1}, son ordre est {2}
 Commands.GM.AreaEffect.Result.Enable:		L'areaeffect {0} est activée
 Commands.GM.AreaEffect.Result.Disable:		L'areaeffect {0} est désactivé
 Commands.GM.AreaEffect.CallAreaEffect.NotFound:		Pas d'areaeffect trouvé pour la chaine {0}
 Commands.GM.AreaEffect.Result.CallAreaEffect: 		Enclenche la chaine {0} d'areaeffect
 Commands.GM.AreaEffect.Result.GroupMob:		Le groupe mob {1} est définie à l'areaeffect {0}, l'area s'enclenche si le groupe est {2}
+Commands.GM.AreaEffect.NeedTarget:		Cette commande a besoin d'une cible de type AreaEffect

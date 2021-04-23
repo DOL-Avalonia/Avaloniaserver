@@ -6290,5 +6290,10 @@ namespace DOL.GS
 				m_campBonus = value;
 			}
 		}
+
+        public virtual List<string> CustomInfo()
+        {
+            return new List<string>();
+        }
 	}
 }

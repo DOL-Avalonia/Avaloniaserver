@@ -26,7 +26,7 @@ namespace DOL.GS.Commands
         "Commands.GM.AreaEffect.Usage.Enable",
         "Commands.GM.AreaEffect.Usage.Family",
         "Commands.GM.AreaEffect.Usage.CallAreaEffect",
-        "Commands.GM.AreaEffect.Usage.OneUSe",
+        "Commands.GM.AreaEffect.Usage.OneUse",
         "Commands.GM.AreaEffect.Usage.MissChance",
         "Commands.GM.AreaEffect.Usage.Message",
         "Commands.GM.AreaEffect.Usage.Info")]
@@ -40,6 +40,11 @@ namespace DOL.GS.Commands
         /// <param name="args"></param>
         private void GroupMob(GameClient client, AreaEffect targetArea, string[] args)
         {
+            if(targetArea == null)
+            {
+                client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.NeedTarget"), eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                return;
+            }
             string groupId = null;
             // default false
             bool turn = false;
@@ -70,27 +75,47 @@ namespace DOL.GS.Commands
 
         private void Disable(GameClient client, AreaEffect targetArea, string[] args)
         {
-            targetArea.Enable = false;
-            client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.Result.Disalbe", targetArea.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            if (targetArea == null)
+            {
+                client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.NeedTarget"), eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                return;
+            }
+            targetArea.Disable = true;
+            client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.Result.Disable", targetArea.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             targetArea.SaveIntoDatabase();
         }
 
         private void Enable(GameClient client, AreaEffect targetArea, string[] args)
         {
-            targetArea.Enable = true;
+            if (targetArea == null)
+            {
+                client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.NeedTarget"), eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                return;
+            }
+            targetArea.Disable = false;
             client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.Result.Enable", targetArea.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             targetArea.SaveIntoDatabase();
         }
 
-        private void OneUSe(GameClient client, AreaEffect targetArea, string[] args)
+        private void OneUse(GameClient client, AreaEffect targetArea, string[] args)
         {
+            if (targetArea == null)
+            {
+                client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.NeedTarget"), eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                return;
+            }
             targetArea.OneUse = !targetArea.OneUse;
-            client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.Result.OneUSe", targetArea.Name, targetArea.OneUse), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.Result.OneUse", targetArea.Name, targetArea.OneUse), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             targetArea.SaveIntoDatabase();
         }
 
         private void AddFamily(GameClient client, AreaEffect targetArea, string[] args)
         {
+            if (targetArea == null)
+            {
+                client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.NeedTarget"), eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                return;
+            }
             ushort familyID = 0;
             ushort orderinfamily = 1;
             if (args.Length > 3)
@@ -136,12 +161,15 @@ namespace DOL.GS.Commands
                 if(areaEffect != null)
                 {
                     Mob mob = GameServer.Database.SelectObjects<Mob>("`Mob_ID` = @MobID", new QueryParameter("@MobID", areaEffect.MobID)).FirstOrDefault();
-                    if(mob != null && WorldMgr.GetNPCsByName(mob.Name, (eRealm)mob.Realm).FirstOrDefault() is AreaEffect areaMob)
+                    if(mob != null)
                     {
-                        areaMob.CallAreaEffect();
-                        client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.Result.CallAreaEffect", areaMob.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        AreaEffect areaMob = WorldMgr.GetNPCsByName(mob.Name, (eRealm)mob.Realm).FirstOrDefault() as AreaEffect;
+                        if(areaMob != null)
+                        {
+                            areaMob.CallAreaEffect();
+                            client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.Result.CallAreaEffect", familyID), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        }   
                     }
-                    
                 }
                 else
                 {
@@ -171,12 +199,6 @@ namespace DOL.GS.Commands
 				        "Message: " + AE.Message
 				    };
 			    client.Out.SendCustomTextWindow("Info AreaEffect", infos);
-				return;
-			}
-
-			if (args.Length < 3 || (AE == null && args[1].ToLower() != "create"))
-			{
-				DisplaySyntax(client);
 				return;
 			}
 
@@ -217,6 +239,11 @@ namespace DOL.GS.Commands
 					break;
 
                 case "spell":
+                    if (AE == null)
+                    {
+                        client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.NeedTarget"), eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                        return;
+                    }
                     if (!int.TryParse(args[2], out AE.SpellID))
                     {
                         DisplaySyntax(client);
@@ -229,7 +256,12 @@ namespace DOL.GS.Commands
                 case "heal":
                 case "harm":
 			        {
-			            int value;
+                        if (AE == null)
+                        {
+                            client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.NeedTarget"), eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            return;
+                        }
+                        int value;
 			            if (!int.TryParse(args[2], out value))
 			            {
 			                DisplaySyntax(client);
@@ -246,7 +278,12 @@ namespace DOL.GS.Commands
 
                 case "mana":
 			        {
-			            int value;
+                        if (AE == null)
+                        {
+                            client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.NeedTarget"), eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            return;
+                        }
+                        int value;
 			            if (!int.TryParse(args[2], out value))
 			            {
 			                DisplaySyntax(client);
@@ -280,12 +317,17 @@ namespace DOL.GS.Commands
                     break;
 
                 case "oneuse":
-                    OneUSe(client, AE, args);
+                    OneUse(client, AE, args);
                     break;
 
                 case "endu":
                 case "endurance":
                     {
+                        if (AE == null)
+                        {
+                            client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.NeedTarget"), eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                            return;
+                        }
                         int value;
                         if (!int.TryParse(args[2], out value))
                         {
@@ -300,7 +342,12 @@ namespace DOL.GS.Commands
                     }
 
 			    case "radius":
-					int radius;
+                    if (AE == null)
+                    {
+                        client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.NeedTarget"), eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                        return;
+                    }
+                    int radius;
 					if (!int.TryParse(args[2], out radius))
 					{
 						DisplaySyntax(client);
@@ -312,7 +359,12 @@ namespace DOL.GS.Commands
 					break;
 
 				case "effect":
-					int effect;
+                    if (AE == null)
+                    {
+                        client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.NeedTarget"), eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                        return;
+                    }
+                    int effect;
 					if (!int.TryParse(args[2], out effect))
 					{
 						DisplaySyntax(client);
@@ -324,7 +376,12 @@ namespace DOL.GS.Commands
 					break;
 
 				case "interval":
-					int min;
+                    if (AE == null)
+                    {
+                        client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.NeedTarget"), eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                        return;
+                    }
+                    int min;
 					if (!int.TryParse(args[2], out min))
 					{
 						DisplaySyntax(client);
@@ -352,7 +409,12 @@ namespace DOL.GS.Commands
 				case "miss":
 				case "chance":
 				case "misschance":
-					int chance;
+                    if (AE == null)
+                    {
+                        client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.NeedTarget"), eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                        return;
+                    }
+                    int chance;
 					if (!int.TryParse(args[2], out chance))
 					{
 						DisplaySyntax(client);
@@ -368,7 +430,12 @@ namespace DOL.GS.Commands
 					break;
 
 				case "message":
-					AE.Message = string.Join(" ", args, 2, args.Length - 2);
+                    if (AE == null)
+                    {
+                        client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.NeedTarget"), eChatType.CT_System, eChatLoc.CL_ChatWindow);
+                        return;
+                    }
+                    AE.Message = string.Join(" ", args, 2, args.Length - 2);
 					client.Out.SendMessage(
 						AE.Name + " a maintenant le message \"" + AE.Message + "\" lorsqu'on est touché par son effect.",
 						eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -378,7 +445,8 @@ namespace DOL.GS.Commands
 					DisplaySyntax(client);
 					break;
 			}
-			AE.SaveIntoDatabase();
+            if(AE != null)
+			    AE.SaveIntoDatabase();
 		}
 	}
 }

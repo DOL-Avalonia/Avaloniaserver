@@ -1561,6 +1561,8 @@ namespace DOL.GS.Commands
             info.Add(" ");
             info.Add(" + Mob_ID:  " + targetMob.InternalID);
 
+            info = info.Concat(targetMob.CustomInfo()).ToList();
+
             if (targetMob.ambientTexts != null)
             {
                 info.Add(" ");

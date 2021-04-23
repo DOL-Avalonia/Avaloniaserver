@@ -12,14 +12,17 @@ namespace DOL.AI.Brain
 
         public override void Think()
 		{
-			if(Body is AreaEffect areaEffect)
+            AreaEffect areaEffect = Body as AreaEffect;
+
+            if (areaEffect != null)
             {
                 areaEffect.CheckGroupMob();
                 if (areaEffect.SpellID != 0)
                     areaEffect.ApplySpell();
                 else
                     areaEffect.ApplyEffect();
-                if (areaEffect.CheckFamily() is AreaEffect nextArea)
+                AreaEffect nextArea = areaEffect.CheckFamily();
+                if (nextArea!=null)
                     new NextAreaTimer(nextArea).Start(areaEffect.IntervalMin*1000);
             }
 		}

@@ -5,6 +5,7 @@ using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.MobGroups;
 using System.Collections.Generic;
+using DOL.GS.Spells;
 
 namespace DOL.GS.Scripts
 {
@@ -30,17 +31,17 @@ namespace DOL.GS.Scripts
         private int Interval;
         private DBAreaEffect AreaEffectDB;
         private bool enable;
-        private bool enableDB;
+        private bool disable;
 
         protected static SpellLine m_mobSpellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells);
 
-        public bool Enable
+        public bool Disable
         {
-            get => enableDB;
+            get { return disable; }
             set
             {
-                enable = value;
-                enableDB = value;
+                enable = !value;
+                disable = value;
             }
         }
 
@@ -55,7 +56,7 @@ namespace DOL.GS.Scripts
             if (!base.AddToWorld()) return false;
             if (!(Brain is AreaEffectBrain))
                 SetOwnBrain(new AreaEffectBrain());
-            enable = true;
+            enable = !Disable;
             return true;
         }
         #endregion
@@ -121,6 +122,21 @@ namespace DOL.GS.Scripts
             }
             LastApplyEffectTick = CurrentRegion.Time;
             Interval = Util.Random(IntervalMin, Math.Max(IntervalMax, IntervalMin)) * 1000;
+        }
+
+        public override bool CastSpell(Spell spell, SpellLine line)
+        {
+            ISpellHandler spellhandler = ScriptMgr.CreateSpellHandler(this, spell, line);
+            if (spellhandler != null)
+            {
+                if (spell.CastTime > 0)
+                {
+                    m_runningSpellHandler = spellhandler;
+                    spellhandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
+                }
+                return spellhandler.CastSpell();
+            }
+            return false;
         }
 
         #endregion
@@ -196,7 +212,7 @@ namespace DOL.GS.Scripts
             Group_Mob_Id = AreaEffectDB.Group_Mob_Id;
             Group_Mob_Turn = AreaEffectDB.Group_Mob_Turn;
             AreaEffectFamily = AreaEffectDB.AreaEffectFamily;
-            Enable = AreaEffectDB.Enable;
+            Disable = AreaEffectDB.Disable;
             OrderInFamily = AreaEffectDB.OrderInFamily;
             OneUse = AreaEffectDB.OnuUse;
         }
@@ -226,7 +242,7 @@ namespace DOL.GS.Scripts
             AreaEffectDB.Group_Mob_Id = Group_Mob_Id;
             AreaEffectDB.Group_Mob_Turn = Group_Mob_Turn;
             AreaEffectDB.AreaEffectFamily = AreaEffectFamily;
-            AreaEffectDB.Enable = Enable;
+            AreaEffectDB.Disable = Disable;
             AreaEffectDB.OrderInFamily = OrderInFamily;
             AreaEffectDB.OnuUse = OneUse;
             if (New)
@@ -236,19 +252,25 @@ namespace DOL.GS.Scripts
         }
         #endregion
 
-        /* TODO: GameObject.DelveInfo()
-		public override List<string> DelveInfo()
-		{
-			List<string> text = base.DelveInfo();
-			text.Add("");
-			text.Add("-- AreaEffect --");
-			text.Add(" + Effet: " + (HealHarm > 0 ? "heal " : "harm ") + HealHarm + " points de vie (+/- 10%).");
-			text.Add(" + Rayon: " + Radius);
-			text.Add(" + Spell: " + SpellEffect);
-			text.Add(" + Interval: " + IntervalMin + " à " + IntervalMax + " secondes");
-			text.Add(" + Chance de miss: " + MissChance + "%");
-			text.Add(" + Message: " + Message);
-			return text;
-		} */
+        public override List<string> CustomInfo()
+        {
+            List<string> text = base.CustomInfo();
+            text.Add("");
+            text.Add("-- AreaEffect --");
+            text.Add(" + Effet: " + (HealHarm > 0 ? "heal " : "harm ") + HealHarm + " points de vie (+/- 10%).");
+            text.Add(" + Rayon: " + Radius);
+            text.Add(" + effect: " + SpellEffect);
+            text.Add(" + Interval: " + IntervalMin + " à " + IntervalMax + " secondes");
+            text.Add(" + Chance de miss: " + MissChance + "%");
+            text.Add(" + Message: " + Message);
+            text.Add(" + Spell: " + SpellID);
+            text.Add(" + Family: " + AreaEffectFamily);
+            text.Add(" + Order in family: " + OrderInFamily);
+            text.Add(" + Groupmob: " + Group_Mob_Id);
+            text.Add(" + Groupmob ON/OFF: " + Group_Mob_Turn);
+            text.Add(" + Enable: " + !Disable);
+            text.Add(" + OneUse: " + OneUse);
+            return text;
+        }
     }
 }

@@ -42,7 +42,7 @@ namespace DOL.Database
         private string m_Group_Mob_Id;
         private ushort m_Family;
         private ushort m_OrderInFamily;
-        private bool enable;
+        private bool disable;
         private bool oneUse;
 
         #region Init
@@ -170,7 +170,7 @@ namespace DOL.Database
         [DataElement(AllowDbNull = true)]
         public int SpellID
         {
-            get => spellID;
+            get { return spellID; }
             set
             {
                 Dirty = true;
@@ -195,7 +195,7 @@ namespace DOL.Database
         [DataElement(AllowDbNull = true)]
         public bool Group_Mob_Turn
         {
-            get => m_Group_Mob_Turn;
+            get { return m_Group_Mob_Turn; }
             set
             {
                 Dirty = true;
@@ -206,7 +206,7 @@ namespace DOL.Database
         [DataElement(AllowDbNull = true)]
         public ushort AreaEffectFamily
         {
-            get => m_Family;
+            get { return m_Family; }
             set
             {
                 Dirty = true;
@@ -217,7 +217,7 @@ namespace DOL.Database
         [DataElement(AllowDbNull = true)]
         public ushort OrderInFamily
         {
-            get => m_OrderInFamily;
+            get { return m_OrderInFamily; }
             set
             {
                 Dirty = true;
@@ -227,20 +227,20 @@ namespace DOL.Database
 
 
         [DataElement(AllowDbNull = true)]
-        public bool Enable
+        public bool Disable
         {
-            get => enable;
+            get { return disable; }
             set
             {
                 Dirty = true;
-                enable = value;
+                disable = value;
             }
         }
 
         [DataElement(AllowDbNull = true)]
         public bool OnuUse
         {
-            get => oneUse;
+            get { return oneUse; }
             set
             {
                 Dirty = true;

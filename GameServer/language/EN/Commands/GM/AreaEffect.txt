@@ -19,10 +19,11 @@ Commands.GM.AreaEffect.Usage.Info:			'/areaeffect info' Gives informations about
 
 Commands.GM.AreaEffect.Result.Spell: 	{0} cast the spell with the id {1}
 Commands.GM.AreaEffect.GroupMob.NotFound: 	The group {0} does not exist.
-Commands.GM.AreaEffect.Result.OneUSe:		The 'OneUse' property of areaeffect {0} is set to {1}
+Commands.GM.AreaEffect.Result.OneUse:		The 'OneUse' property of areaeffect {0} is set to {1}
 Commands.GM.AreaEffect.Result.Family:		The areaeffect {0} is associated with the family {1}, its order is {2}
 Commands.GM.AreaEffect.Result.Enable:		AreaEffect {0} is enabled
 Commands.GM.AreaEffect.Result.Disable:		AreaEffect {0} is disabled
 Commands.GM.AreaEffect.CallAreaEffect.NotFound:		No areaeffect found for family {0}
 Commands.GM.AreaEffect.Result.CallAreaEffect: 		Trigger the {0} areaeffect family
 Commands.GM.AreaEffect.Result.GroupMob:		The groupmob {1} is defined at the areaeffect {0}, the area snaps if the group is {2}
+Commands.GM.AreaEffect.NeedTarget:		This command needs to target an AreaEffect
