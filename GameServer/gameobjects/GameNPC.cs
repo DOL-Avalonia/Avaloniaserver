@@ -355,9 +355,9 @@ namespace DOL.GS
             {
                 Mob mob = dbMob;
 
-                if (mob == null && !String.IsNullOrEmpty(InternalID))
-                    // This should only happen when a GM command changes level on a mob with no npcTemplate,
-                    mob = GameServer.Database.FindObjectByKey<Mob>(InternalID);
+                //if (mob == null && !String.IsNullOrEmpty(InternalID))
+                //    // This should only happen when a GM command changes level on a mob with no npcTemplate,
+                //    mob = GameServer.Database.FindObjectByKey<Mob>(InternalID);
 
                 if (mob != null)
                 {

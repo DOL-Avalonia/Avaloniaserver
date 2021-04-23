@@ -38,7 +38,7 @@ namespace DOL.GS
         {
             base.CheckAddSpawns();  // In order to reset HealthPercentOld.
 
-            int numAdds = Math.Max(1, PlayersInLair / 4);
+            int numAdds = Math.Max(1, 2* PlayersInLair);
             for (int add = 1; add <= numAdds; ++add)
             {
                 SpawnTimedAdd(1110300, Util.Random(57, 60), X + Util.Random(300, 600), Y + Util.Random(300, 600), 30, false);   // serpent de fiel
@@ -182,6 +182,36 @@ namespace DOL.GS
                 }
 
                 return m_rangedDebuffSpell;
+            }
+        }
+
+        protected override Spell Glare
+        {
+            get
+            {
+                if (m_glareSpell == null)
+                {
+                    DBSpell spell = new DBSpell();
+                    spell.AllowAdd = false;
+                    spell.CastTime = 0;
+                    spell.ClientEffect = 5703;
+                    spell.Icon = 5703;
+                    spell.Description = "Glare";
+                    spell.Name = "Dragon Glare";
+                    spell.Range = 2500;
+                    spell.Radius = 700;
+                    spell.Damage = 2000 * DragonDifficulty / 100;
+                    spell.RecastDelay = 10;
+                    spell.Value = 75;
+                    spell.DamageType = (int)eDamageType.Matter;
+                    spell.SpellID = 60001;
+                    spell.Target = "Enemy";
+                    spell.Type = "DirectDamage";
+                    m_glareSpell = new Spell(spell, 70);
+                    SkillBase.AddScriptedSpell(GlobalSpellsLines.Mob_Spells, m_glareSpell);
+                }
+
+                return m_glareSpell;
             }
         }
     }

@@ -415,6 +415,7 @@
     <Compile Include="gameobjects\CustomNPC\RenaissanceNPC.cs" />
     <Compile Include="gameobjects\CustomNPC\ShadowNPC.cs" />
     <Compile Include="gameobjects\CustomNPC\StaticMob.cs" />
+    <Compile Include="gameobjects\Dragons\Hydra.cs" />
     <Compile Include="gameobjects\FeuDeCamp.cs" />
     <Compile Include="gameobjects\MoneyEventNPC.cs" />
     <Compile Include="gameobjects\OutlawMerchant.cs" />
