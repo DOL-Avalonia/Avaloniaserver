@@ -153,7 +153,7 @@ namespace DOL.GS.ServerRules
 			if (attacker == null || defender == null)
 				return false;
 
-            if (defender is ShadowNPC)
+            if ((defender is ShadowNPC) || (defender is AreaEffect))
                 return false;
 
 			//dead things can't attack

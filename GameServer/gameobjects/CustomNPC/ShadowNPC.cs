@@ -51,7 +51,7 @@ namespace DOL.gameobjects.CustomNPC
 
         public override ushort Model { get => 667; set => base.Model = value; }
 
-        public override eFlags Flags { get => eFlags.DONTSHOWNAME; set => base.Flags = value; }
+        public override eFlags Flags { get => eFlags.DONTSHOWNAME | eFlags.PEACE; set => base.Flags = value; }
 
         public ShadowNPC(GamePlayer player) : base()
         {

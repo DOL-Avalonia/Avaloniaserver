@@ -2836,6 +2836,8 @@ namespace DOL.GS.Commands
             mob.PackageID = targetMob.PackageID;
             mob.OwnerID = targetMob.OwnerID;
 
+            mob.CustomCopy(targetMob);
+
             mob.AddToWorld();
             mob.LoadedFromScript = false;
             mob.SaveIntoDatabase();

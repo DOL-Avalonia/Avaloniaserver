@@ -163,7 +163,7 @@ namespace DOL.GS.Commands
                     Mob mob = GameServer.Database.SelectObjects<Mob>("`Mob_ID` = @MobID", new QueryParameter("@MobID", areaEffect.MobID)).FirstOrDefault();
                     if(mob != null)
                     {
-                        AreaEffect areaMob = WorldMgr.GetNPCsByName(mob.Name, (eRealm)mob.Realm).FirstOrDefault() as AreaEffect;
+                        AreaEffect areaMob = WorldMgr.GetNPCsByName(mob.Name, (eRealm)mob.Realm).FirstOrDefault((npc) => npc.InternalID == mob.ObjectId) as AreaEffect;
                         if(areaMob != null)
                         {
                             areaMob.CallAreaEffect();
@@ -198,9 +198,22 @@ namespace DOL.GS.Commands
 				        "Chance de miss: " + AE.MissChance + "%",
 				        "Message: " + AE.Message
 				    };
-			    client.Out.SendCustomTextWindow("Info AreaEffect", infos);
+                infos.Add(" + Spell: " + AE.SpellID);
+                infos.Add(" + Family: " + AE.AreaEffectFamily);
+                infos.Add(" + Order in family: " + AE.OrderInFamily);
+                infos.Add(" + Groupmob: " + AE.Group_Mob_Id);
+                infos.Add(" + Groupmob ON/OFF: " + AE.Group_Mob_Turn);
+                infos.Add(" + Enable: " + !AE.Disable);
+                infos.Add(" + OneUse: " + AE.OneUse);
+                client.Out.SendCustomTextWindow("Info AreaEffect", infos);
 				return;
 			}
+
+            if(args.Length < 2)
+            {
+                DisplaySyntax(client);
+                return;
+            }
 
 			var player = client.Player;
 

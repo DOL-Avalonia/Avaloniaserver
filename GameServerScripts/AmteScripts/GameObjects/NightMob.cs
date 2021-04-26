@@ -56,7 +56,7 @@ namespace DOL.GS.Scripts
 			return 60000;
 		}
 
-		public override void DeleteFromDatabase()
+        public override void DeleteFromDatabase()
 		{
 			base.DeleteFromDatabase();
 			if (timer != null)

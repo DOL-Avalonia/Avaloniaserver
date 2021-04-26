@@ -55,7 +55,7 @@ namespace DOL.GS.Commands
                     info.Add(" Zone Description: " + client.Player.CurrentZone.Description);
                     info.Add(" Zone Realm: " + GlobalConstants.RealmToName(client.Player.CurrentZone.Realm));
                     info.Add(" Zone ID: " + client.Player.CurrentZone.ID);
-                    info.Add(" Zone IsDungeon: " + client.Player.CurrentZone.IsDungeon);
+                    info.Add(" Zone IsDungeon: " + client.Player.CurrentRegion.VisibilityDungeon);
                     info.Add(" Zone SkinID: " + client.Player.CurrentZone.ZoneSkinID);
                     info.Add(" Zone X: " + client.Player.CurrentZone.XOffset);
                     info.Add(" Zone Y: " + client.Player.CurrentZone.YOffset);

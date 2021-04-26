@@ -389,35 +389,35 @@ namespace DOL.GS
             {
                 Strength = (Properties.MOB_AUTOSET_STR_BASE > 0) ? Properties.MOB_AUTOSET_STR_BASE : (short)1;
                 if (Level > 1)
-                    Strength += (byte)(10.0 * (Level - 1) * Properties.MOB_AUTOSET_STR_MULTIPLIER);
+                    Strength += (short)((Level - 1) * Properties.MOB_AUTOSET_STR_MULTIPLIER);
             }
 
             if (Constitution < 1)
             {
                 Constitution = (Properties.MOB_AUTOSET_CON_BASE > 0) ? Properties.MOB_AUTOSET_CON_BASE : (short)1;
                 if (Level > 1)
-                    Constitution += (byte)((Level - 1) * Properties.MOB_AUTOSET_CON_MULTIPLIER);
+                    Constitution += (short)((Level - 1) * Properties.MOB_AUTOSET_CON_MULTIPLIER);
             }
 
             if (Quickness < 1)
             {
                 Quickness = (Properties.MOB_AUTOSET_QUI_BASE > 0) ? Properties.MOB_AUTOSET_QUI_BASE : (short)1;
                 if (Level > 1)
-                    Quickness += (byte)((Level - 1) * Properties.MOB_AUTOSET_QUI_MULTIPLIER);
+                    Quickness += (short)((Level - 1) * Properties.MOB_AUTOSET_QUI_MULTIPLIER);
             }
 
             if (Dexterity < 1)
             {
                 Dexterity = (Properties.MOB_AUTOSET_DEX_BASE > 0) ? Properties.MOB_AUTOSET_DEX_BASE : (short)1;
                 if (Level > 1)
-                    Dexterity += (byte)((Level - 1) * Properties.MOB_AUTOSET_DEX_MULTIPLIER);
+                    Dexterity += (short)((Level - 1) * Properties.MOB_AUTOSET_DEX_MULTIPLIER);
             }
 
             if (Intelligence < 1)
             {
                 Intelligence = (Properties.MOB_AUTOSET_INT_BASE > 0) ? Properties.MOB_AUTOSET_INT_BASE : (short)1;
                 if (Level > 1)
-                    Intelligence += (byte)((Level - 1) * Properties.MOB_AUTOSET_INT_MULTIPLIER);
+                    Intelligence += (short)((Level - 1) * Properties.MOB_AUTOSET_INT_MULTIPLIER);
             }
 
             if (Empathy < 1)

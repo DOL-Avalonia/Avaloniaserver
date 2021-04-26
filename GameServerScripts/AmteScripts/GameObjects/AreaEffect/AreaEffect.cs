@@ -120,6 +120,8 @@ namespace DOL.GS.Scripts
                     this.CastSpellOnOwnerAndPets(player, spell, m_mobSpellLine);
                 }
             }
+            foreach (GamePlayer plr in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
+                plr.Out.SendSpellEffectAnimation(this, this, spell.ClientEffect, 0, false, 1);
             LastApplyEffectTick = CurrentRegion.Time;
             Interval = Util.Random(IntervalMin, Math.Max(IntervalMax, IntervalMin)) * 1000;
         }
@@ -167,7 +169,7 @@ namespace DOL.GS.Scripts
                         {
                             if (OneUse)
                                 enable = false;
-                            return WorldMgr.GetNPCsByName(mob.Name, (eRealm)mob.Realm).FirstOrDefault() as AreaEffect;
+                            return WorldMgr.GetNPCsByName(mob.Name, (eRealm)mob.Realm).FirstOrDefault((npc) => npc.InternalID == mob.ObjectId) as AreaEffect;
                         }
                             
                     }
@@ -271,6 +273,33 @@ namespace DOL.GS.Scripts
             text.Add(" + Enable: " + !Disable);
             text.Add(" + OneUse: " + OneUse);
             return text;
+        }
+
+        public override void CustomCopy(GameObject source)
+        {
+            base.CustomCopy(source);
+            AreaEffect areaSource = source as AreaEffect;
+            if (areaSource != null)
+            {
+                DBAreaEffect lastarea = GameServer.Database.SelectObjects<DBAreaEffect>("`AreaEffectFamily` = @AreaEffectFamily", new QueryParameter("@AreaEffectFamily", areaSource.AreaEffectFamily)).OrderBy((area) => area.OrderInFamily).ToList().LastOrDefault();
+                ushort order = 0;
+                if (lastarea != null)
+                    order = (ushort)(lastarea.OrderInFamily + 1);
+                HealHarm = areaSource.HealHarm;
+                Radius = areaSource.Radius;
+                SpellEffect = areaSource.SpellEffect;
+                IntervalMin = areaSource.IntervalMin;
+                IntervalMax = areaSource.IntervalMax;
+                MissChance = areaSource.MissChance;
+                Message = areaSource.Message;
+                SpellID = areaSource.SpellID;
+                AreaEffectFamily = areaSource.AreaEffectFamily;
+                OrderInFamily = order;
+                Group_Mob_Id = areaSource.Group_Mob_Id;
+                Group_Mob_Turn = areaSource.Group_Mob_Turn;
+                Disable = areaSource.Disable;
+                OneUse = areaSource.OneUse;
+            }
         }
     }
 }

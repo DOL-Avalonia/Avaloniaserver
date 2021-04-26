@@ -76,54 +76,59 @@ public class AmteMob : GameNPC, IAmteNPC
 	}
 
 	public override void LoadFromDatabase(DataObject obj)
-	{
-		base.LoadFromDatabase(obj);
+    {
+        base.LoadFromDatabase(obj);
 
         if (Brain != null)
         {
             SetOwnBrain(Brain);
-        }    
+        }
 
-		var data = GameServer.Database.SelectObjects<DBBrainsParam>("`MobID` = '" + obj.ObjectId + "'");
-		for (var cp = GetCustomParam(); cp != null; cp = cp.next)
-		{
-			var cp1 = cp;
-			var param = data.Where(o => o.Param == cp1.name).FirstOrDefault();
-			if (param == null)
-				continue;
-			if (_nameXcp.ContainsKey(cp.name))
-			{
-				GameServer.Database.DeleteObject(param);
-				continue;
-			}
-			try
-			{
-				cp.Value = param.Value;
-			}
-			catch (Exception e)
-			{
-				
-			}
-			_nameXcp.Add(cp.name, param);
-		}
+        LoadDbBrainParam(obj.ObjectId);
 
-		// load some stats from the npctemplate
-		if (NPCTemplate != null && !NPCTemplate.ReplaceMobValues)
-		{
-			if (NPCTemplate.Spells != null) this.Spells = NPCTemplate.Spells;
-			if (NPCTemplate.Styles != null) this.Styles = NPCTemplate.Styles;
-			if (NPCTemplate.Abilities != null)
-			{
-				lock (m_lockAbilities)
-				{
-					foreach (Ability ab in NPCTemplate.Abilities)
-						m_abilities[ab.KeyName] = ab;
-				}
-			}
-		}
-	}
+        // load some stats from the npctemplate
+        if (NPCTemplate != null && !NPCTemplate.ReplaceMobValues)
+        {
+            if (NPCTemplate.Spells != null) this.Spells = NPCTemplate.Spells;
+            if (NPCTemplate.Styles != null) this.Styles = NPCTemplate.Styles;
+            if (NPCTemplate.Abilities != null)
+            {
+                lock (m_lockAbilities)
+                {
+                    foreach (Ability ab in NPCTemplate.Abilities)
+                        m_abilities[ab.KeyName] = ab;
+                }
+            }
+        }
+    }
 
-	public override void SaveIntoDatabase()
+    private void LoadDbBrainParam(string dataid)
+    {
+        var data = GameServer.Database.SelectObjects<DBBrainsParam>("`MobID` = '" + dataid + "'");
+        for (var cp = GetCustomParam(); cp != null; cp = cp.next)
+        {
+            var cp1 = cp;
+            var param = data.Where(o => o.Param == cp1.name).FirstOrDefault();
+            if (param == null)
+                continue;
+            if (_nameXcp.ContainsKey(cp.name))
+            {
+                GameServer.Database.DeleteObject(param);
+                continue;
+            }
+            try
+            {
+                cp.Value = param.Value;
+            }
+            catch (Exception e)
+            {
+
+            }
+            _nameXcp.Add(cp.name, param);
+        }
+    }
+
+    public override void SaveIntoDatabase()
 	{
 		base.SaveIntoDatabase();
 
@@ -148,7 +153,13 @@ public class AmteMob : GameNPC, IAmteNPC
 			}
 	}
 
-	public override void DeleteFromDatabase()
+    public override void Delete()
+    {
+        base.Delete();
+        _nameXcp.Values.ForEach(o => GameServer.Database.DeleteObject(o));
+    }
+
+    public override void DeleteFromDatabase()
 	{
 		base.DeleteFromDatabase();
 		_nameXcp.Values.ForEach(o => GameServer.Database.DeleteObject(o));
@@ -181,4 +192,10 @@ public class AmteMob : GameNPC, IAmteNPC
 			list.Add(" - " + cp.name + ": " + cp.Value);
 		return list;
 	}
+
+    public override void CustomCopy(GameObject source)
+    {
+        base.CustomCopy(source);
+        LoadDbBrainParam(source.InternalID);
+    }
 }
