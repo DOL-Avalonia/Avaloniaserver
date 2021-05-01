@@ -8,6 +8,10 @@ namespace DOL.commands.gmcommands
 	  ePrivLevel.GM,
 	  "'/MoneyNPC info'Affiche les infos lié au MoneyNPC en Target",
       "'/MoneyNPC money <or>'Change la somme requise en spécifiant l'or requis",
+      "'/MoneyNPC resource1 <templateid> <amount>' Change la resource 1 requise en spécifiant la quantité nécessaire",
+      "'/MoneyNPC resource2 <templateid> <amount>' Change la resource 2 requise en spécifiant la quantité nécessaire",
+      "'/MoneyNPC resource3 <templateid> <amount>' Change la resource 3 requise en spécifiant la quantité nécessaire",
+      "'/MoneyNPC resource4 <templateid> <amount>' Change la resource 4 requise en spécifiant la quantité nécessaire",
       "'/MoneyNPC eventid <id>'Change l'ID de l'event que s'occupe ce npc",
       "'/MoneyNPC reset'Remet à zero la somme d'argent en cours")]
 	public class MoneyNPC :
@@ -21,6 +25,7 @@ namespace DOL.commands.gmcommands
                 DisplaySyntax(client);
             }
 
+            MoneyEventNPC moneyNpc = client.Player.TargetObject as MoneyEventNPC;
 
             if (args.Length >= 2)
             {
@@ -44,7 +49,7 @@ namespace DOL.commands.gmcommands
 
                     case "money":
 
-                        if (client.Player.TargetObject is MoneyEventNPC moneyNpc)
+                        if (moneyNpc != null)
                         {
                             if (args.Length == 3)
                             {
@@ -66,7 +71,95 @@ namespace DOL.commands.gmcommands
                         }                      
                         break;
 
-                   case "eventid":            
+                    case "resource4":
+
+                        if (moneyNpc != null)
+                        {
+                            if (args.Length == 4)
+                            {
+                                if (int.TryParse(args[3], out int amount))
+                                {
+                                    moneyNpc.RequiredResource4 = amount;
+                                    moneyNpc.SaveIntoDatabase();
+                                    client.Out.SendMessage("La somme requise de l'event " + (moneyNpc.ServingEventID ?? string.Empty) + " est maintenant de :" + Money.GetString(moneyNpc.CurrentMoney), GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_SystemWindow);
+                                    return;
+                                }
+                            }
+                            DisplaySyntax(client);
+                        }
+                        else
+                        {
+                            ShowWrongTarget(client);
+                        }
+                        break;
+
+                    case "resource1":
+
+                        if (moneyNpc != null)
+                        {
+                            if (args.Length == 4)
+                            {
+                                if (int.TryParse(args[3], out int amount))
+                                {
+                                    moneyNpc.RequiredResource1 = amount;
+                                    moneyNpc.SaveIntoDatabase();
+                                    client.Out.SendMessage("La somme requise de l'event " + (moneyNpc.ServingEventID ?? string.Empty) + " est maintenant de :" + Money.GetString(moneyNpc.CurrentMoney), GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_SystemWindow);
+                                    return;
+                                }
+                            }
+                            DisplaySyntax(client);
+                        }
+                        else
+                        {
+                            ShowWrongTarget(client);
+                        }
+                        break;
+
+                    case "resource2":
+
+                        if (moneyNpc != null)
+                        {
+                            if (args.Length == 4)
+                            {
+                                if (int.TryParse(args[3], out int amount))
+                                {
+                                    moneyNpc.RequiredResource2 = amount;
+                                    moneyNpc.SaveIntoDatabase();
+                                    client.Out.SendMessage("La somme requise de l'event " + (moneyNpc.ServingEventID ?? string.Empty) + " est maintenant de :" + Money.GetString(moneyNpc.CurrentMoney), GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_SystemWindow);
+                                    return;
+                                }
+                            }
+                            DisplaySyntax(client);
+                        }
+                        else
+                        {
+                            ShowWrongTarget(client);
+                        }
+                        break;
+
+                    case "resource3":
+
+                        if (moneyNpc != null)
+                        {
+                            if (args.Length == 4)
+                            {
+                                if (int.TryParse(args[3], out int amount))
+                                {
+                                    moneyNpc.RequiredResource3 = amount;
+                                    moneyNpc.SaveIntoDatabase();
+                                    client.Out.SendMessage("La somme requise de l'event " + (moneyNpc.ServingEventID ?? string.Empty) + " est maintenant de :" + Money.GetString(moneyNpc.CurrentMoney), GS.PacketHandler.eChatType.CT_System, GS.PacketHandler.eChatLoc.CL_SystemWindow);
+                                    return;
+                                }
+                            }
+                            DisplaySyntax(client);
+                        }
+                        else
+                        {
+                            ShowWrongTarget(client);
+                        }
+                        break;
+
+                    case "eventid":            
                         
                         if (client.Player.TargetObject is MoneyEventNPC eventNpc)
                         {
