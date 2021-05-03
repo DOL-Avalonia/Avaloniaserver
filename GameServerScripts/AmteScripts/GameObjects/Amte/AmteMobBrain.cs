@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DOL.gameobjects.CustomNPC;
 using DOL.GS;
 using DOL.GS.Effects;
 using DOL.GS.RealmAbilities;
@@ -199,7 +200,14 @@ namespace DOL.AI.Brain
 
 			if (Body.TargetObject != null)
 			{
-				if (Body.IsMoving && spell.CastTime > 0)
+                ShadowNPC shadow = Body.TargetObject as ShadowNPC;
+                if (shadow != null)
+                    return false;
+
+                if (spell.Duration > 0 && LivingHasEffect(Body.TargetObject as GameLiving, spell))
+                    return false;
+
+                if (Body.IsMoving && spell.CastTime > 0)
 					Body.StopFollowing();
 
 				if (Body.TargetObject != Body && spell.CastTime > 0)

@@ -575,15 +575,27 @@ namespace DOL.GS.Spells
                 // Let ArmorFactorDebuffs apply normally.
 
                 case StrengthBuff _:
+                    if (isSubtracted)
+                        owner.BaseBuffBonusCategory[(int)eProperty.Strength] -= (int)(Spell.Value * effect.Effectiveness);
+                    else
+                        owner.BaseBuffBonusCategory[(int)eProperty.Strength] += (int)(Spell.Value * effect.Effectiveness);
                     CalculatePercentage(false);
                     owner.BaseBuffBonusCategory[(int)eProperty.MeleeDamage] += percent;
                     return true;
                 case StrengthDebuff _:
+                    if (isSubtracted)
+                        owner.BaseBuffBonusCategory[(int)eProperty.Strength] -= (int)(Spell.Value * effect.Effectiveness);
+                    else
+                        owner.BaseBuffBonusCategory[(int)eProperty.Strength] += (int)(Spell.Value * effect.Effectiveness);
                     CalculatePercentage(false);
                     owner.SpecDebuffCategory[(int)eProperty.MeleeDamage] += percent;
                     return true;
 
                 case ConstitutionBuff _:
+                    if (isSubtracted)
+                        owner.BaseBuffBonusCategory[(int)eProperty.Constitution] -= (int)(Spell.Value * effect.Effectiveness);
+                    else
+                        owner.BaseBuffBonusCategory[(int)eProperty.Constitution] += (int)(Spell.Value * effect.Effectiveness);
                     CalculatePercentage(false);
                     owner.BaseBuffBonusCategory[(int)eProperty.Resist_Crush] += percent;
                     owner.BaseBuffBonusCategory[(int)eProperty.Resist_Slash] += percent;
@@ -591,6 +603,10 @@ namespace DOL.GS.Spells
                     owner.BaseBuffBonusCategory[(int)eProperty.MagicAbsorption] += percent;
                     return true;
                 case ConstitutionDebuff _:
+                    if (isSubtracted)
+                        owner.BaseBuffBonusCategory[(int)eProperty.Constitution] -= (int)(Spell.Value * effect.Effectiveness);
+                    else
+                        owner.BaseBuffBonusCategory[(int)eProperty.Constitution] += (int)(Spell.Value * effect.Effectiveness);
                     CalculatePercentage(false);
                     owner.SpecDebuffCategory[(int)eProperty.Resist_Crush] += percent;
                     owner.SpecDebuffCategory[(int)eProperty.Resist_Slash] += percent;
@@ -599,6 +615,10 @@ namespace DOL.GS.Spells
                     return true;
 
                 case StrengthConBuff _:
+                    if (isSubtracted)
+                        owner.BaseBuffBonusCategory[(int)eProperty.Strength] -= (int)(Spell.Value * effect.Effectiveness);
+                    else
+                        owner.BaseBuffBonusCategory[(int)eProperty.Strength] += (int)(Spell.Value * effect.Effectiveness);
                     CalculatePercentage(true);
                     owner.BaseBuffBonusCategory[(int)eProperty.MeleeDamage] += percent;
                     owner.BaseBuffBonusCategory[(int)eProperty.Resist_Crush] += percent;
@@ -607,6 +627,10 @@ namespace DOL.GS.Spells
                     owner.BaseBuffBonusCategory[(int)eProperty.MagicAbsorption] += percent;
                     return true;
                 case StrengthConDebuff _:
+                    if (isSubtracted)
+                        owner.BaseBuffBonusCategory[(int)eProperty.Strength] -= (int)(Spell.Value * effect.Effectiveness);
+                    else
+                        owner.BaseBuffBonusCategory[(int)eProperty.Strength] += (int)(Spell.Value * effect.Effectiveness);
                     CalculatePercentage(true);
                     owner.SpecDebuffCategory[(int)eProperty.MeleeDamage] += percent;
                     owner.SpecDebuffCategory[(int)eProperty.Resist_Crush] += percent;
