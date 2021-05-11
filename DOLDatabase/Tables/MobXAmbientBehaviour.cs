@@ -28,6 +28,17 @@ public class MobXAmbientBehaviour : DataObject
 {
     private string m_source;
     private string m_trigger;
+    private ushort m_damageTypeRepeat;
+    private int m_triggerTimer;
+    private ushort m_nbUse;
+    private ushort m_hangeFlag;
+    private string m_changeBrain;
+    private string m_changeNPCTemplate;
+    private int m_changeEffect;
+    private string m_callAreaeffectID;
+    private string m_playertoTPpoint;
+    private string m_mobtoTPpoint;
+    private int m_tPeffect;
     private ushort m_emote;
     private string m_text;
     private ushort m_chance;
@@ -55,7 +66,29 @@ public class MobXAmbientBehaviour : DataObject
         m_hp = 0;
     }
 
-    public MobXAmbientBehaviour(string name, string trigger, ushort emote, string text, ushort chance, string voice, int spell, ushort hp)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="trigger"></param>
+    /// <param name="emote"></param>
+    /// <param name="text"></param>
+    /// <param name="chance"></param>
+    /// <param name="voice"></param>
+    /// <param name="spell"></param>
+    /// <param name="hp"></param>
+    /// <param name="changeBrain"></param>
+    /// <param name="changeNPCTemplate"></param>
+    /// <param name="callAreaeffectID"></param>
+    /// <param name="playertoTPpoint"></param>
+    /// <param name="mobtoTPpoint"></param>
+    /// <param name="trigerTimer"></param>
+    /// <param name="changeEffect"></param>
+    /// <param name="tpEffect"></param>
+    /// <param name="domageTypeRepeat"></param>
+    /// <param name="nbUse"></param>
+    /// <param name="hangeFlag"></param>
+    public MobXAmbientBehaviour(string name, string trigger, ushort emote, string text, ushort chance, string voice, int spell, ushort hp, string changeBrain, string changeNPCTemplate, string callAreaeffectID, string playertoTPpoint, string mobtoTPpoint, int trigerTimer, int changeEffect, int tpEffect, ushort domageTypeRepeat, ushort nbUse, ushort hangeFlag)
     {
         m_source = name;
         m_trigger = trigger;
@@ -65,6 +98,17 @@ public class MobXAmbientBehaviour : DataObject
         m_voice = voice;
         m_spell = spell;
         m_hp = hp;
+        m_changeBrain = changeBrain;
+        m_changeNPCTemplate = changeNPCTemplate;
+        m_callAreaeffectID = callAreaeffectID;
+        m_playertoTPpoint = playertoTPpoint;
+        m_mobtoTPpoint = mobtoTPpoint;
+        m_triggerTimer = trigerTimer;
+        m_changeEffect = changeEffect;
+        m_tPeffect = tpEffect;
+        m_nbUse = nbUse;
+        m_damageTypeRepeat = domageTypeRepeat;
+        m_hangeFlag = hangeFlag;
     }
 
     [DataElement(AllowDbNull = false, Index = true)]
@@ -121,5 +165,82 @@ public class MobXAmbientBehaviour : DataObject
     {
         get { return m_hp; }
         set { m_hp = value; }
+    }
+
+    [DataElement(AllowDbNull = true)]
+    public string ChangeBrain
+    {
+        get { return m_changeBrain; }
+        set { m_changeBrain = value; }
+    }
+
+    [DataElement(AllowDbNull = true)]
+    public string ChangeNPCTemplate
+    {
+        get { return m_changeNPCTemplate; }
+        set { m_changeNPCTemplate = value; }
+    }
+
+    [DataElement(AllowDbNull = true)]
+    public string CallAreaeffectID
+    {
+        get { return m_callAreaeffectID; }
+        set { m_callAreaeffectID = value; }
+    }
+
+    [DataElement(AllowDbNull = true)]
+    public string PlayertoTPpoint
+    {
+        get { return m_playertoTPpoint; }
+        set { m_playertoTPpoint = value; }
+    }
+
+    [DataElement(AllowDbNull = true)]
+    public string MobtoTPpoint
+    {
+        get { return m_mobtoTPpoint; }
+        set { m_mobtoTPpoint = value; }
+    }
+
+    [DataElement(AllowDbNull = true)]
+    public ushort DamageTypeRepeat
+    {
+        get { return m_damageTypeRepeat; }
+        set { m_damageTypeRepeat = value; }
+    }
+
+    [DataElement(AllowDbNull = true)]
+    public ushort NbUse
+    {
+        get { return m_nbUse; }
+        set { m_nbUse = value; }
+    }
+
+    [DataElement(AllowDbNull = true)]
+    public ushort HangeFlag
+    {
+        get { return m_hangeFlag; }
+        set { m_hangeFlag = value; }
+    }
+
+    [DataElement(AllowDbNull = true)]
+    public int TriggerTimer
+    {
+        get { return m_triggerTimer; }
+        set { m_triggerTimer = value; }
+    }
+
+    [DataElement(AllowDbNull = true)]
+    public int ChangeEffect
+    {
+        get { return m_changeEffect; }
+        set { m_changeEffect = value; }
+    }
+
+    [DataElement(AllowDbNull = true)]
+    public int TPeffect
+    {
+        get { return m_tPeffect; }
+        set { m_tPeffect = value; }
     }
 }

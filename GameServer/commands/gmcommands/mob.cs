@@ -122,7 +122,7 @@ namespace DOL.GS.Commands
          "'/mob reload <name>' reload the targetted or named mob(s) from the database.",
          "'/mob reload radius <number>' reload the mobs in radius from the database.",
          "'/mob findname <name> <#>' search for a mob with a name like <name> with maximum <#> (def. 10) matches.",
-         "'/mob trigger <type> <chance> <emote> <spell> <hp> <text>' adds a trigger to targeted mob class.  Use '/mob trigger help' for more info.",
+         "'/mob trigger <type> <chance> <emote> <spell> <hp> <domagetyperepeate> <triggertimer> <nbuse> <changeflag> <changebrain> <changenpctemplate> <changeeffect> <areaeffect> <playertppoint> <mobtppoint> <tpeffect> <text>' adds a trigger to targeted mob class.  Use '/mob trigger help' for more info.",
          "'/mob trigger info' Give trigger informations.",
          "'/mob trigger remove <id>' Remove a trigger.",
          "'/mob ownerid <id>' Sets and saves the OwnerID for this mob.",
@@ -3422,6 +3422,17 @@ namespace DOL.GS.Commands
             ushort chance = 0;
             int spell = 0;
             ushort hp = 0;
+            ushort domagetyperepeate = 0;
+            ushort nbuse = 0;
+            ushort changeflag = 0;
+            string changebrain = "";
+            string changenpctemplate = "";
+            string areaeffectid = "";
+            string playertppoint = "";
+            string mobtppoint = "";
+            int triggertimer=0;
+            int changeeffect=0;
+            int tpeffect=0;
             try
             {
                 string type = args[2].ToLower();
@@ -3460,15 +3471,26 @@ namespace DOL.GS.Commands
                     chance = Convert.ToUInt16(args[3]);
                     spell = Convert.ToUInt16(args[5]);
                     hp = Convert.ToUInt16(args[6]);
+                    domagetyperepeate = Convert.ToUInt16(args[7]);
+                    triggertimer = Convert.ToInt32(args[8]);
+                    nbuse = Convert.ToUInt16(args[9]);
+                    changeflag = Convert.ToUInt16(args[10]);
+                    changebrain = args[11];
+                    changenpctemplate = args[12];
+                    changeeffect = Convert.ToInt32(args[13]);
+                    areaeffectid = args[14];
+                    playertppoint = args[15];
+                    mobtppoint = args[16];
+                    tpeffect = Convert.ToInt32(args[17]);
                 }
                 catch
                 {
                     client.Out.SendMessage("You must specify a valid chance percent/emote number", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 }
 
-                if (args.Length > 6)
+                if (args.Length > 17)
                 {
-                    text = string.Join(" ", args, 7, args.Length - 7);
+                    text = string.Join(" ", args, 18, args.Length - 18);
                 }
 
                 if (text == string.Empty)
@@ -3489,7 +3511,7 @@ namespace DOL.GS.Commands
                 }
 
                 text = text.Replace("{b}", string.Empty).Replace("{y}", string.Empty);
-                GameServer.Database.AddObject(new MobXAmbientBehaviour(targetMob.Name, trig.ToString(), emote, text, chance, voice, spell, hp) { Dirty = true, AllowAdd = true });
+                GameServer.Database.AddObject(new MobXAmbientBehaviour(targetMob.Name, trig.ToString(), emote, text, chance, voice, spell, hp, changebrain, changenpctemplate, areaeffectid, playertppoint, mobtppoint, triggertimer, changeeffect, tpeffect, domagetyperepeate, nbuse, changeflag) { Dirty = true, AllowAdd = true });
                 GameServer.Instance.NpcManager.AmbientBehaviour.Reload(GameServer.Instance.IDatabase);
                 targetMob.ambientTexts = GameServer.Instance.NpcManager.AmbientBehaviour[targetMob.Name];
                 client.Out.SendMessage(" Trigger added to mobs with name " + targetMob.Name + " when they " + type + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);

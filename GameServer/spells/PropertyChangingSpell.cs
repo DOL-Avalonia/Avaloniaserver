@@ -557,6 +557,21 @@ namespace DOL.GS.Spells
                     percent = -percent;
             } // CalculatePercentage()
 
+			if(Property1  != eProperty.Undefined && Property1 != eProperty.ArmorFactor)
+            {
+				if (isSubtracted)
+					owner.BaseBuffBonusCategory[Property1] -= (int)(Spell.Value * effect.Effectiveness);
+				else
+					owner.BaseBuffBonusCategory[Property1] += (int)(Spell.Value * effect.Effectiveness);
+			}
+			if(Property2 != eProperty.Undefined)
+            {
+				if (isSubtracted)
+					owner.BaseBuffBonusCategory[Property2] -= (int)(Spell.Value * effect.Effectiveness);
+				else
+					owner.BaseBuffBonusCategory[Property2] += (int)(Spell.Value * effect.Effectiveness);
+			}
+
             switch (this)
             {
                 case ArmorFactorBuff _:
@@ -575,27 +590,15 @@ namespace DOL.GS.Spells
                 // Let ArmorFactorDebuffs apply normally.
 
                 case StrengthBuff _:
-                    if (isSubtracted)
-                        owner.BaseBuffBonusCategory[(int)eProperty.Strength] -= (int)(Spell.Value * effect.Effectiveness);
-                    else
-                        owner.BaseBuffBonusCategory[(int)eProperty.Strength] += (int)(Spell.Value * effect.Effectiveness);
                     CalculatePercentage(false);
                     owner.BaseBuffBonusCategory[(int)eProperty.MeleeDamage] += percent;
                     return true;
                 case StrengthDebuff _:
-                    if (isSubtracted)
-                        owner.BaseBuffBonusCategory[(int)eProperty.Strength] -= (int)(Spell.Value * effect.Effectiveness);
-                    else
-                        owner.BaseBuffBonusCategory[(int)eProperty.Strength] += (int)(Spell.Value * effect.Effectiveness);
                     CalculatePercentage(false);
                     owner.SpecDebuffCategory[(int)eProperty.MeleeDamage] += percent;
                     return true;
 
                 case ConstitutionBuff _:
-                    if (isSubtracted)
-                        owner.BaseBuffBonusCategory[(int)eProperty.Constitution] -= (int)(Spell.Value * effect.Effectiveness);
-                    else
-                        owner.BaseBuffBonusCategory[(int)eProperty.Constitution] += (int)(Spell.Value * effect.Effectiveness);
                     CalculatePercentage(false);
                     owner.BaseBuffBonusCategory[(int)eProperty.Resist_Crush] += percent;
                     owner.BaseBuffBonusCategory[(int)eProperty.Resist_Slash] += percent;
@@ -603,10 +606,6 @@ namespace DOL.GS.Spells
                     owner.BaseBuffBonusCategory[(int)eProperty.MagicAbsorption] += percent;
                     return true;
                 case ConstitutionDebuff _:
-                    if (isSubtracted)
-                        owner.BaseBuffBonusCategory[(int)eProperty.Constitution] -= (int)(Spell.Value * effect.Effectiveness);
-                    else
-                        owner.BaseBuffBonusCategory[(int)eProperty.Constitution] += (int)(Spell.Value * effect.Effectiveness);
                     CalculatePercentage(false);
                     owner.SpecDebuffCategory[(int)eProperty.Resist_Crush] += percent;
                     owner.SpecDebuffCategory[(int)eProperty.Resist_Slash] += percent;
@@ -615,10 +614,6 @@ namespace DOL.GS.Spells
                     return true;
 
                 case StrengthConBuff _:
-                    if (isSubtracted)
-                        owner.BaseBuffBonusCategory[(int)eProperty.Strength] -= (int)(Spell.Value * effect.Effectiveness);
-                    else
-                        owner.BaseBuffBonusCategory[(int)eProperty.Strength] += (int)(Spell.Value * effect.Effectiveness);
                     CalculatePercentage(true);
                     owner.BaseBuffBonusCategory[(int)eProperty.MeleeDamage] += percent;
                     owner.BaseBuffBonusCategory[(int)eProperty.Resist_Crush] += percent;
@@ -627,10 +622,6 @@ namespace DOL.GS.Spells
                     owner.BaseBuffBonusCategory[(int)eProperty.MagicAbsorption] += percent;
                     return true;
                 case StrengthConDebuff _:
-                    if (isSubtracted)
-                        owner.BaseBuffBonusCategory[(int)eProperty.Strength] -= (int)(Spell.Value * effect.Effectiveness);
-                    else
-                        owner.BaseBuffBonusCategory[(int)eProperty.Strength] += (int)(Spell.Value * effect.Effectiveness);
                     CalculatePercentage(true);
                     owner.SpecDebuffCategory[(int)eProperty.MeleeDamage] += percent;
                     owner.SpecDebuffCategory[(int)eProperty.Resist_Crush] += percent;
@@ -641,20 +632,12 @@ namespace DOL.GS.Spells
 
                 // Dex also affects cast speed and ranged weapon skill, so we need to apply it normally as well.
                 case DexterityBuff _:
-                    if (isSubtracted)
-                        owner.BaseBuffBonusCategory[(int)eProperty.Dexterity] -= (int)(Spell.Value * effect.Effectiveness);
-                    else
-                        owner.BaseBuffBonusCategory[(int)eProperty.Dexterity] += (int)(Spell.Value * effect.Effectiveness);
                     CalculatePercentage(false);
                     owner.BaseBuffBonusCategory[(int)eProperty.Resist_Crush] += percent;
                     owner.BaseBuffBonusCategory[(int)eProperty.Resist_Slash] += percent;
                     owner.BaseBuffBonusCategory[(int)eProperty.Resist_Thrust] += percent;
                     return true;
                 case DexterityDebuff _:
-                    if (isSubtracted)
-                        owner.DebuffCategory[(int)eProperty.Dexterity] -= (int)(Spell.Value * effect.Effectiveness);
-                    else
-                        owner.DebuffCategory[(int)eProperty.Dexterity] += (int)(Spell.Value * effect.Effectiveness);
                     CalculatePercentage(false);
                     owner.SpecDebuffCategory[(int)eProperty.Resist_Crush] += percent;
                     owner.SpecDebuffCategory[(int)eProperty.Resist_Slash] += percent;
@@ -662,10 +645,6 @@ namespace DOL.GS.Spells
                     return true;
 
                 case DexterityQuiBuff _:
-                    if (isSubtracted)
-                        owner.SpecBuffBonusCategory[(int)eProperty.Dexterity] -= (int)(Spell.Value * effect.Effectiveness);
-                    else
-                        owner.SpecBuffBonusCategory[(int)eProperty.Dexterity] += (int)(Spell.Value * effect.Effectiveness);
                     CalculatePercentage(true);
                     owner.BaseBuffBonusCategory[(int)eProperty.Resist_Crush] += percent;
                     owner.BaseBuffBonusCategory[(int)eProperty.Resist_Slash] += percent;
@@ -673,10 +652,6 @@ namespace DOL.GS.Spells
                     owner.BaseBuffBonusCategory[(int)eProperty.MeleeSpeed] += percent;
                     return true;
                 case DexterityQuiDebuff _:
-                    if (isSubtracted)
-                        owner.DebuffCategory[(int)eProperty.Dexterity] -= (int)(Spell.Value * effect.Effectiveness);
-                    else
-                        owner.DebuffCategory[(int)eProperty.Dexterity] += (int)(Spell.Value * effect.Effectiveness);
                     CalculatePercentage(true);
                     owner.SpecDebuffCategory[(int)eProperty.Resist_Crush] += percent;
                     owner.SpecDebuffCategory[(int)eProperty.Resist_Slash] += percent;
@@ -686,10 +661,6 @@ namespace DOL.GS.Spells
 
                 case DexterityConDebuff _:
                     CalculatePercentage(true);
-                    if (percent > 0)
-                        owner.DebuffCategory[(int)eProperty.Dexterity] += (int)(Spell.Value * effect.Effectiveness);
-                    else
-                        owner.DebuffCategory[(int)eProperty.Dexterity] -= (int)(Spell.Value * effect.Effectiveness);
                     // Melee resist gets reduced by both Con and Dex
                     owner.SpecDebuffCategory[(int)eProperty.Resist_Crush] += 2 * percent;
                     owner.SpecDebuffCategory[(int)eProperty.Resist_Slash] += 2 * percent;
@@ -699,7 +670,6 @@ namespace DOL.GS.Spells
 
                 case WeaponskillConDebuff _:
                     CalculatePercentage(true);
-                    owner.SpecDebuffCategory[(int)eProperty.WeaponSkill] += percent;
                     owner.SpecDebuffCategory[(int)eProperty.Resist_Crush] += percent;
                     owner.SpecDebuffCategory[(int)eProperty.Resist_Slash] += percent;
                     owner.SpecDebuffCategory[(int)eProperty.Resist_Thrust] += percent;
