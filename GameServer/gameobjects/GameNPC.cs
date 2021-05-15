@@ -42,6 +42,7 @@ using DOL.GameEvents;
 using System.Threading.Tasks;
 using DOL.MobGroups;
 using DOL.Territory;
+using static DOL.GS.ScriptMgr;
 
 namespace DOL.GS
 {
@@ -63,6 +64,17 @@ namespace DOL.GS
 		public const int CONST_WALKTOTOLERANCE = 25;
 
         public TPPoint tPPoint;
+
+		public ushort DamageTypeCounter { get; set; }
+		public eDamageType LastDamageType { get; set; }
+		public ushort DamageTypeLimit { get; set; }
+		private RegionTimer ambientTextTimer;
+		private bool hasImunity = false;
+		private eDamageType ImunityDomage = eDamageType.GM;
+		private Dictionary<MobXAmbientBehaviour, short> ambientXNbUse = new Dictionary<MobXAmbientBehaviour, short>();
+		private eFlags tempoarallyFlags = 0;
+		private ABrain temporallyBrain = null;
+		private INpcTemplate temporallyTemplate = null;
 
 		#region Formations/Spacing
 
@@ -835,7 +847,12 @@ namespace DOL.GS
 		/// </summary>
 		public virtual eFlags Flags
 		{
-			get { return m_flags; }
+			get 
+			{ 
+				if(tempoarallyFlags != 0)
+					return tempoarallyFlags;
+				return m_flags; 
+			}
 			set
 			{
 				eFlags oldflags = m_flags;
@@ -2054,7 +2071,12 @@ namespace DOL.GS
 		/// </summary>
 		public NpcTemplate NPCTemplate
 		{
-			get { return m_npcTemplate; }
+			get 
+			{
+				if (temporallyTemplate != null)
+					return temporallyTemplate as NpcTemplate;
+				return m_npcTemplate; 
+			}
 			set { m_npcTemplate = value; }
 		}
 		/// <summary>
@@ -3823,7 +3845,8 @@ namespace DOL.GS
 			moving,
 			interact,
 			seeing,
-            hurting
+            hurting,
+			immunised
 		}
 
 		/// <summary>
@@ -4236,22 +4259,107 @@ namespace DOL.GS
 			if (ActiveWeaponSlot == eActiveWeaponSlot.TwoHanded && m_blockChance > 0)
 				switch (this)
 				{
-					case Keeps.GameKeepGuard guard:
-						if (ServerProperties.Properties.GUARD_2H_BONUS_DAMAGE)
+					case GameKeepGuard guard:
+						if (Properties.GUARD_2H_BONUS_DAMAGE)
 							damage *= (100 + m_blockChance) / 100.00;
 						break;
 					case GamePet pet:
-						if (ServerProperties.Properties.PET_2H_BONUS_DAMAGE)
+						if (Properties.PET_2H_BONUS_DAMAGE)
 							damage *= (100 + m_blockChance) / 100.00;
 						break;
 					default:
-						if (ServerProperties.Properties.MOB_2H_BONUS_DAMAGE)
+						if (Properties.MOB_2H_BONUS_DAMAGE)
 							damage *= (100 + m_blockChance) / 100.00;
 						break;
 				}
 
 			return damage;
 		}
+
+		private int AmbientTextTypeCallback(RegionTimer regionTimer)
+        {
+			if(hasImunity)
+            {
+				switch (ImunityDomage)
+				{
+					case eDamageType.Body:
+						BaseBuffBonusCategory[(int)eProperty.Resist_Body] -= 100;
+						break;
+					case eDamageType.Crush:
+						BaseBuffBonusCategory[(int)eProperty.Resist_Crush] -= 100;
+						break;
+					case eDamageType.Slash:
+						BaseBuffBonusCategory[(int)eProperty.Resist_Slash] -= 100;
+						break;
+					case eDamageType.Thrust:
+						BaseBuffBonusCategory[(int)eProperty.Resist_Thrust] -= 100;
+						break;
+					case eDamageType.Cold:
+						BaseBuffBonusCategory[(int)eProperty.Resist_Cold] -= 100;
+						break;
+					case eDamageType.Energy:
+						BaseBuffBonusCategory[(int)eProperty.Resist_Energy] -= 100;
+						break;
+					case eDamageType.Heat:
+						BaseBuffBonusCategory[(int)eProperty.Resist_Heat] -= 100;
+						break;
+					case eDamageType.Matter:
+						BaseBuffBonusCategory[(int)eProperty.Resist_Matter] -= 100;
+						break;
+					case eDamageType.Spirit:
+						BaseBuffBonusCategory[(int)eProperty.Resist_Spirit] -= 100;
+						break;
+				}
+				ImunityDomage = eDamageType.GM;
+				DamageTypeCounter = 0;
+				LastDamageType = eDamageType.GM;
+				hasImunity = false;
+			}
+			if(tempoarallyFlags != 0)
+            {
+				tempoarallyFlags = 0;
+            }
+			if(temporallyBrain != null)
+            {
+				RemoveBrain(temporallyBrain);
+				temporallyBrain = null;
+            }
+			if(temporallyTemplate != null)
+            {
+				temporallyTemplate = null;
+				LoadTemplate(NPCTemplate);
+				BroadcastLivingEquipmentUpdate();
+			}
+			ambientTextTimer.Stop();
+			ambientTextTimer = null;
+			return regionTimer.TimeUntilElapsed;
+        }
+
+        public override void TakeDamage(AttackData ad)
+        {
+			if (ad.Attacker is GamePlayer gamePlayer && (ad.AttackResult != eAttackResult.HitStyle && ad.AttackResult != eAttackResult.HitUnstyled))
+			{
+				eDamageType damageType = ad.DamageType;
+				MobXAmbientBehaviour ambientText = ambientTexts.Where(mobXAmbient => mobXAmbient.DamageTypeRepeat > 0).FirstOrDefault();
+				if (ambientText != null && ambientText.Chance == 100 && (ambientText.HP == 0 || HealthPercent < ambientText.HP))
+				{
+					if (damageType != LastDamageType)
+					{
+						DamageTypeCounter = 1;
+						LastDamageType = damageType;
+					}
+					else
+					{
+						DamageTypeCounter++;
+					}
+					if (DamageTypeCounter > ambientText.DamageTypeRepeat && !hasImunity)
+					{
+						FireAmbientSentence(eAmbientTrigger.immunised, gamePlayer);
+					}
+				}
+			}
+			base.TakeDamage(ad);
+        }
 
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
@@ -4260,9 +4368,9 @@ namespace DOL.GS
                 Territory.Territory currentTerritory = TerritoryManager.Instance.GetCurrentTerritory(living.CurrentAreas);
                 if (currentTerritory != null && currentTerritory.GuildOwner == GuildName && ((living is GamePlayer player && player.GuildName != GuildName) || (living.ControlledBrain != null && living.ControlledBrain.Owner.GuildName != GuildName)))
                     TerritoryManager.Instance.TerritoryAttacked(currentTerritory);
-                
-                if(damageAmount > 0)
-                    FireAmbientSentence(eAmbientTrigger.hurting, living);
+
+				if (damageAmount > 0)
+					FireAmbientSentence(eAmbientTrigger.hurting, living);
             }
             base.TakeDamage(source, damageType, damageAmount, criticalAmount);
         }
@@ -4278,6 +4386,24 @@ namespace DOL.GS
             }
             set
             {
+				if (value > base.Health)
+				{
+					List<MobXAmbientBehaviour> ambientText = ambientTexts.Where(mobXAmbient => mobXAmbient.HP > 0).ToList();
+					if(ambientText.Count > 0)
+                    {
+						MobXAmbientBehaviour changeBrainAmbient = ambientText.Where(ambient => !string.IsNullOrEmpty(ambient.ChangeBrain)).FirstOrDefault();
+						if (changeBrainAmbient != null && temporallyBrain != null && changeBrainAmbient.HP < HealthPercent)
+                        {
+							RemoveBrain(temporallyBrain);
+							temporallyBrain = null;
+						}
+						MobXAmbientBehaviour changeFlagAmbient = ambientText.Where(ambient => ambient.ChangeFlag > 0).FirstOrDefault();
+						if (changeFlagAmbient != null && temporallyBrain != null && changeFlagAmbient.HP < HealthPercent)
+						{
+							tempoarallyFlags = 0;
+						}
+					}
+				}
                 base.Health = value;
                 //Slow mobs down when they are hurt!
                 short maxSpeed = MaxSpeed;
@@ -5898,7 +6024,32 @@ namespace DOL.GS
 
 			// grab random sentence
 			var chosen = mxa[Util.Random(mxa.Count - 1)];
-            bool continueProcess = false;
+
+			//NbUse
+			if(chosen.NbUse > 0)
+            {
+				if(ambientXNbUse.ContainsKey(chosen))
+                {
+					ambientXNbUse[chosen]++;
+                }
+				else
+                {
+					ambientXNbUse.Add(chosen, 1);
+                }
+				if (ambientXNbUse[chosen] > chosen.NbUse)
+					return;
+            }
+
+			//TriggerTimer
+			if (chosen.TriggerTimer > 0)
+			{
+				if (ambientTextTimer != null)
+					return;
+				ambientTextTimer = new RegionTimer(this, new RegionTimerCallback(AmbientTextTypeCallback));
+				ambientTextTimer.Start(chosen.TriggerTimer * 1000);
+			}
+
+			bool continueProcess = false;
             if (chosen.HP < 1 && chosen.Chance > 0)
                 if (Util.Chance(chosen.Chance))
                     continueProcess = true;
@@ -5909,8 +6060,46 @@ namespace DOL.GS
             else if (!continueProcess && chosen.Chance > 0 && !Util.Chance(chosen.Chance))
                 return;
 
+			// DamageTypeRepeate
+			if (chosen.DamageTypeRepeat>0)
+            {
+				hasImunity = true;
+				ImunityDomage = LastDamageType;
+				switch (LastDamageType)
+				{
+					case eDamageType.Body:
+						BaseBuffBonusCategory[(int)eProperty.Resist_Body] += 100;
+						break;
+					case eDamageType.Crush:
+						BaseBuffBonusCategory[(int)eProperty.Resist_Crush] += 100;
+						break;
+					case eDamageType.Slash:
+						BaseBuffBonusCategory[(int)eProperty.Resist_Slash] += 100;
+						break;
+					case eDamageType.Thrust:
+						BaseBuffBonusCategory[(int)eProperty.Resist_Thrust] += 100;
+						break;
+					case eDamageType.Cold:
+						BaseBuffBonusCategory[(int)eProperty.Resist_Cold] += 100;
+						break;
+					case eDamageType.Energy:
+						BaseBuffBonusCategory[(int)eProperty.Resist_Energy] += 100;
+						break;
+					case eDamageType.Heat:
+						BaseBuffBonusCategory[(int)eProperty.Resist_Heat] += 100;
+						break;
+					case eDamageType.Matter:
+						BaseBuffBonusCategory[(int)eProperty.Resist_Matter] += 100;
+						break;
+					case eDamageType.Spirit:
+						BaseBuffBonusCategory[(int)eProperty.Resist_Spirit] += 100;
+						break;
+				}
+				LastDamageType = eDamageType.GM;
+				DamageTypeCounter = 0;
+			}
 
-            string controller = string.Empty;
+			string controller = string.Empty;
 			if (Brain is IControlledBrain)
 			{
 				GamePlayer playerOwner = (Brain as IControlledBrain).GetPlayerOwner();
@@ -5924,7 +6113,7 @@ namespace DOL.GS
                 // check if the player is punished
                 if (dbspell != null)
                 {
-                    foreach (GamePlayer pl in GetPlayersInRadius(5000))
+                    foreach (GamePlayer pl in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
                     {
                         pl.Out.SendSpellEffectAnimation(this, this, (ushort)chosen.Spell, 0, false, 5);
                     }
@@ -5933,7 +6122,79 @@ namespace DOL.GS
                     living.TakeDamage(this, eDamageType.Energy, (int)dbspell.Damage, 0);
                 }
             }
-                
+            
+			// ChangeFlag
+			if(chosen.ChangeFlag >0)
+            {
+				tempoarallyFlags = (eFlags)chosen.ChangeFlag;
+            }
+
+			// ChangeBrain
+			if(!string.IsNullOrEmpty(chosen.ChangeBrain))
+            {
+				foreach (Assembly script in ScriptMgr.GameServerScripts)
+				{
+					temporallyBrain = (ABrain)script.CreateInstance(chosen.ChangeBrain, false);
+					if (temporallyBrain != null)
+					{
+						AddBrain(temporallyBrain);
+						break;
+					}
+				}
+			}
+
+			// ChangeNPCTemplate
+			if (chosen.ChangeNPCTemplate > 0)
+			{
+				foreach (Assembly script in ScriptMgr.GameServerScripts)
+				{
+					temporallyTemplate = NpcTemplateMgr.GetTemplate(chosen.ChangeNPCTemplate);
+					if (temporallyTemplate != null)
+					{
+						if(chosen.ChangeEffect > 0)
+                        {
+							foreach(GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
+								player.Out.SendSpellEffectAnimation(this, this, (ushort)chosen.ChangeEffect, 0, false, 1);
+						}
+						LoadTemplate(temporallyTemplate);
+						BroadcastLivingEquipmentUpdate();
+						break;
+					}
+				}
+			}
+
+			// CallAreaeffect
+			if(chosen.CallAreaeffectID > 0)
+            {
+				GameCommand command = ScriptMgr.GuessCommand("/areaeffect");
+				string[] param = new string[]
+				{
+					"/areaeffect",
+					"callareaeffect",
+					chosen.CallAreaeffectID.ToString()
+				};
+				command.m_cmdHandler.OnCommand(null, param);
+			}
+
+			// MobtoTpPoint
+			if (chosen.MobtoTPpoint > 0)
+			{
+				if(chosen.TPeffect > 0)
+					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
+						player.Out.SendSpellEffectAnimation(this, this, (ushort)chosen.TPeffect, 0, false, 1);
+				tPPoint = TeleportMgr.LoadTP(chosen.MobtoTPpoint);
+				MoveTo(tPPoint.Region, tPPoint.X, tPPoint.Y, tPPoint.Z, tPPoint.GetHeading(tPPoint));
+			}
+
+			// PlayertoTpPoint
+			if (chosen.PlayertoTPpoint > 0)
+			{
+				if (chosen.TPeffect > 0)
+					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
+						player.Out.SendSpellEffectAnimation(this, this, (ushort)chosen.TPeffect, 0, false, 1);
+				tPPoint = TeleportMgr.LoadTP(chosen.PlayertoTPpoint);
+				MoveTo(tPPoint.Region, tPPoint.X, tPPoint.Y, tPPoint.Z, tPPoint.GetHeading(tPPoint));
+			}
 
 			string text = chosen.Text.Replace("{sourcename}", Name).Replace("{targetname}", living == null ? string.Empty : living.Name).Replace("{controller}", controller);
 

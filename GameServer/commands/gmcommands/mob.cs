@@ -3426,10 +3426,10 @@ namespace DOL.GS.Commands
             ushort nbuse = 0;
             ushort changeflag = 0;
             string changebrain = "";
-            string changenpctemplate = "";
-            string areaeffectid = "";
-            string playertppoint = "";
-            string mobtppoint = "";
+            int changenpctemplate = 0;
+            ushort areaeffectid = 0;
+            ushort playertppoint = 0;
+            ushort mobtppoint = 0;
             int triggertimer=0;
             int changeeffect=0;
             int tpeffect=0;
@@ -3476,11 +3476,11 @@ namespace DOL.GS.Commands
                     nbuse = Convert.ToUInt16(args[9]);
                     changeflag = Convert.ToUInt16(args[10]);
                     changebrain = args[11];
-                    changenpctemplate = args[12];
+                    changenpctemplate = Convert.ToInt32(args[12]);
                     changeeffect = Convert.ToInt32(args[13]);
-                    areaeffectid = args[14];
-                    playertppoint = args[15];
-                    mobtppoint = args[16];
+                    areaeffectid = Convert.ToUInt16(args[14]);
+                    playertppoint = Convert.ToUInt16(args[15]);
+                    mobtppoint = Convert.ToUInt16(args[16]);
                     tpeffect = Convert.ToInt32(args[17]);
                 }
                 catch
@@ -3513,6 +3513,7 @@ namespace DOL.GS.Commands
                 text = text.Replace("{b}", string.Empty).Replace("{y}", string.Empty);
                 GameServer.Database.AddObject(new MobXAmbientBehaviour(targetMob.Name, trig.ToString(), emote, text, chance, voice, spell, hp, changebrain, changenpctemplate, areaeffectid, playertppoint, mobtppoint, triggertimer, changeeffect, tpeffect, domagetyperepeate, nbuse, changeflag) { Dirty = true, AllowAdd = true });
                 GameServer.Instance.NpcManager.AmbientBehaviour.Reload(GameServer.Instance.IDatabase);
+                targetMob.DamageTypeLimit = domagetyperepeate;
                 targetMob.ambientTexts = GameServer.Instance.NpcManager.AmbientBehaviour[targetMob.Name];
                 client.Out.SendMessage(" Trigger added to mobs with name " + targetMob.Name + " when they " + type + ".", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
