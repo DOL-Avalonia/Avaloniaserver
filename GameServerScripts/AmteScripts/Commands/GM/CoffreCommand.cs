@@ -239,6 +239,7 @@ namespace DOL.GS.Scripts
                         break;
                     }
                     GameCoffre oldCoffre = coffre;
+                    coffre = new GameCoffre();
                     coffre.Name = "Coffre";
                     coffre.Model = 1596;
                     coffre.X = oldCoffre.X;
@@ -249,6 +250,10 @@ namespace DOL.GS.Scripts
                     coffre.ItemInterval = 60;
                     coffre.ItemChance = 100;
                     coffre.LastOpen = DateTime.MinValue;
+                    oldCoffre.RemoveFromWorld();
+                    oldCoffre.DeleteFromDatabase();
+                    coffre.AddToWorld();
+
                     coffre.SaveIntoDatabase();
                     ChatUtil.SendSystemMessage(client, "Le coffre selectionné a été remit à zéro.");
                     break;
