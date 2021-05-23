@@ -3465,32 +3465,77 @@ namespace DOL.GS.Commands
                     return;
                 }
 
-                try
+                // New way to manage the trigger command
+                int i = 3;
+                while(i<args.Length)
                 {
-                    emote = Convert.ToUInt16(args[4]);
-                    chance = Convert.ToUInt16(args[3]);
-                    spell = Convert.ToUInt16(args[5]);
-                    hp = Convert.ToUInt16(args[6]);
-                    domagetyperepeate = Convert.ToUInt16(args[7]);
-                    triggertimer = Convert.ToInt32(args[8]);
-                    nbuse = Convert.ToUInt16(args[9]);
-                    changeflag = Convert.ToUInt16(args[10]);
-                    changebrain = args[11];
-                    changenpctemplate = Convert.ToInt32(args[12]);
-                    changeeffect = Convert.ToInt32(args[13]);
-                    areaeffectid = Convert.ToUInt16(args[14]);
-                    playertppoint = Convert.ToUInt16(args[15]);
-                    mobtppoint = Convert.ToUInt16(args[16]);
-                    tpeffect = Convert.ToInt32(args[17]);
-                }
-                catch
-                {
-                    client.Out.SendMessage("You must specify a valid chance percent/emote number", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                }
-
-                if (args.Length > 17)
-                {
-                    text = string.Join(" ", args, 18, args.Length - 18);
+                    // text must be in the end
+                    if(args[i] == "text")
+                    {
+                        text = string.Join(" ", args, i+1, args.Length - (i+1));
+                        i = args.Length;
+                    }
+                    else
+                    {
+                        try
+                        {
+                            switch (args[i])
+                            {
+                                case "emote":
+                                    emote = Convert.ToUInt16(args[i + 1]);
+                                    break;
+                                case "chance":
+                                    chance = Convert.ToUInt16(args[i + 1]);
+                                    break;
+                                case "spell":
+                                    spell = Convert.ToUInt16(args[i + 1]);
+                                    break;
+                                case "hp":
+                                    hp = Convert.ToUInt16(args[i + 1]);
+                                    break;
+                                case "domagetyperepeate":
+                                    domagetyperepeate = Convert.ToUInt16(args[i + 1]);
+                                    break;
+                                case "triggertimer":
+                                    triggertimer = Convert.ToInt32(args[i + 1]);
+                                    break;
+                                case "nbuse":
+                                    nbuse = Convert.ToUInt16(args[i + 1]);
+                                    break;
+                                case "changeflag":
+                                    changeflag = Convert.ToUInt16(args[i + 1]);
+                                    break;
+                                case "changebrain":
+                                    changebrain = args[i + 1];
+                                    break;
+                                case "changenpctemplate":
+                                    changenpctemplate = Convert.ToInt32(args[i + 1]);
+                                    break;
+                                case "changeeffect":
+                                    changeeffect = Convert.ToInt32(args[i + 1]);
+                                    break;
+                                case "areaeffectid":
+                                    areaeffectid = Convert.ToUInt16(args[i + 1]);
+                                    break;
+                                case "playertppoint":
+                                    playertppoint = Convert.ToUInt16(args[i + 1]);
+                                    break;
+                                case "mobtppoint":
+                                    mobtppoint = Convert.ToUInt16(args[i + 1]);
+                                    break;
+                                case "tpeffect":
+                                    tpeffect = Convert.ToInt32(args[i + 1]);
+                                    break;
+                            }
+                            i += 2;
+                        }
+                        catch
+                        {
+                            client.Out.SendMessage("You must specify a valid chance percent, emote number, spellid, hp percen, damage type number, timer(second), number max of use, flag number, brain id, npctemplateid, effect id, areaa family number, player tp point id, mob tp point id, tp effect id", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            return;
+                        }
+                        
+                    }
                 }
 
                 if (text == string.Empty)

@@ -6049,16 +6049,13 @@ namespace DOL.GS
 				ambientTextTimer.Start(chosen.TriggerTimer * 1000);
 			}
 
-			bool continueProcess = false;
-            if (chosen.HP < 1 && chosen.Chance > 0)
-                if (Util.Chance(chosen.Chance))
-                    continueProcess = true;
-                else
-                    return;
-            else if (!continueProcess && HealthPercent > chosen.HP)
-                return;
-            else if (!continueProcess && chosen.Chance > 0 && !Util.Chance(chosen.Chance))
-                return;
+			if (chosen.HP < 1 && chosen.Chance > 0)
+				if (!Util.Chance(chosen.Chance))
+					return;
+			else if (chosen.HP > 0 && HealthPercent > chosen.HP)
+				return;
+			else if (chosen.HP > 0 && chosen.Chance > 0 && !Util.Chance(chosen.Chance))
+				return;
 
 			// DamageTypeRepeate
 			if (chosen.DamageTypeRepeat>0)
@@ -6115,10 +6112,11 @@ namespace DOL.GS
                 {
                     foreach (GamePlayer pl in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
                     {
-                        pl.Out.SendSpellEffectAnimation(this, this, (ushort)chosen.Spell, 0, false, 5);
+						if(!(living is GamePlayer) || (living as GamePlayer != pl))
+							pl.Out.SendSpellEffectAnimation(this, living, (ushort)dbspell.ClientEffect, 0, false, 1);
                     }
                     if (living is GamePlayer player)
-                        player.Out.SendSpellEffectAnimation(this, this, (ushort)chosen.Spell, 0, false, 5);
+                        player.Out.SendSpellEffectAnimation(this, player, (ushort)dbspell.ClientEffect, 0, false, 1);
                     living.TakeDamage(this, eDamageType.Energy, (int)dbspell.Damage, 0);
                 }
             }
@@ -6181,9 +6179,23 @@ namespace DOL.GS
 			{
 				if(chosen.TPeffect > 0)
 					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
+                    {
 						player.Out.SendSpellEffectAnimation(this, this, (ushort)chosen.TPeffect, 0, false, 1);
-				tPPoint = TeleportMgr.LoadTP(chosen.MobtoTPpoint);
-				MoveTo(tPPoint.Region, tPPoint.X, tPPoint.Y, tPPoint.Z, tPPoint.GetHeading(tPPoint));
+					}
+				if (tPPoint != null)
+                {
+					TPPoint newTPPoint = tPPoint.GetNextTPPoint();
+					if(tPPoint != newTPPoint)
+                    {
+						tPPoint = newTPPoint;
+						MoveTo(tPPoint.Region, tPPoint.X, tPPoint.Y, tPPoint.Z, tPPoint.GetHeading(tPPoint));
+					}
+				}
+				else
+                {
+					tPPoint = TeleportMgr.LoadTP(chosen.MobtoTPpoint);
+					MoveTo(tPPoint.Region, tPPoint.X, tPPoint.Y, tPPoint.Z, tPPoint.GetHeading(tPPoint));
+				}
 			}
 
 			// PlayertoTpPoint
@@ -6193,7 +6205,7 @@ namespace DOL.GS
 					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 						player.Out.SendSpellEffectAnimation(this, this, (ushort)chosen.TPeffect, 0, false, 1);
 				tPPoint = TeleportMgr.LoadTP(chosen.PlayertoTPpoint);
-				MoveTo(tPPoint.Region, tPPoint.X, tPPoint.Y, tPPoint.Z, tPPoint.GetHeading(tPPoint));
+				living.MoveTo(tPPoint.Region, tPPoint.X, tPPoint.Y, tPPoint.Z, tPPoint.GetHeading(tPPoint));
 			}
 
 			string text = chosen.Text.Replace("{sourcename}", Name).Replace("{targetname}", living == null ? string.Empty : living.Name).Replace("{controller}", controller);
