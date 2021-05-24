@@ -924,6 +924,8 @@ namespace DOL.GS.Scripts
                 IsTeleporter = coffre.IsTeleporter;
                 CoffreOpeningInterval = coffre.CoffreOpeningInterval;
                 IsLargeCoffre = coffre.IsLargeCoffre;
+				ItemChance = coffre.ItemChance;
+				KeyItem = coffre.KeyItem;
                 InitTimer();
             }
         }

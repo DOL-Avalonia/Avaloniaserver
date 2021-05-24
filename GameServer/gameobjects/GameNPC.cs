@@ -6050,8 +6050,10 @@ namespace DOL.GS
 			}
 
 			if (chosen.HP < 1 && chosen.Chance > 0)
+            {
 				if (!Util.Chance(chosen.Chance))
 					return;
+			}
 			else if (chosen.HP > 0 && HealthPercent > chosen.HP)
 				return;
 			else if (chosen.HP > 0 && chosen.Chance > 0 && !Util.Chance(chosen.Chance))
@@ -6164,7 +6166,7 @@ namespace DOL.GS
 			// CallAreaeffect
 			if(chosen.CallAreaeffectID > 0)
             {
-				GameCommand command = ScriptMgr.GuessCommand("/areaeffect");
+				GameCommand command = ScriptMgr.GuessCommand("&areaeffect");
 				string[] param = new string[]
 				{
 					"/areaeffect",
@@ -6185,7 +6187,7 @@ namespace DOL.GS
 				if (tPPoint != null)
                 {
 					TPPoint newTPPoint = tPPoint.GetNextTPPoint();
-					if(tPPoint != newTPPoint)
+					if(tPPoint.DbTPPoint.ObjectId != newTPPoint.DbTPPoint.ObjectId)
                     {
 						tPPoint = newTPPoint;
 						MoveTo(tPPoint.Region, tPPoint.X, tPPoint.Y, tPPoint.Z, tPPoint.GetHeading(tPPoint));
@@ -6203,9 +6205,21 @@ namespace DOL.GS
 			{
 				if (chosen.TPeffect > 0)
 					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
-						player.Out.SendSpellEffectAnimation(this, this, (ushort)chosen.TPeffect, 0, false, 1);
-				tPPoint = TeleportMgr.LoadTP(chosen.PlayertoTPpoint);
-				living.MoveTo(tPPoint.Region, tPPoint.X, tPPoint.Y, tPPoint.Z, tPPoint.GetHeading(tPPoint));
+						player.Out.SendSpellEffectAnimation(this, player, (ushort)chosen.TPeffect, 0, false, 1);
+				if (tPPoint != null)
+				{
+					TPPoint newTPPoint = tPPoint.GetNextTPPoint();
+					if (tPPoint.DbTPPoint.ObjectId != newTPPoint.DbTPPoint.ObjectId)
+					{
+						tPPoint = newTPPoint;
+						living.MoveTo(tPPoint.Region, tPPoint.X, tPPoint.Y, tPPoint.Z, tPPoint.GetHeading(tPPoint));
+					}
+				}
+				else
+				{
+					tPPoint = TeleportMgr.LoadTP(chosen.PlayertoTPpoint);
+					living.MoveTo(tPPoint.Region, tPPoint.X, tPPoint.Y, tPPoint.Z, tPPoint.GetHeading(tPPoint));
+				}
 			}
 
 			string text = chosen.Text.Replace("{sourcename}", Name).Replace("{targetname}", living == null ? string.Empty : living.Name).Replace("{controller}", controller);

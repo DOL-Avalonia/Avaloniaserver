@@ -238,7 +238,22 @@ namespace DOL.GS.Scripts
                         DisplaySyntax(client);
                         break;
                     }
+                    GameCoffre oldCoffre = coffre;
+                    coffre = new GameCoffre();
+                    coffre.Name = "Coffre";
+                    coffre.Model = 1596;
+                    coffre.X = oldCoffre.X;
+                    coffre.Y = oldCoffre.Y;
+                    coffre.Z = oldCoffre.Z;
+                    coffre.Heading = oldCoffre.Heading;
+                    coffre.CurrentRegionID = oldCoffre.CurrentRegionID;
+                    coffre.ItemInterval = 60;
+                    coffre.ItemChance = 100;
                     coffre.LastOpen = DateTime.MinValue;
+                    oldCoffre.RemoveFromWorld();
+                    oldCoffre.DeleteFromDatabase();
+                    coffre.AddToWorld();
+
                     coffre.SaveIntoDatabase();
                     ChatUtil.SendSystemMessage(client, "Le coffre selectionné a été remit à zéro.");
                     break;
@@ -302,6 +317,7 @@ namespace DOL.GS.Scripts
                     coffre2.PunishSpellId = coffre.PunishSpellId;
                     coffre2.IsOpeningRenaissanceType = coffre.IsOpeningRenaissanceType;
                     coffre2.IsTeleporter = coffre.IsTeleporter;
+                    coffre2.KeyItem = coffre.KeyItem;
                     coffre2.InitTimer();    
 
                     coffre2.ItemChance = coffre.ItemChance;

@@ -48,6 +48,7 @@ namespace DOL.GS.Scripts
         public void CallAreaEffect()
         {
             enable = true;
+            Brain.Think();
         }
 
         #region AddToWorld

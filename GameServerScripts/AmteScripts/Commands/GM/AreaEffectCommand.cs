@@ -153,7 +153,7 @@ namespace DOL.GS.Commands
                 DisplaySyntax(client);
                 return;
             }
-            if(familyID == 0)
+            if(familyID == 0 && client != null)
                 client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.CallAreaEffect.NotFound", familyID), eChatType.CT_System, eChatLoc.CL_ChatWindow);
             else
             {
@@ -167,11 +167,12 @@ namespace DOL.GS.Commands
                         if(areaMob != null)
                         {
                             areaMob.CallAreaEffect();
-                            client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.Result.CallAreaEffect", familyID), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            if(client != null)
+                                client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.Result.CallAreaEffect", familyID), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         }   
                     }
                 }
-                else
+                else if (client != null)
                 {
                     client.Out.SendMessage(LanguageMgr.GetTranslation(client, "Commands.GM.AreaEffect.CallAreaEffect.NotFound", familyID), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 }
@@ -180,10 +181,12 @@ namespace DOL.GS.Commands
         }
 
         public void OnCommand(GameClient client, string[] args)
-		{
-			var AE = client.Player.TargetObject as AreaEffect;
+        {
+            AreaEffect AE = null;
+            if (client != null)
+                AE = client.Player.TargetObject as AreaEffect;
 
-			if (args.Length == 2 && args[1].ToLower() == "info" && AE != null)
+            if (args.Length == 2 && args[1].ToLower() == "info" && AE != null)
 			{
 				var infos = new List<string>
 				    {
@@ -215,7 +218,9 @@ namespace DOL.GS.Commands
                 return;
             }
 
-			var player = client.Player;
+            GamePlayer player = null;
+            if(client != null)
+                player = client.Player;
 
             switch (args[1].ToLower())
 			{

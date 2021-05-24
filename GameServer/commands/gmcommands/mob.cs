@@ -122,9 +122,10 @@ namespace DOL.GS.Commands
          "'/mob reload <name>' reload the targetted or named mob(s) from the database.",
          "'/mob reload radius <number>' reload the mobs in radius from the database.",
          "'/mob findname <name> <#>' search for a mob with a name like <name> with maximum <#> (def. 10) matches.",
-         "'/mob trigger <type> <chance> <emote> <spell> <hp> <domagetyperepeate> <triggertimer> <nbuse> <changeflag> <changebrain> <changenpctemplate> <changeeffect> <areaeffect> <playertppoint> <mobtppoint> <tpeffect> <text>' adds a trigger to targeted mob class.  Use '/mob trigger help' for more info.",
+         "'/mob trigger <type> <param1> <value1> <param2> <value2> text <sentence>' adds a trigger to targeted mob class.  Use '/mob trigger help' for more info.",
          "'/mob trigger info' Give trigger informations.",
          "'/mob trigger remove <id>' Remove a trigger.",
+         "'/mob trigger help' More info about '/mob trigger' command",
          "'/mob ownerid <id>' Sets and saves the OwnerID for this mob.",
          "/mob isRenaissance <true|false> - set Mob isRenaissance")]
     public class MobCommandHandler : AbstractCommandHandler, ICommandHandler
@@ -3493,7 +3494,7 @@ namespace DOL.GS.Commands
                                 case "hp":
                                     hp = Convert.ToUInt16(args[i + 1]);
                                     break;
-                                case "domagetyperepeate":
+                                case "damagetyperepeate":
                                     domagetyperepeate = Convert.ToUInt16(args[i + 1]);
                                     break;
                                 case "triggertimer":
@@ -3600,7 +3601,7 @@ namespace DOL.GS.Commands
             var i = 0;
             foreach (var trigger in triggers)
             {
-                ChatUtil.SendSystemMessage(client, ++i + ". " + trigger.Trigger + ", chance: " + trigger.Chance + ", voice: " + trigger.Voice + ", emote: " + trigger.Emote + ", spell: " + trigger.Spell + ", hp: " + trigger.HP + ", text: " + trigger.Text);
+                ChatUtil.SendSystemMessage(client, ++i + ". " + trigger.Trigger + ", chance: " + trigger.Chance + ", voice: " + trigger.Voice + ", emote: " + trigger.Emote + ", spell: " + trigger.Spell + ", hp: " + trigger.HP + ", damge type repeate: " + trigger.DamageTypeRepeat + ", trigger timer: " + trigger.TriggerTimer + ", nb use: " + trigger.NbUse + ", change flag: " + trigger.ChangeFlag + ", change brain: " + trigger.ChangeBrain + ", change npc temmplate: " + trigger.ChangeNPCTemplate + ", change effect: " + trigger.ChangeEffect + ", area effect: " + trigger.CallAreaeffectID + ", playertppoint: " + trigger.PlayertoTPpoint + ", mobtppoint: " + trigger.MobtoTPpoint + ", tp effect: " + trigger.TPeffect + ", text: " + trigger.Text);
             }
         }
 
@@ -3609,12 +3610,13 @@ namespace DOL.GS.Commands
             client.Out.SendMessage("The trigger command lets you add sentences for the mob to say when he spawns, aggros, fights or dies.", eChatType.CT_System, eChatLoc.CL_PopupWindow);
             client.Out.SendMessage("Triggers apply to all mobs with the same mob name.  Each mob name can have multiple triggers and trigger types.", eChatType.CT_System, eChatLoc.CL_PopupWindow);
             client.Out.SendMessage("The aggro and die trigger types allow for keywords of {targetname} (gets replaced with the target name), {class} {race} (gets replaced with the players class/race) and {sourcename} gets replaced with the source name and {controller}, the pet's controller.", eChatType.CT_System, eChatLoc.CL_PopupWindow);
-            client.Out.SendMessage("Ex: /mob trigger aggro 50 10 This is what I'll say 50% time when I aggro!", eChatType.CT_System, eChatLoc.CL_PopupWindow);
-            client.Out.SendMessage("Ex: /mob trigger die 100 5 This is what I'll say when I die!", eChatType.CT_System, eChatLoc.CL_PopupWindow);
-            client.Out.SendMessage("Ex: /mob trigger aggro 100 0 {y}I really hate {class}'s like you!", eChatType.CT_System, eChatLoc.CL_PopupWindow);
-            client.Out.SendMessage("Ex: /mob trigger roam 5 12 Prepare to die {targetname}!", eChatType.CT_System, eChatLoc.CL_PopupWindow);
-            client.Out.SendMessage("Ex: /mob trigger aggro 5 0 {b}I've been waiting for this moment ever since I was a young {sourcename}!", eChatType.CT_System, eChatLoc.CL_PopupWindow);
-            client.Out.SendMessage("Usage: '/mob trigger <type(die,aggro,spawn,fight,kill,roam)> <chance in percent> <emote (0 for no emote)> <spell (0 for no spell)> <hp (<1 for no hp)> <sentence(can include {targetname},{sourcename},{class},{race}, {controller})(can also be formatted with {y} for yelled and {b} for broadcasted sentence)>'", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+            client.Out.SendMessage("Ex: /mob trigger aggro chance 50 emote 10 text This is what I'll say 50% time when I aggro!", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+            client.Out.SendMessage("Ex: /mob trigger die chance 100 emote 5 text This is what I'll say when I die!", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+            client.Out.SendMessage("Ex: /mob trigger aggro chance 100 emote 0 {y} text I really hate {class}'s like you!", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+            client.Out.SendMessage("Ex: /mob trigger roam chance 5 emote 12 text Prepare to die {targetname}!", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+            client.Out.SendMessage("Ex: /mob trigger aggro chance 5 emote 0 text {b}I've been waiting for this moment ever since I was a young {sourcename}!", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+            client.Out.SendMessage("Usage: '/mob trigger <type(die,aggro,spawn,fight,kill,roam)> <param1> <value1> <param2> <value2> text <sentence(can include {targetname},{sourcename},{class},{race}, {controller})(can also be formatted with {y} for yelled and {b} for broadcasted sentence)>'", eChatType.CT_System, eChatLoc.CL_PopupWindow);
+            client.Out.SendMessage("Avalable params: emote, chance, spell, hp, damagetyperepeate, triggertimer, nbuse, changeflag, changebrain, changenpctemplate, changeeffect, areaeffectid, playertppoint, mobtppoint, tpeffect", eChatType.CT_System, eChatLoc.CL_PopupWindow);
             client.Out.SendMessage("Usage: '/mob trigger info' Give trigger informations", eChatType.CT_System, eChatLoc.CL_PopupWindow);
             client.Out.SendMessage("Usage: '/mob trigger remove <id>' Remove a trigger", eChatType.CT_System, eChatLoc.CL_PopupWindow);
         }

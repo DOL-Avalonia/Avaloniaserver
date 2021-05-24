@@ -319,6 +319,7 @@ namespace DOL.GS.Scripts
                     coffre2.IsTeleporter = coffre.IsTeleporter;
                     coffre2.CoffreOpeningInterval = coffre.CoffreOpeningInterval;
                     coffre2.IsLargeCoffre = coffre.IsLargeCoffre;
+                    coffre2.KeyItem = coffre.KeyItem;
                     coffre2.InitTimer();    
 
                     coffre2.ItemChance = coffre.ItemChance;
