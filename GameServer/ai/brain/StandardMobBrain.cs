@@ -1193,7 +1193,7 @@ namespace DOL.AI.Brain
             switch (spell.SpellType.ToUpper())
             {
                 #region Buffs
-                case "AcuityBuff":
+                case "ACUITYBUFF":
                 case "AFHITSBUFF":
                 case "ALLMAGICRESISTSBUFF":
                 case "ARMORABSORPTIONBUFF":

@@ -186,26 +186,25 @@ namespace DOL.GS.PacketHandler.Client.v168
                                 objectInfo.Add(" ");
                             }
 
-                            if (invItem.Object_Type >= (int) eObjectType.GenericWeapon &&
-                                invItem.Object_Type <= (int) eObjectType._LastWeapon ||
-                                invItem.Object_Type == (int) eObjectType.Instrument)
+                            WriteUsableClasses(objectInfo, invItem, client);
+
+                            if (invItem.Object_Type >= (int)eObjectType.GenericWeapon
+                                && invItem.Object_Type <= (int)eObjectType._LastWeapon
+                                || invItem.Object_Type == (int)eObjectType.Instrument)
+
                             {
-                                WriteUsableClasses(objectInfo, invItem, client);
                                 WriteMagicalBonuses(objectInfo, invItem, client, false);
                                 WriteClassicWeaponInfos(objectInfo, invItem, client);
                             }
 
-                            if (invItem.Object_Type >= (int) eObjectType.Cloth &&
-                                invItem.Object_Type <= (int) eObjectType.Scale)
+                            if (invItem.Object_Type >= (int) eObjectType.Cloth && invItem.Object_Type <= (int) eObjectType.Scale)
                             {
-                                WriteUsableClasses(objectInfo, invItem, client);
                                 WriteMagicalBonuses(objectInfo, invItem, client, false);
                                 WriteClassicArmorInfos(objectInfo, invItem, client);
                             }
 
                             if (invItem.Object_Type == (int) eObjectType.Shield)
                             {
-                                WriteUsableClasses(objectInfo, invItem, client);
                                 WriteMagicalBonuses(objectInfo, invItem, client, false);
                                 WriteClassicShieldInfos(objectInfo, invItem, client);
                             }
@@ -1305,7 +1304,10 @@ namespace DOL.GS.PacketHandler.Client.v168
                     output.Add(" ");
 
                     ISpellHandler sh = ScriptMgr.CreateSpellHandler(client.Player, s, SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells));
-                    output.AddRange(sh.DelveInfo);
+                    if (sh != null)
+                        Util.AddRange(output, sh.DelveInfo);
+                    else
+                        output.Add($"Subspell {s.Name} ({s.ID}) is not implemented");
                 }
             }
 

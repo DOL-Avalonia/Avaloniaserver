@@ -497,7 +497,7 @@ namespace DOL.GS.ServerRules
 				return false;
 
 			// classes restriction. 0 means every class
-			if (player != null && !Util.IsEmpty(item.AllowedClasses, true) && !item.AllowedClasses.SplitCSV(true).Contains(player.CharacterClass.ID.ToString()))
+			if (player != null && !Util.IsEmpty(item.AllowedClasses, true) && !Util.SplitCSV(item.AllowedClasses, true).Contains(player.CharacterClass.ID.ToString()))
 				return false;
 
 			//armor
@@ -730,12 +730,12 @@ namespace DOL.GS.ServerRules
 			{
 				lock (killedPlayer.XPGainers)
 				{
-					foreach (var de in killedPlayer.XPGainers)
+					foreach (DictionaryEntry de in killedPlayer.XPGainers)
 					{
-						if (de.Key as GamePlayer != null)
+						if (de.Key is GamePlayer pl)
 						{
-							((GamePlayer)de.Key).Out.SendMessage(killedPlayer.Name + " has been killed recently and is worth no realm points!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-							((GamePlayer)de.Key).Out.SendMessage(killedPlayer.Name + " has been killed recently and is worth no experience!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+							pl.Out.SendMessage(killedPlayer.Name + " has been killed recently and is worth no realm points!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+							pl.Out.SendMessage(killedPlayer.Name + " has been killed recently and is worth no experience!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 						}
 					}
 				}
@@ -747,7 +747,7 @@ namespace DOL.GS.ServerRules
 				bool dealNoXP = false;
 				var totalDamage = 0.0;
 				//Collect the total damage
-				foreach (var de in killedPlayer.XPGainers)
+				foreach (DictionaryEntry de in killedPlayer.XPGainers)
 				{
 					var player = de.Key as GamePlayer;
 					if (player != null)
@@ -765,7 +765,7 @@ namespace DOL.GS.ServerRules
 
 				if (dealNoXP)
 				{
-					foreach (var de in killedPlayer.XPGainers)
+					foreach (DictionaryEntry de in killedPlayer.XPGainers)
 					{
 						GamePlayer player = de.Key as GamePlayer;
 						if (player != null)
@@ -799,7 +799,7 @@ namespace DOL.GS.ServerRules
 				List<KeyValuePair<GamePlayer, int>> playerKillers = new List<KeyValuePair<GamePlayer, int>>();
 
 				//Now deal the XP and RPs to all livings
-				foreach (var de in killedPlayer.XPGainers)
+				foreach (DictionaryEntry de in killedPlayer.XPGainers)
 				{
 					GameLiving living = de.Key as GameLiving;
 					GamePlayer expGainPlayer = living as GamePlayer;

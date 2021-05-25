@@ -16,14 +16,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
+using System.Collections.Generic;
+using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	/// <summary>
-	/// Hibernia Warden Class
-	/// </summary>
-	[CharacterClassAttribute((int)eCharacterClass.Warden, "Warden", "Naturalist")]
+	[CharacterClass((int)eCharacterClass.Warden, "Warden", "Naturalist")]
 	public class ClassWarden : ClassNaturalist
 	{
 		public ClassWarden()
@@ -52,5 +50,10 @@ namespace DOL.GS.PlayerClass
 		{
 			get { return 2; }
 		}
+
+		public override List<PlayerRace> EligibleRaces => new List<PlayerRace>()
+		{
+			 PlayerRace.Celt, PlayerRace.Firbolg, PlayerRace.Graoch, PlayerRace.Sylvan,
+		};
 	}
 }

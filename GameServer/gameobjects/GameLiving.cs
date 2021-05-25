@@ -1623,7 +1623,7 @@ namespace DOL.GS
 		/// <param name="interruptDuration">the interrupt duration</param>
 		/// <param name="dualWield">indicates if both weapons are used for attack</param>
 		/// <returns>the object where we collect and modifiy all parameters about the attack</returns>
-		protected virtual AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield)
+		protected AttackData MakeAttack(GameObject target, InventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield)
 		{
 			return MakeAttack(target, weapon, style, effectiveness, interruptDuration, dualWield, false);
 		}
@@ -5550,7 +5550,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual int Concentration
 		{
-			get { return 0; }
+			get { return MaxConcentration - ConcentrationEffects.UsedConcentration; }
 		}
 
 		/// <summary>
@@ -5558,7 +5558,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual int MaxConcentration
 		{
-			get { return 0; }
+			get { return GetModified(eProperty.MaxConcentration); }
 		}
 
 		/// <summary>

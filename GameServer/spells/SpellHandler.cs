@@ -3573,13 +3573,13 @@ namespace DOL.GS.Spells
             // add level mod
             if (pet != null && pet.Owner != null)
             {
-				min += Math.Min(0.6, Math.Max(-0.6, GetLevelModFactor() * (pet.Owner.Level - target.Level)));
-				max += Math.Min(0.6, Math.Max(-0.6, GetLevelModFactor() * (pet.Owner.Level - target.Level)));
+				min += (GetLevelModFactor() * (m_caster.Level - target.Level)).Clamp(-0.6, 0.6);
+				max += (GetLevelModFactor() * (m_caster.Level - target.Level)).Clamp(-0.6, 0.6);
 			}
 			else
 			{
-                min += Math.Min(0.6, Math.Max(-0.6, GetLevelModFactor() * (m_caster.Level - target.Level)));
-                max += Math.Min(0.6, Math.Max(-0.6, GetLevelModFactor() * (m_caster.Level - target.Level)));
+				min += (GetLevelModFactor() * (owner.Level - target.Level)).Clamp(-0.6, 0.6);
+				max += (GetLevelModFactor() * (owner.Level - target.Level)).Clamp(-0.6, 0.6);
             }
 
 			if (min > max)

@@ -225,11 +225,8 @@ namespace DOL.GS.Spells
         /// <param name="arguments"></param>
         private void OnAttack(DOLEvent e, object sender, EventArgs arguments)
         {
-            if (!(sender is GameLiving living))
-            {
-                return;
-            }
-
+            GameLiving living = sender as GameLiving;
+            if (living == null || arguments == null) return;
             AttackedByEnemyEventArgs attackedByEnemy = arguments as AttackedByEnemyEventArgs;
             AttackFinishedEventArgs attackFinished = arguments as AttackFinishedEventArgs;
             CastingEventArgs castFinished = arguments as CastingEventArgs;

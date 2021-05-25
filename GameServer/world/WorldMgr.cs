@@ -1153,8 +1153,14 @@ namespace DOL.GS
                 client = m_clients[id - 1];
                 m_clients[id - 1] = null;
             }
-
-            client?.Player?.Delete();
+            if (client == null)
+                return;
+            if (client.Player == null)
+                return;
+            //client.Player.RemoveFromWorld();
+            client.Player.Delete();
+            client.Player = null;
+            return;
         }
 
         /// <summary>

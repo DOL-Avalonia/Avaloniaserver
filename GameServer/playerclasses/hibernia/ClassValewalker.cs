@@ -17,14 +17,12 @@
 USA.
 *
 */
-using System;
+using System.Collections.Generic;
+using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	/// <summary>
-	/// Hibernia Valewalker Class
-	/// </summary>
-	[CharacterClassAttribute((int)eCharacterClass.Valewalker, "Valewalker", "Forester")]
+	[CharacterClass((int)eCharacterClass.Valewalker, "Valewalker", "Forester")]
 	public class ClassValewalker : ClassForester
 	{
 		public ClassValewalker()
@@ -49,6 +47,11 @@ namespace DOL.GS.PlayerClass
 		{
 			return true;
 		}
+
+		public override List<PlayerRace> EligibleRaces => new List<PlayerRace>()
+		{
+			 PlayerRace.Celt, PlayerRace.Firbolg, PlayerRace.Sylvan,
+		};
 	}
 }
 

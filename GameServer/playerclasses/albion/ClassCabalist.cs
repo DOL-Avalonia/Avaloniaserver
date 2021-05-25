@@ -16,12 +16,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+using DOL.GS.Realm;
+using System.Collections.Generic;
 
 namespace DOL.GS.PlayerClass
 {
-    /// <summary>
-    /// Albion Cabalist Class
-    /// </summary>
     [CharacterClass((int)eCharacterClass.Cabalist, "Cabalist", "Mage")]
     public class ClassCabalist : ClassMage
     {
@@ -39,5 +38,11 @@ namespace DOL.GS.PlayerClass
         {
             return true;
         }
+        
+        public override List<PlayerRace> EligibleRaces => new List<PlayerRace>()
+        {
+             PlayerRace.Avalonian, PlayerRace.Briton, PlayerRace.HalfOgre, PlayerRace.Inconnu, PlayerRace.Saracen,
+        };
+
     }
 }

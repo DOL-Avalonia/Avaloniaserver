@@ -1,9 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
+using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.AI.Brain;
+using DOL.Events;
+using DOL.GS.Effects;
 using log4net;
 using System.Reflection;
+using DOL.GS.Atlantis;
+using DOL.Database;
+using DOL.Language;
+using DOL.GS.Spells;
 
 namespace DOL.GS.Atlantis
 {
@@ -14,6 +23,7 @@ namespace DOL.GS.Atlantis
     {
         public static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
+        #region Grant Credit
         /// <summary>
         /// Grants credit for the encounter to the killer/player and
         /// optionally his group or battlegroup mates.
@@ -21,7 +31,6 @@ namespace DOL.GS.Atlantis
         public static void GrantEncounterCredit(GameObject killer, bool group, bool battlegroup, string artifactid)
         {
             List<GamePlayer> creditPlayerList = new List<GamePlayer>();
-
             // if controlled NPC - do checks for owner instead
             if (killer is GameNPC)
             {
@@ -31,25 +40,23 @@ namespace DOL.GS.Atlantis
                     killer = controlled.GetPlayerOwner();
                 }
             }
-
             GamePlayer player = killer as GamePlayer;
-
-            // add the killer player to the list.
+            //add the killer player to the list.
             if (!creditPlayerList.Contains(player))
             {
                 creditPlayerList.Add(player);
             }
 
-            // if killing player has a group, let's add those players to the list to receive credit.
+            //if killing player has a group, let's add those players to the list to receive credit.
             if (player.Group != null && group)
             {
 
-                // player is grouped, let's add the group to the list to recieve credit.
-                foreach (GamePlayer groupplayer in player.Group.GetPlayersInTheGroup())
+                //player is grouped, let's add the group to the list to recieve credit.
+                foreach (GamePlayer groupplayer in (player.Group.GetPlayersInTheGroup()))
                 {
                     if (!creditPlayerList.Contains(groupplayer))
                     {
-                        // only add players are near enough that they would have earned XP from the kill.
+                        //only add players are near enough that they would have earned XP from the kill.
                         if (groupplayer.IsWithinRadius(killer, WorldMgr.MAX_EXPFORKILL_DISTANCE))
                         {
                             creditPlayerList.Add(groupplayer);
@@ -58,7 +65,7 @@ namespace DOL.GS.Atlantis
                 }
             }
 
-            // if killing player has a battlegroup, let's add those players to the list to receive credit.
+            //if killing player has a battlegroup, let's add those players to the list to receive credit.
             if (player.isInBG && battlegroup)
             {
 
@@ -68,7 +75,7 @@ namespace DOL.GS.Atlantis
                 {
                     if (!creditPlayerList.Contains(eachplayer))
                     {
-                        // only add players who are near enough that they would have earned XP from the kill.
+                        //only add players who are near enough that they would have earned XP from the kill.
                         if (eachplayer.IsWithinRadius(killer, WorldMgr.MAX_EXPFORKILL_DISTANCE))
                         {
                             creditPlayerList.Add(eachplayer);
@@ -77,7 +84,7 @@ namespace DOL.GS.Atlantis
                 }
             }
 
-            // List should now contain the killer, plus optionally the players in his group, and optionally his battlegroup
+            //List should now contain the killer, plus optionally the players in his group, and optionally his battlegroup
             if (creditPlayerList.Count > 0)
             {
                 foreach (GamePlayer creditplayer in creditPlayerList)
@@ -86,10 +93,11 @@ namespace DOL.GS.Atlantis
                     ArtifactMgr.GrantArtifactCredit(creditplayer, artifactid);
                 }
             }
-
             return;
         }
+        #endregion Grant Credit
 
+        #region Broadcast Message
         /// <summary>
         /// Broadcasts a message to players within saydistance from this object
         /// </summary>
@@ -103,7 +111,6 @@ namespace DOL.GS.Atlantis
                 if (IsSaying) { bPlayer.Out.SendMessage(obj.Name + " says \"" + msg + "\"", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow); }
                 else { bPlayer.Out.SendMessage(msg, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow); }
             }
-
             return;
         }
 
@@ -121,7 +128,6 @@ namespace DOL.GS.Atlantis
                 if (IsSaying) { bPlayer.Out.SendMessage(obj.Name + " says \"" + msg + "\"", chattype, eChatLoc.CL_ChatWindow); }
                 else { bPlayer.Out.SendMessage(msg, chattype, eChatLoc.CL_ChatWindow); }
             }
-
             return;
         }
 
@@ -132,14 +138,13 @@ namespace DOL.GS.Atlantis
         /// <param name="msg">The message that the object says</param>
         /// <param name="distance">The distance which the message is heard</param>
         /// <param name="IsSaying">Is this object saying the message if false the message will drop the 'npcname says' part</param>
-        public static void BroadcastMsg(GameObject obj, string msg, int distance, bool IsSaying)
+        public static void BroadcastMsg (GameObject obj, string msg, int distance, bool IsSaying)
         {
             foreach (GamePlayer bPlayer in obj.GetPlayersInRadius((ushort)distance))
             {
                 if (IsSaying) { bPlayer.Out.SendMessage(obj.Name + " says \"" + msg + "\"", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow); }
                 else { bPlayer.Out.SendMessage(msg, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow); }
             }
-
             return;
         }
 
@@ -158,8 +163,9 @@ namespace DOL.GS.Atlantis
                 if (IsSaying) { bPlayer.Out.SendMessage(obj.Name + " says \"" + msg + "\"", chattype, eChatLoc.CL_ChatWindow); }
                 else { bPlayer.Out.SendMessage(msg, chattype, eChatLoc.CL_ChatWindow); }
             }
-
             return;
         }
+        #endregion Broadcast Message
+
     }
 }

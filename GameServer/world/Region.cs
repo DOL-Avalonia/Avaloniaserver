@@ -1841,7 +1841,7 @@ namespace DOL.GS
     /// <summary>
     /// Holds a Object and it's distance towards the center
     /// </summary>
-    public class PlayerDistEntry
+    public struct PlayerDistEntry
     {
         public PlayerDistEntry(GamePlayer o, int distance)
         {
@@ -1849,14 +1849,14 @@ namespace DOL.GS
             Distance = distance;
         }
 
-        public GamePlayer Player;
-        public int Distance;
+        public readonly GamePlayer Player;
+        public readonly int Distance;
     }
 
     /// <summary>
     /// Holds a Object and it's distance towards the center
     /// </summary>
-    public class NPCDistEntry
+    public struct NPCDistEntry
     {
         public NPCDistEntry(GameNPC o, int distance)
         {
@@ -1864,14 +1864,14 @@ namespace DOL.GS
             Distance = distance;
         }
 
-        public GameNPC NPC;
-        public int Distance;
+        public readonly GameNPC NPC;
+        public readonly int Distance;
     }
 
     /// <summary>
     /// Holds a Object and it's distance towards the center
     /// </summary>
-    public class ItemDistEntry
+    public struct ItemDistEntry
     {
         public ItemDistEntry(GameStaticItem o, int distance)
         {
@@ -1879,14 +1879,14 @@ namespace DOL.GS
             Distance = distance;
         }
 
-        public GameStaticItem Item;
-        public int Distance;
+        public readonly GameStaticItem Item;
+        public readonly int Distance;
     }
 
     /// <summary>
     /// Holds a Object and it's distance towards the center
     /// </summary>
-    public class DoorDistEntry
+    public struct DoorDistEntry
     {
         public DoorDistEntry(IDoor d, int distance)
         {
@@ -1894,7 +1894,7 @@ namespace DOL.GS
             Distance = distance;
         }
 
-        public IDoor Door;
-        public int Distance;
+        public readonly IDoor Door;
+        public readonly int Distance;
     }
 }

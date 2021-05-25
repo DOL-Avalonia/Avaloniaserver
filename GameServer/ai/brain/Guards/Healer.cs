@@ -29,7 +29,7 @@ namespace DOL.AI.Brain
 
             if (guard.CanUseRanged)
             {
-                SpellMgr.CheckAreaForHeals(guard);
+                guard.CheckAreaForHeals();
             }
         }
 

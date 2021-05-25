@@ -17,12 +17,10 @@
  *
  */
 using System.Collections.Generic;
+using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-    /// <summary>
-    /// Midgard Shadowblade Class
-    /// </summary>
     [CharacterClass((int)eCharacterClass.Shadowblade, "Shadowblade", "MidgardRogue")]
     public class ClassShadowblade : ClassMidgardRogue
     {
@@ -52,5 +50,10 @@ namespace DOL.GS.PlayerClass
         {
             return true;
         }
+
+        public override List<PlayerRace> EligibleRaces => new List<PlayerRace>()
+        {
+             PlayerRace.Frostalf, PlayerRace.Kobold, PlayerRace.Norseman, PlayerRace.Valkyn,
+        };
     }
 }

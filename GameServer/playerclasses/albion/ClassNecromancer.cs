@@ -16,12 +16,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+using DOL.GS.Realm;
+using System.Collections.Generic;
 
 namespace DOL.GS.PlayerClass
 {
-    /// <summary>
-    /// Albion Necromancer Class
-    /// </summary>
     [CharacterClass((int)eCharacterClass.Necromancer, "Necromancer", "Disciple")]
     public class ClassNecromancer : CharacterClassNecromancer
     {
@@ -39,5 +38,10 @@ namespace DOL.GS.PlayerClass
         {
             return true;
         }
+
+        public override List<PlayerRace> EligibleRaces => new List<PlayerRace>()
+        {
+             PlayerRace.Briton, PlayerRace.Inconnu, PlayerRace.Saracen,
+        };
     }
 }

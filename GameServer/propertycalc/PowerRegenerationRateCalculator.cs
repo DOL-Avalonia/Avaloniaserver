@@ -94,6 +94,9 @@ namespace DOL.GS.PropertyCalc
                 regen = 1;
             }
 
+            if (living.IsSitting && !living.InCombat)
+                regen *= 2;
+
             return (int)regen;
         }
     }

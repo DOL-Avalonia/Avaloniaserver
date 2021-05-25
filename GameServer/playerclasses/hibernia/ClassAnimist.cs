@@ -16,12 +16,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+using System.Collections.Generic;
+using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-    /// <summary>
-    /// Hibernia Animist Class
-    /// </summary>
     [CharacterClass((int)eCharacterClass.Animist, "Animist", "Forester")]
     public class ClassAnimist : CharacterClassAnimist
     {
@@ -39,14 +38,14 @@ namespace DOL.GS.PlayerClass
 
         public override eClassType ClassType => eClassType.ListCaster;
 
-        /// <summary>
-        /// Update all skills and add new for current level
-        /// </summary>
-        /// <param name="player"></param>
-
         public override bool HasAdvancedFromBaseClass()
         {
             return true;
         }
+
+        public override List<PlayerRace> EligibleRaces => new List<PlayerRace>()
+        {
+             PlayerRace.Celt, PlayerRace.Firbolg, PlayerRace.Sylvan,
+        };
     }
 }

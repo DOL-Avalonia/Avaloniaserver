@@ -159,7 +159,7 @@ namespace DOL.GS.ServerRules
 				IControlledBrain controlled = ((GameNPC)attacker).Brain as IControlledBrain;
 				if (controlled != null)
 				{
-					attacker = controlled.GetLivingOwner();
+					attacker = controlled.GetLivingOwner() ?? attacker;
 					quiet = true; // silence all attacks by controlled npc
 				}
 			}
@@ -167,7 +167,7 @@ namespace DOL.GS.ServerRules
 			{
 				IControlledBrain controlled = ((GameNPC)defender).Brain as IControlledBrain;
 				if (controlled != null)
-                    defender = controlled.GetLivingOwner();
+                    defender = controlled.GetLivingOwner() ?? defender;
 			}
 
 			// can't attack self

@@ -361,7 +361,7 @@ namespace DOL.GS
                 Intelligence = NPCTemplate.Intelligence;
                 Empathy = NPCTemplate.Empathy;
                 Piety = NPCTemplate.Piety;
-                Charisma = NPCTemplate.Strength;
+                Charisma = NPCTemplate.Charisma;
             }
             else
             {
@@ -6340,7 +6340,7 @@ namespace DOL.GS
 		{
 			if (Faction == null || npc.Faction == null)
 				return false;
-			return npc.Faction == Faction || (Faction.FriendFactions?.Contains(npc.Faction) ?? false);
+			return (npc.Faction == Faction || (Faction.FriendFactions?.Contains(npc.Faction) ?? false));
 		}
 
 		/// <summary>

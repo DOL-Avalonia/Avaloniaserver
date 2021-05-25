@@ -16,12 +16,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+using System.Collections.Generic;
+using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-    /// <summary>
-    /// Albion Wizzard Class
-    /// </summary>
     [CharacterClass((int)eCharacterClass.Wizard, "Wizard", "Elementalist")]
     public class ClassWizard : ClassElementalist
     {
@@ -40,5 +39,10 @@ namespace DOL.GS.PlayerClass
         {
             return true;
         }
+
+        public override List<PlayerRace> EligibleRaces => new List<PlayerRace>()
+        {
+             PlayerRace.Avalonian, PlayerRace.Briton, PlayerRace.HalfOgre,
+        };
     }
 }

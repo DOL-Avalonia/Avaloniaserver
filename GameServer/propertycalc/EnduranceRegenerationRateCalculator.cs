@@ -73,6 +73,9 @@ namespace DOL.GS.PropertyCalc
 			if (Util.ChanceDouble(decimals))
 				regen += 1; // compensate int rounding error
 
+			if (living.IsSitting && !living.InCombat)
+				regen *= 2;
+
 			return (int)regen;
 		}
 	}

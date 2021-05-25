@@ -16,12 +16,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+using System.Collections.Generic;
+using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-    /// <summary>
-    /// Midgard Skald Class
-    /// </summary>
     [CharacterClass((int)eCharacterClass.Skald, "Skald", "Viking")]
     public class ClassSkald : ClassViking
     {
@@ -46,5 +45,10 @@ namespace DOL.GS.PlayerClass
         }
 
         public override ushort MaxPulsingSpells => 2;
+
+        public override List<PlayerRace> EligibleRaces => new List<PlayerRace>()
+        {
+             PlayerRace.Dwarf, PlayerRace.Kobold, PlayerRace.Norseman, PlayerRace.Troll,
+        };
     }
 }

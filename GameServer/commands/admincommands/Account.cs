@@ -81,13 +81,15 @@ namespace DOL.GS.Commands
                             return;
                         }
 
-                        account = new Account();
-                        account.Name = AccountName;
-                        account.Password = PacketHandler.Client.v168.LoginRequestHandler.CryptPassword(Password);
-                        account.PrivLevel = (uint)ePrivLevel.Player;
-                        account.Realm = (int)eRealm.None;
-                        account.CreationDate = DateTime.Now;
-                        account.Language = ServerProperties.Properties.SERV_LANGUAGE;
+                        account = new Account
+                        {
+                            Name = AccountName,
+                            Password = PacketHandler.Client.v168.LoginRequestHandler.CryptPassword(Password),
+                            PrivLevel = (uint)ePrivLevel.Player,
+                            Realm = (int)eRealm.None,
+                            CreationDate = DateTime.Now,
+                            Language = ServerProperties.Properties.SERV_LANGUAGE
+                        };
                         GameServer.Database.AddObject(account);
 
                         DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Account.AccountCreated"));
@@ -201,24 +203,24 @@ namespace DOL.GS.Commands
                             return;
                         }
 
-                        int firstAccountSlot = 0;
+                        int firstAccountSlot;
                         switch ((eRealm)cha.Realm)
                         {
                             case eRealm.Albion:
-                                firstAccountSlot = 1 * 8;
+                                firstAccountSlot = 100;
                                 break;
                             case eRealm.Midgard:
-                                firstAccountSlot = 2 * 8;
+                                firstAccountSlot = 200;
                                 break;
                             case eRealm.Hibernia:
-                                firstAccountSlot = 3 * 8;
+                                firstAccountSlot = 300;
                                 break;
                             default:
                                 DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Account.CharNotFromValidRealm"));
                                 return;
                         }
 
-                        int freeslot = 0;
+                        int freeslot;
                         for (freeslot = firstAccountSlot; freeslot < firstAccountSlot + 8; freeslot++)
                         {
                             bool found = false;
@@ -275,7 +277,7 @@ namespace DOL.GS.Commands
                             return;
                         }
 
-                        int status = -1;
+                        int status;
                         try { status = Convert.ToInt32(args[3]); } catch (Exception) { DisplaySyntax(client); return; }
                         if (status >= 0 && status < 256)
                         {

@@ -16,6 +16,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+using DOL.GS.ServerProperties;
+using DOL.Language;
+using System;
 using System.Collections;
 
 namespace DOL.GS.Keeps
@@ -29,6 +32,40 @@ namespace DOL.GS.Keeps
         {
             get { return eFlags.PEACE; }
         }
+
+        protected override void SetModel()
+        {
+            if (!ServerProperties.Properties.AUTOMODEL_GUARDS_LOADED_FROM_DB && !LoadedFromScript)
+            {
+                return;
+            }
+            switch (Realm)
+            {
+                case eRealm.None:
+                case eRealm.Albion:
+                    {
+                        Model = (ushort)eLivingModel.AlbionHastener;
+                        Size = 45;
+                        break;
+                    }
+                case eRealm.Midgard:
+                    {
+                        Model = (ushort)eLivingModel.MidgardHastener;
+                        Size = 50;
+                        Flags ^= eFlags.GHOST;
+                        break;
+                    }
+                case eRealm.Hibernia:
+                    {
+                        Model = (ushort)eLivingModel.HiberniaHastener;
+                        Size = 45;
+                        break;
+                    }
+            }
+            return;
+        }
+
+        #region Examine/Interact Message
 
         /// <summary>
         /// Adds messages to ArrayList which are sent when object is targeted
@@ -51,16 +88,17 @@ namespace DOL.GS.Keeps
             GameNPCHelper.CastSpellOnOwnerAndPets(this, player, SkillBase.GetSpellByID(GameHastener.SPEEDOFTHEREALMID), SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
             return true;
         }
-        //#endregion Examine/Interact Message
+        #endregion Examine/Interact Message
 
-		/// <summary>
-		/// Hasteners don't respond to calls for help
-		/// </summary>
-		/// <param name="lord"></param>
-		/// <returns>Whether or not we are responding</returns>
-		public override bool AssistLord(GuardLord lord)
-		{
-			return false;
-		}
+        protected override void SetRespawnTime()
+        {
+                RespawnInterval = 5000;
+        }
+
+        protected override void SetName()
+        {
+            Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Hastener");
+            return;
+        }
     }
 }

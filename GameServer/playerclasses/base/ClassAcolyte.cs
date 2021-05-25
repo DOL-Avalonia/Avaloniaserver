@@ -16,12 +16,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+using DOL.GS.Realm;
+using System.Collections.Generic;
 
 namespace DOL.GS.PlayerClass
 {
-    /// <summary>
-    /// Albion Base Support Class Acolyte
-    /// </summary>
     [CharacterClass((int)eCharacterClass.Acolyte, "Acolyte", "Acolyte")]
     public class ClassAcolyte : CharacterClassBase
     {
@@ -49,5 +48,10 @@ namespace DOL.GS.PlayerClass
         {
             return false;
         }
+
+        public override List<PlayerRace> EligibleRaces => new List<PlayerRace>()
+        {
+            PlayerRace.Korazh, PlayerRace.Avalonian, PlayerRace.Briton, PlayerRace.Highlander, PlayerRace.Inconnu,
+        };
     }
 }

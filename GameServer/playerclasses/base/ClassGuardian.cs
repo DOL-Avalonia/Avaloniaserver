@@ -16,12 +16,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+using System.Collections.Generic;
+using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-    /// <summary>
-    /// Hibernia Base Fighter Class Guardian
-    /// </summary>
     [CharacterClass((int)eCharacterClass.Guardian, "Guardian", "Guardian")]
     public class ClassGuardian : CharacterClassBase
     {
@@ -48,5 +47,10 @@ namespace DOL.GS.PlayerClass
         {
             return false;
         }
+
+        public override List<PlayerRace> EligibleRaces => new List<PlayerRace>()
+        {
+             PlayerRace.Celt, PlayerRace.Elf, PlayerRace.Firbolg, PlayerRace.Graoch, PlayerRace.Lurikeen, PlayerRace.Shar, PlayerRace.Sylvan,
+        };
     }
 }

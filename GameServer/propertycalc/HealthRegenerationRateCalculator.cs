@@ -59,8 +59,10 @@ namespace DOL.GS.PropertyCalc
 
 			if (living.Level < 10)
 				regen = 7 + (living.Level * 0.2);
-			if (living.Level < 26)
+			else if (living.Level < 26)
+			{
 				regen = 5 + (living.Level * 0.4);
+			}
 			else
 				regen = living.Level * 0.6;
 

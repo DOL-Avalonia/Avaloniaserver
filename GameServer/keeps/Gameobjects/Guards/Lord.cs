@@ -1,32 +1,26 @@
 using System;
-using DOL.Events;
 using DOL.AI.Brain;
-using DOL.GS;
 using DOL.GS.PacketHandler;
 using log4net;
+using DOL.GS.PlayerClass;
+using DOL.GS.ServerProperties;
+using DOL.Language;
 
 namespace DOL.GS.Keeps
 {
-	/// <summary>
-	/// Class for the Lord Guard
-	/// </summary>
 	public class GuardLord : GameKeepGuard
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		private eRealm m_lastRealm = eRealm.None;
 		private long m_lastKillTime = 0;
 
-		/// <summary>
-		/// Lord needs more health at the moment
-		/// </summary>
-		public override int MaxHealth
+		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
-			get
-			{
-				return base.MaxHealth * 3;
-			}
+			return base.GetArmorAbsorb(slot) + 0.05;
 		}
+
+		public override int MaxHealth => base.MaxHealth * 3;
 
 		public override int RealmPointsValue
 		{
@@ -38,7 +32,7 @@ namespace DOL.GS.Keeps
 
                 long duration = (CurrentRegion.Time - m_lastKillTime) / 1000L;
 
-				if (duration < ServerProperties.Properties.LORD_RP_WORTH_SECONDS)
+				if (duration < Properties.LORD_RP_WORTH_SECONDS)
 				{
 					return 0;
 				}
@@ -63,7 +57,7 @@ namespace DOL.GS.Keeps
 					return 0;
 
 				long duration = (CurrentRegion.Time - m_lastKillTime) / 1000L;
-				if (duration < ServerProperties.Properties.LORD_RP_WORTH_SECONDS)
+				if (duration < Properties.LORD_RP_WORTH_SECONDS)
 				{
 					return 0;
 				}
@@ -82,7 +76,7 @@ namespace DOL.GS.Keeps
 			get
 			{
 				long duration = (CurrentRegion.Time - m_lastKillTime) / 1000L;
-				if (duration < ServerProperties.Properties.LORD_RP_WORTH_SECONDS)
+				if (duration < Properties.LORD_RP_WORTH_SECONDS)
 				{
 					return 0;
 				}
@@ -114,7 +108,7 @@ namespace DOL.GS.Keeps
 			get
 			{
 				long duration = (CurrentRegion.Time - m_lastKillTime) / 1000L;
-				if (duration < ServerProperties.Properties.LORD_RP_WORTH_SECONDS)
+				if (duration < Properties.LORD_RP_WORTH_SECONDS)
 				{
 					return 0;
 				}
@@ -127,7 +121,6 @@ namespace DOL.GS.Keeps
 				return base.MoneyValue;
 			}
 		}
-
 
 		public override int AttackRangeDistance
 		{
@@ -156,7 +149,7 @@ namespace DOL.GS.Keeps
 		{
 			m_lastRealm = eRealm.None;
 
-			if (ServerProperties.Properties.LOG_KEEP_CAPTURES)
+			if (Properties.LOG_KEEP_CAPTURES)
 			{
 				try
 				{
@@ -211,7 +204,7 @@ namespace DOL.GS.Keeps
 
 			base.Die(killer);
 
-			if (this.Component != null)
+			if (Component != null)
 			{
 				GameServer.ServerRules.ResetKeep(this, killer);
 			}
@@ -229,7 +222,7 @@ namespace DOL.GS.Keeps
 			if (!base.Interact(player))
 				return false;
 
-			if (this.Component == null)
+			if (Component == null)
 				return false;
 
 			if (InCombat || Component.AbstractKeep.InCombat)
@@ -268,8 +261,8 @@ namespace DOL.GS.Keeps
 		/// <param name="criticalAmount">The critical hit amount of damage</param>
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
 		{
-			int distance = 0;
-			if (this.Component != null && this.Component.AbstractKeep != null && this.Component.AbstractKeep is GameKeep)
+			int distance;
+			if (Component != null && Component.AbstractKeep != null && Component.AbstractKeep is GameKeep)
 				distance = 400;
 			else 
 				distance = 300;
@@ -288,14 +281,14 @@ namespace DOL.GS.Keeps
 			if ((attacker != null && IsWithinRadius(attacker, distance) == false) || IsWithinRadius(source, distance) == false)
 			{
 				if (attacker != null)
-					attacker.Out.SendMessage(this.Name + " ne caint pas les dommages à cette distance", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+					attacker.Out.SendMessage(this.Name + " ne craint pas les dommages à cette distance", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 				return;
 			}
 
-			if (attacker != null && this.Component != null && this.Component.AbstractKeep != null && IsAlive && !GameServer.ServerRules.IsSameRealm(this, attacker, true))
+			if (attacker != null && Component != null && Component.AbstractKeep != null && IsAlive && !GameServer.ServerRules.IsSameRealm(this, attacker, true))
 			{
 				if (Realm == m_lastRealm && m_lastRealm != eRealm.None)
-					this.Component.AbstractKeep.LastAttackedByEnemyTick = CurrentRegion.Time; // light up the keep/tower
+					Component.AbstractKeep.LastAttackedByEnemyTick = CurrentRegion.Time; // light up the keep/tower
 			}
 
 			base.TakeDamage(source, damageType, damageAmount, criticalAmount);
@@ -317,18 +310,18 @@ namespace DOL.GS.Keeps
             byte flag = 0;
             switch (str)
             {
-                case "Revendiquer Keep":
+                case "Revendiquer le fort":
                     {
-                        if (PlayerMgr.IsAllowedToInteract(player, this.Component.AbstractKeep, eInteractType.Claim))
+                        if (PlayerMgr.IsAllowedToInteract(player, Component.AbstractKeep, eInteractType.Claim))
                         {
                             player.Out.SendDialogBox(eDialogCode.KeepClaim, (ushort)player.ObjectID, 0, 0, 0, eDialogType.YesNo, false, "Voulez-vous revendiquer \n" + this.Component.AbstractKeep.Name + "?");
                             return true;
                         }
                         break;
                     }
-                case "Relacher Keep":
+                case "Liberer le fort":
                     {
-                        if (PlayerMgr.IsAllowedToInteract(player, this.Component.AbstractKeep, eInteractType.Release))
+                        if (PlayerMgr.IsAllowedToInteract(player, Component.AbstractKeep, eInteractType.Release))
                         {
                             flag += 4;
                         }
@@ -336,9 +329,151 @@ namespace DOL.GS.Keeps
                     }
             }
             if (flag > 0)
-                player.Out.SendKeepClaim(this.Component.AbstractKeep, flag);
+                player.Out.SendKeepClaim(Component.AbstractKeep, flag);
 
             return true;
         }
-    }
+
+		protected override ICharacterClass GetClass()
+		{
+			if (ModelRealm == eRealm.Albion) return new ClassArmsman();
+			else if (ModelRealm == eRealm.Midgard) return new ClassWarrior();
+			else if (ModelRealm == eRealm.Hibernia) return new ClassHero();
+			return new DefaultCharacterClass();
+		}
+
+		protected override void SetBlockEvadeParryChance()
+		{
+			base.SetBlockEvadeParryChance();
+
+			BlockChance = 15;
+			ParryChance = 15;
+
+			if (ModelRealm != eRealm.Albion)
+			{
+				EvadeChance = 10;
+				ParryChance = 5;
+			}
+		}
+
+		protected override KeepGuardBrain GetBrain() => new LordBrain();
+
+		protected override void SetStats()
+		{
+			Strength = (short)(Properties.LORD_AUTOSET_STR_BASE + (10 * Level * Properties.LORD_AUTOSET_STR_MULTIPLIER));
+			Dexterity = (short)(Properties.LORD_AUTOSET_DEX_BASE + (Level * Properties.LORD_AUTOSET_DEX_MULTIPLIER));
+			Constitution = (short)(Properties.LORD_AUTOSET_CON_BASE + (Level * Properties.LORD_AUTOSET_CON_MULTIPLIER));
+			Quickness = (short)(Properties.LORD_AUTOSET_QUI_BASE + (Level * Properties.LORD_AUTOSET_QUI_MULTIPLIER));
+			Intelligence = (short)(Properties.LORD_AUTOSET_INT_BASE + (Level * Properties.LORD_AUTOSET_INT_MULTIPLIER));
+		}
+
+		protected override void SetRespawnTime()
+		{
+			if (Component != null)
+			{
+				RespawnInterval = Component.AbstractKeep.LordRespawnTime;
+			}
+			else
+			{
+				if (GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvE
+					|| GameServer.Instance.Configuration.ServerType == eGameServerType.GST_PvP)
+				{
+					// In PvE & PvP servers, lords are really just mobs farmed for seals.
+					int iVariance = 1000 * Math.Abs(Properties.GUARD_RESPAWN_VARIANCE);
+					int iRespawn = 60 * ((Math.Abs(Properties.GUARD_RESPAWN) * 1000) +
+						(Util.Random(-iVariance, iVariance)));
+
+					RespawnInterval = (iRespawn > 1000) ? iRespawn : 1000; // Make sure we don't end up with an impossibly low respawn interval.
+				}
+				else
+					RespawnInterval = 10000; // 10 seconds
+			}
+		}
+
+		protected override void SetSpeed()
+		{
+			base.SetSpeed();
+			if (Component != null)
+			{
+				MaxSpeedBase = 0;
+			}
+		}
+
+		private string GetKeepShortName(string KeepName)
+		{
+			string ShortName;
+			if (KeepName.StartsWith("Caer"))//Albion
+			{
+				ShortName = KeepName.Substring(5);
+			}
+			else if (KeepName.StartsWith("Fort"))
+			{
+				ShortName = KeepName.Substring(5);
+			}
+			else if (KeepName.StartsWith("Dun"))//Hibernia
+			{
+				if (KeepName == "Dun nGed")
+				{
+					ShortName = "Ged";
+				}
+				else if (KeepName == "Dun da Behn")
+				{
+					ShortName = "Behn";
+				}
+				else
+				{
+					ShortName = KeepName.Substring(4);
+				}
+			}
+			else if (KeepName.StartsWith("Castle"))// Albion Relic
+			{
+				ShortName = KeepName.Substring(7);
+			}
+			else//Midgard
+			{
+				if (KeepName.Contains(" "))
+					ShortName = KeepName.Substring(0, KeepName.IndexOf(" ", 0));
+				else
+					ShortName = KeepName;
+			}
+			return ShortName;
+		}
+
+		protected override void SetName()
+		{
+			if (Component == null)
+			{
+				Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Commander", CurrentZone.Description);
+				return;
+			}
+			else if (IsTowerGuard)
+			{
+				Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.TowerCaptain");
+				return;
+			}
+
+			switch (ModelRealm)
+			{
+				case eRealm.None:
+				case eRealm.Albion:
+					if (Gender == eGender.Male)
+						Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Lord", GetKeepShortName(Component.AbstractKeep.Name));
+					else Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Lady", GetKeepShortName(Component.AbstractKeep.Name));
+					break;
+				case eRealm.Midgard:
+					Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Jarl", GetKeepShortName(Component.AbstractKeep.Name));
+					break;
+				case eRealm.Hibernia:
+					if (Gender == eGender.Male)
+						Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Chieftain", GetKeepShortName(Component.AbstractKeep.Name));
+					else Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Chieftess", GetKeepShortName(Component.AbstractKeep.Name));
+					break;
+			}
+
+			if (Realm == eRealm.None)
+			{
+				Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Renegade", Name);
+			}
+		}
+	}
 }

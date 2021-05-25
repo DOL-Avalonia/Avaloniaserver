@@ -375,7 +375,7 @@ namespace AmteScripts.Managers
             DateTime currentTime = DateTime.Now;
             if (!_isOpen)
 			{
-            	_regions.ForEach(id => WorldMgr.GetClientsOfRegion(id).Foreach(RemovePlayer));
+            	_regions.Foreach(id => WorldMgr.GetClientsOfRegion(id).Foreach(RemovePlayer));
 				if (DateTime.Now >= _startTime && DateTime.Now < _endTime)
             		Open(false);
 			}
@@ -403,7 +403,7 @@ namespace AmteScripts.Managers
                 if (!_isForcedOpen)
 				{
 					if ((currentTime < _startTime || currentTime > _endTime) && !Close())
-                        _regions.ForEach(id => WorldMgr.GetClientsOfRegion(id).Foreach(RemovePlayer));                  
+                        _regions.Foreach(id => WorldMgr.GetClientsOfRegion(id).Foreach(RemovePlayer));                  
 				}
 
                 // check the Score every minutes and if the number of player is less than 8 pending 5 minutes stop count the point 

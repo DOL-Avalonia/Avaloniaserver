@@ -16,12 +16,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+using System.Collections.Generic;
+using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-    /// <summary>
-    /// Hibernia Base Support Class Naturalist
-    /// </summary>
     [CharacterClass((int)eCharacterClass.Naturalist, "Naturalist", "Naturalist")]
     public class ClassNaturalist : CharacterClassBase
     {
@@ -49,5 +48,10 @@ namespace DOL.GS.PlayerClass
         {
             return false;
         }
+
+        public override List<PlayerRace> EligibleRaces => new List<PlayerRace>()
+        {
+             PlayerRace.Celt, PlayerRace.Firbolg, PlayerRace.Sylvan, PlayerRace.Graoch
+        };
     }
 }

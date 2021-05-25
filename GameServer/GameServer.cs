@@ -232,13 +232,18 @@ namespace DOL.GS
             }
         }
 
+        protected virtual IObjectDatabase DataBaseImpl
+        {
+            get
+            {
+                return Instance.m_database;
+            }
+        }
+
         /// <summary>
         /// Gets the database instance
         /// </summary>
-        public static IObjectDatabase Database
-        {
-            get { return Instance.m_database; }
-        }
+        public static IObjectDatabase Database => m_instance.DataBaseImpl;
 
         /// <summary>
         /// Gets this Instance's Database
@@ -309,7 +314,9 @@ namespace DOL.GS
             }
 
             // Configure and watch the config file
-            XmlConfigurator.ConfigureAndWatch(logConfig);
+            var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetCallingAssembly() ?? Assembly.GetExecutingAssembly();
+            var logRepository = LogManager.GetRepository(assembly);
+            XmlConfigurator.ConfigureAndWatch(logRepository, logConfig);
 
             // Create the instance
             m_instance = new GameServer(config);
@@ -1432,6 +1439,19 @@ namespace DOL.GS
                 m_timer = null;
             }
 
+            // kick everyone
+            foreach (var clientB in _clients)
+            {
+                var client = clientB as GameClient;
+                if (client == null)
+                    continue;
+                client.Out.SendPlayerQuit(true);
+                if (client.Player == null)
+                    continue;
+                client.Player.SaveIntoDatabase();
+                client.Player.Quit(true);
+            }
+
             // Stop the base server
             base.Stop();
 
@@ -1767,9 +1787,10 @@ namespace DOL.GS
         protected GameServer(GameServerConfiguration config)
             : base(config)
         {
-            m_gmLog = LogManager.GetLogger(Configuration.GMActionsLoggerName);
-            m_cheatLog = LogManager.GetLogger(Configuration.CheatLoggerName);
-            m_inventoryLog = LogManager.GetLogger(Configuration.InventoryLoggerName);
+            var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetCallingAssembly() ?? Assembly.GetExecutingAssembly();
+            m_gmLog = LogManager.GetLogger(assembly, Configuration.GMActionsLoggerName);
+            m_cheatLog = LogManager.GetLogger(assembly, Configuration.CheatLoggerName);
+            m_inventoryLog = LogManager.GetLogger(assembly, Configuration.InventoryLoggerName);
 
             if (log.IsDebugEnabled)
             {

@@ -16,14 +16,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
+using System.Collections.Generic;
+using DOL.GS.Realm;
 
 namespace DOL.GS.PlayerClass
 {
-	/// <summary>
-	/// Hibernia Druid Class
-	/// </summary>
-	[CharacterClassAttribute((int)eCharacterClass.Druid, "Druid", "Naturalist")]
+	[CharacterClass((int)eCharacterClass.Druid, "Druid", "Naturalist")]
 	public class ClassDruid : ClassNaturalist
 	{
 		public ClassDruid()
@@ -47,5 +45,10 @@ namespace DOL.GS.PlayerClass
 		{
 			return true;
 		}
+
+		public override List<PlayerRace> EligibleRaces => new List<PlayerRace>()
+		{
+			 PlayerRace.Celt, PlayerRace.Firbolg, PlayerRace.Sylvan,
+		};
 	}
 }
