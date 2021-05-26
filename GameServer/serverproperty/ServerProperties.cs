@@ -1818,6 +1818,133 @@ namespace DOL.GS.ServerProperties
         public static double GUARD_BUFF_EFFECT_MULTIPLIER { get; set; }
 
         /// <summary>
+		/// Keep guard heal when a target is below what percentage of their health?
+		/// </summary>
+		[ServerProperty("keeps", "keep_heal_threshold", "Keep guards heal targets whose health falls below this value.", 60)]
+        public static int KEEP_HEAL_THRESHOLD { get; set; }
+
+        /// <summary>
+        /// Base Value to use when auto-setting STR stat.
+        /// </summary>
+        [ServerProperty("keeps", "guard_autoset_str_base", "Base Value to use when auto-setting STR stat. ", (short)20)]
+        public static short GUARD_AUTOSET_STR_BASE { get; set; }
+
+        /// <summary>
+        /// Multiplier to use when auto-setting STR stat.
+        /// </summary>
+        [ServerProperty("keeps", "guard_autoset_str_multiplier", "Multiplier to use when auto-setting STR stat.  Multiplied by 10 when used.", 0.7)]
+        public static double GUARD_AUTOSET_STR_MULTIPLIER { get; set; }
+
+        /// <summary>
+        /// Base Value to use when auto-setting CON stat.
+        /// </summary>
+        [ServerProperty("keeps", "guard_autoset_con_base", "Base Value to use when auto-setting CON stat. ", (short)30)]
+        public static short GUARD_AUTOSET_CON_BASE { get; set; }
+
+        /// <summary>
+        /// Multiplier to use when auto-setting CON stat.
+        /// </summary>
+        [ServerProperty("keeps", "guard_autoset_con_multiplier", "Multiplier to use when auto-setting CON stat. ", 0.0)]
+        public static double GUARD_AUTOSET_CON_MULTIPLIER { get; set; }
+
+        /// <summary>
+        /// Base Value to use when auto-setting QUI stat.
+        /// </summary>
+        [ServerProperty("keeps", "guard_autoset_qui_base", "Base Value to use when auto-setting qui stat. ", (short)40)]
+        public static short GUARD_AUTOSET_QUI_BASE { get; set; }
+
+        /// <summary>
+        /// Multiplier to use when auto-setting QUI stat.
+        /// </summary>
+        [ServerProperty("keeps", "guard_autoset_qui_multiplier", "Multiplier to use when auto-setting QUI stat. ", 0.0)]
+        public static double GUARD_AUTOSET_QUI_MULTIPLIER { get; set; }
+
+        /// <summary>
+        /// Base Value to use when auto-setting DEX stat.
+        /// </summary>
+        [ServerProperty("keeps", "guard_autoset_dex_base", "Base Value to use when auto-setting DEX stat. ", (short)1)]
+        public static short GUARD_AUTOSET_DEX_BASE { get; set; }
+
+        /// <summary>
+        /// Multiplier to use when auto-setting DEX stat.
+        /// </summary>
+        [ServerProperty("keeps", "guard_autoset_dex_multiplier", "Multiplier to use when auto-setting DEX stat. ", 1.0)]
+        public static double GUARD_AUTOSET_DEX_MULTIPLIER { get; set; }
+
+        /// <summary>
+        /// Base Value to use when auto-setting INT stat.
+        /// </summary>
+        [ServerProperty("keeps", "guard_autoset_int_base", "Base Value to use when auto-setting INT stat. ", (short)30)]
+        public static short GUARD_AUTOSET_INT_BASE { get; set; }
+
+        /// <summary>
+        /// Multiplier to use when auto-setting INT stat.
+        /// </summary>
+        [ServerProperty("keeps", "guard_autoset_int_multiplier", "Multiplier to use when auto-setting INT stat. ", 1.0)]
+        public static double GUARD_AUTOSET_INT_MULTIPLIER { get; set; }
+
+        /// <summary>
+		/// Base Value to use when auto-setting STR stat.
+		/// </summary>
+		[ServerProperty("keeps", "lord_autoset_str_base", "Base Value to use when auto-setting STR stat. ", (short)20)]
+        public static short LORD_AUTOSET_STR_BASE { get; set; }
+
+        /// <summary>
+        /// Multiplier to use when auto-setting STR stat.
+        /// </summary>
+        [ServerProperty("keeps", "lord_autoset_str_multiplier", "Multiplier to use when auto-setting STR stat.  Multiplied by 10 when used.", 0.8)]
+        public static double LORD_AUTOSET_STR_MULTIPLIER { get; set; }
+
+        /// <summary>
+        /// Base Value to use when auto-setting CON stat.
+        /// </summary>
+        [ServerProperty("keeps", "lord_autoset_con_base", "Base Value to use when auto-setting CON stat. ", (short)30)]
+        public static short LORD_AUTOSET_CON_BASE { get; set; }
+
+        /// <summary>
+        /// Multiplier to use when auto-setting CON stat.
+        /// </summary>
+        [ServerProperty("keeps", "lord_autoset_con_multiplier", "Multiplier to use when auto-setting CON stat. ", 0)]
+        public static double LORD_AUTOSET_CON_MULTIPLIER { get; set; }
+
+        /// <summary>
+        /// Base Value to use when auto-setting QUI stat.
+        /// </summary>
+        [ServerProperty("keeps", "lord_autoset_qui_base", "Base Value to use when auto-setting qui stat. ", (short)60)]
+        public static short LORD_AUTOSET_QUI_BASE { get; set; }
+
+        /// <summary>
+        /// Multiplier to use when auto-setting QUI stat.
+        /// </summary>
+        [ServerProperty("keeps", "lord_autoset_qui_multiplier", "Multiplier to use when auto-setting QUI stat. ", 0)]
+        public static double LORD_AUTOSET_QUI_MULTIPLIER { get; set; }
+
+        /// <summary>
+        /// Base Value to use when auto-setting DEX stat.
+        /// </summary>
+        [ServerProperty("keeps", "lord_autoset_dex_base", "Base Value to use when auto-setting DEX stat. ", (short)2)]
+        public static short LORD_AUTOSET_DEX_BASE { get; set; }
+
+        /// <summary>
+        /// Multiplier to use when auto-setting DEX stat.
+        /// </summary>
+        [ServerProperty("keeps", "lord_autoset_dex_multiplier", "Multiplier to use when auto-setting DEX stat. ", 2.0)]
+        public static double LORD_AUTOSET_DEX_MULTIPLIER { get; set; }
+
+        /// <summary>
+        /// Base Value to use when auto-setting INT stat.
+        /// </summary>
+        [ServerProperty("keeps", "lord_autoset_int_base", "Base Value to use when auto-setting INT stat. ", (short)30)]
+        public static short LORD_AUTOSET_INT_BASE { get; set; }
+
+        /// <summary>
+        /// Multiplier to use when auto-setting INT stat.
+        /// </summary>
+        [ServerProperty("keeps", "lord_autoset_int_multiplier", "Multiplier to use when auto-setting INT stat. ", 1.0)]
+        public static double LORD_AUTOSET_INT_MULTIPLIER { get; set; }
+
+
+        /// <summary>
         /// Enable 2H weapon damage bonus for keep guards?
         /// </summary>
         [ServerProperty("keeps", "guard_2h_bonus_damage", "If true, keep guards that use a 2H weapon and have a block chance get bonus damage equal to their block chance to compensate for not being able to block. ", true)]

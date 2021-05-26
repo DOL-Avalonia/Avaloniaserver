@@ -95,7 +95,7 @@ namespace DOL.GS.GameEvents
         [ScriptLoadedEvent]
         public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
         {
-            if (ServerProperties.Properties.USE_SERVER_LIST_UPDATE_INTEGRATED)
+            if (ServerProperties.Properties.SERVERLISTUPDATE_ENABLED)
             {
                 Init();
             }

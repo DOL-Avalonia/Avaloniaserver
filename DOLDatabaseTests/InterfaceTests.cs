@@ -1047,7 +1047,7 @@ namespace DOL.Database.Tests
 
             Assert.IsNotEmpty(allobjects, "This Test Need some Data to be Accurate...");
 
-            var retrieveNull = Database.SelectObject<TestTable>(null);
+            var retrieveNull = Database.SelectObject<TestTable>(string.Empty);
 
             CollectionAssert.Contains(allobjects.Select(obj => obj.ObjectId), retrieveNull.ObjectId, string.Empty);
 
@@ -1055,7 +1055,7 @@ namespace DOL.Database.Tests
 
             CollectionAssert.Contains(allobjects.Select(obj => obj.ObjectId), retrieveNullWithIsolation.ObjectId, string.Empty);
 
-            var retrieveMultipleNull = Database.SelectObjects<TestTable>(null);
+            var retrieveMultipleNull = Database.SelectObjects<TestTable>(string.Empty);
 
             CollectionAssert.AreEquivalent(allobjects.Select(obj => obj.ObjectId), retrieveMultipleNull.Select(obj => obj.ObjectId), string.Empty);
 

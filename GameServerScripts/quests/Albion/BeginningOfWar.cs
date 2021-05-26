@@ -612,7 +612,7 @@ namespace DOL.GS.Quests.Albion
 
 					if (quest.dunwynClone != null)
 					{
-						foreach (GamePlayer visPlayer in quest.dunwynClone.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+						foreach (GamePlayer visPlayer in quest.dunwynClone.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(quest.dunwynClone.CurrentRegion)))
 						{
 							visPlayer.Out.SendSpellCastAnimation(quest.dunwynClone, 1, 20);
 						}
@@ -963,7 +963,7 @@ namespace DOL.GS.Quests.Albion
 
 		protected virtual int CastDunwynClone(RegionTimer callingTimer)
 		{
-			foreach (GamePlayer visPlayer in fairySorceress[0].GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer visPlayer in fairySorceress[0].GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(fairySorceress[0].CurrentRegion)))
 			{
 				foreach (GameNPC fairy in fairySorceress)
 				{
@@ -988,8 +988,8 @@ namespace DOL.GS.Quests.Albion
 		{
 			if (Step == 17)
 			{
-				dunwynClone.SayTo(m_questPlayer, "Well youngun, I have to get back to my patrolling. Good job with that princess whoever. Now, be a sport and let Frederick know that I went back to the Marsh. Darn son of mine.");
-				dunwynClone.SayTo(m_questPlayer, "Tally ho!");
+				dunwynClone.SayTo(_questPlayer, "Well youngun, I have to get back to my patrolling. Good job with that princess whoever. Now, be a sport and let Frederick know that I went back to the Marsh. Darn son of mine.");
+				dunwynClone.SayTo(_questPlayer, "Tally ho!");
 
 				ResetMasterDunwyn();
 				Step = 18;
@@ -1034,7 +1034,7 @@ namespace DOL.GS.Quests.Albion
 
 				GameEventMgr.AddHandler(dunwynClone, GameLivingEvent.Interact, new DOLEventHandler(TalkToMasterDunwynClone));
 
-				foreach (GamePlayer visPlayer in dunwynClone.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				foreach (GamePlayer visPlayer in dunwynClone.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(dunwynClone.CurrentRegion)))
 				{
 					visPlayer.Out.SendEmoteAnimation(dunwynClone, eEmote.Bind);
 				}
@@ -1391,15 +1391,15 @@ namespace DOL.GS.Quests.Albion
 
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			RemoveItem(m_questPlayer, scrollDunwyn, false);
-			RemoveItem(m_questPlayer, listDunwyn, false);
-			RemoveItem(m_questPlayer, swampRatTail, false);
-			RemoveItem(m_questPlayer, swampSlimeItem, false);
-			RemoveItem(m_questPlayer, riverSpritlingClaw, false);
-			RemoveItem(m_questPlayer, princessOberasHead, false);
+			RemoveItem(_questPlayer, scrollDunwyn, false);
+			RemoveItem(_questPlayer, listDunwyn, false);
+			RemoveItem(_questPlayer, swampRatTail, false);
+			RemoveItem(_questPlayer, swampSlimeItem, false);
+			RemoveItem(_questPlayer, riverSpritlingClaw, false);
+			RemoveItem(_questPlayer, princessOberasHead, false);
 
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
 		}
 
 		public override void FinishQuest()
@@ -1409,19 +1409,19 @@ namespace DOL.GS.Quests.Albion
 			// make sure to clean up, should be needed , but just to make certain
 			ResetMasterDunwyn();
 			//Give reward to player here ...              
-			m_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 507, true);
+			_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 507, true);
             long money = Money.GetMoney(0, 0, 0, 8, Util.Random(50));
-			m_questPlayer.AddMoney(money, "You recieve {0} as a reward.");
-            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, money);
+			_questPlayer.AddMoney(money, "You recieve {0} as a reward.");
+            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", _questPlayer, eInventoryActionType.Quest, money);
 
-			if (m_questPlayer.HasAbilityToUseItem(recruitsHelm))
-				GiveItem(masterFrederick, m_questPlayer, recruitsHelm);
+			if (_questPlayer.HasAbilityToUseItem(recruitsHelm))
+				GiveItem(masterFrederick, _questPlayer, recruitsHelm);
 			else
-				GiveItem(masterFrederick, m_questPlayer, recruitsCap);
-			GiveItem(masterFrederick, m_questPlayer, recruitsRing);
+				GiveItem(masterFrederick, _questPlayer, recruitsCap);
+			GiveItem(masterFrederick, _questPlayer, recruitsRing);
 
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
 
 		}
 

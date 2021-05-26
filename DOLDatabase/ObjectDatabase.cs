@@ -815,6 +815,24 @@ namespace DOL.Database
         }
         #endregion
 
+        public TObject SelectObject<TObject>(string whereExpression, IEnumerable<IEnumerable<QueryParameter>> parameters) where TObject : DataObject
+        {
+            IList<TObject> list = SelectObjects<TObject>(whereExpression, parameters).FirstOrDefault();
+            if (list != null)
+                return list.First();
+            return null;
+        }
+
+        public TObject SelectObject<TObject>(string whereExpression, IEnumerable<QueryParameter> parameter) where TObject : DataObject
+        {
+            return SelectObjects<TObject>(whereExpression, parameter).FirstOrDefault();
+        }
+
+        public TObject SelectObject<TObject>(string whereExpression, QueryParameter param) where TObject : DataObject
+        {
+            return SelectObjects<TObject>(whereExpression, param).FirstOrDefault();
+        }
+
         /// <summary>
         /// Retrieve a Collection of DataObjects from database based on the Where Expression and Parameters Collection
         /// </summary>

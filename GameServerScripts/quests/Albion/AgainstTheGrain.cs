@@ -545,9 +545,9 @@ namespace DOL.GS.Quests.Albion
 
 			//Give reward to player here ...
 
-			m_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 10 + (m_questPlayer.Level * 5), true);
-			m_questPlayer.AddMoney(Money.GetMoney(0, 0, 0, 0, 25 + m_questPlayer.Level), "You are awarded "+(25+m_questPlayer.Level)+" copper!");
-		    InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, 25 + m_questPlayer.Level);
+			_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 10 + (_questPlayer.Level * 5), true);
+			_questPlayer.AddMoney(Money.GetMoney(0, 0, 0, 0, 25 + _questPlayer.Level), "You are awarded "+(25+_questPlayer.Level)+" copper!");
+		    InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", _questPlayer, eInventoryActionType.Quest, 25 + _questPlayer.Level);
 		}
 	}
 }

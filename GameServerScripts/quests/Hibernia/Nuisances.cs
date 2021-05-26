@@ -418,7 +418,7 @@ namespace DOL.GS.Quests.Hibernia
 				{
                     if ( player.IsWithinRadius( quest.sluagh, 500 ) )
 					{
-						foreach (GamePlayer visPlayer in quest.sluagh.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+						foreach (GamePlayer visPlayer in quest.sluagh.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(quest.sluagh.CurrentRegion)))
 						{
 							visPlayer.Out.SendSpellCastAnimation(quest.sluagh, 1, 20);
 						}
@@ -450,7 +450,7 @@ namespace DOL.GS.Quests.Hibernia
 				SendSystemMessage(player, "Sluaghs! Quick! USE your Magical Wooden Box to capture the sluagh footsoldier! To USE an item, right click on the item and type /use.");
 				quest.CreateSluagh();
 
-				foreach (GamePlayer visPlayer in quest.sluagh.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				foreach (GamePlayer visPlayer in quest.sluagh.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(quest.sluagh.CurrentRegion)))
 				{
 					visPlayer.Out.SendSpellCastAnimation(quest.sluagh, 1, 20);
 				}
@@ -689,13 +689,13 @@ namespace DOL.GS.Quests.Hibernia
 				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
 				if (gArgs.Target.Name == addrir.Name && gArgs.Item.Id_nb == fullMagicBox.Id_nb)
 				{
-					RemoveItem(addrir, m_questPlayer, fullMagicBox);
+					RemoveItem(addrir, _questPlayer, fullMagicBox);
 
-					addrir.TurnTo(m_questPlayer);
-					addrir.SayTo(m_questPlayer, "Ah, it is quite heavy, let me take a peek.");
-					SendEmoteMessage(m_questPlayer, "Addrir takes the box from you and carefully opens the lid. When he sees what is inside, he closes the lid quickly.");
+					addrir.TurnTo(_questPlayer);
+					addrir.SayTo(_questPlayer, "Ah, it is quite heavy, let me take a peek.");
+					SendEmoteMessage(_questPlayer, "Addrir takes the box from you and carefully opens the lid. When he sees what is inside, he closes the lid quickly.");
 
-					m_questPlayer.Out.SendEmoteAnimation(addrir, eEmote.Yes);
+					_questPlayer.Out.SendEmoteAnimation(addrir, eEmote.Yes);
 					Step = 3;
 					return;
 				}
@@ -707,11 +707,11 @@ namespace DOL.GS.Quests.Hibernia
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			RemoveItem(m_questPlayer, emptyMagicBox, false);
-			RemoveItem(m_questPlayer, fullMagicBox, false);
+			RemoveItem(_questPlayer, emptyMagicBox, false);
+			RemoveItem(_questPlayer, fullMagicBox, false);
 
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
 		}
 
 		public override void FinishQuest()
@@ -719,18 +719,18 @@ namespace DOL.GS.Quests.Hibernia
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
 			//Give reward to player here ...            
-			if (m_questPlayer.HasAbilityToUseItem(recruitsShortSword))
-				GiveItem(addrir, m_questPlayer, recruitsShortSword);
+			if (_questPlayer.HasAbilityToUseItem(recruitsShortSword))
+				GiveItem(addrir, _questPlayer, recruitsShortSword);
 			else
-				GiveItem(addrir, m_questPlayer, recruitsStaff);
+				GiveItem(addrir, _questPlayer, recruitsStaff);
 
-			m_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 100, true);
+			_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 100, true);
             long money = Money.GetMoney(0, 0, 0, 3, Util.Random(50));
-			m_questPlayer.AddMoney(money, "You recieve {0} as a reward.");
-            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, money);
+			_questPlayer.AddMoney(money, "You recieve {0} as a reward.");
+            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", _questPlayer, eInventoryActionType.Quest, money);
 
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
 		}
 
 	}

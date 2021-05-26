@@ -98,7 +98,7 @@ namespace DOL.GS
 			}
 			else
 				SayTo(player, "Very well, proceed to the isle at the South end of this bridge.  Your fight shall begin in one minute.  Make sure that the area is clear!");
-			foreach (GamePlayer say in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer say in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 			{
 				say.Out.SendMessage("Ianetor says, \"Anyone who doesn't wish to face my challenge of fire must leave Firestorm Island immediately or face death!  The game will begin in one minute!  Those who accepted my challenge must now move onto Firestorm Island!\"", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
 			}
@@ -787,7 +787,7 @@ namespace DOL.AI.Brain
 							player.Out.SendSpellEffectAnimation(aithosbody, player, 310, 0, false, 1);
 							player.TakeDamage(aithosbody, eDamageType.Heat, damage, 0);
 							GamePlayer target = player;
-							foreach (GamePlayer onlookers in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+							foreach (GamePlayer onlookers in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(Body.CurrentRegion)))
 							{
 								if (onlookers != target) //dont send it to the person it happened to, only the other onlookers.
 								{
@@ -830,7 +830,7 @@ namespace DOL.AI.Brain
 					player.Out.SendSpellEffectAnimation(fire, player, 310, 0, false, 1);
 					player.TakeDamage(fire, eDamageType.Heat, 10000, 0);
 					GamePlayer target = player;
-					foreach (GamePlayer onlookers in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					foreach (GamePlayer onlookers in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(Body.CurrentRegion)))
 					{
 						if (onlookers != target) //dont send it to the person it happened to, only the other onlookers.
 						{
@@ -864,7 +864,7 @@ namespace DOL.AI.Brain
 						break;
 				}
 
-				foreach (GamePlayer player in fire.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				foreach (GamePlayer player in fire.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(Body.CurrentRegion)))
 					player.Out.SendSpellEffectAnimation(fire, fire, spellid, 0, false, 1);
 			}
 
@@ -903,7 +903,7 @@ namespace DOL.AI.Brain
 							player.Out.SendSpellEffectAnimation(sunbody, player, 310, 0, false, 1);
 							player.TakeDamage(sunbody, eDamageType.Heat, 400, 0);
 							GamePlayer target = player;
-							foreach (GamePlayer onlookers in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+							foreach (GamePlayer onlookers in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(Body.CurrentRegion)))
 							{
 								if (onlookers != target) //dont send it to the person it happened to, only the other onlookers.
 								{
@@ -989,7 +989,7 @@ namespace DOL.AI.Brain
 						player.Out.SendSpellEffectAnimation(pbody, player, 310, 0, false, 1);
 						player.TakeDamage(pbody, eDamageType.Heat, 300, 0);
 						GamePlayer target = player;
-						foreach (GamePlayer onlookers in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+						foreach (GamePlayer onlookers in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(Body.CurrentRegion)))
 						{
 							if (onlookers != target) //dont send it to the person it happened to, only the other onlookers.
 							{

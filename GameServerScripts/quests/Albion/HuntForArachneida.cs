@@ -849,7 +849,7 @@ namespace DOL.GS.Quests.Albion
 				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
 				if (gArgs.Target.Name == kealan.Name && (gArgs.Item.Id_nb == bloatedFang.Id_nb || gArgs.Item.Id_nb == spiderChitin.Id_nb))
 				{
-					kealan.TurnTo(m_questPlayer);
+					kealan.TurnTo(_questPlayer);
 					if (Step == 4)
 					{
 						kealan.SayTo(player, "Very well now hand me over the rest and you will revieve your reward...");
@@ -870,56 +870,56 @@ namespace DOL.GS.Quests.Albion
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			RemoveItem(m_questPlayer, spiderChitin, false);
-			RemoveItem(m_questPlayer, bloatedFang, false);
+			RemoveItem(_questPlayer, spiderChitin, false);
+			RemoveItem(_questPlayer, bloatedFang, false);
 
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
 
 		}
 
 		public override void FinishQuest()
 		{
-			kealan.SayTo(m_questPlayer, "Great, the bloated spider fang and Arachneida's chitin. You did your job well! Now here, take this as a token of my gratitude.");
+			kealan.SayTo(_questPlayer, "Great, the bloated spider fang and Arachneida's chitin. You did your job well! Now here, take this as a token of my gratitude.");
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
 			//Give reward to player here ...
-			m_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 40050, true);
+			_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 40050, true);
             long money = Money.GetMoney(0, 0, 0, 22, Util.Random(50));
-			m_questPlayer.AddMoney(money, "You recieve {0} for your service.");
-            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, money);
+			_questPlayer.AddMoney(money, "You recieve {0} for your service.");
+            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", _questPlayer, eInventoryActionType.Quest, money);
 
-			if (m_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Wizard ||
-				m_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Sorcerer ||
-				m_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Cabalist ||
-				m_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Theurgist)
+			if (_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Wizard ||
+				_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Sorcerer ||
+				_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Cabalist ||
+				_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Theurgist)
 			{
-				GiveItem(kealan, m_questPlayer, spiderSilkenRobe);
+				GiveItem(kealan, _questPlayer, spiderSilkenRobe);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Paladin ||
-				m_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Armsman ||
-				m_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Reaver ||
-				m_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Mercenary)
+			else if (_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Paladin ||
+				_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Armsman ||
+				_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Reaver ||
+				_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Mercenary)
 			{
-				GiveItem(kealan, m_questPlayer, ringedSpiderChitinTunic);
+				GiveItem(kealan, _questPlayer, ringedSpiderChitinTunic);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Cleric ||
-				m_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Scout ||
-				m_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Minstrel)
+			else if (_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Cleric ||
+				_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Scout ||
+				_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Minstrel)
 			{
-				GiveItem(kealan, m_questPlayer, studdedSpiderEyeVest);
+				GiveItem(kealan, _questPlayer, studdedSpiderEyeVest);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Friar)
+			else if (_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Friar)
 			{
-				GiveItem(kealan, m_questPlayer, spiderEmblazonedTunic);
+				GiveItem(kealan, _questPlayer, spiderEmblazonedTunic);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Infiltrator)
+			else if (_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Infiltrator)
 			{
-				GiveItem(kealan, m_questPlayer, embossedSpiderTunic);
+				GiveItem(kealan, _questPlayer, embossedSpiderTunic);
 			}
 
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
 		}
 
 	}

@@ -882,7 +882,7 @@ namespace DOL.GS.Quests.Midgard
 			}
 
 
-			foreach (GamePlayer visPlayer in briediClone.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer visPlayer in briediClone.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(briediClone.CurrentRegion)))
 			{
 				visPlayer.Out.SendEmoteAnimation(briediClone, eEmote.Bind);
 			}
@@ -1193,9 +1193,9 @@ namespace DOL.GS.Quests.Midgard
 
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			RemoveItem(m_questPlayer, queenVuunaHead, false);
+			RemoveItem(_questPlayer, queenVuunaHead, false);
 
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
 		}
 
 		public override void FinishQuest()
@@ -1205,23 +1205,23 @@ namespace DOL.GS.Quests.Midgard
 			// make sure to clean up, should be needed , but just to make certain
 			ResetMasterBriedi();
 			//Give reward to player here ...              
-			m_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 1012, true);
+			_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 1012, true);
             long money = Money.GetMoney(0, 0, 0, 9, Util.Random(50));
-			m_questPlayer.AddMoney(money, "You recieve {0} as a reward.");
-            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, money);
-			if (m_questPlayer.HasAbilityToUseItem(recruitsGauntlets))
+			_questPlayer.AddMoney(money, "You recieve {0} as a reward.");
+            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", _questPlayer, eInventoryActionType.Quest, money);
+			if (_questPlayer.HasAbilityToUseItem(recruitsGauntlets))
 			{
-				GiveItem(dalikor, m_questPlayer, recruitsGauntlets);
-				GiveItem(dalikor, m_questPlayer, recruitsJewel);
+				GiveItem(dalikor, _questPlayer, recruitsGauntlets);
+				GiveItem(dalikor, _questPlayer, recruitsJewel);
 			}
 			else
 			{
-				GiveItem(dalikor, m_questPlayer, recruitsGloves);
-				GiveItem(dalikor, m_questPlayer, recruitsJewelCloth);
+				GiveItem(dalikor, _questPlayer, recruitsGloves);
+				GiveItem(dalikor, _questPlayer, recruitsJewelCloth);
 			}
-			GiveItem(dalikor, m_questPlayer, recruitsBracer);
+			GiveItem(dalikor, _questPlayer, recruitsBracer);
 
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
 		}
 
 	}

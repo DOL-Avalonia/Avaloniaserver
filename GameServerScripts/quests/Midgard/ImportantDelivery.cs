@@ -830,10 +830,10 @@ namespace DOL.GS.Quests.Midgard
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			RemoveItem(m_questPlayer, ticketToVasudheim, false);
-			RemoveItem(m_questPlayer, ticketToHaggerfel, false);
-			RemoveItem(m_questPlayer, sackOfSupplies, false);
-			RemoveItem(m_questPlayer, crateOfVegetables, false);
+			RemoveItem(_questPlayer, ticketToVasudheim, false);
+			RemoveItem(_questPlayer, ticketToHaggerfel, false);
+			RemoveItem(_questPlayer, sackOfSupplies, false);
+			RemoveItem(_questPlayer, crateOfVegetables, false);
 
 		}
 
@@ -842,12 +842,12 @@ namespace DOL.GS.Quests.Midgard
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
 			//Give reward to player here ...            
-			GiveItem(harlfug, m_questPlayer, recruitsCloak);
+			GiveItem(harlfug, _questPlayer, recruitsCloak);
 
-			m_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 12, true);
+			_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 12, true);
             long money = Money.GetMoney(0, 0, 0, 1, Util.Random(50));
-			m_questPlayer.AddMoney(money, "You recieve {0} as a reward.");
-            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, money);
+			_questPlayer.AddMoney(money, "You recieve {0} as a reward.");
+            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", _questPlayer, eInventoryActionType.Quest, money);
 
 		}
 

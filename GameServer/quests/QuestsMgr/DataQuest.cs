@@ -1433,11 +1433,11 @@ namespace DOL.GS.Quests
         /// <returns></returns>
         public long MoneyReward()
         {
-            if (m_rewardMoneys.Count < 1)
+            if (_rewardMoneys.Count < 1)
             {
                 return 0;
             }
-            return m_rewardMoneys[0];
+            return _rewardMoneys[0];
         }
 
         /// <summary>
@@ -1446,7 +1446,7 @@ namespace DOL.GS.Quests
         /// <returns></returns>
         public int ExperiencePercent(GamePlayer player)
         {
-            if(m_rewardXPs.Count < 1)
+            if(_rewardXPs.Count < 1)
             {
                 return 0;
             }

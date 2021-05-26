@@ -351,6 +351,7 @@
     <Compile Include="UniqueID\IdGenerator.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="WhereExpression.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

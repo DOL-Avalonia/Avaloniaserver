@@ -419,6 +419,7 @@
     <Compile Include="gameobjects\FeuDeCamp.cs" />
     <Compile Include="gameobjects\MoneyEventNPC.cs" />
     <Compile Include="gameobjects\OutlawMerchant.cs" />
+    <Compile Include="gameobjects\PlayerRace.cs" />
     <Compile Include="gameobjects\TerritoryBanner.cs" />
     <Compile Include="gameutils\FeuxCamp\FeuxCampMgr.cs" />
     <Compile Include="gameobjects\GameInventoryObject.cs" />
@@ -981,11 +982,9 @@
     <Compile Include="keeps\Managers\Clothing Manager.cs" />
     <Compile Include="keeps\Managers\RelicGateMgr.cs" />
     <Compile Include="keeps\Managers\RelicMgr.cs" />
-    <Compile Include="keeps\Managers\Template Manager.cs" />
     <Compile Include="keeps\Managers\Guild Manager.cs" />
     <Compile Include="keeps\Managers\Player Manager.cs" />
     <Compile Include="keeps\Managers\Position Manager.cs" />
-    <Compile Include="keeps\Managers\Spell Manager.cs" />
     <Compile Include="keeps\Relics\GameRelic.cs" />
     <Compile Include="keeps\Relics\GameRelicPad.cs" />
     <Compile Include="language\ITranslatableObject.cs" />

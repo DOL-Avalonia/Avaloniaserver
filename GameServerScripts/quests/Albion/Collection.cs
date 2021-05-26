@@ -741,13 +741,13 @@ namespace DOL.GS.Quests.Albion
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			RemoveItem(m_questPlayer, dustyOldMap, false);
-			RemoveItem(m_questPlayer, fairyGeneralWings, false);
-			RemoveItem(m_questPlayer, fairyGeneralWings, false);
-			RemoveItem(m_questPlayer, fairyGeneralWings, false);
+			RemoveItem(_questPlayer, dustyOldMap, false);
+			RemoveItem(_questPlayer, fairyGeneralWings, false);
+			RemoveItem(_questPlayer, fairyGeneralWings, false);
+			RemoveItem(_questPlayer, fairyGeneralWings, false);
 
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
 		}
 
 		public override void FinishQuest()
@@ -755,20 +755,20 @@ namespace DOL.GS.Quests.Albion
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
 			//Give reward to player here ...  
-			RemoveItem(masterFrederick, m_questPlayer, dustyOldMap);
+			RemoveItem(masterFrederick, _questPlayer, dustyOldMap);
 
-			if (m_questPlayer.HasAbilityToUseItem(recruitsArms))
-				GiveItem(masterFrederick, m_questPlayer, recruitsArms);
+			if (_questPlayer.HasAbilityToUseItem(recruitsArms))
+				GiveItem(masterFrederick, _questPlayer, recruitsArms);
 			else
-				GiveItem(masterFrederick, m_questPlayer, recruitsSleeves);
+				GiveItem(masterFrederick, _questPlayer, recruitsSleeves);
 
-			m_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 240, true);
+			_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 240, true);
             long money = Money.GetMoney(0, 0, 0, 6, Util.Random(50));
-			m_questPlayer.AddMoney(money, "You recieve {0} as a reward.");
-            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, money);
+			_questPlayer.AddMoney(money, "You recieve {0} as a reward.");
+            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", _questPlayer, eInventoryActionType.Quest, money);
 
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
 
 		}
 

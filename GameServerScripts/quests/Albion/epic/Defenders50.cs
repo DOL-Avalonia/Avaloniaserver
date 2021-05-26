@@ -1440,8 +1440,8 @@ namespace DOL.GS.Quests.Albion
 				{
 					if (gArgs.Target.Name == Uragaig.Name)
 					{
-						m_questPlayer.Out.SendMessage("Take the pouch to Lidmann Halsey", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						GiveItem(m_questPlayer, sealed_pouch);
+						_questPlayer.Out.SendMessage("Take the pouch to Lidmann Halsey", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						GiveItem(_questPlayer, sealed_pouch);
 						Step = 2;
 						return;
 					}
@@ -1464,69 +1464,69 @@ namespace DOL.GS.Quests.Albion
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			RemoveItem(m_questPlayer, sealed_pouch, false);
+			RemoveItem(_questPlayer, sealed_pouch, false);
 		}
 
 		public override void FinishQuest()
 		{
-			if (m_questPlayer.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			if (_questPlayer.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 			{
-				RemoveItem(Lidmann, m_questPlayer, sealed_pouch);
+				RemoveItem(Lidmann, _questPlayer, sealed_pouch);
 
 				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-				if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Armsman)
+				if (_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Armsman)
 				{
-					GiveItem(m_questPlayer, ArmsmanEpicBoots);
-					GiveItem(m_questPlayer, ArmsmanEpicArms);
-					GiveItem(m_questPlayer, ArmsmanEpicGloves);
-					GiveItem(m_questPlayer, ArmsmanEpicHelm);
-					GiveItem(m_questPlayer, ArmsmanEpicLegs);
-					GiveItem(m_questPlayer, ArmsmanEpicVest);
+					GiveItem(_questPlayer, ArmsmanEpicBoots);
+					GiveItem(_questPlayer, ArmsmanEpicArms);
+					GiveItem(_questPlayer, ArmsmanEpicGloves);
+					GiveItem(_questPlayer, ArmsmanEpicHelm);
+					GiveItem(_questPlayer, ArmsmanEpicLegs);
+					GiveItem(_questPlayer, ArmsmanEpicVest);
 				}
-				else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Scout)
+				else if (_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Scout)
 				{
-					GiveItem(m_questPlayer, ScoutEpicArms);
-					GiveItem(m_questPlayer, ScoutEpicBoots);
-					GiveItem(m_questPlayer, ScoutEpicGloves);
-					GiveItem(m_questPlayer, ScoutEpicHelm);
-					GiveItem(m_questPlayer, ScoutEpicLegs);
-					GiveItem(m_questPlayer, ScoutEpicVest);
+					GiveItem(_questPlayer, ScoutEpicArms);
+					GiveItem(_questPlayer, ScoutEpicBoots);
+					GiveItem(_questPlayer, ScoutEpicGloves);
+					GiveItem(_questPlayer, ScoutEpicHelm);
+					GiveItem(_questPlayer, ScoutEpicLegs);
+					GiveItem(_questPlayer, ScoutEpicVest);
 				}
-				else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Theurgist)
+				else if (_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Theurgist)
 				{
-					GiveItem(m_questPlayer, TheurgistEpicArms);
-					GiveItem(m_questPlayer, TheurgistEpicBoots);
-					GiveItem(m_questPlayer, TheurgistEpicGloves);
-					GiveItem(m_questPlayer, TheurgistEpicHelm);
-					GiveItem(m_questPlayer, TheurgistEpicLegs);
-					GiveItem(m_questPlayer, TheurgistEpicVest);
+					GiveItem(_questPlayer, TheurgistEpicArms);
+					GiveItem(_questPlayer, TheurgistEpicBoots);
+					GiveItem(_questPlayer, TheurgistEpicGloves);
+					GiveItem(_questPlayer, TheurgistEpicHelm);
+					GiveItem(_questPlayer, TheurgistEpicLegs);
+					GiveItem(_questPlayer, TheurgistEpicVest);
 				}
-				else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Friar)
+				else if (_questPlayer.CharacterClass.ID == (byte)eCharacterClass.Friar)
 				{
-					GiveItem(m_questPlayer, FriarEpicArms);
-					GiveItem(m_questPlayer, FriarEpicBoots);
-					GiveItem(m_questPlayer, FriarEpicGloves);
-					GiveItem(m_questPlayer, FriarEpicHelm);
-					GiveItem(m_questPlayer, FriarEpicLegs);
-					GiveItem(m_questPlayer, FriarEpicVest);
+					GiveItem(_questPlayer, FriarEpicArms);
+					GiveItem(_questPlayer, FriarEpicBoots);
+					GiveItem(_questPlayer, FriarEpicGloves);
+					GiveItem(_questPlayer, FriarEpicHelm);
+					GiveItem(_questPlayer, FriarEpicLegs);
+					GiveItem(_questPlayer, FriarEpicVest);
 				}
-				else if (m_questPlayer.CharacterClass.ID == (byte)eCharacterClass.MaulerAlb)
+				else if (_questPlayer.CharacterClass.ID == (byte)eCharacterClass.MaulerAlb)
 				{
-					GiveItem(m_questPlayer, MaulerAlbEpicArms);
-					GiveItem(m_questPlayer, MaulerAlbEpicBoots);
-					GiveItem(m_questPlayer, MaulerAlbEpicGloves);
-					GiveItem(m_questPlayer, MaulerAlbEpicHelm);
-					GiveItem(m_questPlayer, MaulerAlbEpicLegs);
-					GiveItem(m_questPlayer, MaulerAlbEpicVest);
+					GiveItem(_questPlayer, MaulerAlbEpicArms);
+					GiveItem(_questPlayer, MaulerAlbEpicBoots);
+					GiveItem(_questPlayer, MaulerAlbEpicGloves);
+					GiveItem(_questPlayer, MaulerAlbEpicHelm);
+					GiveItem(_questPlayer, MaulerAlbEpicLegs);
+					GiveItem(_questPlayer, MaulerAlbEpicVest);
 				}
 
-				m_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 1937768448, true);
-				//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
+				_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 1937768448, true);
+				//_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
 			}
 			else
 			{
-				m_questPlayer.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				_questPlayer.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 			}
 		}
 

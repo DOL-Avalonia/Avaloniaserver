@@ -443,7 +443,7 @@ namespace DOL.GS.Quests.Midgard
 				{
                     if ( player.IsWithinRadius( hindaEnd, 2500 ) )
 					{
-						foreach (GamePlayer visPlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+						foreach (GamePlayer visPlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
 						{
 							visPlayer.Out.SendSpellCastAnimation(player, 1, 20);
 						}
@@ -738,7 +738,7 @@ namespace DOL.GS.Quests.Midgard
 
 		protected virtual int CastLadyFelin(RegionTimer callingTimer)
 		{
-			foreach (GamePlayer visPlayer in ladyHinda.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer visPlayer in ladyHinda.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(ladyHinda.CurrentRegion)))
 			{
 				visPlayer.Out.SendSpellCastAnimation(ladyHinda, 1, 20);
 			}
@@ -756,8 +756,8 @@ namespace DOL.GS.Quests.Midgard
 
 		protected virtual int ResetPlayerModel(RegionTimer callingTimer)
 		{
-			GameClient client = m_questPlayer.Client;
-			m_questPlayer.Model = (ushort) client.Account.Characters[client.ActiveCharIndex].CreationModel;
+			GameClient client = _questPlayer.Client;
+			_questPlayer.Model = (ushort) client.Account.Characters[client.ActiveCharIndex].CreationModel;
 			SendSystemMessage("You change back to your normal form!");
 			return 0;
 		}
@@ -812,11 +812,11 @@ namespace DOL.GS.Quests.Midgard
 				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
 				if (gArgs.Target.Name == dalikor.Name && gArgs.Item.Id_nb == askefruerPlans.Id_nb)
 				{
-					RemoveItem(dalikor, m_questPlayer, askefruerPlans);
+					RemoveItem(dalikor, _questPlayer, askefruerPlans);
 
-					dalikor.TurnTo(m_questPlayer);
-					dalikor.SayTo(m_questPlayer, "Ah! The plans of the Askefruer. Ah, but they are in a language I do not understand. I will have to take this to the elders of Mularn for further study. Before I do that, though, I have [something] here for you.");
-					m_questPlayer.Out.SendEmoteAnimation(dalikor, eEmote.Ponder);
+					dalikor.TurnTo(_questPlayer);
+					dalikor.SayTo(_questPlayer, "Ah! The plans of the Askefruer. Ah, but they are in a language I do not understand. I will have to take this to the elders of Mularn for further study. Before I do that, though, I have [something] here for you.");
+					_questPlayer.Out.SendEmoteAnimation(dalikor, eEmote.Ponder);
 					Step = 5;
 					return;
 				}
@@ -828,11 +828,11 @@ namespace DOL.GS.Quests.Midgard
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			RemoveItem(m_questPlayer, necklaceOfDoppelganger, false);
-			RemoveItem(m_questPlayer, askefruerPlans, false);
+			RemoveItem(_questPlayer, necklaceOfDoppelganger, false);
+			RemoveItem(_questPlayer, askefruerPlans, false);
 
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
 		}
 
 
@@ -840,20 +840,20 @@ namespace DOL.GS.Quests.Midgard
 		{
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			RemoveItem(dalikor, m_questPlayer, necklaceOfDoppelganger);
+			RemoveItem(dalikor, _questPlayer, necklaceOfDoppelganger);
 			//Give reward to player here ...            
-			if (m_questPlayer.HasAbilityToUseItem(recruitsBoots))
-				GiveItem(dalikor, m_questPlayer, recruitsBoots);
+			if (_questPlayer.HasAbilityToUseItem(recruitsBoots))
+				GiveItem(dalikor, _questPlayer, recruitsBoots);
 			else
-				GiveItem(dalikor, m_questPlayer, recruitsQuiltedBoots);
+				GiveItem(dalikor, _questPlayer, recruitsQuiltedBoots);
 
-			m_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 40, true);
+			_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 40, true);
             long money = Money.GetMoney(0, 0, 0, 4, Util.Random(50));
-			m_questPlayer.AddMoney(money, "You recieve {0} as a reward.");
-            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, money);
+			_questPlayer.AddMoney(money, "You recieve {0} as a reward.");
+            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", _questPlayer, eInventoryActionType.Quest, money);
 
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
 		}
 
 	}

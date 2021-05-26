@@ -1518,8 +1518,8 @@ namespace DOL.GS.Quests.Midgard
 				if (gArgs.Target.Name == Kelic.Name)
 				{
 					Step = 2;
-					GiveItem(m_questPlayer, kelics_totem);
-					m_questPlayer.Out.SendMessage("Kelic drops his Totem and you pick it up!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					GiveItem(_questPlayer, kelics_totem);
+					_questPlayer.Out.SendMessage("Kelic drops his Totem and you pick it up!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					return;
 				}
 			}
@@ -1542,66 +1542,66 @@ namespace DOL.GS.Quests.Midgard
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			RemoveItem(m_questPlayer, kelics_totem, false);
+			RemoveItem(_questPlayer, kelics_totem, false);
 		}
 
 		public override void FinishQuest()
 		{
-			if (m_questPlayer.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			if (_questPlayer.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 			{
 				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-				switch ((eCharacterClass)m_questPlayer.CharacterClass.ID)
+				switch ((eCharacterClass)_questPlayer.CharacterClass.ID)
 				{
 					case eCharacterClass.Spiritmaster:
 						{
-							GiveItem(m_questPlayer, SpiritmasterEpicArms);
-							GiveItem(m_questPlayer, SpiritmasterEpicBoots);
-							GiveItem(m_questPlayer, SpiritmasterEpicGloves);
-							GiveItem(m_questPlayer, SpiritmasterEpicHelm);
-							GiveItem(m_questPlayer, SpiritmasterEpicLegs);
-							GiveItem(m_questPlayer, SpiritmasterEpicVest);
+							GiveItem(_questPlayer, SpiritmasterEpicArms);
+							GiveItem(_questPlayer, SpiritmasterEpicBoots);
+							GiveItem(_questPlayer, SpiritmasterEpicGloves);
+							GiveItem(_questPlayer, SpiritmasterEpicHelm);
+							GiveItem(_questPlayer, SpiritmasterEpicLegs);
+							GiveItem(_questPlayer, SpiritmasterEpicVest);
 							break;
 						}
 					case eCharacterClass.Runemaster:
 						{
-							GiveItem(m_questPlayer, RunemasterEpicArms);
-							GiveItem(m_questPlayer, RunemasterEpicBoots);
-							GiveItem(m_questPlayer, RunemasterEpicGloves);
-							GiveItem(m_questPlayer, RunemasterEpicHelm);
-							GiveItem(m_questPlayer, RunemasterEpicLegs);
-							GiveItem(m_questPlayer, RunemasterEpicVest);
+							GiveItem(_questPlayer, RunemasterEpicArms);
+							GiveItem(_questPlayer, RunemasterEpicBoots);
+							GiveItem(_questPlayer, RunemasterEpicGloves);
+							GiveItem(_questPlayer, RunemasterEpicHelm);
+							GiveItem(_questPlayer, RunemasterEpicLegs);
+							GiveItem(_questPlayer, RunemasterEpicVest);
 							break;
 						}
 					case eCharacterClass.Bonedancer:
 						{
-							GiveItem(m_questPlayer, BonedancerEpicArms);
-							GiveItem(m_questPlayer, BonedancerEpicBoots);
-							GiveItem(m_questPlayer, BonedancerEpicGloves);
-							GiveItem(m_questPlayer, BonedancerEpicHelm);
-							GiveItem(m_questPlayer, BonedancerEpicLegs);
-							GiveItem(m_questPlayer, BonedancerEpicVest);
+							GiveItem(_questPlayer, BonedancerEpicArms);
+							GiveItem(_questPlayer, BonedancerEpicBoots);
+							GiveItem(_questPlayer, BonedancerEpicGloves);
+							GiveItem(_questPlayer, BonedancerEpicHelm);
+							GiveItem(_questPlayer, BonedancerEpicLegs);
+							GiveItem(_questPlayer, BonedancerEpicVest);
 							break;
 						}
 					case eCharacterClass.Warlock:
 						{
-							GiveItem(m_questPlayer, WarlockEpicArms);
-							GiveItem(m_questPlayer, WarlockEpicBoots);
-							GiveItem(m_questPlayer, WarlockEpicGloves);
-							GiveItem(m_questPlayer, WarlockEpicHelm);
-							GiveItem(m_questPlayer, WarlockEpicLegs);
-							GiveItem(m_questPlayer, WarlockEpicVest);
+							GiveItem(_questPlayer, WarlockEpicArms);
+							GiveItem(_questPlayer, WarlockEpicBoots);
+							GiveItem(_questPlayer, WarlockEpicGloves);
+							GiveItem(_questPlayer, WarlockEpicHelm);
+							GiveItem(_questPlayer, WarlockEpicLegs);
+							GiveItem(_questPlayer, WarlockEpicVest);
 							break;
 						}
 				}
-				Danica.SayTo(m_questPlayer, "May it serve you well, knowing that you have helped preserve the history of Midgard!");
+				Danica.SayTo(_questPlayer, "May it serve you well, knowing that you have helped preserve the history of Midgard!");
 
-				m_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 1937768448, true);
-				//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
+				_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 1937768448, true);
+				//_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
 			}
 			else
 			{
-				m_questPlayer.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				_questPlayer.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 			}
 		}
 

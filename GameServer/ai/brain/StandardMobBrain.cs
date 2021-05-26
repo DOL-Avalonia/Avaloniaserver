@@ -240,7 +240,7 @@ namespace DOL.AI.Brain
 			if (Body.AttackState)
 				return;
 
-			foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange, Body.CurrentZone.IsDungeon ? false : true))
+			foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange, Body.CurrentZone.IsDungeon ? false : true))
 			{
 				if (!GameServer.ServerRules.IsAllowedToAttack(Body, npc, true)) continue;
 				if (m_aggroTable.ContainsKey(npc))

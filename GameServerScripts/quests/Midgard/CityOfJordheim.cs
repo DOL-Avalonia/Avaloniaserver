@@ -787,7 +787,7 @@ namespace DOL.GS.Quests.Midgard
 
 		protected void TeleportTo(GameLocation target)
 		{
-			TeleportTo(m_questPlayer, assistant, target, 5);
+			TeleportTo(_questPlayer, assistant, target, 5);
 			TeleportTo(assistant, assistant, target, 25, 50);
 		}
 
@@ -843,7 +843,7 @@ namespace DOL.GS.Quests.Midgard
 			InventoryItem item = player.Inventory.GetItem((eInventorySlot)uArgs.Slot);
 			if (item != null && item.Id_nb == assistantNecklace.Id_nb)
 			{
-				foreach (GamePlayer visPlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				foreach (GamePlayer visPlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
 				{
 					visPlayer.Out.SendSpellCastAnimation(player, 1, 20);
 				}
@@ -874,22 +874,22 @@ namespace DOL.GS.Quests.Midgard
 		{
 			if (assistant != null && assistant.ObjectState == GameObject.eObjectState.Active)
 			{
-				assistant.MoveTo(m_questPlayer.CurrentRegionID, m_questPlayer.X + 50, m_questPlayer.Y + 30, m_questPlayer.Z, m_questPlayer.Heading);
+				assistant.MoveTo(_questPlayer.CurrentRegionID, _questPlayer.X + 50, _questPlayer.Y + 30, _questPlayer.Z, _questPlayer.Heading);
 			}
 			else
 			{
 				assistant = new GameNPC();
 				assistant.Model = 951;
-				assistant.Name = m_questPlayer.Name + "'s Assistant";
+				assistant.Name = _questPlayer.Name + "'s Assistant";
 				assistant.GuildName = "Part of " + questTitle + " Quest";
-				assistant.Realm = m_questPlayer.Realm;
-				assistant.CurrentRegionID = m_questPlayer.CurrentRegionID;
+				assistant.Realm = _questPlayer.Realm;
+				assistant.CurrentRegionID = _questPlayer.CurrentRegionID;
 				assistant.Size = 25;
 				assistant.Level = 5;
-				assistant.X = m_questPlayer.X + 50;
-				assistant.Y = m_questPlayer.Y + 50;
-				assistant.Z = m_questPlayer.Z;
-				assistant.Heading = m_questPlayer.Heading;
+				assistant.X = _questPlayer.X + 50;
+				assistant.Y = _questPlayer.Y + 50;
+				assistant.Z = _questPlayer.Z;
+				assistant.Heading = _questPlayer.Heading;
 
 				assistant.AddToWorld();
 
@@ -897,7 +897,7 @@ namespace DOL.GS.Quests.Midgard
 				GameEventMgr.AddHandler(assistant, GameLivingEvent.WhisperReceive, new DOLEventHandler(TalkToAssistant));
 			}
 
-			foreach (GamePlayer visPlayer in assistant.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer visPlayer in assistant.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(assistant.CurrentRegion)))
 			{
 				visPlayer.Out.SendEmoteAnimation(assistant, eEmote.Bind);
 			}
@@ -1114,22 +1114,22 @@ namespace DOL.GS.Quests.Midgard
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			RemoveItem(m_questPlayer, assistantNecklace, false);
-			RemoveItem(m_questPlayer, chestOfCoins, false);
-			RemoveItem(m_questPlayer, letterDalikor, false);
-			RemoveItem(m_questPlayer, scrollYuliwyf, false);
-			RemoveItem(m_questPlayer, ticketToMularn, false);
+			RemoveItem(_questPlayer, assistantNecklace, false);
+			RemoveItem(_questPlayer, chestOfCoins, false);
+			RemoveItem(_questPlayer, letterDalikor, false);
+			RemoveItem(_questPlayer, scrollYuliwyf, false);
+			RemoveItem(_questPlayer, ticketToMularn, false);
 
 			// remove the 7 xp you get on quest start for beeing so nice to bombard again.
-			m_questPlayer.GainExperience(GameLiving.eXPSource.Quest, -7, true);
+			_questPlayer.GainExperience(GameLiving.eXPSource.Quest, -7, true);
 
 			if (assistantTimer != null)
 			{
 				assistantTimer.Start(1);
 			}
 
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
 		}
 
 		public override void FinishQuest()
@@ -1137,18 +1137,18 @@ namespace DOL.GS.Quests.Midgard
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
 			//Give reward to player here ...            
-			if (m_questPlayer.HasAbilityToUseItem(recruitsRoundShield))
-				GiveItem(dalikor, m_questPlayer, recruitsRoundShield);
+			if (_questPlayer.HasAbilityToUseItem(recruitsRoundShield))
+				GiveItem(dalikor, _questPlayer, recruitsRoundShield);
 			else
-				GiveItem(dalikor, m_questPlayer, recruitsBracer);
+				GiveItem(dalikor, _questPlayer, recruitsBracer);
 
-			m_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 26, true);
+			_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 26, true);
             long money = Money.GetMoney(0, 0, 0, 2, Util.Random(50));
-			m_questPlayer.AddMoney(money, "You recieve {0} as a reward.");
-            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, money);
+			_questPlayer.AddMoney(money, "You recieve {0} as a reward.");
+            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", _questPlayer, eInventoryActionType.Quest, money);
 
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
 
 		}
 

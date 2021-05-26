@@ -414,7 +414,7 @@ namespace DOL.GS.Quests.Albion
 				SendSystemMessage(player, "Ire Fairies! Quick! USE your Magical Wooden Box to capture the fairies! To USE an item, right click on the item and type /use.");
 				quest.CreateFairy();
 
-				foreach (GamePlayer visPlayer in quest.ireFairy.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				foreach (GamePlayer visPlayer in quest.ireFairy.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(quest.ireFairy.CurrentRegion)))
 				{
 					visPlayer.Out.SendSpellCastAnimation(quest.ireFairy, 1, 20);
 				}
@@ -438,7 +438,7 @@ namespace DOL.GS.Quests.Albion
 				{
                     if ( player.IsWithinRadius( quest.ireFairy, 500 ) )
 					{
-						foreach (GamePlayer visPlayer in quest.ireFairy.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+						foreach (GamePlayer visPlayer in quest.ireFairy.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(quest.ireFairy.CurrentRegion)))
 						{
 							visPlayer.Out.SendSpellCastAnimation(quest.ireFairy, 1, 20);
 						}
@@ -694,13 +694,13 @@ namespace DOL.GS.Quests.Albion
 				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
 				if (gArgs.Target.Name == masterFrederick.Name && gArgs.Item.Id_nb == fullMagicBox.Id_nb)
 				{
-					RemoveItem(masterFrederick, m_questPlayer, fullMagicBox);
+					RemoveItem(masterFrederick, _questPlayer, fullMagicBox);
 
-					masterFrederick.TurnTo(m_questPlayer);
-					masterFrederick.SayTo(m_questPlayer, "Ah, it is quite heavy, let me take a peek.");
-					SendEmoteMessage(m_questPlayer, "Master Frederick opens the box carefully. When he sees the contents, he quickly closes it and turns his attention back to you.");
+					masterFrederick.TurnTo(_questPlayer);
+					masterFrederick.SayTo(_questPlayer, "Ah, it is quite heavy, let me take a peek.");
+					SendEmoteMessage(_questPlayer, "Master Frederick opens the box carefully. When he sees the contents, he quickly closes it and turns his attention back to you.");
 
-					m_questPlayer.Out.SendEmoteAnimation(masterFrederick, eEmote.Yes);
+					_questPlayer.Out.SendEmoteAnimation(masterFrederick, eEmote.Yes);
 					Step = 3;
 					return;
 				}
@@ -712,12 +712,12 @@ namespace DOL.GS.Quests.Albion
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			RemoveItem(m_questPlayer, emptyMagicBox, false);
-			RemoveItem(m_questPlayer, fullMagicBox, false);
+			RemoveItem(_questPlayer, emptyMagicBox, false);
+			RemoveItem(_questPlayer, fullMagicBox, false);
 
 
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
 		}
 
 		public override void FinishQuest()
@@ -725,18 +725,18 @@ namespace DOL.GS.Quests.Albion
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
 			//Give reward to player here ...            
-			if (m_questPlayer.HasAbilityToUseItem(recruitsShortSword))
-				GiveItem(masterFrederick, m_questPlayer, recruitsShortSword);
+			if (_questPlayer.HasAbilityToUseItem(recruitsShortSword))
+				GiveItem(masterFrederick, _questPlayer, recruitsShortSword);
 			else
-				GiveItem(masterFrederick, m_questPlayer, recruitsStaff);
+				GiveItem(masterFrederick, _questPlayer, recruitsStaff);
 
-			m_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 100, true);
+			_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 100, true);
             long money = Money.GetMoney(0, 0, 0, 3, Util.Random(50));
-			m_questPlayer.AddMoney(money, "You recieve {0} as a reward.");
-            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, money);
+			_questPlayer.AddMoney(money, "You recieve {0} as a reward.");
+            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", _questPlayer, eInventoryActionType.Quest, money);
 
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
 		}
 
 	}

@@ -609,18 +609,18 @@ namespace DOL.GS.Quests.Albion
 				{
 					if(gArgs.Item.Id_nb == sephucothsHeart.Id_nb && Step == 2)
 					{
-						RemoveItem(eowylnAstos, m_questPlayer, sephucothsHeart);
+						RemoveItem(eowylnAstos, _questPlayer, sephucothsHeart);
 
-						eowylnAstos.TurnTo(m_questPlayer);
-						eowylnAstos.SayTo(m_questPlayer, "You have done well traveler! I will still require one final object to complete the pendant. Seek out a large skeleton and bring from it a piece of polished bone! Return this to me and I shall finish your pendant.");
+						eowylnAstos.TurnTo(_questPlayer);
+						eowylnAstos.SayTo(_questPlayer, "You have done well traveler! I will still require one final object to complete the pendant. Seek out a large skeleton and bring from it a piece of polished bone! Return this to me and I shall finish your pendant.");
 						Step = 3;
 					}
 					else if(gArgs.Item.Id_nb == polishedBone.Id_nb && Step == 4)
 					{
-						RemoveItem(eowylnAstos, m_questPlayer, polishedBone);
+						RemoveItem(eowylnAstos, _questPlayer, polishedBone);
 
-						eowylnAstos.TurnTo(m_questPlayer);
-						eowylnAstos.SayTo(m_questPlayer, "Eowyln draws two items before her. Gathering her strength, she shouts.");
+						eowylnAstos.TurnTo(_questPlayer);
+						eowylnAstos.SayTo(_questPlayer, "Eowyln draws two items before her. Gathering her strength, she shouts.");
 						
 						new RegionTimer(eowylnAstos, new RegionTimerCallback(BuildNecklace), 5000);
 					}
@@ -630,12 +630,12 @@ namespace DOL.GS.Quests.Albion
 
 		protected virtual int BuildNecklace(RegionTimer callingTimer)
 		{
-			m_questPlayer.Out.SendEmoteAnimation(eowylnAstos, eEmote.Yes);
-			SendMessage(m_questPlayer, "Eowyln carefully fashions a delicate necklace about the crystal and smiles.", 0, eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+			_questPlayer.Out.SendEmoteAnimation(eowylnAstos, eEmote.Yes);
+			SendMessage(_questPlayer, "Eowyln carefully fashions a delicate necklace about the crystal and smiles.", 0, eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 							
-			eowylnAstos.SayTo(m_questPlayer, "Here is your pendant. I thank you for allowing me the opportunity to create such a great item!");
+			eowylnAstos.SayTo(_questPlayer, "Here is your pendant. I thank you for allowing me the opportunity to create such a great item!");
 		
-			GiveItem(eowylnAstos, m_questPlayer, fieryCrystalPendant);
+			GiveItem(eowylnAstos, _questPlayer, fieryCrystalPendant);
 							
 			FinishQuest();
 			return 0;
@@ -646,8 +646,8 @@ namespace DOL.GS.Quests.Albion
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			RemoveItem(m_questPlayer, sephucothsHeart, false);
-			RemoveItem(m_questPlayer, polishedBone, false);
+			RemoveItem(_questPlayer, sephucothsHeart, false);
+			RemoveItem(_questPlayer, polishedBone, false);
 		}
 	}
 }

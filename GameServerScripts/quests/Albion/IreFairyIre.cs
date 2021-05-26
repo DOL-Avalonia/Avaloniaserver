@@ -1014,13 +1014,13 @@ namespace DOL.GS.Quests.Albion
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			RemoveItem(m_questPlayer, dragonflyWhip, false);
-			RemoveItem(m_questPlayer, dustyOldMap, false);
+			RemoveItem(_questPlayer, dragonflyWhip, false);
+			RemoveItem(_questPlayer, dustyOldMap, false);
 
-			if (m_questPlayer.HasAbilityToUseItem(recruitsVest))
-				RemoveItem(m_questPlayer, recruitsVest, false);
+			if (_questPlayer.HasAbilityToUseItem(recruitsVest))
+				RemoveItem(_questPlayer, recruitsVest, false);
 			else
-				RemoveItem(m_questPlayer, recruitsQuiltedVest, false);
+				RemoveItem(_questPlayer, recruitsQuiltedVest, false);
 
 			deleteDragonflyHatchling();
 		}
@@ -1031,10 +1031,10 @@ namespace DOL.GS.Quests.Albion
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
 			//Give reward to player here ...              
-			m_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 507, true);
+			_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 507, true);
             long money = Money.GetMoney(0, 0, 0, 7, Util.Random(50));
-			m_questPlayer.AddMoney(money, "You recieve {0} as a reward.");
-            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, money);
+			_questPlayer.AddMoney(money, "You recieve {0} as a reward.");
+            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", _questPlayer, eInventoryActionType.Quest, money);
 		}
 
 	}

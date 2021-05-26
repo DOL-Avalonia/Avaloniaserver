@@ -443,7 +443,7 @@ namespace DOL.GS.Quests.Albion
 				{
 					if (player.IsWithinRadius( felinEnd, 2500 ))
 					{
-						foreach (GamePlayer visPlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+						foreach (GamePlayer visPlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(player.CurrentRegion)))
 						{
 							visPlayer.Out.SendSpellCastAnimation(player, 1, 20);
 						}
@@ -745,7 +745,7 @@ namespace DOL.GS.Quests.Albion
 
 		protected virtual int CastLadyFelin(RegionTimer callingTimer)
 		{
-			foreach (GamePlayer visPlayer in ladyFelin.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer visPlayer in ladyFelin.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(ladyFelin.CurrentRegion)))
 			{
 				visPlayer.Out.SendSpellCastAnimation(ladyFelin, 1, 20);
 			}
@@ -764,8 +764,8 @@ namespace DOL.GS.Quests.Albion
 
 		protected virtual int ResetPlayerModel(RegionTimer callingTimer)
 		{
-			GameClient client = m_questPlayer.Client;
-			m_questPlayer.Model = (ushort) client.Account.Characters[client.ActiveCharIndex].CreationModel;
+			GameClient client = _questPlayer.Client;
+			_questPlayer.Model = (ushort) client.Account.Characters[client.ActiveCharIndex].CreationModel;
 			SendSystemMessage("You change back to your normal form!");
 			return 0;
 		}
@@ -821,11 +821,11 @@ namespace DOL.GS.Quests.Albion
 				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
 				if (gArgs.Target.Name == masterFrederick.Name && gArgs.Item.Id_nb == fairyPlans.Id_nb)
 				{
-					RemoveItem(masterFrederick, m_questPlayer, fairyPlans);
+					RemoveItem(masterFrederick, _questPlayer, fairyPlans);
 
-					masterFrederick.TurnTo(m_questPlayer);
-					masterFrederick.SayTo(m_questPlayer, "This is a very small parchment. Hrm...Let me see if I can make out the words.");
-					m_questPlayer.Out.SendEmoteAnimation(masterFrederick, eEmote.Ponder);
+					masterFrederick.TurnTo(_questPlayer);
+					masterFrederick.SayTo(_questPlayer, "This is a very small parchment. Hrm...Let me see if I can make out the words.");
+					_questPlayer.Out.SendEmoteAnimation(masterFrederick, eEmote.Ponder);
 					Step = 5;
 					return;
 				}
@@ -837,11 +837,11 @@ namespace DOL.GS.Quests.Albion
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			RemoveItem(m_questPlayer, necklaceOfDoppelganger, false);
-			RemoveItem(m_questPlayer, fairyPlans, false);
+			RemoveItem(_questPlayer, necklaceOfDoppelganger, false);
+			RemoveItem(_questPlayer, fairyPlans, false);
 
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
 		}
 
 
@@ -849,20 +849,20 @@ namespace DOL.GS.Quests.Albion
 		{
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			RemoveItem(masterFrederick, m_questPlayer, necklaceOfDoppelganger);
+			RemoveItem(masterFrederick, _questPlayer, necklaceOfDoppelganger);
 			//Give reward to player here ...            
-			if (m_questPlayer.HasAbilityToUseItem(recruitsBoots))
-				GiveItem(masterFrederick, m_questPlayer, recruitsBoots);
+			if (_questPlayer.HasAbilityToUseItem(recruitsBoots))
+				GiveItem(masterFrederick, _questPlayer, recruitsBoots);
 			else
-				GiveItem(masterFrederick, m_questPlayer, recruitsQuiltedBoots);
+				GiveItem(masterFrederick, _questPlayer, recruitsQuiltedBoots);
 
-			m_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 40, true);
+			_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 40, true);
             long money = Money.GetMoney(0, 0, 0, 4, Util.Random(50));
-			m_questPlayer.AddMoney(money, "You recieve {0} as a reward.");
-            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, money);
+			_questPlayer.AddMoney(money, "You recieve {0} as a reward.");
+            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", _questPlayer, eInventoryActionType.Quest, money);
 
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
 		}
 
 	}

@@ -730,7 +730,7 @@ namespace DOL.GS.ServerRules
 			{
 				lock (killedPlayer.XPGainers)
 				{
-					foreach (DictionaryEntry de in killedPlayer.XPGainers)
+					foreach (KeyValuePair<GameObject, double> de in killedPlayer.XPGainers)
 					{
 						if (de.Key is GamePlayer pl)
 						{
@@ -747,7 +747,7 @@ namespace DOL.GS.ServerRules
 				bool dealNoXP = false;
 				var totalDamage = 0.0;
 				//Collect the total damage
-				foreach (DictionaryEntry de in killedPlayer.XPGainers)
+				foreach (KeyValuePair<GameObject, double> de in killedPlayer.XPGainers)
 				{
 					var player = de.Key as GamePlayer;
 					if (player != null)
@@ -765,7 +765,7 @@ namespace DOL.GS.ServerRules
 
 				if (dealNoXP)
 				{
-					foreach (DictionaryEntry de in killedPlayer.XPGainers)
+					foreach (KeyValuePair<GameObject, double> de in killedPlayer.XPGainers)
 					{
 						GamePlayer player = de.Key as GamePlayer;
 						if (player != null)
@@ -799,7 +799,7 @@ namespace DOL.GS.ServerRules
 				List<KeyValuePair<GamePlayer, int>> playerKillers = new List<KeyValuePair<GamePlayer, int>>();
 
 				//Now deal the XP and RPs to all livings
-				foreach (DictionaryEntry de in killedPlayer.XPGainers)
+				foreach (KeyValuePair<GameObject, double> de in killedPlayer.XPGainers)
 				{
 					GameLiving living = de.Key as GameLiving;
 					GamePlayer expGainPlayer = living as GamePlayer;

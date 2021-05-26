@@ -1434,9 +1434,9 @@ namespace DOL.GS.Quests.Albion
 				brain.AggroRange = 0;
 				lilybet.SetOwnBrain(brain);
 
-				lilybet.TurnTo(m_questPlayer);
+				lilybet.TurnTo(_questPlayer);
 				lilybet.AddToWorld();
-				lilybet.MaxSpeedBase = m_questPlayer.MaxSpeedBase; // make her as fast as player so that she can keep track with player during follow.
+				lilybet.MaxSpeedBase = _questPlayer.MaxSpeedBase; // make her as fast as player so that she can keep track with player during follow.
 
 				GameEventMgr.AddHandler(lilybet, GameLivingEvent.Interact, new DOLEventHandler(TalkToLilybet));
 			}
@@ -1575,9 +1575,9 @@ namespace DOL.GS.Quests.Albion
 
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			RemoveItem(m_questPlayer, treviansHoodedCloak, false);
+			RemoveItem(_questPlayer, treviansHoodedCloak, false);
 
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
 		}
 
 
@@ -1585,53 +1585,53 @@ namespace DOL.GS.Quests.Albion
 		{
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
 			//Give reward to player here ...            
-			GiveItem(trevian, m_questPlayer, whistleReward);
+			GiveItem(trevian, _questPlayer, whistleReward);
 
-			if (m_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Armsman)
+			if (_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Armsman)
 			{
-				GiveItem(trevian, m_questPlayer, bootsOfRescuer);
+				GiveItem(trevian, _questPlayer, bootsOfRescuer);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Reaver)
+			else if (_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Reaver)
 			{
-				GiveItem(trevian, m_questPlayer, bootsOfBaneful);
+				GiveItem(trevian, _questPlayer, bootsOfBaneful);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Paladin)
+			else if (_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Paladin)
 			{
-				GiveItem(trevian, m_questPlayer, bootsOfProtector);
+				GiveItem(trevian, _questPlayer, bootsOfProtector);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Theurgist || m_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Wizard || m_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Sorcerer)
+			else if (_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Theurgist || _questPlayer.CharacterClass.ID == (byte) eCharacterClass.Wizard || _questPlayer.CharacterClass.ID == (byte) eCharacterClass.Sorcerer)
 			{
-				GiveItem(trevian, m_questPlayer, bootsOfErudition);
+				GiveItem(trevian, _questPlayer, bootsOfErudition);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Cleric)
+			else if (_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Cleric)
 			{
-				GiveItem(trevian, m_questPlayer, bootsOfReverence);
+				GiveItem(trevian, _questPlayer, bootsOfReverence);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Scout)
+			else if (_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Scout)
 			{
-				GiveItem(trevian, m_questPlayer, bootsOfShadow);
+				GiveItem(trevian, _questPlayer, bootsOfShadow);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Infiltrator)
+			else if (_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Infiltrator)
 			{
-				GiveItem(trevian, m_questPlayer, bootsOfEvanescent);
+				GiveItem(trevian, _questPlayer, bootsOfEvanescent);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Minstrel)
+			else if (_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Minstrel)
 			{
-				GiveItem(trevian, m_questPlayer, bootsOfInfluence);
+				GiveItem(trevian, _questPlayer, bootsOfInfluence);
 			}
-			else if (m_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Friar)
+			else if (_questPlayer.CharacterClass.ID == (byte) eCharacterClass.Friar)
 			{
-				GiveItem(trevian, m_questPlayer, bootsOfTheDevoted);
+				GiveItem(trevian, _questPlayer, bootsOfTheDevoted);
 			}
 
-			RemoveItem(trevian, m_questPlayer, treviansHoodedCloak);
+			RemoveItem(trevian, _questPlayer, treviansHoodedCloak);
 
-			m_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 500000, true);
+			_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 500000, true);
             long money = Money.GetMoney(0, 0, 0, Util.Random(10) + 40, Util.Random(50));
-			m_questPlayer.AddMoney(money, "You recieve {0} as a reward for helping Trevian.");
-            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, money);
+			_questPlayer.AddMoney(money, "You recieve {0} as a reward for helping Trevian.");
+            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", _questPlayer, eInventoryActionType.Quest, money);
 
 		}
 

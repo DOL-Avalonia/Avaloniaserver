@@ -999,7 +999,7 @@ namespace DOL.GS.Quests.Albion
 
 		protected virtual int AliceTranslation(RegionTimer callingTimer)
 		{
-			m_questPlayer.Out.SendEmoteAnimation(alice, eEmote.Yes);
+			_questPlayer.Out.SendEmoteAnimation(alice, eEmote.Yes);
 			aliceDone = true;
 			return 0;
 		}
@@ -1058,9 +1058,9 @@ namespace DOL.GS.Quests.Albion
 				{
 					RemoveItem(colm, player, noteFormColm);
 
-					colm.TurnTo(m_questPlayer);
-					colm.SayTo(m_questPlayer, "Ah, from Master Frederick. Let's see what he says. Ah, I am to give you transportation to Castle Sauvage. No problem. All you need to do is purchase a ticket from my store.");
-					m_questPlayer.Out.SendEmoteAnimation(masterFrederick, eEmote.Ponder);
+					colm.TurnTo(_questPlayer);
+					colm.SayTo(_questPlayer, "Ah, from Master Frederick. Let's see what he says. Ah, I am to give you transportation to Castle Sauvage. No problem. All you need to do is purchase a ticket from my store.");
+					_questPlayer.Out.SendEmoteAnimation(masterFrederick, eEmote.Ponder);
 
 					Step = 2;
 					return;
@@ -1073,9 +1073,9 @@ namespace DOL.GS.Quests.Albion
 				{
 					RemoveItem(alice, player, fairyPlans);
 
-					alice.TurnTo(m_questPlayer);
-					alice.SayTo(m_questPlayer, "Hmm...What's this now? A letter? For me? Interesting. Ah, I see it is from Master Frederick, something about plans written in fairy. I can translate this if you can wait just a few moments.");
-					m_questPlayer.Out.SendEmoteAnimation(alice, eEmote.Ponder);
+					alice.TurnTo(_questPlayer);
+					alice.SayTo(_questPlayer, "Hmm...What's this now? A letter? For me? Interesting. Ah, I see it is from Master Frederick, something about plans written in fairy. I can translate this if you can wait just a few moments.");
+					_questPlayer.Out.SendEmoteAnimation(alice, eEmote.Ponder);
 
 					new RegionTimer(alice, new RegionTimerCallback(AliceTranslation), 30000);
 
@@ -1090,9 +1090,9 @@ namespace DOL.GS.Quests.Albion
 				{
 					RemoveItem(masterFrederick, player, translatedPlans);
 
-					masterFrederick.TurnTo(m_questPlayer);
-					masterFrederick.SayTo(m_questPlayer, "Excellent! Let me just read this over for a moment.");
-					m_questPlayer.Out.SendEmoteAnimation(masterFrederick, eEmote.Ponder);
+					masterFrederick.TurnTo(_questPlayer);
+					masterFrederick.SayTo(_questPlayer, "Excellent! Let me just read this over for a moment.");
+					_questPlayer.Out.SendEmoteAnimation(masterFrederick, eEmote.Ponder);
 
 					Step = 6;
 					return;
@@ -1105,17 +1105,17 @@ namespace DOL.GS.Quests.Albion
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			if (Step < 3 && m_questPlayer.Inventory.GetFirstItemByID(dragonflyTicket.Id_nb, eInventorySlot.Min_Inv, eInventorySlot.Max_Inv) == null)
+			if (Step < 3 && _questPlayer.Inventory.GetFirstItemByID(dragonflyTicket.Id_nb, eInventorySlot.Min_Inv, eInventorySlot.Max_Inv) == null)
 			{
-				m_questPlayer.RemoveMoney(Money.GetMoney(0, 0, 0, 6, 0), null);
-                InventoryLogging.LogInventoryAction(m_questPlayer, "(QUEST;" + Name + ")", eInventoryActionType.Quest, 600);
+				_questPlayer.RemoveMoney(Money.GetMoney(0, 0, 0, 6, 0), null);
+                InventoryLogging.LogInventoryAction(_questPlayer, "(QUEST;" + Name + ")", eInventoryActionType.Quest, 600);
 			}
 
-			RemoveItem(m_questPlayer, dragonflyTicket, false);
-			RemoveItem(m_questPlayer, fairyPlans, false);
-			RemoveItem(m_questPlayer, horseTicket, false);
-			RemoveItem(m_questPlayer, noteFormColm, false);
-			RemoveItem(m_questPlayer, translatedPlans, false);
+			RemoveItem(_questPlayer, dragonflyTicket, false);
+			RemoveItem(_questPlayer, fairyPlans, false);
+			RemoveItem(_questPlayer, horseTicket, false);
+			RemoveItem(_questPlayer, noteFormColm, false);
+			RemoveItem(_questPlayer, translatedPlans, false);
 
 		}
 
@@ -1124,15 +1124,15 @@ namespace DOL.GS.Quests.Albion
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
 			//Give reward to player here ...
-			if (m_questPlayer.HasAbilityToUseItem(recruitsLegs))
-				GiveItem(masterFrederick, m_questPlayer, recruitsLegs);
+			if (_questPlayer.HasAbilityToUseItem(recruitsLegs))
+				GiveItem(masterFrederick, _questPlayer, recruitsLegs);
 			else
-				GiveItem(masterFrederick, m_questPlayer, recruitsPants);
+				GiveItem(masterFrederick, _questPlayer, recruitsPants);
 
-			m_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 240, true);
+			_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 240, true);
             long money = Money.GetMoney(0, 0, 0, 5, Util.Random(50));
-			m_questPlayer.AddMoney(money, "You recieve {0} as a reward.");
-            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, money);
+			_questPlayer.AddMoney(money, "You recieve {0} as a reward.");
+            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", _questPlayer, eInventoryActionType.Quest, money);
 
 		}
 

@@ -496,7 +496,7 @@ namespace DOL.GS.Keeps
 			{
 				if (LOSChecker == null)
 				{
-					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 					{
 						LOSChecker = player;
 						break;
@@ -517,12 +517,12 @@ namespace DOL.GS.Keeps
 			if (target == null) return;
 			if (!target.IsAlive) return;
 			if (target is GamePlayer && !GameServer.KeepManager.IsEnemy(this, target as GamePlayer, true)) return;
-			if (!IsWithinRadius(target, WorldMgr.VISIBILITY_DISTANCE)) { TargetObject = null; return; }
+			if (!IsWithinRadius(target, WorldMgr.VISIBILITY_DISTANCE(CurrentRegion))) { TargetObject = null; return; }
 			GamePlayer LOSChecker = null;
 			if (target is GamePlayer) LOSChecker = target as GamePlayer;
 			else
 			{
-				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 				{
 					LOSChecker = player;
 					break;
@@ -1255,7 +1255,7 @@ namespace DOL.GS.Keeps
 				spell.AllowAdd = false;
 				spell.CastTime = 2;
 				spell.Name = "Guard Heal";
-				spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+				spell.Range = 3200;
 				spell.Type = "Heal";
 				return spell;
 			}

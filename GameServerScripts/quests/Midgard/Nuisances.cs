@@ -416,7 +416,7 @@ namespace DOL.GS.Quests.Midgard
 				{
                     if ( player.IsWithinRadius( quest.askefruer, 500 ) )
 					{
-						foreach (GamePlayer visPlayer in quest.askefruer.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+						foreach (GamePlayer visPlayer in quest.askefruer.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(quest.askefruer.CurrentRegion)))
 						{
 							visPlayer.Out.SendSpellCastAnimation(quest.askefruer, 1, 20);
 						}
@@ -448,7 +448,7 @@ namespace DOL.GS.Quests.Midgard
 				SendSystemMessage(player, "It's Fallen Askefruer! Quickly now, /use your box to capture the Askefruer! To USE an item, right click on the item and type /use.");
 				quest.CreateAskefruer();
 
-				foreach (GamePlayer visPlayer in quest.askefruer.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+				foreach (GamePlayer visPlayer in quest.askefruer.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(quest.askefruer.CurrentRegion)))
 				{
 					visPlayer.Out.SendSpellCastAnimation(quest.askefruer, 1, 20);
 				}
@@ -689,13 +689,13 @@ namespace DOL.GS.Quests.Midgard
 				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
 				if (gArgs.Target.Name == dalikor.Name && gArgs.Item.Id_nb == fullMagicBox.Id_nb)
 				{
-					RemoveItem(dalikor, m_questPlayer, fullMagicBox);
+					RemoveItem(dalikor, _questPlayer, fullMagicBox);
 
-					dalikor.TurnTo(m_questPlayer);
-					dalikor.SayTo(m_questPlayer, "Hm...It's quite heavy. Let me take a peek inside.");
-					SendEmoteMessage(m_questPlayer, "Dalikor opens the top of the wooden box carefully. Once he spies the creatures inside, he closes the lid quickly.");
+					dalikor.TurnTo(_questPlayer);
+					dalikor.SayTo(_questPlayer, "Hm...It's quite heavy. Let me take a peek inside.");
+					SendEmoteMessage(_questPlayer, "Dalikor opens the top of the wooden box carefully. Once he spies the creatures inside, he closes the lid quickly.");
 
-					m_questPlayer.Out.SendEmoteAnimation(dalikor, eEmote.Yes);
+					_questPlayer.Out.SendEmoteAnimation(dalikor, eEmote.Yes);
 					Step = 3;
 					return;
 				}
@@ -707,11 +707,11 @@ namespace DOL.GS.Quests.Midgard
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			RemoveItem(m_questPlayer, emptyMagicBox, false);
-			RemoveItem(m_questPlayer, fullMagicBox, false);
+			RemoveItem(_questPlayer, emptyMagicBox, false);
+			RemoveItem(_questPlayer, fullMagicBox, false);
 
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
 		}
 
 		public override void FinishQuest()
@@ -719,18 +719,18 @@ namespace DOL.GS.Quests.Midgard
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
 			//Give reward to player here ...            
-			if (m_questPlayer.HasAbilityToUseItem(recruitsShortSword))
-				GiveItem(dalikor, m_questPlayer, recruitsShortSword);
+			if (_questPlayer.HasAbilityToUseItem(recruitsShortSword))
+				GiveItem(dalikor, _questPlayer, recruitsShortSword);
 			else
-				GiveItem(dalikor, m_questPlayer, recruitsStaff);
+				GiveItem(dalikor, _questPlayer, recruitsStaff);
 
-			m_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 100, true);
+			_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 100, true);
             long money = Money.GetMoney(0, 0, 0, 3, Util.Random(50));
-			m_questPlayer.AddMoney(money, "You recieve {0} as a reward.");
-            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, money);
+			_questPlayer.AddMoney(money, "You recieve {0} as a reward.");
+            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", _questPlayer, eInventoryActionType.Quest, money);
 
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
 		}
 
 	}

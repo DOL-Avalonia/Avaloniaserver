@@ -1224,10 +1224,10 @@ namespace DOL.GS.Quests.Albion
 					case 3:
 						if (gArgs.Target.Name == scribeVeral.Name && gArgs.Item.Id_nb == sealedLovePoem.Id_nb)
 						{
-							m_questPlayer.Out.SendEmoteAnimation(scribeVeral, eEmote.Ponder);
+							_questPlayer.Out.SendEmoteAnimation(scribeVeral, eEmote.Ponder);
 						
-							scribeVeral.TurnTo(m_questPlayer);
-							scribeVeral.SayTo(m_questPlayer, "Oh, my! This is...unusually bad. I've no doubt this young man is sincere, but we shall have to do something about this. You've come to the right place, my friend. Please excuse me while I fetch a pen and a fresh sheet of [paper].");
+							scribeVeral.TurnTo(_questPlayer);
+							scribeVeral.SayTo(_questPlayer, "Oh, my! This is...unusually bad. I've no doubt this young man is sincere, but we shall have to do something about this. You've come to the right place, my friend. Please excuse me while I fetch a pen and a fresh sheet of [paper].");
 						}
 						break;
 
@@ -1235,11 +1235,11 @@ namespace DOL.GS.Quests.Albion
 					case 10: // only rose
 						if (gArgs.Target.Name == serawen.Name && gArgs.Item.Id_nb == beautifulRedRose.Id_nb)
 						{
-							RemoveItem(serawen, m_questPlayer, beautifulRedRose);
+							RemoveItem(serawen, _questPlayer, beautifulRedRose);
 
-							serawen.TurnTo(m_questPlayer);
-							serawen.SayTo(m_questPlayer, "Oh, my! That's a gorgeous rose. Did the sender give you a note, or anything identifying himself?");
-							SendMessage(m_questPlayer, "Serawen accepts the flower from you, blushing.", 0, eChatType.CT_Say, eChatLoc.CL_PopupWindow);	
+							serawen.TurnTo(_questPlayer);
+							serawen.SayTo(_questPlayer, "Oh, my! That's a gorgeous rose. Did the sender give you a note, or anything identifying himself?");
+							SendMessage(_questPlayer, "Serawen accepts the flower from you, blushing.", 0, eChatType.CT_Say, eChatLoc.CL_PopupWindow);	
 							
 							if(Step == 6) Step = 8; // rose + rewrite poem
 							else if(Step == 10) Step = 11; // only rose
@@ -1249,11 +1249,11 @@ namespace DOL.GS.Quests.Albion
 					case 7 : // only rewrited letter
 						if (gArgs.Target.Name == serawen.Name && gArgs.Item.Id_nb == sealedLovePoem.Id_nb)
 						{
-							RemoveItem(serawen, m_questPlayer, sealedLovePoem);
+							RemoveItem(serawen, _questPlayer, sealedLovePoem);
 
-							serawen.TurnTo(m_questPlayer);
-							SendMessage(m_questPlayer, "You hand Serawen the poem and she glances at the seal, not recognizing it. She eagerly unfolds the poem, reading quickly.  As her eyes move down the page, she begins to smile.  When she reaches the end of the page, Serawen looks up at you, still smiling with appreciation.", 0, eChatType.CT_Say, eChatLoc.CL_PopupWindow);	
-							serawen.SayTo(m_questPlayer, "What a kind gesture! I've always hoped that I would be courted by a gallant man. Whoever sent this must have put a lot of effort into finding a talented scribe.  It really is a [beautiful] poem.");
+							serawen.TurnTo(_questPlayer);
+							SendMessage(_questPlayer, "You hand Serawen the poem and she glances at the seal, not recognizing it. She eagerly unfolds the poem, reading quickly.  As her eyes move down the page, she begins to smile.  When she reaches the end of the page, Serawen looks up at you, still smiling with appreciation.", 0, eChatType.CT_Say, eChatLoc.CL_PopupWindow);	
+							serawen.SayTo(_questPlayer, "What a kind gesture! I've always hoped that I would be courted by a gallant man. Whoever sent this must have put a lot of effort into finding a talented scribe.  It really is a [beautiful] poem.");
 						
 							Step = 14;
 						}
@@ -1262,11 +1262,11 @@ namespace DOL.GS.Quests.Albion
 					case 8 : // rose + rewrited letter
 						if (gArgs.Target.Name == serawen.Name && gArgs.Item.Id_nb == sealedLovePoem.Id_nb)
 						{
-							RemoveItem(serawen, m_questPlayer, sealedLovePoem);
+							RemoveItem(serawen, _questPlayer, sealedLovePoem);
 
-							serawen.TurnTo(m_questPlayer);
-							SendMessage(m_questPlayer, "Serawen accepts the poem from you, inspecting the seal. She unfolds the paper eagerly, expecting it to be a note from the mysterious man who sent the rose.  When she realizes that the paper contains a poem, Serawen begins to smile.  She closes her eyes briefly and pauses to smell the rose.  After a moment, her eyes return to the paper as she reads the rest of the poem and nods approvingly.", 0, eChatType.CT_Say, eChatLoc.CL_PopupWindow);	
-							serawen.SayTo(m_questPlayer, "This is a very beautiful poem, "+m_questPlayer.Name+".  Whoever sent it is a true gentleman. I must admit, the idea of being courted by a mystery man is exciting and sounds like something straight out of a minstrel's [tale].");
+							serawen.TurnTo(_questPlayer);
+							SendMessage(_questPlayer, "Serawen accepts the poem from you, inspecting the seal. She unfolds the paper eagerly, expecting it to be a note from the mysterious man who sent the rose.  When she realizes that the paper contains a poem, Serawen begins to smile.  She closes her eyes briefly and pauses to smell the rose.  After a moment, her eyes return to the paper as she reads the rest of the poem and nods approvingly.", 0, eChatType.CT_Say, eChatLoc.CL_PopupWindow);	
+							serawen.SayTo(_questPlayer, "This is a very beautiful poem, "+_questPlayer.Name+".  Whoever sent it is a true gentleman. I must admit, the idea of being courted by a mystery man is exciting and sounds like something straight out of a minstrel's [tale].");
 						
 							Step = 15;
 						}
@@ -1275,12 +1275,12 @@ namespace DOL.GS.Quests.Albion
 					case 9: // letter non open
 						if (gArgs.Target.Name == serawen.Name && gArgs.Item.Id_nb == sealedLovePoem.Id_nb)
 						{
-							RemoveItem(serawen, m_questPlayer, sealedLovePoem);
+							RemoveItem(serawen, _questPlayer, sealedLovePoem);
 
-							serawen.TurnTo(m_questPlayer);
-							SendMessage(m_questPlayer, "You hand Serawen the poem and she glances at the seal, not recognizing it. She eagerly unfolds the poem, reading quickly.  As her eyes move down the page, the corners of her mouth begin to fall. She does not quite frown, but it is clear that she had different expectations. Serawen chuckles nervously when she reads the last of the text.", 0, eChatType.CT_Say, eChatLoc.CL_PopupWindow);
-							serawen.SayTo(m_questPlayer, "Thank you...I think. I appreciate the sentiment, but the poem is simply horrible. I don't mean to offend your employer, but I hope he didn't think he'd win my affection with this. He seems to be quite a desperate [man], or did [Geroth] put you up to this?");
-							m_questPlayer.Out.SendEmoteAnimation(serawen, eEmote.Laugh);
+							serawen.TurnTo(_questPlayer);
+							SendMessage(_questPlayer, "You hand Serawen the poem and she glances at the seal, not recognizing it. She eagerly unfolds the poem, reading quickly.  As her eyes move down the page, the corners of her mouth begin to fall. She does not quite frown, but it is clear that she had different expectations. Serawen chuckles nervously when she reads the last of the text.", 0, eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+							serawen.SayTo(_questPlayer, "Thank you...I think. I appreciate the sentiment, but the poem is simply horrible. I don't mean to offend your employer, but I hope he didn't think he'd win my affection with this. He seems to be quite a desperate [man], or did [Geroth] put you up to this?");
+							_questPlayer.Out.SendEmoteAnimation(serawen, eEmote.Laugh);
 
 							Step = 17;
 						}
@@ -1289,11 +1289,11 @@ namespace DOL.GS.Quests.Albion
 					case 11: // only rose
 						if (gArgs.Target.Name == serawen.Name && gArgs.Item.Id_nb == sealedLovePoem.Id_nb)
 						{
-							RemoveItem(serawen, m_questPlayer, sealedLovePoem);
+							RemoveItem(serawen, _questPlayer, sealedLovePoem);
 
-							serawen.TurnTo(m_questPlayer);
-							SendMessage(m_questPlayer, "Serawen accepts the poem from you, inspecting the seal. She unfolds the paper eagerly, expecting it to be a note from the mysterious man who sent the rose.  When she realizes that the paper contains a poem, Serawen begins to smile.  She closes her eyes briefly and pauses to smell the rose.  After a moment, her eyes return to the paper as she reads the rest of the poem and nods approvingly.", 0, eChatType.CT_Say, eChatLoc.CL_PopupWindow);	
-							serawen.SayTo(m_questPlayer, "This is a very sweet gesture.  Whoever sent it might not be the best of poets, but his sincerity shines through. There aren't many who would take this risk. I think most would hire someone to write a poem instead, but then it would lack his [voice].");
+							serawen.TurnTo(_questPlayer);
+							SendMessage(_questPlayer, "Serawen accepts the poem from you, inspecting the seal. She unfolds the paper eagerly, expecting it to be a note from the mysterious man who sent the rose.  When she realizes that the paper contains a poem, Serawen begins to smile.  She closes her eyes briefly and pauses to smell the rose.  After a moment, her eyes return to the paper as she reads the rest of the poem and nods approvingly.", 0, eChatType.CT_Say, eChatLoc.CL_PopupWindow);	
+							serawen.SayTo(_questPlayer, "This is a very sweet gesture.  Whoever sent it might not be the best of poets, but his sincerity shines through. There aren't many who would take this risk. I think most would hire someone to write a poem instead, but then it would lack his [voice].");
 
 							Step = 12;
 						}
@@ -1307,11 +1307,11 @@ namespace DOL.GS.Quests.Albion
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			RemoveItem(m_questPlayer, sealedLovePoem, false);
-			RemoveItem(m_questPlayer, beautifulRedRose, false);
+			RemoveItem(_questPlayer, sealedLovePoem, false);
+			RemoveItem(_questPlayer, beautifulRedRose, false);
 
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
 		}
 
 		public override void FinishQuest()
@@ -1320,10 +1320,10 @@ namespace DOL.GS.Quests.Albion
 
 			//Give reward to player here ...
 
-			GiveItem(madissair, m_questPlayer, adnilsMagicalOrb);
+			GiveItem(madissair, _questPlayer, adnilsMagicalOrb);
 		
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.UseSlot, new DOLEventHandler(PlayerUseSlot));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
 		}
 	}
 }

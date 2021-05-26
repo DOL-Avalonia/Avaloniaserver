@@ -2258,8 +2258,8 @@ namespace DOL.GS.Quests.Hibernia
 
 				if (gArgs.Target.Name == Cailean.Name)
 				{
-					m_questPlayer.Out.SendMessage("You collect the Horn from Cailean", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					GiveItem(m_questPlayer, Horn);
+					_questPlayer.Out.SendMessage("You collect the Horn from Cailean", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					GiveItem(_questPlayer, Horn);
 					Step = 2;
 					return;
 				}
@@ -2282,97 +2282,97 @@ namespace DOL.GS.Quests.Hibernia
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			RemoveItem(m_questPlayer, Horn, false);
+			RemoveItem(_questPlayer, Horn, false);
 		}
 
 		public override void FinishQuest()
 		{
-			if (m_questPlayer.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			if (_questPlayer.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 			{
-				RemoveItem(Revelin, m_questPlayer, Horn);
+				RemoveItem(Revelin, _questPlayer, Horn);
 
 				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-				switch ((eCharacterClass)m_questPlayer.CharacterClass.ID)
+				switch ((eCharacterClass)_questPlayer.CharacterClass.ID)
 				{
 					case eCharacterClass.Blademaster:
 						{
-							GiveItem(m_questPlayer, BlademasterEpicArms);
-							GiveItem(m_questPlayer, BlademasterEpicBoots);
-							GiveItem(m_questPlayer, BlademasterEpicGloves);
-							GiveItem(m_questPlayer, BlademasterEpicHelm);
-							GiveItem(m_questPlayer, BlademasterEpicLegs);
-							GiveItem(m_questPlayer, BlademasterEpicVest);
+							GiveItem(_questPlayer, BlademasterEpicArms);
+							GiveItem(_questPlayer, BlademasterEpicBoots);
+							GiveItem(_questPlayer, BlademasterEpicGloves);
+							GiveItem(_questPlayer, BlademasterEpicHelm);
+							GiveItem(_questPlayer, BlademasterEpicLegs);
+							GiveItem(_questPlayer, BlademasterEpicVest);
 							break;
 						}
 					case eCharacterClass.Animist:
 						{
-							GiveItem(m_questPlayer, AnimistEpicArms);
-							GiveItem(m_questPlayer, AnimistEpicBoots);
-							GiveItem(m_questPlayer, AnimistEpicGloves);
-							GiveItem(m_questPlayer, AnimistEpicHelm);
-							GiveItem(m_questPlayer, AnimistEpicLegs);
-							GiveItem(m_questPlayer, AnimistEpicVest);
+							GiveItem(_questPlayer, AnimistEpicArms);
+							GiveItem(_questPlayer, AnimistEpicBoots);
+							GiveItem(_questPlayer, AnimistEpicGloves);
+							GiveItem(_questPlayer, AnimistEpicHelm);
+							GiveItem(_questPlayer, AnimistEpicLegs);
+							GiveItem(_questPlayer, AnimistEpicVest);
 							break;
 						}
 					case eCharacterClass.Mentalist:
 						{
-							GiveItem(m_questPlayer, MentalistEpicArms);
-							GiveItem(m_questPlayer, MentalistEpicBoots);
-							GiveItem(m_questPlayer, MentalistEpicGloves);
-							GiveItem(m_questPlayer, MentalistEpicHelm);
-							GiveItem(m_questPlayer, MentalistEpicLegs);
-							GiveItem(m_questPlayer, MentalistEpicVest);
+							GiveItem(_questPlayer, MentalistEpicArms);
+							GiveItem(_questPlayer, MentalistEpicBoots);
+							GiveItem(_questPlayer, MentalistEpicGloves);
+							GiveItem(_questPlayer, MentalistEpicHelm);
+							GiveItem(_questPlayer, MentalistEpicLegs);
+							GiveItem(_questPlayer, MentalistEpicVest);
 							break;
 						}
 					case eCharacterClass.Druid:
 						{
-							GiveItem(m_questPlayer, DruidEpicArms);
-							GiveItem(m_questPlayer, DruidEpicBoots);
-							GiveItem(m_questPlayer, DruidEpicGloves);
-							GiveItem(m_questPlayer, DruidEpicHelm);
-							GiveItem(m_questPlayer, DruidEpicLegs);
-							GiveItem(m_questPlayer, DruidEpicVest);
+							GiveItem(_questPlayer, DruidEpicArms);
+							GiveItem(_questPlayer, DruidEpicBoots);
+							GiveItem(_questPlayer, DruidEpicGloves);
+							GiveItem(_questPlayer, DruidEpicHelm);
+							GiveItem(_questPlayer, DruidEpicLegs);
+							GiveItem(_questPlayer, DruidEpicVest);
 							break;
 						}
 					case eCharacterClass.Valewalker:
 						{
-							GiveItem(m_questPlayer, ValewalkerEpicArms);
-							GiveItem(m_questPlayer, ValewalkerEpicBoots);
-							GiveItem(m_questPlayer, ValewalkerEpicGloves);
-							GiveItem(m_questPlayer, ValewalkerEpicHelm);
-							GiveItem(m_questPlayer, ValewalkerEpicLegs);
-							GiveItem(m_questPlayer, ValewalkerEpicVest);
+							GiveItem(_questPlayer, ValewalkerEpicArms);
+							GiveItem(_questPlayer, ValewalkerEpicBoots);
+							GiveItem(_questPlayer, ValewalkerEpicGloves);
+							GiveItem(_questPlayer, ValewalkerEpicHelm);
+							GiveItem(_questPlayer, ValewalkerEpicLegs);
+							GiveItem(_questPlayer, ValewalkerEpicVest);
 							break;
 						}
 					case eCharacterClass.Vampiir:
 						{
-							GiveItem(m_questPlayer, VampiirEpicArms);
-							GiveItem(m_questPlayer, VampiirEpicBoots);
-							GiveItem(m_questPlayer, VampiirEpicGloves);
-							GiveItem(m_questPlayer, VampiirEpicHelm);
-							GiveItem(m_questPlayer, VampiirEpicLegs);
-							GiveItem(m_questPlayer, VampiirEpicVest);
+							GiveItem(_questPlayer, VampiirEpicArms);
+							GiveItem(_questPlayer, VampiirEpicBoots);
+							GiveItem(_questPlayer, VampiirEpicGloves);
+							GiveItem(_questPlayer, VampiirEpicHelm);
+							GiveItem(_questPlayer, VampiirEpicLegs);
+							GiveItem(_questPlayer, VampiirEpicVest);
 							break;
 						}
 					case eCharacterClass.Bainshee:
 						{
-							GiveItem(m_questPlayer, BainsheeEpicArms);
-							GiveItem(m_questPlayer, BainsheeEpicBoots);
-							GiveItem(m_questPlayer, BainsheeEpicGloves);
-							GiveItem(m_questPlayer, BainsheeEpicHelm);
-							GiveItem(m_questPlayer, BainsheeEpicLegs);
-							GiveItem(m_questPlayer, BainsheeEpicVest);
+							GiveItem(_questPlayer, BainsheeEpicArms);
+							GiveItem(_questPlayer, BainsheeEpicBoots);
+							GiveItem(_questPlayer, BainsheeEpicGloves);
+							GiveItem(_questPlayer, BainsheeEpicHelm);
+							GiveItem(_questPlayer, BainsheeEpicLegs);
+							GiveItem(_questPlayer, BainsheeEpicVest);
 							break;
 						}
 				}
 
-				m_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 1937768448, true);
-				//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
+				_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 1937768448, true);
+				//_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
 			}
 			else
 			{
-				m_questPlayer.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				_questPlayer.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 			}
 		}
 

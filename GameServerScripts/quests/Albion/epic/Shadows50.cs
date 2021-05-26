@@ -1945,8 +1945,8 @@ namespace DOL.GS.Quests.Albion
 				{
 					if (gArgs.Target.Name == Uragaig.Name)
 					{
-						m_questPlayer.Out.SendMessage("Take the pouch to Lidmann Halsey", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						GiveItem(m_questPlayer, sealed_pouch);
+						_questPlayer.Out.SendMessage("Take the pouch to Lidmann Halsey", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						GiveItem(_questPlayer, sealed_pouch);
 						Step = 2;
 						return;
 					}
@@ -1969,87 +1969,87 @@ namespace DOL.GS.Quests.Albion
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			RemoveItem(m_questPlayer, sealed_pouch, false);
+			RemoveItem(_questPlayer, sealed_pouch, false);
 		}
 
 		public override void FinishQuest()
 		{
-			if (m_questPlayer.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+			if (_questPlayer.Inventory.IsSlotsFree(6, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 			{
-				RemoveItem(Lidmann, m_questPlayer, sealed_pouch);
+				RemoveItem(Lidmann, _questPlayer, sealed_pouch);
 
 				base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-				switch ((eCharacterClass)m_questPlayer.CharacterClass.ID)
+				switch ((eCharacterClass)_questPlayer.CharacterClass.ID)
 				{
 					case eCharacterClass.Reaver:
 						{
-							GiveItem(m_questPlayer, ReaverEpicArms);
-							GiveItem(m_questPlayer, ReaverEpicBoots);
-							GiveItem(m_questPlayer, ReaverEpicGloves);
-							GiveItem(m_questPlayer, ReaverEpicHelm);
-							GiveItem(m_questPlayer, ReaverEpicLegs);
-							GiveItem(m_questPlayer, ReaverEpicVest);
+							GiveItem(_questPlayer, ReaverEpicArms);
+							GiveItem(_questPlayer, ReaverEpicBoots);
+							GiveItem(_questPlayer, ReaverEpicGloves);
+							GiveItem(_questPlayer, ReaverEpicHelm);
+							GiveItem(_questPlayer, ReaverEpicLegs);
+							GiveItem(_questPlayer, ReaverEpicVest);
 							break;
 						}
 					case eCharacterClass.Mercenary:
 						{
-							GiveItem(m_questPlayer, MercenaryEpicArms);
-							GiveItem(m_questPlayer, MercenaryEpicBoots);
-							GiveItem(m_questPlayer, MercenaryEpicGloves);
-							GiveItem(m_questPlayer, MercenaryEpicHelm);
-							GiveItem(m_questPlayer, MercenaryEpicLegs);
-							GiveItem(m_questPlayer, MercenaryEpicVest);
+							GiveItem(_questPlayer, MercenaryEpicArms);
+							GiveItem(_questPlayer, MercenaryEpicBoots);
+							GiveItem(_questPlayer, MercenaryEpicGloves);
+							GiveItem(_questPlayer, MercenaryEpicHelm);
+							GiveItem(_questPlayer, MercenaryEpicLegs);
+							GiveItem(_questPlayer, MercenaryEpicVest);
 							break;
 						}
 					case eCharacterClass.Cabalist:
 						{
-							GiveItem(m_questPlayer, CabalistEpicArms);
-							GiveItem(m_questPlayer, CabalistEpicBoots);
-							GiveItem(m_questPlayer, CabalistEpicGloves);
-							GiveItem(m_questPlayer, CabalistEpicHelm);
-							GiveItem(m_questPlayer, CabalistEpicLegs);
-							GiveItem(m_questPlayer, CabalistEpicVest);
+							GiveItem(_questPlayer, CabalistEpicArms);
+							GiveItem(_questPlayer, CabalistEpicBoots);
+							GiveItem(_questPlayer, CabalistEpicGloves);
+							GiveItem(_questPlayer, CabalistEpicHelm);
+							GiveItem(_questPlayer, CabalistEpicLegs);
+							GiveItem(_questPlayer, CabalistEpicVest);
 							break;
 						}
 					case eCharacterClass.Infiltrator:
 						{
-							GiveItem(m_questPlayer, InfiltratorEpicArms);
-							GiveItem(m_questPlayer, InfiltratorEpicBoots);
-							GiveItem(m_questPlayer, InfiltratorEpicGloves);
-							GiveItem(m_questPlayer, InfiltratorEpicHelm);
-							GiveItem(m_questPlayer, InfiltratorEpicLegs);
-							GiveItem(m_questPlayer, InfiltratorEpicVest);
+							GiveItem(_questPlayer, InfiltratorEpicArms);
+							GiveItem(_questPlayer, InfiltratorEpicBoots);
+							GiveItem(_questPlayer, InfiltratorEpicGloves);
+							GiveItem(_questPlayer, InfiltratorEpicHelm);
+							GiveItem(_questPlayer, InfiltratorEpicLegs);
+							GiveItem(_questPlayer, InfiltratorEpicVest);
 							break;
 						}
 					case eCharacterClass.Necromancer:
 						{
-							GiveItem(m_questPlayer, NecromancerEpicArms);
-							GiveItem(m_questPlayer, NecromancerEpicBoots);
-							GiveItem(m_questPlayer, NecromancerEpicGloves);
-							GiveItem(m_questPlayer, NecromancerEpicHelm);
-							GiveItem(m_questPlayer, NecromancerEpicLegs);
-							GiveItem(m_questPlayer, NecromancerEpicVest);
+							GiveItem(_questPlayer, NecromancerEpicArms);
+							GiveItem(_questPlayer, NecromancerEpicBoots);
+							GiveItem(_questPlayer, NecromancerEpicGloves);
+							GiveItem(_questPlayer, NecromancerEpicHelm);
+							GiveItem(_questPlayer, NecromancerEpicLegs);
+							GiveItem(_questPlayer, NecromancerEpicVest);
 							break;
 						}
 					case eCharacterClass.Heretic:
 						{
-							GiveItem(m_questPlayer, HereticEpicArms);
-							GiveItem(m_questPlayer, HereticEpicBoots);
-							GiveItem(m_questPlayer, HereticEpicGloves);
-							GiveItem(m_questPlayer, HereticEpicHelm);
-							GiveItem(m_questPlayer, HereticEpicLegs);
-							GiveItem(m_questPlayer, HereticEpicVest);
+							GiveItem(_questPlayer, HereticEpicArms);
+							GiveItem(_questPlayer, HereticEpicBoots);
+							GiveItem(_questPlayer, HereticEpicGloves);
+							GiveItem(_questPlayer, HereticEpicHelm);
+							GiveItem(_questPlayer, HereticEpicLegs);
+							GiveItem(_questPlayer, HereticEpicVest);
 							break;
 						}
 				}
 
-				m_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 1937768448, true);
-				//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
+				_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 1937768448, true);
+				//_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
 			}
 			else
 			{
-				m_questPlayer.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				_questPlayer.Out.SendMessage("You do not have enough free space in your inventory!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 			}
 		}
 

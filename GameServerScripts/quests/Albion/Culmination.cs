@@ -871,7 +871,7 @@ namespace DOL.GS.Quests.Albion
 			}
 
 
-			foreach (GamePlayer visPlayer in dunwynClone.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+			foreach (GamePlayer visPlayer in dunwynClone.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(dunwynClone.CurrentRegion)))
 			{
 				visPlayer.Out.SendEmoteAnimation(dunwynClone, eEmote.Bind);
 			}
@@ -1168,7 +1168,7 @@ namespace DOL.GS.Quests.Albion
 				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
 				if (gArgs.Target.Name == masterFrederick.Name && gArgs.Item.Id_nb == queenTatianasHead.Id_nb)
 				{
-					masterFrederick.SayTo(m_questPlayer, "Wonderful! Now I know Cotswold will be safe, thanks in no small part to you, Recruit Vinde. Excellent work. Cotswold is forever in your debt. I have a [reward] for you. I hope you have some use for it.");
+					masterFrederick.SayTo(_questPlayer, "Wonderful! Now I know Cotswold will be safe, thanks in no small part to you, Recruit Vinde. Excellent work. Cotswold is forever in your debt. I have a [reward] for you. I hope you have some use for it.");
 					RemoveItem(masterFrederick, player, queenTatianasHead);
 					Step = 5;
 					return;
@@ -1182,9 +1182,9 @@ namespace DOL.GS.Quests.Albion
 
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			RemoveItem(m_questPlayer, queenTatianasHead, false);
+			RemoveItem(_questPlayer, queenTatianasHead, false);
 
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
 		}
 
 		public override void FinishQuest()
@@ -1194,24 +1194,24 @@ namespace DOL.GS.Quests.Albion
 			// make sure to clean up, should be needed , but just to make certain
 			ResetMasterDunwyn();
 			//Give reward to player here ...              
-			m_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 1012, true);
+			_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 1012, true);
             long money = Money.GetMoney(0, 0, 0, 9, Util.Random(50));
-			m_questPlayer.AddMoney(money, "You recieve {0} as a reward.");
-            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, money);
-			if (m_questPlayer.HasAbilityToUseItem(recruitsGauntlets))
+			_questPlayer.AddMoney(money, "You recieve {0} as a reward.");
+            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", _questPlayer, eInventoryActionType.Quest, money);
+			if (_questPlayer.HasAbilityToUseItem(recruitsGauntlets))
 			{
-				GiveItem(masterFrederick, m_questPlayer, recruitsGauntlets);
-				GiveItem(masterFrederick, m_questPlayer, recruitsJewel);
+				GiveItem(masterFrederick, _questPlayer, recruitsGauntlets);
+				GiveItem(masterFrederick, _questPlayer, recruitsJewel);
 			}
 			else
 			{
-				GiveItem(masterFrederick, m_questPlayer, recruitsGloves);
-				GiveItem(masterFrederick, m_questPlayer, recruitsJewelCloth);
+				GiveItem(masterFrederick, _questPlayer, recruitsGloves);
+				GiveItem(masterFrederick, _questPlayer, recruitsJewelCloth);
 			}
 
-			GiveItem(masterFrederick, m_questPlayer, recruitsBracer);
+			GiveItem(masterFrederick, _questPlayer, recruitsBracer);
 
-			GameEventMgr.RemoveHandler(m_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
+			GameEventMgr.RemoveHandler(_questPlayer, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
 		}
 
 	}

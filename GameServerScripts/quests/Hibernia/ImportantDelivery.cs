@@ -783,21 +783,21 @@ namespace DOL.GS.Quests.Hibernia
 				switch (Step)
 				{
 					case 1:
-						return LanguageMgr.GetTranslation(m_questPlayer.Client, "Hib.ImportantDelivery.Description.Step1");
+						return LanguageMgr.GetTranslation(_questPlayer.Client, "Hib.ImportantDelivery.Description.Step1");
 					case 2:
-						return LanguageMgr.GetTranslation(m_questPlayer.Client, "Hib.ImportantDelivery.Description.Step2");
+						return LanguageMgr.GetTranslation(_questPlayer.Client, "Hib.ImportantDelivery.Description.Step2");
 					case 3:
-						return LanguageMgr.GetTranslation(m_questPlayer.Client, "Hib.ImportantDelivery.Description.Step3");
+						return LanguageMgr.GetTranslation(_questPlayer.Client, "Hib.ImportantDelivery.Description.Step3");
 					case 4:
-						return LanguageMgr.GetTranslation(m_questPlayer.Client, "Hib.ImportantDelivery.Description.Step4");
+						return LanguageMgr.GetTranslation(_questPlayer.Client, "Hib.ImportantDelivery.Description.Step4");
 					case 5:
-						return LanguageMgr.GetTranslation(m_questPlayer.Client, "Hib.ImportantDelivery.Description.Step5");
+						return LanguageMgr.GetTranslation(_questPlayer.Client, "Hib.ImportantDelivery.Description.Step5");
 					case 6:
-						return LanguageMgr.GetTranslation(m_questPlayer.Client, "Hib.ImportantDelivery.Description.Step6");
+						return LanguageMgr.GetTranslation(_questPlayer.Client, "Hib.ImportantDelivery.Description.Step6");
 					case 7:
-						return LanguageMgr.GetTranslation(m_questPlayer.Client, "Hib.ImportantDelivery.Description.Step7");
+						return LanguageMgr.GetTranslation(_questPlayer.Client, "Hib.ImportantDelivery.Description.Step7");
 					case 8:
-						return LanguageMgr.GetTranslation(m_questPlayer.Client, "Hib.ImportantDelivery.Description.Step8");
+						return LanguageMgr.GetTranslation(_questPlayer.Client, "Hib.ImportantDelivery.Description.Step8");
 				}
 				return base.Description;
 			}
@@ -861,10 +861,10 @@ namespace DOL.GS.Quests.Hibernia
 		{
 			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
-			RemoveItem(m_questPlayer, ticketToArdee, false);
-			RemoveItem(m_questPlayer, ticketToTirnamBeo, false);
-			RemoveItem(m_questPlayer, sackOfSupplies, false);
-			RemoveItem(m_questPlayer, crateOfVegetables, false);
+			RemoveItem(_questPlayer, ticketToArdee, false);
+			RemoveItem(_questPlayer, ticketToTirnamBeo, false);
+			RemoveItem(_questPlayer, sackOfSupplies, false);
+			RemoveItem(_questPlayer, crateOfVegetables, false);
 
 		}
 
@@ -873,12 +873,12 @@ namespace DOL.GS.Quests.Hibernia
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 
 			//Give reward to player here ...            
-			GiveItem(freagus, m_questPlayer, recruitsCloak);
+			GiveItem(freagus, _questPlayer, recruitsCloak);
 
-			m_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 12);
+			_questPlayer.GainExperience(GameLiving.eXPSource.Quest, 12);
             long money = Money.GetMoney(0, 0, 0, 1, Util.Random(50));
-			m_questPlayer.AddMoney(money, LanguageMgr.GetTranslation(m_questPlayer.Client, "Hib.ImportantDelivery.FinishQuest.RecieveReward"));
-            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", m_questPlayer, eInventoryActionType.Quest, money);
+			_questPlayer.AddMoney(money, LanguageMgr.GetTranslation(_questPlayer.Client, "Hib.ImportantDelivery.FinishQuest.RecieveReward"));
+            InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", _questPlayer, eInventoryActionType.Quest, money);
 		}
 	}
 }
