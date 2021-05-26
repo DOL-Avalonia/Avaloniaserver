@@ -797,6 +797,24 @@ namespace DOL.Database
         /// <returns>Collection of DataObject with primary key matching values</returns>
         protected abstract IEnumerable<DataObject> FindObjectByKeyImpl(DataTableHandler tableHandler, IEnumerable<object> keys);
 
+        #region Public Parameterized Query Abstraction
+        public TObject SelectObject<TObject>(WhereExpression whereExpression)
+            where TObject : DataObject
+        {
+            var whereClause = whereExpression.WhereClause;
+            var parameters = whereExpression.QueryParameters;
+            return SelectObject<TObject>(whereClause, parameters);
+        }
+
+        public IList<TObject> SelectObjects<TObject>(WhereExpression whereExpression)
+            where TObject : DataObject
+        {
+            var whereClause = whereExpression.WhereClause;
+            var parameters = whereExpression.QueryParameters;
+            return SelectObjects<TObject>(whereClause, parameters);
+        }
+        #endregion
+
         /// <summary>
         /// Retrieve a Collection of DataObjects from database based on the Where Expression and Parameters Collection
         /// </summary>
