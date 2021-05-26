@@ -232,7 +232,17 @@ namespace DOL.GS.PropertyCalc
                 itemBonus += buffBonus / 2;
                 buffBonus = 0;
             }
-            return (itemBonus + buffBonus + abilityBonus);
+
+            if (living is GamePlayer player)
+            {
+                if(player.IsRenaissance)
+                    abilityBonus += 3;
+
+                if (player.Guild != null)
+                    abilityBonus += player.Guild.GetResistFromTerritories(eResist.Natural);
+            }
+
+			return (itemBonus + buffBonus + abilityBonus);
         }
         public override int CalcValueFromBuffs(GameLiving living, eProperty property)
         {
