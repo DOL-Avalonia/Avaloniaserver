@@ -244,7 +244,7 @@ namespace DOL.GS.Styles
 					return;
 				}
 
-				int fatCost = CalculateEnduranceCost(living, style, weapon.SPD_ABS);
+				int fatCost = CalculateEnduranceCost(living, style, weapon != null ? weapon.SPD_ABS : 40);
 				if (living.Endurance < fatCost)
 				{
 					if (player != null)
@@ -365,8 +365,10 @@ namespace DOL.GS.Styles
 					return false;
 
 				if (weapon != null && weapon.Object_Type == (int)eObjectType.Shield)
+				{
 					attackData.AnimationId = (weapon.Hand != 1) ? attackData.Style.Icon : attackData.Style.TwoHandAnimation; // 2h shield?
-				int fatCost = CalculateEnduranceCost(living, attackData.Style, weapon != null ? weapon.SPD_ABS : 40);
+				}
+				int fatCost = CalculateEnduranceCost(living, attackData.Style, weapon?.SPD_ABS ?? 40);
 
 				//Reduce endurance if styled attack missed
 				switch (attackData.AttackResult)

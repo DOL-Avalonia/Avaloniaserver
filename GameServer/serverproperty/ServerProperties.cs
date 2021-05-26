@@ -1324,12 +1324,6 @@ namespace DOL.GS.ServerProperties
         public static double PET_AUTOSET_INT_MULTIPLIER { get; set; }
 
         /// <summary>
-		/// Multiplier for pet buff/debuff effects
-		/// </summary>
-		[ServerProperty("npc", "pet_buff_effect_multiplier", "Determines effectiveness of buff/debuff effects on pets.  Debuff effects are multiplier * stat / level, buffs effects are half that. ", 13)]
-        public static double PET_BUFF_EFFECT_MULTIPLIER { get; set; }
-
-        /// <summary>
         /// Enable 2H weapon damage bonus for pets?
         /// </summary>
         [ServerProperty("npc", "pet_2h_bonus_damage", "If true, pets that use a 2H weapon and have a block chance get bonus damage equal to their block chance to compensate for not being able to block. ", true)]
@@ -1522,12 +1516,6 @@ namespace DOL.GS.ServerProperties
         /// </summary>
         [ServerProperty("npc", "mob_autoset_int_multiplier", "Multiplier to use when auto-setting INT stat. ", 1.0)]
         public static double MOB_AUTOSET_INT_MULTIPLIER { get; set; }
-
-        /// <summary>
-		/// Multiplier for mob buff/debuff effects
-		/// </summary>
-		[ServerProperty("npc", "mob_buff_effect_multiplier", "Determines effectiveness of buff/debuff effects on mobs.  Debuff effects are multiplier * stat / level, buffs effects are half that. ", 13)]
-        public static double MOB_BUFF_EFFECT_MULTIPLIER { get; set; }
 
         /// <summary>
 		/// Do pets level up with their owner?

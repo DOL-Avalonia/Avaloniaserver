@@ -362,6 +362,10 @@ namespace DOL.GS
                 Empathy = NPCTemplate.Empathy;
                 Piety = NPCTemplate.Piety;
                 Charisma = NPCTemplate.Charisma;
+				WeaponDps = NPCTemplate.WeaponDps;
+				WeaponSpd = NPCTemplate.WeaponSpd;
+				ArmorFactor = NPCTemplate.ArmorFactor;
+				ArmorAbsorb = NPCTemplate.ArmorAbsorb;
             }
             else
             {
@@ -394,6 +398,10 @@ namespace DOL.GS
                     Empathy = 0;
                     Piety = 0;
                     Charisma = 0;
+					WeaponDps = 0;
+					WeaponSpd = 0;
+					ArmorFactor = 0;
+					ArmorAbsorb = 0;
                 }
             }
 
@@ -440,6 +448,20 @@ namespace DOL.GS
 
             if (Charisma < 1)
                 Charisma = (short)(29 + Level);
+
+			if (WeaponDps < 1)
+				WeaponDps = (int)((1.4 + 0.3 * Level + Level * Level * 0.002) * 10);
+			if (WeaponSpd < 1)
+				WeaponSpd = 30;
+			if (ArmorFactor < 1)
+				ArmorFactor = (int)((1.0 + (Level / 100.0)) * Level * 1.8);
+			if (ArmorAbsorb < 1)
+			{
+				ArmorAbsorb = 0;
+				if (Level >= 30) ArmorAbsorb = 27;
+				else if (Level >= 20) ArmorAbsorb = 19;
+				else if (Level >= 10) ArmorAbsorb = 10;
+			}
         }
 
         /// <summary>
@@ -5307,7 +5329,31 @@ namespace DOL.GS
 		}
 		public override double GetArmorAbsorb(eArmorSlot slot)
 		{
-			return ArmorAbsorb / 100.0 + GetModified(eProperty.ArmorAbsorption) * 0.01;
+			double absorbBonus = GetModified(eProperty.ArmorAbsorption) / 100.0;
+
+			double debuffBuffRatio = 2;
+
+			double constitutionPerAbsorptionPercent = 4;
+			double baseConstitutionPerAbsorptionPercent = 12; //kept for DB legacy reasons
+			var constitutionBuffBonus = BaseBuffBonusCategory[eProperty.Constitution] + SpecBuffBonusCategory[eProperty.Constitution];
+			var constitutionDebuffMalus = Math.Abs(DebuffCategory[eProperty.Constitution] + SpecDebuffCategory[eProperty.Constitution]);
+			double constitutionAbsorb = 0;
+			//simulate old behavior for base constitution
+			double baseConstitutionAbsorb = (GetBaseStat((eStat)eProperty.Constitution) - 60) / baseConstitutionPerAbsorptionPercent / 100.0;
+			double consitutionBuffAbsorb = (constitutionBuffBonus - constitutionDebuffMalus * debuffBuffRatio) / constitutionPerAbsorptionPercent / 100;
+			constitutionAbsorb += baseConstitutionAbsorb + consitutionBuffAbsorb;
+
+			//Note: On Live SpecAFBuffs do nothing => Cap to Live baseAF cap;
+			double afPerAbsorptionPercent = 6;
+			double liveBaseAFcap = 150 * 1.25 * 1.25;
+			double afBuffBonus = Math.Min(liveBaseAFcap, BaseBuffBonusCategory[eProperty.ArmorFactor] + SpecBuffBonusCategory[eProperty.ArmorFactor]);
+			double afDebuffMalus = Math.Abs(DebuffCategory[eProperty.ArmorFactor] + SpecDebuffCategory[eProperty.ArmorFactor]);
+			double afBuffAbsorb = (afBuffBonus - afDebuffMalus * debuffBuffRatio) / afPerAbsorptionPercent / 100;
+
+			double baseAbsorb = ArmorAbsorb * 0.01;
+
+			double absorb = 1 - (1 - absorbBonus) * (1 - baseAbsorb) * (1 - constitutionAbsorb) * (1 - afBuffAbsorb);
+			return absorb;
 		}
 		#endregion
 

@@ -25,11 +25,13 @@ using System.Reflection;
 using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Database;
+using DOL.GS;
 using DOL.GS.Effects;
 using DOL.GS.Housing;
 using DOL.GS.Movement;
 using DOL.GS.PacketHandler;
 using DOL.GS.Quests;
+using DOL.GS.Styles;
 using DOL.GS.Utils;
 
 namespace DOL.GS.Commands
@@ -255,7 +257,11 @@ namespace DOL.GS.Commands
                     case "int":
                     case "emp":
                     case "pie":
-                    case "cha": stat(client, targetMob, args); break;
+                    case "cha":
+                    case "dps":
+                    case "spd":
+                    case "af":
+                    case "abs": stat(client, targetMob, args); break;
                     case "tether": tether(client, targetMob, args); break;
                     case "hood": hood(client, targetMob, args); break;
                     case "cloak": cloak(client, targetMob, args); break;
@@ -1297,7 +1303,10 @@ namespace DOL.GS.Commands
             {
                 if (player.Name == args[2])
                 {
-                    targetMob.StartAttack(player);
+                    if (targetMob.Brain is StandardMobBrain brain)
+                        brain.AddToAggroList(player, brain.AggroLevel + 1);
+                    else
+                        targetMob.StartAttack(player);
                     break;
                 }
             }
@@ -1317,9 +1326,10 @@ namespace DOL.GS.Commands
             }
 
             info.Add(" + Class: " + targetMob.GetType().ToString());
+            info.Add(" + Brain: " + (targetMob.Brain == null ? "(null)" : targetMob.Brain.GetType().ToString()));
+            info.Add(" ");
             info.Add(" + Realm: " + GlobalConstants.RealmToName(targetMob.Realm));
             info.Add(" + Level: " + targetMob.Level);
-            info.Add(" + Brain: " + (targetMob.Brain == null ? "(null)" : targetMob.Brain.GetType().ToString()));
             info.Add(" + Speed(current/max): " + targetMob.CurrentSpeed + "/" + targetMob.MaxSpeedBase);
             info.Add(" + Health: " + targetMob.Health + "/" + targetMob.MaxHealth);
             info.Add(" + Endurance: " + targetMob.Endurance + "/" + targetMob.MaxEndurance);
@@ -1412,7 +1422,7 @@ namespace DOL.GS.Commands
                 }
 
                 info.Add(" + Respawn: " + days + hours + respawn.Minutes + " minutes " + respawn.Seconds + " seconds");
-                info.Add(" + SpawnPoint:  " + targetMob.SpawnPoint.X + ", " + targetMob.SpawnPoint.Y + ", " + targetMob.SpawnPoint.Z);
+                info.Add(" + SpawnPoint:  " + targetMob.SpawnPoint.X + " " + targetMob.SpawnPoint.Y + " " + targetMob.SpawnPoint.Z);
             }
 
             info.Add(" ");
@@ -1436,6 +1446,8 @@ namespace DOL.GS.Commands
             if (targetMob.Abilities != null && targetMob.Abilities.Count > 0)
             {
                 info.Add(" + Abilities: " + targetMob.Abilities.Count);
+                foreach (var ab in targetMob.Abilities)
+                    info.Add($" - {ab.Value.Name} {ab.Value.Level}");
             }
 
             if (targetMob.Spells != null && targetMob.Spells.Count > 0)
@@ -1451,54 +1463,56 @@ namespace DOL.GS.Commands
             if (targetMob.Styles != null && targetMob.Styles.Count > 0)
             {
                 info.Add(" + Styles: " + targetMob.Styles.Count);
+                foreach (Style style in targetMob.Styles)
+                    info.Add($" - {style.ID}. {style.Name}");
             }
 
             info.Add(" ");
 
-            info.Add(" + Model:  " + targetMob.Model + " sized to " + targetMob.Size);
+            info.Add(" + Model: " + targetMob.Model + " sized to " + targetMob.Size);
             info.Add(" + Damage type: " + targetMob.MeleeDamageType);
 
             if (targetMob.Race > 0)
             {
-                info.Add(" + Race:  " + targetMob.Race);
+                info.Add(" + Race: " + targetMob.Race);
             }
 
             if (targetMob.BodyType > 0)
             {
-                info.Add(" + Body Type:  " + targetMob.BodyType);
+                info.Add(" + Body Type: " + targetMob.BodyType);
             }
 
             info.Add(" ");
 
             info.Add("Race Resists:");
-            info.Add(" +  -- Crush/Slash/Thrust:  " + targetMob.GetDamageResist(eProperty.Resist_Crush)
+            info.Add(" +  -- Crush/Slash/Thrust: " + targetMob.GetDamageResist(eProperty.Resist_Crush)
                      + " / " + targetMob.GetDamageResist(eProperty.Resist_Slash)
                      + " / " + targetMob.GetDamageResist(eProperty.Resist_Thrust));
-            info.Add(" +  -- Heat/Cold/Matter:  " + targetMob.GetDamageResist(eProperty.Resist_Heat)
+            info.Add(" +  -- Heat/Cold/Matter: " + targetMob.GetDamageResist(eProperty.Resist_Heat)
                      + " / " + targetMob.GetDamageResist(eProperty.Resist_Cold)
                      + " / " + targetMob.GetDamageResist(eProperty.Resist_Matter));
-            info.Add(" +  -- Body/Spirit/Energy:  " + targetMob.GetDamageResist(eProperty.Resist_Body)
+            info.Add(" +  -- Body/Spirit/Energy: " + targetMob.GetDamageResist(eProperty.Resist_Body)
                      + " / " + targetMob.GetDamageResist(eProperty.Resist_Spirit)
                      + " / " + targetMob.GetDamageResist(eProperty.Resist_Energy));
-            info.Add(" +  -- Natural:  " + targetMob.GetDamageResist(eProperty.Resist_Natural));
+            info.Add(" +  -- Natural: " + targetMob.GetDamageResist(eProperty.Resist_Natural));
 
             info.Add(" ");
 
             info.Add("Current Resists:");
-            info.Add(" +  -- Crush/Slash/Thrust:  " + targetMob.GetModified(eProperty.Resist_Crush)
+            info.Add(" +  -- Crush/Slash/Thrust: " + targetMob.GetModified(eProperty.Resist_Crush)
                      + " / " + targetMob.GetModified(eProperty.Resist_Slash)
                      + " / " + targetMob.GetModified(eProperty.Resist_Thrust));
-            info.Add(" +  -- Heat/Cold/Matter:  " + targetMob.GetModified(eProperty.Resist_Heat)
+            info.Add(" +  -- Heat/Cold/Matter: " + targetMob.GetModified(eProperty.Resist_Heat)
                      + " / " + targetMob.GetModified(eProperty.Resist_Cold)
                      + " / " + targetMob.GetModified(eProperty.Resist_Matter));
-            info.Add(" +  -- Body/Spirit/Energy:  " + targetMob.GetModified(eProperty.Resist_Body)
+            info.Add(" +  -- Body/Spirit/Energy: " + targetMob.GetModified(eProperty.Resist_Body)
                      + " / " + targetMob.GetModified(eProperty.Resist_Spirit)
                      + " / " + targetMob.GetModified(eProperty.Resist_Energy));
-            info.Add(" +  -- Natural:  " + targetMob.GetModified(eProperty.Resist_Natural));
+            info.Add(" +  -- Natural: " + targetMob.GetModified(eProperty.Resist_Natural));
 
             info.Add(" ");
 
-            info.Add(" + Position (X, Y, Z, H):  " + targetMob.X + ", " + targetMob.Y + ", " + targetMob.Z + ", " + targetMob.Heading);
+            info.Add(" + Position (X, Y, Z, H): " + targetMob.X + ", " + targetMob.Y + ", " + targetMob.Z + ", " + targetMob.Heading);
 
             if (targetMob.GuildName != null && targetMob.GuildName.Length > 0)
             {
@@ -1516,8 +1530,6 @@ namespace DOL.GS.Commands
             info.Add(" + OID: " + targetMob.ObjectID);
             info.Add(" + Active weapon slot: " + targetMob.ActiveWeaponSlot);
             info.Add(" + Visible weapon slot: " + targetMob.VisibleActiveWeaponSlots);
-            info.Add(" + Speed(current/max): " + targetMob.CurrentSpeed + "/" + targetMob.MaxSpeedBase);
-            info.Add(" + Health: " + targetMob.Health + "/" + targetMob.MaxHealth);
 
             if (targetMob.EquipmentTemplateID != null && targetMob.EquipmentTemplateID.Length > 0)
             {
@@ -3033,6 +3045,10 @@ namespace DOL.GS.Commands
                         case "EMP": targetMob.Empathy = statval; break;
                         case "PIE": targetMob.Piety = statval; break;
                         case "CHA": targetMob.Charisma = statval; break;
+                    case "DPS": targetMob.WeaponDps = statval; break;
+                    case "SPD": targetMob.WeaponSpd = statval; break;
+                    case "AF": targetMob.ArmorFactor = statval; break;
+                    case "ABS": targetMob.ArmorAbsorb = statval; break;
                 }
 
                 targetMob.SaveIntoDatabase();
