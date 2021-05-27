@@ -66,13 +66,23 @@ namespace DOL.GS.Quests
         /// </summary>
         public static bool SAVE_INTO_DATABASE = true;
 
+        public Queue m_animEmoteTeleportTimerQueue = new Queue();
+        public Queue m_animEmoteObjectQueue = new Queue();
+
+        public Queue m_animSpellTeleportTimerQueue = new Queue();
+        public Queue m_animSpellObjectQueue = new Queue();
+
+        public Queue m_portTeleportTimerQueue = new Queue();
+        public Queue m_portObjectQueue = new Queue();
+        public Queue m_portDestinationQueue = new Queue();
+
         // Tolakram - this is not used anymore due to the fact items were saved based on the same setting
         // With the new inventory system all items must be saved.
         // To optionally not save NPC's use ServerProperties.Properties.SAVE_QUEST_MOBS_INTO_DATABASE
-        public Queue AnimEmoteTeleportTimerQueue = new Queue();
-        public Queue AnimEmoteObjectQueue = new Queue();
-        public Queue AnimSpellTeleportTimerQueue = new Queue();
-        public Queue AnimSpellObjectQueue = new Queue();
+        public Queue AnimEmoteTeleportTimerQueue => m_animEmoteTeleportTimerQueue;
+        public Queue AnimEmoteObjectQueue => m_animEmoteObjectQueue;
+        public Queue AnimSpellTeleportTimerQueue => m_animSpellTeleportTimerQueue;
+        public Queue AnimSpellObjectQueue => m_animSpellObjectQueue;
 
         private readonly Queue _portTeleportTimerQueue = new Queue();
         private readonly Queue _portObjectQueue = new Queue();

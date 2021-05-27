@@ -87,7 +87,7 @@ namespace DOL.GS.Quests
         /// </summary>
         /// <param name="questType">Type of Quest this Builder is used for</param>
         /// <returns>QuestBuilder</returns>
-        public static QuestBuilder GetBuilder(Type questType)
+        public static QuestBuilder getBuilder(Type questType)
         {
             return new QuestBuilder(questType);
         }
