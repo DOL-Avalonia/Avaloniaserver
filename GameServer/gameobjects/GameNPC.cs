@@ -2476,13 +2476,13 @@ namespace DOL.GS
             // We need level set before assigning spells to scale pet spells
             if (template.ReplaceMobValues)
             {
-                byte choosenLevel = 1;
                 if (!Util.IsEmpty(template.Level))
                 {
+					byte choosenLevel = 1;
                     var split = template.Level.SplitCSV(true);
                     byte.TryParse(split[Util.Random(0, split.Count - 1)], out choosenLevel);
+					this.Level = choosenLevel; // Also calls AutosetStats()
                 }
-                this.Level = choosenLevel; // Also calls AutosetStats()
             }
 
             if (template.Spells != null) this.Spells = template.Spells;
@@ -2637,30 +2637,32 @@ namespace DOL.GS
 				#endregion
 			}
 
-            BuffBonusCategory4[(int)eStat.STR] += template.Strength;
-            BuffBonusCategory4[(int)eStat.DEX] += template.Dexterity;
-            BuffBonusCategory4[(int)eStat.CON] += template.Constitution;
-            BuffBonusCategory4[(int)eStat.QUI] += template.Quickness;
-            BuffBonusCategory4[(int)eStat.INT] += template.Intelligence;
-            BuffBonusCategory4[(int)eStat.PIE] += template.Piety;
-            BuffBonusCategory4[(int)eStat.EMP] += template.Empathy;
-            BuffBonusCategory4[(int)eStat.CHR] += template.Charisma;
+				// Dre: don't change the brain if it's already a StandardMobBrain
+				if (Brain is StandardMobBrain brain)
+				{
+					brain.AggroLevel = template.AggroLevel;
+					brain.AggroRange = template.AggroRange;
+				}
+				else
+				{
+					m_ownBrain = new StandardMobBrain
+					{
+						Body = this,
+						AggroLevel = template.AggroLevel,
+						AggroRange = template.AggroRange
+					};
+				}
 
-            // Dre: don't change the brain if it's already a StandardMobBrain
-            if (Brain is StandardMobBrain brain)
-            {
-                brain.AggroLevel = template.AggroLevel;
-                brain.AggroRange = template.AggroRange;
-            }
-            else
-            {
-                m_ownBrain = new StandardMobBrain
-                {
-                    Body = this,
-                    AggroLevel = template.AggroLevel,
-                    AggroRange = template.AggroRange
-                };
-            }
+			if (template.Spells != null) Spells = template.Spells;
+			if (template.Styles != null) Styles = template.Styles;
+			if (template.Abilities != null)
+			{
+				lock (m_lockAbilities)
+				{
+					foreach (Ability ab in template.Abilities)
+						m_abilities[ab.KeyName] = ab;
+				}
+			}
         }
 
 		/// <summary>

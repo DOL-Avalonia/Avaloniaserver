@@ -46,7 +46,13 @@ namespace DOL.GS.PropertyCalc
 					+ player.AbilityBonus[(int)property] * 10;
 				int parrySpec = 0;
 				if (player.HasSpecialization(Specs.Parry))
-					parrySpec = Math.Min(500, (player.Dexterity * 2 - 100) / 4 + (player.GetModifiedSpecLevel(Specs.Parry) - 1) * (10 / 2) + 50);
+				{					
+					parrySpec = (player.Dexterity * 2 - 100) / 4 + (player.GetModifiedSpecLevel(Specs.Parry) - 1) * (10 / 2) + 50;
+				}
+                if (parrySpec > 500)
+                {
+                    parrySpec = 500;
+                }
 				return parrySpec + buff;
 			}
 
