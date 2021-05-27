@@ -732,7 +732,8 @@ namespace DOL.GS.ServerRules
 				{
 					foreach (KeyValuePair<GameObject, double> de in killedPlayer.XPGainers)
 					{
-						if (de.Key is GamePlayer pl)
+						GamePlayer pl = de.Key as GamePlayer;
+						if (pl != null)
 						{
 							pl.Out.SendMessage(killedPlayer.Name + " has been killed recently and is worth no realm points!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 							pl.Out.SendMessage(killedPlayer.Name + " has been killed recently and is worth no experience!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
