@@ -30,6 +30,7 @@ using DOL.GS.ServerProperties;
 using DOL.GS.RealmAbilities;
 using DOL.GS.SkillHandler;
 using DOL.Language;
+using DOL.GS.Utils;
 
 using log4net;
 using DOL.gameobjects.CustomNPC;

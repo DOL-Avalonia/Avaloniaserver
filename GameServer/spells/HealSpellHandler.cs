@@ -442,11 +442,10 @@ namespace DOL.GS.Spells
                 upperLimit = 1;
             }
 
-            double eff = 1.25;
             double lineSpec = Caster.GetModifiedSpecLevel(m_spellLine.Spec);
             if (lineSpec < 1)
                 lineSpec = 1;
-            eff = 0.25;
+            double eff = 0.25;
             if (Spell.Level > 0)
             {
                 eff += (lineSpec - 1.0) / Spell.Level;

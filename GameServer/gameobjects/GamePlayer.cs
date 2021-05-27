@@ -7445,24 +7445,11 @@ namespace DOL.GS
 		/// <returns></returns>
 		public int GetWeaponStatForWS(InventoryItem weapon)
 		{
-			var stat = 0.0;
 			if (weapon != null)
 			{
 				switch ((eObjectType)weapon.Object_Type)
 				{
-					// STR+DEX modifier
-					case eObjectType.ThrustWeapon:
-					case eObjectType.Piercing:
-					case eObjectType.Spear:
-					case eObjectType.Flexible:
-					case eObjectType.HandToHand:
-						var str = GetModified(eProperty.Strength);
-						var dex = GetModified(eProperty.Dexterity);
-						stat += str < 50 ? str - 25 : str / 2;
-						stat += dex < 50 ? dex - 25 : dex / 2;
-						break;
-
-					// DEX modifier
+						// DEX modifier
 					case eObjectType.Staff:
 					case eObjectType.Fired:
 					case eObjectType.Longbow:
@@ -7471,20 +7458,19 @@ namespace DOL.GS
 					case eObjectType.RecurvedBow:
 					case eObjectType.Thrown:
 					case eObjectType.Shield:
-						stat = GetModified(eProperty.Dexterity);
-						break;
+						return GetModified(eProperty.Dexterity) / 2;
 
-					// STR modifier for others
-					default:
-						stat = GetModified(eProperty.Strength);
-						break;
+						// STR+DEX modifier
+					case eObjectType.ThrustWeapon:
+					case eObjectType.Piercing:
+					case eObjectType.Spear:
+					case eObjectType.Flexible:
+					case eObjectType.HandToHand:
+						return (GetModified(eProperty.Strength) + GetModified(eProperty.Dexterity)) / 4;
 				}
 			}
-			if (stat < 50)
-				stat -= 50;
-			else
-				stat = (stat - 50) / 2;
-			return (int)stat;
+			// STR modifier for others
+			return GetModified(eProperty.Strength) / 2;
 		}
 
 		/// <summary>
@@ -7539,18 +7525,20 @@ namespace DOL.GS
 				return 20;
 			double eaf = item.DPS_AF; // base AF buff
 
-			eaf += BaseBuffBonusCategory[(int)eProperty.ArmorFactor];
+			double eaf = item.DPS_AF + BaseBuffBonusCategory[(int)eProperty.ArmorFactor]; // base AF buff
 
 			int itemAFcap = Level;
 			if (RealmLevel > 39)
 				itemAFcap++;
 			if (item.Object_Type != (int)eObjectType.Cloth)
-				itemAFcap *= 2;
+			{
+				itemAFcap <<= 1;
+			}
 
 			eaf = eaf.Clamp(0, itemAFcap);
 
 			// my test shows that qual is added after AF buff
-			eaf *= item.Quality * 0.01 * item.ConditionPercent * 0.01;
+			eaf *= item.Quality * 0.01 * item.Condition / item.MaxCondition;
 
 			eaf += GetModified(eProperty.ArmorFactor) / 5;
 			return 20 + eaf;
@@ -9821,7 +9809,7 @@ namespace DOL.GS
 				ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(this, spell, chargeEffectLine);
 				if (spellHandler != null)
 				{
-					if (IsOnHorse && !spellHandler.HasPositiveEffect && spell.Target != "self")
+					if (IsOnHorse && !spellHandler.HasPositiveEffect && spell.Target.ToLower() != "self")
 						IsOnHorse = false;
 
 					Stealth(false);

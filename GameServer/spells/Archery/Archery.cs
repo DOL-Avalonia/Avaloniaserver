@@ -240,10 +240,14 @@ namespace DOL.GS.Spells
 					case (int)eShotType.Other:
 					default:
 						{
-							if (Caster is GamePlayer)
-								((GamePlayer)Caster).Out.SendMessage("Your strike was absorbed by a magical barrier!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-							if (player != null)
+							if (Caster is GamePlayer pl)
+							{
+								pl.Out.SendMessage("Your strike was absorbed by a magical barrier!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+							}
+							if (target != null)
+							{
 								player.Out.SendMessage("The blow was absorbed by a magical barrier!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+							}
 							ad.AttackResult = GameLiving.eAttackResult.Missed;
 							bladeturn.Cancel(false);
 						}
@@ -292,9 +296,11 @@ namespace DOL.GS.Spells
 			double spellDamage = Spell.Damage;
 			GamePlayer player = Caster as GamePlayer;
 
-			int manaStatValue;
+			int manaStatValue = 0;
 			if (player != null)
+			{
 				manaStatValue = player.GetModified((eProperty)player.CharacterClass.ManaStat);
+			}
 			else
 				manaStatValue = Caster.GetModified(eProperty.Intelligence);
 			spellDamage *= (manaStatValue + 300) / 275.0;
