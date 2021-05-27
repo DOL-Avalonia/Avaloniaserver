@@ -2379,7 +2379,7 @@ namespace DOL.GS
             {
 				mob.Model = Model;
 				mob.Race = Race;
-				mob.Flags = (uint)Flags;
+				mob.Flags = (uint)m_flags;
 				mob.VisibleWeaponSlots = this.m_visibleActiveWeaponSlots;
 			}
             else

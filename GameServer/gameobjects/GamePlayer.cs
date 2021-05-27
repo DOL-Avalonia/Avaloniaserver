@@ -7523,7 +7523,6 @@ namespace DOL.GS
 			var item = Inventory.GetItem((eInventorySlot)slot);
 			if (item == null)
 				return 20;
-			double eaf = item.DPS_AF; // base AF buff
 
 			double eaf = item.DPS_AF + BaseBuffBonusCategory[(int)eProperty.ArmorFactor]; // base AF buff
 
