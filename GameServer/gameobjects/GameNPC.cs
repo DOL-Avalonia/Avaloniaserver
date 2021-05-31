@@ -4342,7 +4342,9 @@ namespace DOL.GS
 			if(tempoarallyFlags != 0)
             {
 				tempoarallyFlags = 0;
-            }
+				// Send flag update to the players
+				Flags = Flags;
+			}
 			if(temporallyBrain != null)
             {
 				RemoveBrain(temporallyBrain);
@@ -4416,15 +4418,20 @@ namespace DOL.GS
 					if(ambientText.Count > 0)
                     {
 						MobXAmbientBehaviour changeBrainAmbient = ambientText.Where(ambient => !string.IsNullOrEmpty(ambient.ChangeBrain)).FirstOrDefault();
-						if (changeBrainAmbient != null && temporallyBrain != null && changeBrainAmbient.HP < HealthPercent)
+						if(changeBrainAmbient.HP < (byte)(value <= 0 ? 0 : Health * 100 / MaxHealth))
                         {
-							RemoveBrain(temporallyBrain);
-							temporallyBrain = null;
-						}
-						MobXAmbientBehaviour changeFlagAmbient = ambientText.Where(ambient => ambient.ChangeFlag > 0).FirstOrDefault();
-						if (changeFlagAmbient != null && temporallyBrain != null && changeFlagAmbient.HP < HealthPercent)
-						{
-							tempoarallyFlags = 0;
+							if (changeBrainAmbient != null && temporallyBrain != null)
+							{
+								RemoveBrain(temporallyBrain);
+								temporallyBrain = null;
+							}
+							MobXAmbientBehaviour changeFlagAmbient = ambientText.Where(ambient => ambient.ChangeFlag > 0).FirstOrDefault();
+							if (changeFlagAmbient != null && temporallyBrain != null)
+							{
+								tempoarallyFlags = 0;
+								// Send flag update to the players
+								Flags = Flags;
+							}
 						}
 					}
 				}

@@ -3477,7 +3477,7 @@ namespace DOL.GS.Commands
                 }
                 catch
                 {
-                    client.Out.SendMessage("You must specify a proper type for the trigger <spawning, aggroing, dieing, fighting, moving, roaming, seeing, interact, hurting immunised>.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    client.Out.SendMessage("You must specify a proper type for the trigger <spawning, aggroing, dieing, fighting, moving, roaming, seeing, interact, hurting or immunised>.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     client.Out.SendMessage("example: dieing none This is what I will say when I die!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return;
                 }
