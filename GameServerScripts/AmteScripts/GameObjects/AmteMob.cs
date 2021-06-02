@@ -104,27 +104,24 @@ public class AmteMob : GameNPC, IAmteNPC
 
     private void LoadDbBrainParam(string dataid)
     {
-        var data = GameServer.Database.SelectObjects<DBBrainsParam>("`MobID` = '" + dataid + "'");
+        var data = GameServer.Database.SelectObjects<DBBrainsParam>("MobID = @MobId", new QueryParameter("@MobId", dataid));
         for (var cp = GetCustomParam(); cp != null; cp = cp.next)
         {
             var cp1 = cp;
             var param = data.Where(o => o.Param == cp1.name).FirstOrDefault();
             if (param == null)
+            {
                 continue;
+            }
+            cp.Value = param.Value;
             if (_nameXcp.ContainsKey(cp.name))
             {
-                GameServer.Database.DeleteObject(param);
-                continue;
+                _nameXcp[cp.name] = param;
             }
-            try
+            else
             {
-                cp.Value = param.Value;
+                _nameXcp.Add(cp.name, param);
             }
-            catch (Exception e)
-            {
-
-            }
-            _nameXcp.Add(cp.name, param);
         }
     }
 
@@ -134,30 +131,34 @@ public class AmteMob : GameNPC, IAmteNPC
 
 		DBBrainsParam param;
 		for (var cp = GetCustomParam(); cp != null; cp = cp.next)
-			if (_nameXcp.TryGetValue(cp.name, out param))
-			{
-				param.Value = cp.Value;
-				GameServer.Database.SaveObject(param);
-				
-			}
-			else if (cp.defaultValue != cp.Value)
-			{
-				param = new DBBrainsParam
-				        {
-				        	MobID = InternalID,
-				        	Param = cp.name,
-				        	Value = cp.Value
-				        };
-				_nameXcp.Add(cp.name, param);
-				GameServer.Database.AddObject(param);
-			}
-	}
+        {
+            if (_nameXcp.TryGetValue(cp.name, out param) && param.MobID == InternalID)
+            {
+                param.Value = cp.Value;
+                GameServer.Database.SaveObject(param);
 
-    public override void Delete()
-    {
-        base.Delete();
-        _nameXcp.Values.Foreach(o => GameServer.Database.DeleteObject(o));
-    }
+            }
+            else if (cp.defaultValue != cp.Value)
+            {
+                param = new DBBrainsParam
+                {
+                    MobID = InternalID,
+                    Param = cp.name,
+                    Value = cp.Value
+                };
+                if(_nameXcp.ContainsKey(cp.name))
+                {
+                    _nameXcp[cp.name] = param;
+                }
+                else
+                {
+                    _nameXcp.Add(cp.name, param);
+                }
+                GameServer.Database.AddObject(param);
+            }
+        }
+			
+	}
 
     public override void DeleteFromDatabase()
 	{

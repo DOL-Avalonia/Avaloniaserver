@@ -3,6 +3,8 @@ using DOL.AI.Brain;
 using DOL.Database;
 using System.Collections.Generic;
 using DOL.GS.Utils;
+using DOL.AI;
+using DOL.Events;
 
 namespace DOL.GS.Scripts
 {
@@ -63,7 +65,7 @@ namespace DOL.GS.Scripts
 				timer.Stop();
 		}
 
-		public override AmteCustomParam GetCustomParam()
+        public override AmteCustomParam GetCustomParam()
 		{
 			var cp = base.GetCustomParam();
 			cp.next = new AmteCustomParam("StartHour", () => StartHour.ToString(), v => StartHour = int.Parse(v))
