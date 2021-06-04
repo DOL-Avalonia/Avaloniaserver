@@ -17,6 +17,8 @@
  *
  */
 
+using DOL.Database;
+
 namespace DOL.GS
 {
     // Dinberg: Added this for instances as we dont want to have to parse XML every time we create an instance,
@@ -27,6 +29,21 @@ namespace DOL.GS
     /// </summary>
     public class ZoneData
     {
+        public ZoneData() { }
+        public ZoneData(Zones z)
+        {
+            OffX = (byte)z.OffsetX;
+            OffY = (byte)z.OffsetY;
+            Height = (byte)z.Height;
+            Width = (byte)z.Width;
+            ZoneID = (ushort)z.ZoneID;
+            RegionID = z.RegionID;
+            Description = z.Name;
+            WaterLevel = z.WaterLevel;
+            DivingFlag = z.DivingFlag;
+            IsLava = z.IsLava;
+        }
+
         public ushort ZoneID { get; set; }
 
         public ushort RegionID { get; set; }
