@@ -93,7 +93,7 @@ namespace DOL.GS.Commands
 
 			AbstractGameKeep myKeep = (AbstractGameKeep)client.Player.TempProperties.getProperty<object>(TEMP_KEEP_LAST, null);
 			if (myKeep == null) myKeep = GameServer.KeepManager.GetKeepCloseToSpot(client.Player.CurrentRegionID, client.Player, 10000);
-			if (myKeep == null) myKeep = (client.Player.TargetObject as GameKeepComponent)?.AbstractKeep;
+			if (myKeep == null) myKeep = (client.Player.TargetObject as GameKeepComponent)?.Keep;
 			
 			switch (args[1])
 			{
@@ -2171,8 +2171,8 @@ namespace DOL.GS.Commands
 							d.AddToWorld();
 
 							d.Component = new GameKeepComponent();
-							d.Component.AbstractKeep = k;
-							d.Component.AbstractKeep.Doors.Add(d.DoorID.ToString(), d);
+							d.Component.Keep = k;
+							d.Component.Keep.Doors.Add(d.DoorID.ToString(), d);
 
 							d.Health = d.MaxHealth;
 							d.StartHealthRegeneration();

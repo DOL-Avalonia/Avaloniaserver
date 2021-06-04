@@ -30,7 +30,7 @@ namespace DOL.GS.Keeps
         /// <summary>
         /// Reference to owning Keep
         /// </summary>
-        IGameKeep Keep { get; }
+        AbstractGameKeep Keep { get; }
 
         /// <summary>
         /// Hook point Collection

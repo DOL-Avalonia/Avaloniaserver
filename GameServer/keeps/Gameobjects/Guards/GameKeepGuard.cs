@@ -84,9 +84,9 @@ namespace DOL.GS.Keeps
 		{
 			get
 			{
-				if (this.Component != null && this.Component.AbstractKeep != null)
+				if (Component != null && Component.Keep != null)
 				{
-					return this.Component.AbstractKeep is GameKeepTower;
+					return Component.Keep is GameKeepTower;
 				}
 				return false;
 			}
@@ -96,9 +96,9 @@ namespace DOL.GS.Keeps
 		{
 			get
 			{
-				if (this.Component == null || this.Component.AbstractKeep == null)
+				if (Component == null || Component.Keep == null)
 					return false;
-				return this.Component.AbstractKeep.IsPortalKeep;
+				return Component.Keep.IsPortalKeep;
 			}
 		}
 
@@ -118,7 +118,7 @@ namespace DOL.GS.Keeps
 			}
 			set
 			{
-				if (this.IsRespawning)
+				if (IsRespawning)
 					m_level = value;
 				else
 					base.Level = value;
@@ -311,8 +311,8 @@ namespace DOL.GS.Keeps
 
 			//Prevent spam for LOS to same target multiple times
 
-			GameObject lastTarget = (GameObject)this.TempProperties.getProperty<object>(LAST_LOS_TARGET_PROPERTY, null);
-			long lastTick = this.TempProperties.getProperty<long>(LAST_LOS_TICK_PROPERTY);
+			GameObject lastTarget = (GameObject)TempProperties.getProperty<object>(LAST_LOS_TARGET_PROPERTY, null);
+			long lastTick = TempProperties.getProperty<long>(LAST_LOS_TICK_PROPERTY);
 
 			if (lastTarget != null && lastTarget == attackTarget)
 			{
@@ -332,7 +332,7 @@ namespace DOL.GS.Keeps
 			else
 			{
 				// try to find another player to use for checking line of site
-				foreach (GamePlayer player in this.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 				{
 					LOSChecker = player;
 					break;
@@ -370,7 +370,7 @@ namespace DOL.GS.Keeps
 				TargetObject = attackTarget;
 			}
 
-			LOSChecker.Out.SendCheckLOS(this, attackTarget, new CheckLOSResponse(this.GuardStartAttackCheckLOS));
+			LOSChecker.Out.SendCheckLOS(this, attackTarget, new CheckLOSResponse(GuardStartAttackCheckLOS));
 		}
 
 		/// <summary>
@@ -403,7 +403,7 @@ namespace DOL.GS.Keeps
 			}
 			else if (TargetObject != null && TargetObject is GameLiving)
 			{
-				(this.Brain as KeepGuardBrain).RemoveFromAggroList(TargetObject as GameLiving);
+				(Brain as KeepGuardBrain).RemoveFromAggroList(TargetObject as GameLiving);
 			}
 		}
 
@@ -421,7 +421,7 @@ namespace DOL.GS.Keeps
 
 				if (TargetObject != null && TargetPosition is GameLiving)
 				{
-					(this.Brain as KeepGuardBrain).RemoveFromAggroList(TargetObject as GameLiving);
+					(Brain as KeepGuardBrain).RemoveFromAggroList(TargetObject as GameLiving);
 				}
 			}
 		}
@@ -657,12 +657,12 @@ namespace DOL.GS.Keeps
 		public static void GuardSpam(GameKeepGuard guard)
 		{
 			if (guard.Component == null) return;
-			if (guard.Component.AbstractKeep == null) return;
-			if (guard.Component.AbstractKeep.Guild == null) return;
+			if (guard.Component.Keep == null) return;
+			if (guard.Component.Keep.Guild == null) return;
 
 			int inArea = guard.GetEnemyCountInArea();
-			string message = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "GameKeepGuard.GuardSpam.Killed", guard.Name, guard.Component.AbstractKeep.Name, inArea);
-			KeepGuildMgr.SendMessageToGuild(message, guard.Component.AbstractKeep.Guild);
+			string message = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "GameKeepGuard.GuardSpam.Killed", guard.Name, guard.Component.Keep.Name, inArea);
+			KeepGuildMgr.SendMessageToGuild(message, guard.Component.Keep.Guild);
 		}
 
 		/// <summary>
@@ -674,9 +674,9 @@ namespace DOL.GS.Keeps
 			int inArea = 0;
 			foreach (GamePlayer NearbyPlayers in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 			{
-				if (this.Component != null)
+				if (Component != null)
 				{
-					if (GameServer.KeepManager.IsEnemy(Component.AbstractKeep, NearbyPlayers))
+					if (GameServer.KeepManager.IsEnemy(Component.Keep, NearbyPlayers))
 						inArea++;
 				}
 				else
@@ -718,8 +718,8 @@ namespace DOL.GS.Keeps
 			
 			if (IsPortalKeepGuard && (Brain as KeepGuardBrain != null))
 			{
-				(this.Brain as KeepGuardBrain).AggroRange = 2000;
-				(this.Brain as KeepGuardBrain).AggroLevel = 99;
+				(Brain as KeepGuardBrain).AggroRange = 2000;
+				(Brain as KeepGuardBrain).AggroLevel = 99;
 			}
 			
 			GameEventMgr.AddHandler(this, GameLivingEvent.AttackFinished, new DOLEventHandler(AttackFinished));
@@ -802,12 +802,12 @@ namespace DOL.GS.Keeps
 			if (Realm != eRealm.None)
 			{
 				list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameKeepGuard.GetExamineMessages.YouExamine", GetName(0, false), GetPronoun(0, true), GetAggroLevelString(player, false)));
-				if (this.Component != null)
+				if (Component != null)
 				{
 					string text = "";
-					if (Component.AbstractKeep.Level > 1 && Component.AbstractKeep.Level < 250 && GameServer.ServerRules.IsSameRealm(player, this, true))
-						text = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameKeepGuard.GetExamineMessages.Upgraded", GetPronoun(0, true), Component.AbstractKeep.Level);
-					if (Properties.USE_KEEP_BALANCING && Component.AbstractKeep.Region == 163 && !(Component.AbstractKeep is GameKeepTower))
+					if (Component.Keep.Level > 1 && Component.Keep.Level < 250 && GameServer.ServerRules.IsSameRealm(player, this, true))
+						text = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameKeepGuard.GetExamineMessages.Upgraded", GetPronoun(0, true), Component.Keep.Level);
+					if (Properties.USE_KEEP_BALANCING && Component.Keep.Region == 163 && !(Component.Keep is GameKeepTower))
 					if (text != "")
 						list.Add(text);
 				}
@@ -873,16 +873,16 @@ namespace DOL.GS.Keeps
 			if (mobobject == null) return;
 			base.LoadFromDatabase(mobobject);
 			string sKey = mobobject.ObjectId;
-			foreach (AbstractArea area in this.CurrentAreas)
+			foreach (AbstractArea area in CurrentAreas)
 			{
 				if (area is KeepArea keepArea)
 				{
 					Component = new GameKeepComponent();
-					Component.AbstractKeep = keepArea.Keep;
+					Component.Keep = keepArea.Keep;
 					m_dataObjectID = mobobject.ObjectId;
 					// mob reload command might be reloading guard, so check to make sure it isn't already added
-					if (Component.AbstractKeep.Guards.ContainsKey(sKey) == false)
-						Component.AbstractKeep.Guards.Add(sKey, this);
+					if (Component.Keep.Guards.ContainsKey(sKey) == false)
+						Component.Keep.Guards.Add(sKey, this);
 					// break; This is a bad idea.  If there are multiple KeepAreas, we should put a guard on each
 				}
 			}
@@ -894,11 +894,11 @@ namespace DOL.GS.Keeps
 		{
 			if (Component != null)
 			{
-				if (Component.AbstractKeep != null)
+				if (Component.Keep != null)
 				{
 					string skey = m_dataObjectID;
-					if (Component.AbstractKeep.Guards.ContainsKey(skey))
-						Component.AbstractKeep.Guards.Remove(skey);
+					if (Component.Keep.Guards.ContainsKey(skey))
+						Component.Keep.Guards.Remove(skey);
 					else if (log.IsWarnEnabled)
 						log.Warn($"Can't find {Position.ClassType} with dataObjectId {m_dataObjectID} in Component InternalID {Component.InternalID} Guard list.");
 				}
@@ -929,7 +929,7 @@ namespace DOL.GS.Keeps
 		public override void Delete()
 		{
 			if (HookPoint != null && Component != null)
-				Component.AbstractKeep.Guards.Remove(m_templateID); //Remove(this.ObjectID); LoadFromPosition() uses position.TemplateID as the insertion key
+				Component.Keep.Guards.Remove(m_templateID); //Remove(ObjectID); LoadFromPosition() uses position.TemplateID as the insertion key
 
 			TempProperties.removeAllProperties();
 
@@ -938,11 +938,11 @@ namespace DOL.GS.Keeps
 
 		public override void DeleteFromDatabase()
 		{
-			foreach (AbstractArea area in this.CurrentAreas)
+			foreach (AbstractArea area in CurrentAreas)
 			{
 				if (area is KeepArea && Component != null)
 				{
-					Component.AbstractKeep.Guards.Remove(m_dataObjectID); //Remove(this.InternalID); LoadFromDatabase() adds using m_dataObjectID
+					Component.Keep.Guards.Remove(m_dataObjectID); //Remove(InternalID); LoadFromDatabase() adds using m_dataObjectID
 																		  // break; This is a bad idea.  If there are multiple KeepAreas, we could end up with instantiated keep items that are no longer in the DB
 				}
 			}
@@ -953,10 +953,10 @@ namespace DOL.GS.Keeps
 		{
 			m_templateID = pos.TemplateID;
 			m_component = component;
-			component.AbstractKeep.Guards.Add(m_templateID, this);
+			component.Keep.Guards.Add(m_templateID, this);
 			PositionMgr.LoadGuardPosition(pos, this);
 			RefreshTemplate();
-			this.AddToWorld();
+			AddToWorld();
 		}
 
 		/// <summary>
@@ -978,7 +978,7 @@ namespace DOL.GS.Keeps
 		{
 			ClothingMgr.EquipGuard(this);
 
-			Guild guild = this.Component.AbstractKeep.Guild;
+			Guild guild = Component.Keep.Guild;
 			string guildname = "";
 			if (guild != null)
 				guildname = guild.Name;
@@ -1146,7 +1146,7 @@ namespace DOL.GS.Keeps
 		{
 			if (Component != null)
 			{
-				Realm = Component.AbstractKeep.Realm;
+				Realm = Component.Keep.Realm;
 			}
 			else
 			{
@@ -1169,13 +1169,13 @@ namespace DOL.GS.Keeps
 			{
 				GuildName = "";
 			}
-			else if (Component.AbstractKeep.Guild == null)
+			else if (Component.Keep.Guild == null)
 			{
 				GuildName = "";
 			}
 			else
 			{
-				GuildName = Component.AbstractKeep.Guild.Name;
+				GuildName = Component.Keep.Guild.Name;
 			}
 		}
 
@@ -1194,7 +1194,7 @@ namespace DOL.GS.Keeps
 		{
 			if (Component != null)
 			{
-				Component.AbstractKeep.SetGuardLevel(this);
+				Component.Keep.SetGuardLevel(this);
 			}
 		}
 

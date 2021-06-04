@@ -89,7 +89,7 @@ namespace DOL.GS.Keeps
             item.X = x;
             item.Y = y;
 
-            item.Z = item.Component.AbstractKeep.Z + pos.ZOff;
+            item.Z = item.Component.Keep.Z + pos.ZOff;
 
             item.Heading = (ushort)(item.Component.Heading + pos.HOff);
 
@@ -106,7 +106,7 @@ namespace DOL.GS.Keeps
         /// <param name="outY">The result Y</param>
         public static void LoadXY(GameKeepComponent component, int inX, int inY, out int outX, out int outY)
         {
-            double angle = component.AbstractKeep.Heading * ((Math.PI * 2) / 360); // angle*2pi/360;
+            double angle = component.Keep.Heading * ((Math.PI * 2) / 360); // angle*2pi/360;
             double C = Math.Cos(angle);
             double S = Math.Sin(angle);
             switch (component.ComponentHeading)
@@ -158,7 +158,7 @@ namespace DOL.GS.Keeps
         /// <param name="outY">The result Y</param>
         public static void SaveXY(GameKeepComponent component, int inX, int inY, out int outX, out int outY)
         {
-            double angle = component.AbstractKeep.Heading * ((Math.PI * 2) / 360); // angle*2pi/360;
+            double angle = component.Keep.Heading * ((Math.PI * 2) / 360); // angle*2pi/360;
             int gx = inX - component.X;
             int gy = inY - component.Y;
             double C = Math.Cos(angle);
@@ -356,7 +356,7 @@ namespace DOL.GS.Keeps
                 LoadXY(component, pp.X, pp.Y, out x, out y);
                 p.X = x;
                 p.Y = y;
-                p.Z = component.AbstractKeep.Z + p.Z;
+                p.Z = component.Keep.Z + p.Z;
 
                 p.WaitTime = pp.WaitTime;
 

@@ -88,9 +88,9 @@ namespace DOL.GS.Keeps
         {
             if (Component != null)
             {
-                if (Component.AbstractKeep != null)
+                if (Component.Keep != null)
                 {
-                    Component.AbstractKeep.Banners.Remove(ObjectID.ToString());
+                    Component.Keep.Banners.Remove(ObjectID.ToString());
                 }
 
                 Component.Delete();
@@ -108,7 +108,7 @@ namespace DOL.GS.Keeps
             if (obj == null) return;
 
             base.LoadFromDatabase(obj);
-            string sKey = this.InternalID; // InternalID is set to obj.ObjectID by base.LoadFromDatabase()
+            string sKey = InternalID; // InternalID is set to obj.ObjectID by base.LoadFromDatabase()
 
             foreach (AbstractArea area in CurrentAreas)
             {
@@ -116,14 +116,14 @@ namespace DOL.GS.Keeps
                 {
 
                     Component = new GameKeepComponent();
-                    Component.AbstractKeep = keep;
+                    Component.Keep = keep;
                     if (keep.Banners.ContainsKey(sKey) == false)
                     {
-                        Component.AbstractKeep.Banners.Add(sKey, this);
-                        if (this.Model == AlbionGuildModel || this.Model == MidgardGuildModel || this.Model == HiberniaGuildModel)
+                        Component.Keep.Banners.Add(sKey, this);
+                        if (Model == AlbionGuildModel || Model == MidgardGuildModel || Model == HiberniaGuildModel)
                             BannerType = eBannerType.Guild;
                         else BannerType = eBannerType.Realm;
-                        if (BannerType == eBannerType.Guild && Component.AbstractKeep.Guild != null)
+                        if (BannerType == eBannerType.Guild && Component.Keep.Guild != null)
                             ChangeGuild();
                         else ChangeRealm();
                         break;
@@ -136,12 +136,12 @@ namespace DOL.GS.Keeps
 
         public override void DeleteFromDatabase()
         {
-            string sKey = this.InternalID;
+            string sKey = InternalID;
             foreach (AbstractArea area in CurrentAreas)
             {
                 if (area is KeepArea)
                 {
-                    Component.AbstractKeep.Banners.Remove(sKey);
+                    Component.Keep.Banners.Remove(sKey);
                     // break; This is a bad idea.  If there are multiple KeepAreas, we could end up with a banner on left on one of them that has been deleted from the DB
                 }
             }
@@ -158,13 +158,13 @@ namespace DOL.GS.Keeps
             BannerType = (eBannerType)pos.TemplateType;
 
             PositionMgr.LoadKeepItemPosition(pos, this);
-            string sKey = this.TemplateID;
-            if (component.AbstractKeep.Banners.ContainsKey(sKey) == false)
+            string sKey = TemplateID;
+            if (component.Keep.Banners.ContainsKey(sKey) == false)
             {
-                component.AbstractKeep.Banners.Add(sKey, this);
+                component.Keep.Banners.Add(sKey, this);
                 if (BannerType == eBannerType.Guild)
                 {
-                    if (component.AbstractKeep.Guild != null)
+                    if (component.Keep.Guild != null)
                     {
                         ChangeGuild();
                         Z += 1500;
@@ -180,7 +180,7 @@ namespace DOL.GS.Keeps
                 }
             }
             else if (log.IsWarnEnabled)
-                log.Warn($"LoadFromPosition(): There is already a Banner with TemplateID {this.TemplateID} on KeepID {component.Keep.KeepID}, not adding Banner for KeepPosition_ID {pos.ObjectId} on KeepComponent_ID {component.InternalID}");
+                log.Warn($"LoadFromPosition(): There is already a Banner with TemplateID {TemplateID} on KeepID {component.Keep.KeepID}, not adding Banner for KeepPosition_ID {pos.ObjectId} on KeepComponent_ID {component.InternalID}");
 
         }
 
@@ -198,7 +198,7 @@ namespace DOL.GS.Keeps
 
         public void ChangeRealm()
         {
-            Realm = Component.AbstractKeep.Realm;
+            Realm = Component.Keep.Realm;
 
             switch ((eRealm)Realm)
             {
@@ -227,7 +227,7 @@ namespace DOL.GS.Keeps
                     }
             }
 
-            Name = GlobalConstants.RealmToName((eRealm)Component.AbstractKeep.Realm) + " Banner";
+            Name = GlobalConstants.RealmToName((eRealm)Component.Keep.Realm) + " Banner";
         }
 
         /// <summary>
@@ -240,7 +240,7 @@ namespace DOL.GS.Keeps
                 return;
             }
 
-            Guild guild = Component.AbstractKeep.Guild;
+            Guild guild = Component.Keep.Guild;
 
             int emblem = 0;
             if (guild != null)
@@ -254,7 +254,7 @@ namespace DOL.GS.Keeps
             }
 
             ushort model = AlbionGuildModel;
-            switch (Component.AbstractKeep.Realm)
+            switch (Component.Keep.Realm)
             {
                 case eRealm.None: model = AlbionGuildModel; break;
                 case eRealm.Albion: model = AlbionGuildModel; break;
@@ -264,7 +264,7 @@ namespace DOL.GS.Keeps
 
             Model = model;
             Emblem = emblem;
-            Name = GlobalConstants.RealmToName(Component.AbstractKeep.Realm) + " Guild Banner";
+            Name = GlobalConstants.RealmToName(Component.Keep.Realm) + " Guild Banner";
         }
     }
 }

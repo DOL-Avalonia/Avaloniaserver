@@ -49,14 +49,14 @@ namespace DOL.GS.Keeps
 
         public void LoadFromPosition(DBKeepPosition pos, GameKeepComponent component)
         {
-            if (component.AbstractKeep.DBKeep.BaseLevel < 50)
+            if (component.Keep.DBKeep.BaseLevel < 50)
             {
                 return;
             }
 
             m_component = component;
             PositionMgr.LoadKeepItemPosition(pos, this);
-            m_component.AbstractKeep.TeleportStone = this;
+            m_component.Keep.TeleportStone = this;
             AddToWorld();
         }
 
@@ -69,7 +69,7 @@ namespace DOL.GS.Keeps
             {
                 if (m_component != null)
                 {
-                    return m_component.AbstractKeep.Realm;
+                    return m_component.Keep.Realm;
                 }
 
                 if (m_CurrentRegion.ID == 163)
@@ -108,9 +108,9 @@ namespace DOL.GS.Keeps
                         return false;
                     }
 
-                    if (Component != null && Component.AbstractKeep is GameKeep)
+                    if (Component != null && Component.Keep is GameKeep)
                     {
-                        if ((Component.AbstractKeep as GameKeep).OwnsAllTowers == false || (Component.AbstractKeep as GameKeep).InCombat)
+                        if ((Component.Keep as GameKeep).OwnsAllTowers == false || (Component.Keep as GameKeep).InCombat)
                         {
                             return false;
                         }
