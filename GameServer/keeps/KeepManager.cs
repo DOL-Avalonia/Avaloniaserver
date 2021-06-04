@@ -146,7 +146,8 @@ namespace DOL.GS.Keeps
                     log.ErrorFormat("ServerProperty USE_NEW_KEEPS is actually set to 2 but it is no longer used. Loading as if he were 0 but please set to 0 or 1 !");
                 }
 
-                var keepcomponents = default(IList<DBKeepComponent>);
+                // var keepcomponents = default(IList<DBKeepComponent>); Why was this done this way rather than being strictly typed?
+                IList<DBKeepComponent> keepcomponents = null;
 
                 if (ServerProperties.Properties.USE_NEW_KEEPS == 0 || ServerProperties.Properties.USE_NEW_KEEPS == 2)
                 {
@@ -156,8 +157,10 @@ namespace DOL.GS.Keeps
                 {
                     keepcomponents = GameServer.Database.SelectObjects<DBKeepComponent>("`Skin` > @Skin", new QueryParameter("@Skin", 20));
                 }
-                                
-                keepcomponents
+
+                if (keepcomponents != null)
+                {
+                    keepcomponents
                     ?.GroupBy(x => x.KeepID)
                     .AsParallel()
                     .ForAll(x =>
@@ -176,6 +179,7 @@ namespace DOL.GS.Keeps
                             keep.KeepComponents.Add(gamecomponent);
                         }
                     });
+                }
 
                 /*if (missingKeeps && log.IsWarnEnabled)
                 {

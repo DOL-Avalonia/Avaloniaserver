@@ -61,6 +61,7 @@ namespace DOL.GS.Keeps
             BridgeHightWithHook2 = 20,
 
             NewSkinClimbingWall = 27,
+            NewSkinKeep = 30,
             NewSkinTower = 31,
         }
 
@@ -101,7 +102,7 @@ namespace DOL.GS.Keeps
         /// </summary>
         public int Height
         {
-            get { return GameServer.KeepManager.GetHeightFromLevel(AbstractKeep.Level); }
+            get { return AbstractKeep.Height; }
         }
 
         /// <summary>
@@ -449,76 +450,71 @@ namespace DOL.GS.Keeps
             {
                 for (int i = Height; i >= 0; i--)
                 {
-                    DBKeepPosition position = positionGroup[i] as DBKeepPosition;
-                    if (position != null)
+                    if (positionGroup[i] is DBKeepPosition position)
                     {
                         bool create = false;
                         string sKey = position.TemplateID;
 
-                        if (position.ClassType == "DOL.GS.Keeps.GameKeepBanner")
+                        switch (position.ClassType)
                         {
-                            if (!AbstractKeep.Banners.ContainsKey(sKey))
-                            {
-                                create = true;
-                            }
-                        }
-                        else if (position.ClassType == "DOL.GS.Keeps.GameKeepDoor")
-                        {
-                            if (!AbstractKeep.Doors.ContainsKey(sKey))
-                            {
-                                create = true;
-                            }
-                        }
-                        else if (position.ClassType == "DOL.GS.Keeps.FrontierTeleportStone")
-                        {
-                            if (AbstractKeep.TeleportStone == null)
-                            {
-                                create = true;
-                            }
-                        }
-                        else if (position.ClassType == "DOL.GS.Keeps.Patrol")
-                        {
-                            if (position.KeepType == (int)AbstractGameKeep.eKeepType.Any || position.KeepType == (int)AbstractKeep.KeepType
-                                && !this.AbstractKeep.Patrols.ContainsKey(sKey))
-                            {
-                                Patrol p = new Patrol(this);
-                                p.SpawnPosition = position;
-                                p.PatrolID = position.TemplateID;
-                                p.InitialiseGuards();
-                            }
+                            case "DOL.GS.Keeps.GameKeepBanner":
+                                if (this.AbstractKeep.Banners.ContainsKey(sKey) == false)
+                                    create = true;
+                                break;
+                            case "DOL.GS.Keeps.GameKeepDoor":
+                                if (this.AbstractKeep.Doors.ContainsKey(sKey) == false)
+                                    create = true;
+                                break;
+                            case "DOL.GS.Keeps.FrontierTeleportStone":
+                                if (this.AbstractKeep.TeleportStone == null)
+                                    create = true;
+                                break;
+                            case "DOL.GS.Keeps.Patrol":
+                                if ((position.KeepType == (int)AbstractGameKeep.eKeepType.Any || position.KeepType == (int)AbstractKeep.KeepType)
+                                    && this.AbstractKeep.Patrols.ContainsKey(sKey) == false)
+                                {
+                                    Patrol p = new Patrol(this);
+                                    p.SpawnPosition = position;
+                                    p.PatrolID = position.TemplateID;
+                                    p.InitialiseGuards();
+                                }
+                                continue;
+                            case "DOL.GS.Keeps.FrontierHastener":
+                                if (AbstractKeep.HasHastener && log.IsWarnEnabled)
+                                    log.Warn($"FillPositions(): KeepComponent_ID {this.InternalID}, KeepPosition_ID {position.ObjectId}: There is already a {position.ClassType} on Keep {AbstractKeep.KeepID}");
 
-                            continue;
-                        }
-                        else if (position.ClassType == "DOL.GS.Keeps.MissionMaster")
-                        {
-                            if (AbstractKeep.HasCommander && log.IsWarnEnabled)
-                                log.Warn($"FillPositions(): KeepComponent_ID {this.InternalID}, KeepPosition_ID {position.ObjectId}: There is already a {position.ClassType} on Keep {AbstractKeep.KeepID}");
+                                if (this.AbstractKeep.Guards.ContainsKey(sKey) == false)
+                                {
+                                    AbstractKeep.HasHastener = true;
+                                    create = true;
+                                }
+                                break;
+                            case "DOL.GS.Keeps.MissionMaster":
+                                if (AbstractKeep.HasCommander && log.IsWarnEnabled)
+                                    log.Warn($"FillPositions(): KeepComponent_ID {this.InternalID}, KeepPosition_ID {position.ObjectId}: There is already a {position.ClassType} on Keep {AbstractKeep.KeepID}");
 
-                            if (this.AbstractKeep.Guards.ContainsKey(sKey) == false)
-                            {
-                                AbstractKeep.HasCommander = true;
-                                create = true;
-                            }
-                        }
+                                if (this.AbstractKeep.Guards.ContainsKey(sKey) == false)
+                                {
+                                    AbstractKeep.HasCommander = true;
+                                    create = true;
+                                }
+                                break;
+                            case "DOL.GS.Keeps.GuardLord":
+                                if (AbstractKeep.HasLord && log.IsWarnEnabled)
+                                    log.Warn($"FillPositions(): KeepComponent_ID {this.InternalID}, KeepPosition_ID {position.ObjectId}: There is already a {position.ClassType} on Keep {AbstractKeep.KeepID}");
 
-                        else if (position.ClassType == "DOL.GS.Keeps.GuardLord")
-                        {
-                            if (AbstractKeep.HasLord && log.IsWarnEnabled)
-                                log.Warn($"FillPositions(): KeepComponent_ID {this.InternalID}, KeepPosition_ID {position.ObjectId}: There is already a {position.ClassType} on Keep {AbstractKeep.KeepID}");
-
-                            if (!AbstractKeep.Guards.ContainsKey(sKey))
-                            {
-                                AbstractKeep.HasLord = true;
-                                create = true;
-                            }
-                        }
-                        else
-                        {
-                            if (!this.AbstractKeep.Guards.ContainsKey(sKey))
-                            {
-                                create = true;
-                            }                       
-                        }
+                                if (this.AbstractKeep.Guards.ContainsKey(sKey) == false)
+                                {
+                                    AbstractKeep.HasLord = true;
+                                    create = true;
+                                }
+                                break;
+                            default:
+                                if (this.AbstractKeep.Guards.ContainsKey(sKey) == false)
+                                    create = true;
+                                break;
+                        }// switch (position.ClassType)
+                        
 
                         if (create)
                         {
@@ -534,51 +530,44 @@ namespace DOL.GS.Keeps
 
                                 if (ServerProperties.Properties.ENABLE_DEBUG)
                                 {
-                                    if (obj is GameLiving)
-                                    {
-                                        (obj as GameLiving).Name += " is living, component " + obj.Component.ID;
-                                    }
-                                    else if (obj is GameObject)
-                                    {
-                                        (obj as GameObject).Name += " is object, component " + obj.Component.ID;
-                                    }
+                                    if (obj is GameLiving living)
+                                        living.Name += " is living, component " + obj.Component.ID;
+                                    else if (obj is GameObject game)
+                                        game.Name += " is object, component " + obj.Component.ID;
                                 }
                             }
                             catch (Exception ex)
                             {
-                                log.Error("GameKeepComponent:FillPositions: " + position.ClassType, ex);
+                                log.Error("FillPositions(): " + position.ClassType, ex);
                             }
                         }
                         else
                         {
+                            /* Why move the object?  We should notify the server admin of the duplicate and let them figure out what is causing it in their DB.
+							* Otherwise, we're assuming the former position/component combination wasn't valid, and that's an error that should be reported in any case.
                             // move the object
-                            if (position.ClassType == "DOL.GS.Keeps.GameKeepBanner")
+                            switch (position.ClassType)
                             {
-                                IKeepItem banner = AbstractKeep.Banners[position.TemplateID] as IKeepItem;
-                                if (banner.Position != position)
-                                {
-                                    banner.MoveToPosition(position);
-                                }
-                            }
-                            else if (position.ClassType == "DOL.GS.Keeps.GameKeepDoor")
-                            {
-                                // doors dont move
-                            }
-                            else if (position.ClassType == "DOL.GS.Keeps.FrontierPortalStone")
-                            {
-                                // these dont move
-                            }
-                            else
-                            {
-                                IKeepItem guard = AbstractKeep.Guards[position.TemplateID] as IKeepItem;
-                                guard.MoveToPosition(position);
-                            }
+                                case "DOL.GS.Keeps.GameKeepBanner":
+									if (this.AbstractKeep.Banners[position.TemplateID] is IKeepItem banner && banner.Position != position)
+										banner.MoveToPosition(position);
+									break;
+								case "DOL.GS.Keeps.GameKeepDoor":
+								case "DOL.GS.Keeps.FrontierPortalStone":
+									break;  // these dont move
+								default:
+									if (this.AbstractKeep.Guards[position.TemplateID] is IKeepItem guard)
+										guard.MoveToPosition(position);
+									break;
+							}*/
+                            if (log.IsWarnEnabled)
+                                log.Warn($"FillPositions(): Keep {AbstractKeep.KeepID} already has a {position.ClassType} assigned to Position {position.ObjectId} on Component {this.InternalID}");
                         }
 
-                        break;
-                    }
-                }
-            }
+                        break; // We found the highest item for that position, move onto the next one
+                    } // if (positionGroup[i] is DBKeepPosition position)
+                } // for (int i = this.Height; i >= 0; i--)
+            } // foreach (DBKeepPosition[] positionGroup in this.Positions.Values)
 
             foreach (GameKeepGuard guard in AbstractKeep.Guards.Values)
             {
