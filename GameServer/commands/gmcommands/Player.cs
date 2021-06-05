@@ -69,7 +69,8 @@ namespace DOL.GS.Commands
         "/player allchars <PlayerName>",
         "/player class <list|classID> - view a list of classes, or change the targets class.",
         "/player areas - list all the areas the player is currently inside of ",
-        "/player isRenaissance <true|false> - set player isRenaissance")]
+        "/player isRenaissance <true|false> - set player isRenaissance"
+        "/player quest [remove <quest name>] - Manage the player's quests")]
     public class PlayerCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -2350,6 +2351,57 @@ namespace DOL.GS.Commands
                         }
                     }          
                     break;
+
+                case "quest":
+                    {
+                        var targetPlayer = client.Player.TargetObject as GamePlayer ?? client.Player;
+                        if (args.Length >= 3 && args[2].ToLower() == "remove")
+                        {
+                            var questName = string.Join(" ", args.Skip(3)).ToLower();
+                            lock (targetPlayer.QuestList)
+                            {
+                                var found = targetPlayer.QuestList.FirstOrDefault(q => q.Name.ToLower() == questName);
+                                if (found != null)
+                                {
+                                    found.AbortQuest();
+                                    DisplayMessage(client, $"Quest {found.Name} removed from player {targetPlayer.Name}");
+                                }
+                            }
+                            lock (targetPlayer.QuestListFinished)
+                            {
+                                var found = targetPlayer.QuestListFinished.FirstOrDefault(q => q.Name.ToLower() == questName);
+                                if (found != null)
+                                {
+                                    targetPlayer.QuestListFinished.Remove(found);
+                                    found.AbortQuest();
+                                    DisplayMessage(client, $"Quest {found.Name} removed from player {targetPlayer.Name}");
+                                }
+                            }
+                        }
+                        else if (args.Length >= 3)
+                        {
+                            DisplayMessage(client, "/player quest remove <quest name>");
+                            return;
+                        }
+
+                        var questList = new List<string>();
+                        lock (targetPlayer.QuestList)
+                        {
+                            if (targetPlayer.QuestList.Any(q => q.Step != -1))
+                                questList.Add("[Quests in progress]");
+                            foreach (var quest in targetPlayer.QuestList.Where(q => q.Step != -1))
+                                questList.Add($"[Step {quest.Step}] {quest.Name} (level {quest.Level})");
+                        }
+                        lock (targetPlayer.QuestListFinished)
+                        {
+                            if (targetPlayer.QuestListFinished.Count > 0)
+                                questList.Add("[Quests finished]");
+                            foreach (var quest in targetPlayer.QuestListFinished)
+                                questList.Add($"[Complete] {quest.Name} (level {quest.Level})");
+                        }
+                        client.Player.Out.SendCustomTextWindow($"[{targetPlayer.Name}'s quests]", questList);
+                        return;
+                    }
             }
         }
 

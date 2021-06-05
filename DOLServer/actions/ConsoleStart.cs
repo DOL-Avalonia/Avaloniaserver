@@ -69,6 +69,8 @@ namespace DOL.DOLServer.Actions
             get { return "Starts the DOL server in console mode"; }
         }
 
+        private bool crashOnFail = false;
+
         private static bool StartServer()
         {
             Console.WriteLine("Starting the server");
@@ -103,8 +105,9 @@ namespace DOL.DOLServer.Actions
                 currentAssembly = new FileInfo(Assembly.GetEntryAssembly().Location);
                 configFile = new FileInfo(currentAssembly.DirectoryName + Path.DirectorySeparatorChar + "config" + Path.DirectorySeparatorChar + "serverconfig.xml");
             }
+            if (parameters.ContainsKey("-crashonfail")) crashOnFail = true;
 
-            GameServerConfiguration config = new GameServerConfiguration();
+            var config = new GameServerConfiguration();
             if (configFile.Exists)
             {
                 config.LoadFromXMLFile(configFile);
@@ -120,17 +123,16 @@ namespace DOL.DOLServer.Actions
                 if (File.Exists(currentAssembly.DirectoryName + Path.DirectorySeparatorChar + "DOLConfig.exe"))
                 {
                     Console.WriteLine("No config file found, launching with default config and embedded database... (SQLite)");
-                    /*
-                    // Removed to allow the auto config on embedded SQLite
-                    Console.WriteLine("No config file found, launching DOLConfig.exe...");
-                    System.Diagnostics.Process.Start(currentAssembly.DirectoryName + Path.DirectorySeparatorChar + "DOLConfig.exe");
-                    return;
-                    */
                 }
             }
 
             GameServer.CreateInstance(config);
             StartServer();
+
+            if (crashOnFail && GameServer.Instance.ServerStatus == eGameServerStatus.GSS_Closed)
+            {
+                throw new ApplicationException("Server did not start properly.");
+            }
 
             bool run = true;
             while (run)

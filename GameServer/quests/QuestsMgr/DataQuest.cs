@@ -1589,15 +1589,6 @@ namespace DOL.GS.Quests
                         stepTemplates[0] = template[0];
                     }
 
-                    if (nextStepType == eStepType.Deliver || nextStepType == eStepType.DeliverFinish)
-                    {
-                        // Allow StepItemTemplate to be empty, assume quest player received item in a previous step or outside of the quest
-                        if (!string.IsNullOrEmpty(_stepItemTemplates[Step].Trim()))
-                        {
-                            stepTemplates.Add(_stepItemTemplates[Step].Trim());
-                        }
-                    }
-
                     if (stepTemplates.Count > 0)
                     {
                         // check for inventory space
