@@ -14,6 +14,8 @@ namespace DOL.AI.Brain
             set { }
         }
 
+        public override bool CanBAF { get => true; set => base.CanBAF = value; }
+
         public override void Think()
         {
             base.Think();
@@ -69,11 +71,11 @@ namespace DOL.AI.Brain
 					continue;
 
                 int aggro = CalculateAggroLevelToTarget(npc);
-            	if (aggro <= 0)
-            		continue;
-            	AddToAggroList(npc, aggro);
-            	if (npc.Level > Body.Level)
-            		BringReinforcements(npc);
+                    if (aggro <= 0)
+                        continue;
+                    AddToAggroList(npc, aggro);
+                    if (npc.Level > Body.Level)
+                    BringFriends(npc);
             }
         }
 
