@@ -10,6 +10,7 @@ namespace DOL.AI.Brain
     public class GuardOutlawBrain
         : GuardNPCBrain
     {
+        public override bool CanBAF { get; set; } = true;
 
         protected override void CheckPlayerAggro()
         {
