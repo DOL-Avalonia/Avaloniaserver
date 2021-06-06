@@ -29,6 +29,7 @@ using IsolationLevel = DOL.Database.Transaction.IsolationLevel;
 using MySql.Data.MySqlClient;
 
 using log4net;
+using System.Data.Common;
 
 namespace DOL.Database.Handlers
 {
@@ -522,28 +523,23 @@ namespace DOL.Database.Handlers
             {
                 repeat = false;
 
+                if (!parameters.Any()) throw new ArgumentException("No parameter list was given.");
+
                 using (var conn = new MySqlConnection(ConnectionString))
                 {
                     using (var cmd = conn.CreateCommand())
                     {
                         try
                         {
-                            cmd.CommandText = SQLCommand;
                             conn.Open();
                             long start = DateTime.UtcNow.Ticks / 10000;
 
-                            // Register Parameters
-                            foreach (var param in parameters.First().Select(kv => new { kv.Name, Type = GuessQueryParameterDbType(kv) }))
-                            {
-                                cmd.Parameters.Add(param.Name, param.Type);
-                            }
-
-                            cmd.Prepare();
 
                             foreach (var parameter in parameters.Skip(current))
                             {
+                                cmd.CommandText = SQLCommand;
                                 FillSQLParameter(parameter, cmd.Parameters);
-
+                                cmd.Prepare();
                                 using (var reader = cmd.ExecuteReader())
                                 {
                                     try
@@ -595,6 +591,20 @@ namespace DOL.Database.Handlers
             while (repeat);
         }
 
+        protected override DbParameter ConvertToDBParameter(QueryParameter queryParameter)
+        {
+            var dbParam = new MySqlParameter();
+            dbParam.ParameterName = queryParameter.Name;
+            dbParam.MySqlDbType = GuessQueryParameterDbType(queryParameter);
+
+            if (queryParameter.Value is char)
+                dbParam.Value = Convert.ToUInt16(queryParameter.Value);
+            else
+                dbParam.Value = queryParameter.Value;
+
+            return dbParam;
+        }
+
         /// <summary>
         /// Implementation of Raw Non-Query with Parameters for Prepared Query
         /// </summary>
@@ -615,6 +625,8 @@ namespace DOL.Database.Handlers
             {
                 repeat = false;
 
+                if (!parameters.Any()) throw new ArgumentException("No parameter list was given.");
+
                 using (var conn = new MySqlConnection(ConnectionString))
                 {
                     using (var cmd = conn.CreateCommand())
@@ -625,17 +637,12 @@ namespace DOL.Database.Handlers
                             conn.Open();
                             long start = DateTime.UtcNow.Ticks / 10000;
 
-                            // Register Parameters
-                            foreach (var param in parameters.First().Select(kv => new { kv.Name, Type = GuessQueryParameterDbType(kv) }))
-                            {
-                                cmd.Parameters.Add(param.Name, param.Type);
-                            }
-
-                            cmd.Prepare();
+                            
 
                             foreach (var parameter in parameters.Skip(current))
                             {
                                 FillSQLParameter(parameter, cmd.Parameters);
+                                cmd.Prepare();
 
                                 var result = -1;
                                 try
@@ -719,6 +726,8 @@ namespace DOL.Database.Handlers
             {
                 repeat = false;
 
+                if (!parameters.Any()) throw new ArgumentException("No parameter list was given.");
+
                 using (var conn = new MySqlConnection(ConnectionString))
                 {
                     using (var cmd = conn.CreateCommand())
@@ -729,17 +738,10 @@ namespace DOL.Database.Handlers
                             conn.Open();
                             long start = DateTime.UtcNow.Ticks / 10000;
 
-                            // Register Parameters
-                            foreach (var param in parameters.First().Select(kv => new { kv.Name, Type = GuessQueryParameterDbType(kv) }))
-                            {
-                                cmd.Parameters.Add(param.Name, param.Type);
-                            }
-
-                            cmd.Prepare();
-
                             foreach (var parameter in parameters.Skip(current))
                             {
                                 FillSQLParameter(parameter, cmd.Parameters);
+                                cmd.Prepare();
 
                                 if (retrieveLastInsertID)
                                 {
