@@ -807,9 +807,28 @@ namespace DOL.Database
         public IList<TObject> SelectObjects<TObject>(WhereExpression whereExpression)
             where TObject : DataObject
         {
-            var whereClause = whereExpression.WhereClause;
-            var parameters = whereExpression.QueryParameters;
-            return SelectObjects<TObject>(whereClause, parameters);
+            return MultipleSelectObjects<TObject>(new[] { whereExpression }).First();
+        }
+
+        public IList<IList<TObject>> MultipleSelectObjects<TObject>(IEnumerable<WhereExpression> whereExpressionBatch)
+            where TObject : DataObject
+        {
+            if (whereExpressionBatch == null) throw new ArgumentNullException("Parameter whereExpressionBatch may not be null.");
+
+            var tableHandler = GetTableOrViewHandler(typeof(TObject));
+            if (tableHandler == null)
+            {
+                if (Log.IsErrorEnabled)
+                    Log.ErrorFormat("SelectObjects: DataObject Type ({0}) not registered !", typeof(TObject).FullName);
+
+                throw new DatabaseException(string.Format("Table {0} is not registered for Database Connection...", typeof(TObject).FullName));
+            }
+
+            var objs = MultipleSelectObjectsImpl(tableHandler, whereExpressionBatch, Transaction.IsolationLevel.DEFAULT).Select(res => res.OfType<TObject>().ToArray()).ToArray();
+
+            FillObjectRelations(objs.SelectMany(obj => obj), false);
+
+            return objs;
         }
         #endregion
 
@@ -1057,6 +1076,8 @@ namespace DOL.Database
         /// <param name="tableHandler">Table Handler for the DataObjects Collection</param>
         /// <returns>True if objects were saved successfully; false otherwise</returns>
         protected abstract IEnumerable<bool> SaveObjectImpl(DataTableHandler tableHandler, IEnumerable<DataObject> dataObjects);
+
+        protected abstract IList<IList<DataObject>> MultipleSelectObjectsImpl(DataTableHandler tableHandler, IEnumerable<WhereExpression> whereExpressionBatch, Transaction.IsolationLevel isolation);
 
         /// <summary>
         /// Deletes DataObjects from the database.
