@@ -711,12 +711,8 @@ namespace DOL.Database
             }
             else
             {
-
-                var whereClause = string.Format("`{0}` = @{0}", remoteBind.ColumnName);
-
-                var parameters = objects.Select(obj => new [] { new QueryParameter(string.Format("@{0}", remoteBind.ColumnName), localBind.GetValue(obj), localBind.ValueType) });
-
-                objsResults = SelectObjectsImpl(remoteHandler, whereClause, parameters, Transaction.IsolationLevel.DEFAULT);
+                var whereExpressions = objects.Select(obj => DB.Column(remoteBind.ColumnName).IsEqualTo(localBind.GetValue(obj)));
+                objsResults = MultipleSelectObjectsImpl(remoteHandler, whereExpressions);
             }
 
             var resultByObjs = objsResults.Select((obj, index) => new { DataObject = objects[index], Results = obj }).ToArray();
@@ -850,12 +846,6 @@ namespace DOL.Database
             return SelectObjects<TObject>(whereExpression, param).FirstOrDefault();
         }
 
-        /// <summary>
-        /// Retrieve a Collection of DataObjects from database based on the Where Expression and Parameters Collection
-        /// </summary>
-        /// <param name="whereExpression">Parametrized Where Expression</param>
-        /// <param name="parameters">Collection of Parameters</param>
-        /// <returns>Collection of Objects Sets for each matching Parametrized Query</returns>
         public IList<IList<TObject>> SelectObjects<TObject>(string whereExpression, IEnumerable<IEnumerable<QueryParameter>> parameters)
             where TObject : DataObject
         {
@@ -970,18 +960,6 @@ namespace DOL.Database
         public IList<TObject> SelectAllObjects<TObject>()
             where TObject : DataObject
         {
-            return SelectAllObjects<TObject>(Transaction.IsolationLevel.DEFAULT);
-        }
-
-        /// <summary>
-        /// Select all Objects From Table holding TObject Type
-        /// </summary>
-        /// <typeparam name="TObject">DataObject Type to Select</typeparam>
-        /// <param name="isolation">Isolation Level</param>
-        /// <returns>Collection of all DataObject for this Type</returns>
-        public IList<TObject> SelectAllObjects<TObject>(Transaction.IsolationLevel isolation)
-            where TObject : DataObject
-        {
             var tableHandler = GetTableOrViewHandler(typeof(TObject));
             if (tableHandler == null)
             {
@@ -1003,6 +981,12 @@ namespace DOL.Database
             FillObjectRelations(dataObjects, false);
 
             return dataObjects;
+        }
+
+        public IList<TObject> SelectAllObjects<TObject>(Transaction.IsolationLevel isolation)
+            where TObject : DataObject
+        {
+            return SelectAllObjects<TObject>();
         }
 
         /// <summary>
