@@ -70,7 +70,7 @@ namespace DOL.GS
                 salvageLevel = 9; // max 9
             }
 
-            WhereExpression whereClause = WhereExpression.Empty;
+            WhereClause whereClause = WhereClause.Empty;
 
             if (item.SalvageYieldID == 0)
             {

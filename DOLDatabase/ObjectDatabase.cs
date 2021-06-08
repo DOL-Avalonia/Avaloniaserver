@@ -794,19 +794,19 @@ namespace DOL.Database
         protected abstract IEnumerable<DataObject> FindObjectByKeyImpl(DataTableHandler tableHandler, IEnumerable<object> keys);
 
         #region Public Parameterized Query Abstraction
-        public TObject SelectObject<TObject>(WhereExpression whereExpression)
+        public TObject SelectObject<TObject>(WhereClause whereExpression)
             where TObject : DataObject
         {
             return SelectObjects<TObject>(whereExpression).FirstOrDefault();
         }
 
-        public IList<TObject> SelectObjects<TObject>(WhereExpression whereExpression)
+        public IList<TObject> SelectObjects<TObject>(WhereClause whereExpression)
             where TObject : DataObject
         {
             return MultipleSelectObjects<TObject>(new[] { whereExpression }).First();
         }
 
-        public IList<IList<TObject>> MultipleSelectObjects<TObject>(IEnumerable<WhereExpression> whereExpressionBatch)
+        public IList<IList<TObject>> MultipleSelectObjects<TObject>(IEnumerable<WhereClause> whereExpressionBatch)
             where TObject : DataObject
         {
             if (whereExpressionBatch == null) throw new ArgumentNullException("Parameter whereExpressionBatch may not be null.");
@@ -976,7 +976,7 @@ namespace DOL.Database
                 return tableHandler.SearchPreCachedObjects(obj => obj != null).OfType<TObject>().ToArray();
             }
 
-            var dataObjects = MultipleSelectObjectsImpl(tableHandler, new[] { WhereExpression.Empty }).Single().OfType<TObject>().ToArray();
+            var dataObjects = MultipleSelectObjectsImpl(tableHandler, new[] { WhereClause.Empty }).Single().OfType<TObject>().ToArray();
 
             FillObjectRelations(dataObjects, false);
 
@@ -1061,7 +1061,7 @@ namespace DOL.Database
         /// <returns>True if objects were saved successfully; false otherwise</returns>
         protected abstract IEnumerable<bool> SaveObjectImpl(DataTableHandler tableHandler, IEnumerable<DataObject> dataObjects);
 
-        protected abstract IList<IList<DataObject>> MultipleSelectObjectsImpl(DataTableHandler tableHandler, IEnumerable<WhereExpression> whereExpressionBatch);
+        protected abstract IList<IList<DataObject>> MultipleSelectObjectsImpl(DataTableHandler tableHandler, IEnumerable<WhereClause> whereExpressionBatch);
 
         /// <summary>
         /// Deletes DataObjects from the database.

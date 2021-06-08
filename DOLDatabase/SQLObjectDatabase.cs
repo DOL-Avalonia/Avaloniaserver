@@ -91,7 +91,7 @@ namespace DOL.Database
                     if (dataTableHandler.UsesPreCaching)
                     {
                         var primary = dataTableHandler.PrimaryKeys.Single();
-                        var objects = MultipleSelectObjectsImpl(dataTableHandler, new[] { WhereExpression.Empty }).First();
+                        var objects = MultipleSelectObjectsImpl(dataTableHandler, new[] { WhereClause.Empty }).First();
 
                         foreach (var obj in objects)
                         {
@@ -384,10 +384,10 @@ namespace DOL.Database
                 throw new DatabaseException(string.Format("Table {0} has no primary key for finding by key...", tableHandler.TableName));
             }
 
-            var whereExpressions = new List<WhereExpression>();
+            var whereExpressions = new List<WhereClause>();
             foreach (var key in keys)
             {
-                var whereExpression = WhereExpression.Empty;
+                var whereExpression = WhereClause.Empty;
                 foreach (var column in primary)
                 {
                     whereExpression = whereExpression.And(DB.Column(column.ColumnName).IsEqualTo(key));
@@ -609,7 +609,7 @@ namespace DOL.Database
         protected void ExecuteSelectImpl(string SQLCommand, IEnumerable<QueryParameter> parameter, Action<IDataReader> Reader, Transaction.IsolationLevel Isolation)
             => ExecuteSelectImpl(SQLCommand, new[] { parameter }, Reader);
 
-        protected override IList<IList<DataObject>> MultipleSelectObjectsImpl(DataTableHandler tableHandler, IEnumerable<WhereExpression> whereExpressionBatch)
+        protected override IList<IList<DataObject>> MultipleSelectObjectsImpl(DataTableHandler tableHandler, IEnumerable<WhereClause> whereExpressionBatch)
         {
             var columns = tableHandler.FieldElementBindings.ToArray();
 
@@ -738,7 +738,7 @@ namespace DOL.Database
             while (repeat);
         }
 
-        protected virtual void ExecuteSelectImpl(string selectFromExpression, IEnumerable<WhereExpression> whereExpressionBatch, Action<IDataReader> Reader)
+        protected virtual void ExecuteSelectImpl(string selectFromExpression, IEnumerable<WhereClause> whereExpressionBatch, Action<IDataReader> Reader)
         {
 			if (!whereExpressionBatch.Any()) throw new ArgumentException("No parameter list was given.");
 
@@ -762,7 +762,7 @@ namespace DOL.Database
 
 							foreach (var whereExpression in whereExpressionBatch.Skip(current))
 							{
-								cmd.CommandText = selectFromExpression + whereExpression.WhereClause;
+								cmd.CommandText = selectFromExpression + whereExpression.ParametizedText;
 								FillSQLParameter(whereExpression.QueryParameters, cmd.Parameters);
 								cmd.Prepare();
 

@@ -1638,7 +1638,7 @@ namespace DOL.GS.Commands
 
                             SalvageYield salvageYield = null;
                             bool calculated = true;
-                            WhereExpression whereClause = WhereExpression.Empty;
+                            WhereClause whereClause = WhereClause.Empty;
 
                             int salvageLevel = CraftingMgr.GetItemCraftLevel(item) / 100;
                             if (salvageLevel > 9)
