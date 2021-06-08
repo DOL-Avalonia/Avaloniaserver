@@ -375,6 +375,7 @@
     <Compile Include="database\converters\Version003.cs" />
     <Compile Include="database\converters\Version004.cs" />
     <Compile Include="database\converters\Version005.cs" />
+    <Compile Include="database\DOLDB.cs" />
     <Compile Include="database\updaters\DatabaseUpdateAttribute.cs" />
     <Compile Include="database\updaters\IDatabaseUpdater.cs" />
     <Compile Include="DolWebHook.cs" />
