@@ -377,7 +377,7 @@ namespace DOL.GS
                 foreach (string lineName in m_spellLineIndex.Keys)
                 {
                     // Get SpellLine X Spell relation
-                    IList<DBLineXSpell> spells = GameServer.Database.SelectObjects<DBLineXSpell>("`LineName` = @LineName", new QueryParameter("@LineName", lineName));
+                    IList<DBLineXSpell> spells = DOLDB<DBLineXSpell>.SelectObjects(DB.Column("LineName").IsEqualTo(lineName));
 
                     // Load them if any records.
                     if (spells != null)
@@ -2728,7 +2728,7 @@ namespace DOL.GS
             m_syncLockUpdates.EnterWriteLock();
             try
             {
-                DBSpell dbSpell = GameServer.Database.SelectObjects<DBSpell>("`SpellID` = @SpellID", new QueryParameter("@SpellID", spellID)).FirstOrDefault();
+                DBSpell dbSpell = DOLDB<DBSpell>.SelectObject(DB.Column("SpellID").IsEqualTo(spellID));
 
                 if (dbSpell != null)
                 {

@@ -28,7 +28,7 @@ namespace DOL.GS.PacketHandler.Client.v168
         {
             string name = packet.ReadString(30);
             byte result = 0x00;
-            var character = GameServer.Database.SelectObjects<DOLCharacters>("`Name` = @Name", new QueryParameter("@Name", name)).FirstOrDefault();
+            var character = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(name));
 
             if (character != null)
             {

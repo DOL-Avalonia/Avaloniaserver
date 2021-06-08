@@ -69,7 +69,7 @@ namespace DOL.GS.Commands
         "/player allchars <PlayerName>",
         "/player class <list|classID> - view a list of classes, or change the targets class.",
         "/player areas - list all the areas the player is currently inside of ",
-        "/player isRenaissance <true|false> - set player isRenaissance"
+        "/player isRenaissance <true|false> - set player isRenaissance",
         "/player quest [remove <quest name>] - Manage the player's quests")]
     public class PlayerCommandHandler : AbstractCommandHandler, ICommandHandler
     {
@@ -117,7 +117,7 @@ namespace DOL.GS.Commands
                             player = client.Player;
                         }
 
-                        var character = GameServer.Database.SelectObjects<DOLCharacters>("`Name` = @Name", new QueryParameter("@Name", args[2])).FirstOrDefault();
+                        var character = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(args[2]));
 
                         if (character != null)
                         {

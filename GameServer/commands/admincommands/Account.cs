@@ -310,7 +310,7 @@ namespace DOL.GS.Commands
                             return;
                         }
 
-                        var banacc = GameServer.Database.SelectObjects<DBBannedAccount>("(`Type` = @TypeA OR `Type` = @TypeB) AND `Account` = @Account", new[] { new QueryParameter("@TypeA", "A"), new QueryParameter("@TypeB", "B"), new QueryParameter("@Account", accountname) });
+                        var banacc = DOLDB<DBBannedAccount>.SelectObjects(DB.Column("Type").IsEqualTo("A").Or(DB.Column("Type").IsEqualTo("B")).And(DB.Column("Account").IsEqualTo(accountname)));
                         if (banacc.Count == 0)
                         {
                             DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.Account.AccountNotFound", accountname));
@@ -380,7 +380,7 @@ namespace DOL.GS.Commands
                 return client.Player.DBCharacter;
             }
 
-            return GameServer.Database.SelectObjects<DOLCharacters>("`Name` = @Name", new QueryParameter("@Name", charname)).FirstOrDefault();
+            return DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(charname));
         }
 
         /// <summary>
@@ -424,7 +424,7 @@ namespace DOL.GS.Commands
                 return client.Account.Name;
             }
 
-            DOLCharacters ch = GameServer.Database.SelectObjects<DOLCharacters>("`Name` = @Name", new QueryParameter("@Name", charname)).FirstOrDefault();
+            DOLCharacters ch = DOLDB<DOLCharacters>.SelectObject(DB.Column("Name").IsEqualTo(charname));
             if (ch != null)
             {
                 return ch.AccountName;

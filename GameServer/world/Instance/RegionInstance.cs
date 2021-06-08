@@ -101,8 +101,8 @@ namespace DOL.GS
             }
 
             Assembly gasm = Assembly.GetAssembly(typeof(GameServer));
-            var staticObjs = GameServer.Database.SelectObjects<WorldObject>("`Region` = @Region", new QueryParameter("@Region", Skin));
-            var areaObjs = GameServer.Database.SelectObjects<DBArea>("`Region` = @Region", new QueryParameter("@Region", Skin));
+            var staticObjs = DOLDB<WorldObject>.SelectObjects(DB.Column("Region").IsEqualTo(Skin));
+            var areaObjs = DOLDB<DBArea>.SelectObjects(DB.Column("Region").IsEqualTo(Skin));
 
             int count = mobObjs.Length + staticObjs.Count;
             if (count > 0)

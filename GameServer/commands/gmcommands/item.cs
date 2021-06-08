@@ -1638,7 +1638,7 @@ namespace DOL.GS.Commands
 
                             SalvageYield salvageYield = null;
                             bool calculated = true;
-                            string sql = string.Empty;
+                            WhereExpression whereClause = WhereExpression.Empty;
 
                             int salvageLevel = CraftingMgr.GetItemCraftLevel(item) / 100;
                             if (salvageLevel > 9)
@@ -1646,29 +1646,22 @@ namespace DOL.GS.Commands
                                 salvageLevel = 9; // max 9
                             }
 
-                            List<QueryParameter> qp = new List<QueryParameter>();
-
                             if (item.SalvageYieldID == 0)
                             {
-                                sql = "`ObjectType` = @objectype AND `SalvageLevel` = @salvagelvl";
-                                qp.Add(new QueryParameter("@objectype", item.Object_Type));
-                                qp.Add(new QueryParameter("@salvagelvl", salvageLevel));
+                                whereClause = DB.Column("ObjectType").IsEqualTo(item.Object_Type).And(DB.Column("SalvageLevel").IsEqualTo(salvageLevel));
                             }
                             else
                             {
-                                sql = "`ID` = @salvageyieldid";
-                                qp.Add(new QueryParameter("@salvageyieldid", item.SalvageYieldID));
+                                whereClause = DB.Column("ID").IsEqualTo(item.SalvageYieldID);
                                 calculated = false;
                             }
 
                             if (ServerProperties.Properties.USE_SALVAGE_PER_REALM)
                             {
-                                // Some items use realm, some do not, so allow a find of either a set realm, or 0
-                                sql += " AND (`Realm` = 0 OR `Realm` = @realm )";
-                                qp.Add(new QueryParameter("@realm", item.Realm));
+                                whereClause = whereClause.And(DB.Column("Realm").IsEqualTo((int)eRealm.None).Or(DB.Column("Realm").IsEqualTo(item.Realm)));
                             }
 
-                            salvageYield = GameServer.Database.SelectObject<SalvageYield>(sql, qp);
+                            salvageYield = DOLDB<SalvageYield>.SelectObject(whereClause);
 
                             SalvageYield yield = null;
 
@@ -1960,7 +1953,7 @@ namespace DOL.GS.Commands
                             string name = string.Join(" ", args, 2, args.Length - 2);
                             if (name != string.Empty)
                             {
-                                var items = GameServer.Database.SelectObjects<ItemTemplate>("`id_nb` LIKE @id_nb", new QueryParameter("@id_nb", string.Format("%{0}%", name)));
+                                var items = DOLDB<ItemTemplate>.SelectObjects(DB.Column("id_nb").IsLike($"%{name}%"));
                                 DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Commands.GM.Item.FindID.MatchingIDsForX", name, items.Count), new object[] { });
                                 foreach (ItemTemplate item in items)
                                 {
@@ -1976,7 +1969,7 @@ namespace DOL.GS.Commands
                             string name = string.Join(" ", args, 2, args.Length - 2);
                             if (name != string.Empty)
                             {
-                                var items = GameServer.Database.SelectObjects<ItemTemplate>("`name` LIKE @name", new QueryParameter("@name", string.Format("%{0}%", name)));
+                                var items = DOLDB<ItemTemplate>.SelectObjects(DB.Column("name").IsLike($"%{name}%"));
                                 DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Commands.GM.Item.FindName.MatchingNamesForX", name, items.Count), new object[] { });
                                 foreach (ItemTemplate item in items)
                                 {
@@ -2012,7 +2005,7 @@ namespace DOL.GS.Commands
                                     args[2] = string.Empty;
                                 }
 
-                                var packageItems = GameServer.Database.SelectObjects<ItemTemplate>("`PackageID` = @PackageID", new QueryParameter("@PackageID", args[2]));
+                                var packageItems = DOLDB<ItemTemplate>.SelectObjects(DB.Column("PackageID").IsEqualTo(args[2]));
 
                                 if (packageItems != null)
                                 {

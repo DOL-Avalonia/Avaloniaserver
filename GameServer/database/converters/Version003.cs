@@ -46,7 +46,7 @@ namespace DOL.GS.DatabaseConverters
                 return;
             }
 
-            var templates = GameServer.Database.SelectObjects<ItemTemplate>("`SpellID` = @SpellID", new QueryParameter("@SpellID", 0));
+            var templates = DOLDB<ItemTemplate>.SelectObjects(DB.Column("SpellID").IsEqualTo(0));
 
             int count = 0;
             foreach (ItemTemplate template in templates)
@@ -78,7 +78,7 @@ namespace DOL.GS.DatabaseConverters
 
             log.Info("Converted " + count + " templates");
 
-            var items = GameServer.Database.SelectObjects<InventoryItem>("`SpellID` = @SpellID", new QueryParameter("@SpellID", 0));
+            var items = DOLDB<InventoryItem>.SelectObjects(DB.Column("SpellID").IsEqualTo(0));
             count = 0;
             foreach (InventoryItem item in items)
             {

@@ -73,7 +73,7 @@ namespace DOL.GS.ServerRules
 
 			// Ban account
 			IList<DBBannedAccount> objs;
-			objs = GameServer.Database.SelectObjects<DBBannedAccount>("(`Type` = @TypeA OR `Type` = @TypeB) AND `Account` = @Account", new[] { new QueryParameter("@TypeA", "A"), new QueryParameter("@TypeB", "B"), new QueryParameter("@Account", username) });
+			objs = DOLDB<DBBannedAccount>.SelectObjects(DB.Column("Type").IsEqualTo("A").Or(DB.Column("Type").IsEqualTo("B")).And(DB.Column("Account").IsEqualTo(username)));
 			if (objs.Count > 0)
 			{
 				client.IsConnected = false;
@@ -83,8 +83,8 @@ namespace DOL.GS.ServerRules
 			}
 
 			// Ban IP Address or range (example: 5.5.5.%)
-			string accip = GameServer.Database.Escape(client.TcpEndpointAddress);
-			objs = GameServer.Database.SelectObjects<DBBannedAccount>("(`Type` = @TypeI OR `Type` = @TypeB) AND @Ip LIKE `Ip`", new[] { new QueryParameter("@TypeI", "I"), new QueryParameter("@TypeB", "B"), new QueryParameter("@Ip", accip) });
+			string accip = client.TcpEndpointAddress;
+			objs = DOLDB<DBBannedAccount>.SelectObjects(DB.Column("Type").IsEqualTo("I").Or(DB.Column("Type").IsEqualTo("B")).And(DB.Column("Ip").IsLike(accip)));
 			if (objs.Count > 0)
 			{
 				client.IsConnected = false;
@@ -1521,8 +1521,10 @@ namespace DOL.GS.ServerRules
 
 			lock (killedPlayer.XPGainers)
 			{
-				bool dealNoXP = false;
-				var totalDamage = 0.0;
+#pragma warning disable CS0219 // La variable est assignée mais sa valeur n'est jamais utilisée
+                bool dealNoXP = false;
+#pragma warning restore CS0219 // La variable est assignée mais sa valeur n'est jamais utilisée
+                var totalDamage = 0.0;
 				//Collect the total damage
 				foreach (var de in killedPlayer.XPGainers)
 				{

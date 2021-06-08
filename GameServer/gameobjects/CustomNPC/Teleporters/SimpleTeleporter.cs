@@ -123,7 +123,7 @@ namespace DOL.GS
                 return;
             }
 
-            m_destinations.AddRange(GameServer.Database.SelectObjects<Teleport>("`Type` = @Type", new QueryParameter("@Type", GuildName)));
+            m_destinations.AddRange(DOLDB<Teleport>.SelectObjects(DB.Column("Type").IsEqualTo(GuildName)));
         }
 
         public override bool WhisperReceive(GameLiving source, string text)
