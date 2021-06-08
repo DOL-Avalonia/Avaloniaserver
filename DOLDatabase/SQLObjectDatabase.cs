@@ -103,9 +103,9 @@ namespace DOL.Database
             }
             catch (Exception e)
             {
-                if (Log.IsErrorEnabled)
+                if (log.IsErrorEnabled)
                 {
-                    Log.ErrorFormat("RegisterDataObject: Error While Registering Table \"{0}\"\n{1}", tableName, e);
+                    log.ErrorFormat("RegisterDataObject: Error While Registering Table \"{0}\"\n{1}", tableName, e);
                 }
             }
         }
@@ -183,9 +183,9 @@ namespace DOL.Database
                         }
                         else
                         {
-                            if (Log.IsErrorEnabled)
+                            if (log.IsErrorEnabled)
                             {
-                                Log.ErrorFormat("Error adding data object into {0} Object = {1}, UsePrimaryAutoInc, Query = {2}", tableHandler.TableName, result.DataObject, command);
+                                log.ErrorFormat("Error adding data object into {0} Object = {1}, UsePrimaryAutoInc, Query = {2}", tableHandler.TableName, result.DataObject, command);
                             }
 
                             success.Add(false);
@@ -208,9 +208,9 @@ namespace DOL.Database
                         }
                         else
                         {
-                            if (Log.IsErrorEnabled)
+                            if (log.IsErrorEnabled)
                             {
-                                Log.ErrorFormat("Error adding data object into {0} Object = {1} Query = {2}", tableHandler.TableName, result.DataObject, command);
+                                log.ErrorFormat("Error adding data object into {0} Object = {1} Query = {2}", tableHandler.TableName, result.DataObject, command);
                             }
 
                             success.Add(false);
@@ -220,9 +220,9 @@ namespace DOL.Database
             }
             catch (Exception e)
             {
-                if (Log.IsErrorEnabled)
+                if (log.IsErrorEnabled)
                 {
-                    Log.ErrorFormat("Error while adding data objects in table: {0}\n{1}", tableHandler.TableName, e);
+                    log.ErrorFormat("Error while adding data objects in table: {0}\n{1}", tableHandler.TableName, e);
                 }
             }
 
@@ -278,15 +278,15 @@ namespace DOL.Database
                     }
                     else
                     {
-                        if (Log.IsErrorEnabled)
+                        if (log.IsErrorEnabled)
                         {
                             if (result.Result < 0)
                             {
-                                Log.ErrorFormat("Error saving data object in table {0} Object = {1} --- constraint failed? {2}", tableHandler.TableName, result.DataObject, command);
+                                log.ErrorFormat("Error saving data object in table {0} Object = {1} --- constraint failed? {2}", tableHandler.TableName, result.DataObject, command);
                             }
                             else
                             {
-                                Log.ErrorFormat("Error saving data object in table {0} Object = {1} --- keyvalue changed? {2}\n{3}", tableHandler.TableName, result.DataObject, command, Environment.StackTrace);
+                                log.ErrorFormat("Error saving data object in table {0} Object = {1} --- keyvalue changed? {2}\n{3}", tableHandler.TableName, result.DataObject, command, Environment.StackTrace);
                             }
                         }
 
@@ -296,9 +296,9 @@ namespace DOL.Database
             }
             catch (Exception e)
             {
-                if (Log.IsErrorEnabled)
+                if (log.IsErrorEnabled)
                 {
-                    Log.ErrorFormat("Error while saving data object in table: {0}\n{1}", tableHandler.TableName, e);
+                    log.ErrorFormat("Error while saving data object in table: {0}\n{1}", tableHandler.TableName, e);
                 }
             }
 
@@ -348,9 +348,9 @@ namespace DOL.Database
                     }
                     else
                     {
-                        if (Log.IsErrorEnabled)
+                        if (log.IsErrorEnabled)
                         {
-                            Log.ErrorFormat("Error deleting data object from table {0} Object = {1} --- keyvalue changed? {2}\n{3}", tableHandler.TableName, result.DataObject, command, Environment.StackTrace);
+                            log.ErrorFormat("Error deleting data object from table {0} Object = {1} --- keyvalue changed? {2}\n{3}", tableHandler.TableName, result.DataObject, command, Environment.StackTrace);
                         }
 
                         success.Add(false);
@@ -359,9 +359,9 @@ namespace DOL.Database
             }
             catch (Exception e)
             {
-                if (Log.IsErrorEnabled)
+                if (log.IsErrorEnabled)
                 {
-                    Log.ErrorFormat("Error while deleting data object in table: {0}\n{1}", tableHandler.TableName, e);
+                    log.ErrorFormat("Error while deleting data object in table: {0}\n{1}", tableHandler.TableName, e);
                 }
             }
 
@@ -571,9 +571,9 @@ namespace DOL.Database
             }
             catch (Exception e)
             {
-                if (Log.IsErrorEnabled)
+                if (log.IsErrorEnabled)
                 {
-                    Log.ErrorFormat("{0}: {1} = {2} doesnt fit to {3}\n{4}", obj.TableName, bind.ColumnName, value.GetType().FullName, bind.ValueType, e);
+                    log.ErrorFormat("{0}: {1} = {2} doesnt fit to {3}\n{4}", obj.TableName, bind.ColumnName, value.GetType().FullName, bind.ValueType, e);
                 }
             }
         }
@@ -705,9 +705,9 @@ namespace DOL.Database
             }
             catch (Exception e)
             {
-                if (Log.IsErrorEnabled)
+                if (log.IsErrorEnabled)
                 {
-                    Log.ErrorFormat("Error while executing raw query \"{0}\"\n{1}", rawQuery, e);
+                    log.ErrorFormat("Error while executing raw query \"{0}\"\n{1}", rawQuery, e);
                 }
             }
 
@@ -827,9 +827,9 @@ namespace DOL.Database
                         break;
                 }
 
-                if (Log.IsWarnEnabled)
+                if (log.IsWarnEnabled)
                 {
-                    Log.WarnFormat("Socket exception: ({0}) {1}; repeat: {2}", socketException.ErrorCode, socketException.Message, ret);
+                    log.WarnFormat("Socket exception: ({0}) {1}; repeat: {2}", socketException.ErrorCode, socketException.Message, ret);
                 }
             }
 
