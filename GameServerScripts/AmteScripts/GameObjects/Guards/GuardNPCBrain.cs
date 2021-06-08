@@ -14,7 +14,11 @@ namespace DOL.AI.Brain
             set { }
         }
 
-        public override bool CanBAF { get => true; set => base.CanBAF = value; }
+        public override bool CanBAF 
+        {
+            get { return true; }
+            set { base.CanBAF = value; }
+        }
 
         public override void Think()
         {
