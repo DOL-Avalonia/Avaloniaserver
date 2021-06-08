@@ -460,35 +460,7 @@ namespace DOL.Database
 
             var primary = columns.FirstOrDefault(col => col.PrimaryKey != null);
             var dataObjects = new List<IList<DataObject>>();
-            ExecuteSelectImpl(command, parameters, reader => {
-                                var list = new List<DataObject>();
-
-                                var data = new object[reader.FieldCount];
-                                while (reader.Read())
-                                {
-                                    reader.GetValues(data);
-                                    var obj = Activator.CreateInstance(tableHandler.ObjectType) as DataObject;
-
-                                    // Fill Object
-                                    var current = 0;
-                                    foreach (var column in columns)
-                                    {
-                                        DatabaseSetValue(obj, column, data[current]);
-                                        current++;
-                                    }
-
-                                    // Set Primary Key
-                                    if (primary != null)
-                    {
-                        obj.ObjectId = primary.GetValue(obj).ToString();
-                    }
-
-                    list.Add(obj);
-                                    obj.Dirty = false;
-                                    obj.IsPersisted = true;
-                                }
-                                dataObjects.Add(list.ToArray());
-                              }, isolation);
+            ExecuteSelectImpl(command, parameters, reader => FillQueryResultList(reader, tableHandler, columns, primary, dataObjects), isolation);
 
             return dataObjects.ToArray();
         }
@@ -650,35 +622,38 @@ namespace DOL.Database
 
             var primary = columns.FirstOrDefault(col => col.PrimaryKey != null);
             var dataObjects = new List<IList<DataObject>>();
-            ExecuteSelectImpl(selectFromExpression, whereExpressionBatch, reader => {
-                var list = new List<DataObject>();
-
-                var data = new object[reader.FieldCount];
-                while (reader.Read())
-                {
-                    reader.GetValues(data);
-                    var obj = Activator.CreateInstance(tableHandler.ObjectType) as DataObject;
-
-                    // Fill Object
-                    var current = 0;
-                    foreach (var column in columns)
-                    {
-                        DatabaseSetValue(obj, column, data[current]);
-                        current++;
-                    }
-
-                    // Set Primary Key
-                    if (primary != null)
-                        obj.ObjectId = primary.GetValue(obj).ToString();
-
-                    list.Add(obj);
-                    obj.Dirty = false;
-                    obj.IsPersisted = true;
-                }
-                dataObjects.Add(list.ToArray());
-            }, isolation);
+            ExecuteSelectImpl(selectFromExpression, whereExpressionBatch, reader => FillQueryResultList(reader, tableHandler, columns, primary, dataObjects), isolation);
 
             return dataObjects.ToArray();
+        }
+
+        private void FillQueryResultList(IDataReader reader, DataTableHandler tableHandler, ElementBinding[] columns, ElementBinding primary, List<IList<DataObject>> resultList)
+        {
+            var list = new List<DataObject>();
+
+            var data = new object[reader.FieldCount];
+            while (reader.Read())
+            {
+                reader.GetValues(data);
+                var obj = Activator.CreateInstance(tableHandler.ObjectType) as DataObject;
+
+                // Fill Object
+                var current = 0;
+                foreach (var column in columns)
+                {
+                    DatabaseSetValue(obj, column, data[current]);
+                    current++;
+                }
+
+                // Set Primary Key
+                if (primary != null)
+                    obj.ObjectId = primary.GetValue(obj).ToString();
+
+                list.Add(obj);
+                obj.Dirty = false;
+                obj.IsPersisted = true;
+            }
+            resultList.Add(list.ToArray());
         }
 
         /// <summary>
