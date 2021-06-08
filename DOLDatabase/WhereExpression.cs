@@ -44,7 +44,7 @@ namespace DOL.Database
         {
             get
             {
-                var clause = "";
+                var clause = "WHERE ";
                 uint parameterID = 0;
                 foreach (var atom in IntermediateRepresentation)
                 {
@@ -114,6 +114,7 @@ namespace DOL.Database
         internal override List<TextAtom> IntermediateRepresentation => new List<TextAtom>();
         public override WhereExpression And(WhereExpression rightExpression) => rightExpression;
         public override WhereExpression Or(WhereExpression rightExpression) => rightExpression;
+        public override string WhereClause => string.Empty;
 
         public override bool Equals(object obj) => obj is EmptyWhereExpression;
         public override int GetHashCode() => base.GetHashCode();
