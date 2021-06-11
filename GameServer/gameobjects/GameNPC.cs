@@ -3245,6 +3245,51 @@ namespace DOL.GS
 			if (MAX_PASSENGERS > 0)
 				Riders = new GamePlayer[MAX_PASSENGERS];
 
+			if (temporallyBrain != null)
+			{
+				RemoveBrain(temporallyBrain);
+				temporallyBrain = null;
+			}
+			tempoarallyFlags = 0;
+			temporallyTemplate = null;
+			if (hasImunity)
+			{
+				switch (ImunityDomage)
+				{
+					case eDamageType.Body:
+						AbilityBonus[(int)eProperty.Resist_Body] -= 100;
+						break;
+					case eDamageType.Crush:
+						AbilityBonus[(int)eProperty.Resist_Crush] -= 100;
+						break;
+					case eDamageType.Slash:
+						AbilityBonus[(int)eProperty.Resist_Slash] -= 100;
+						break;
+					case eDamageType.Thrust:
+						AbilityBonus[(int)eProperty.Resist_Thrust] -= 100;
+						break;
+					case eDamageType.Cold:
+						AbilityBonus[(int)eProperty.Resist_Cold] -= 100;
+						break;
+					case eDamageType.Energy:
+						AbilityBonus[(int)eProperty.Resist_Energy] -= 100;
+						break;
+					case eDamageType.Heat:
+						AbilityBonus[(int)eProperty.Resist_Heat] -= 100;
+						break;
+					case eDamageType.Matter:
+						AbilityBonus[(int)eProperty.Resist_Matter] -= 100;
+						break;
+					case eDamageType.Spirit:
+						AbilityBonus[(int)eProperty.Resist_Spirit] -= 100;
+						break;
+				}
+				ImunityDomage = eDamageType.GM;
+				DamageTypeCounter = 0;
+				LastDamageType = eDamageType.GM;
+				hasImunity = false;
+			}
+
 			bool anyPlayer = false;
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 			{
@@ -4307,31 +4352,31 @@ namespace DOL.GS
 				switch (ImunityDomage)
 				{
 					case eDamageType.Body:
-						BaseBuffBonusCategory[(int)eProperty.Resist_Body] -= 100;
+						AbilityBonus[(int)eProperty.Resist_Body] -= 100;
 						break;
 					case eDamageType.Crush:
-						BaseBuffBonusCategory[(int)eProperty.Resist_Crush] -= 100;
+						AbilityBonus[(int)eProperty.Resist_Crush] -= 100;
 						break;
 					case eDamageType.Slash:
-						BaseBuffBonusCategory[(int)eProperty.Resist_Slash] -= 100;
+						AbilityBonus[(int)eProperty.Resist_Slash] -= 100;
 						break;
 					case eDamageType.Thrust:
-						BaseBuffBonusCategory[(int)eProperty.Resist_Thrust] -= 100;
+						AbilityBonus[(int)eProperty.Resist_Thrust] -= 100;
 						break;
 					case eDamageType.Cold:
-						BaseBuffBonusCategory[(int)eProperty.Resist_Cold] -= 100;
+						AbilityBonus[(int)eProperty.Resist_Cold] -= 100;
 						break;
 					case eDamageType.Energy:
-						BaseBuffBonusCategory[(int)eProperty.Resist_Energy] -= 100;
+						AbilityBonus[(int)eProperty.Resist_Energy] -= 100;
 						break;
 					case eDamageType.Heat:
-						BaseBuffBonusCategory[(int)eProperty.Resist_Heat] -= 100;
+						AbilityBonus[(int)eProperty.Resist_Heat] -= 100;
 						break;
 					case eDamageType.Matter:
-						BaseBuffBonusCategory[(int)eProperty.Resist_Matter] -= 100;
+						AbilityBonus[(int)eProperty.Resist_Matter] -= 100;
 						break;
 					case eDamageType.Spirit:
-						BaseBuffBonusCategory[(int)eProperty.Resist_Spirit] -= 100;
+						AbilityBonus[(int)eProperty.Resist_Spirit] -= 100;
 						break;
 				}
 				ImunityDomage = eDamageType.GM;
@@ -4358,16 +4403,16 @@ namespace DOL.GS
 			}
 			ambientTextTimer.Stop();
 			ambientTextTimer = null;
-			return regionTimer.TimeUntilElapsed;
+			return 1000;
         }
 
         public override void TakeDamage(AttackData ad)
         {
-			if (ad.Attacker is GamePlayer gamePlayer && (ad.AttackResult != eAttackResult.HitStyle && ad.AttackResult != eAttackResult.HitUnstyled))
+			if (ad.Attacker is GamePlayer gamePlayer && (ad.AttackType != AttackData.eAttackType.MeleeDualWield && ad.AttackType != AttackData.eAttackType.MeleeOneHand && ad.AttackType != AttackData.eAttackType.MeleeTwoHand))
 			{
 				eDamageType damageType = ad.DamageType;
 				MobXAmbientBehaviour ambientText = ambientTexts.Where(mobXAmbient => mobXAmbient.DamageTypeRepeat > 0).FirstOrDefault();
-				if (ambientText != null && ambientText.Chance == 100 && (ambientText.HP == 0 || HealthPercent < ambientText.HP))
+				if (ambientText != null && (ambientText.Chance == 100 || ambientText.Chance == 0) && (ambientText.HP == 0 || HealthPercent < ambientText.HP))
 				{
 					if (damageType != LastDamageType)
 					{
@@ -4378,7 +4423,7 @@ namespace DOL.GS
 					{
 						DamageTypeCounter++;
 					}
-					if (DamageTypeCounter > ambientText.DamageTypeRepeat && !hasImunity)
+					if (DamageTypeCounter >= ambientText.DamageTypeRepeat && !hasImunity)
 					{
 						FireAmbientSentence(eAmbientTrigger.immunised, gamePlayer);
 					}
@@ -4418,20 +4463,20 @@ namespace DOL.GS
 					if(ambientText.Count > 0)
                     {
 						MobXAmbientBehaviour changeBrainAmbient = ambientText.Where(ambient => !string.IsNullOrEmpty(ambient.ChangeBrain)).FirstOrDefault();
-						if(changeBrainAmbient.HP < (byte)(value <= 0 ? 0 : Health * 100 / MaxHealth))
+						if(changeBrainAmbient != null && changeBrainAmbient.HP < (byte)(value * 100 / MaxHealth))
                         {
-							if (changeBrainAmbient != null && temporallyBrain != null)
+							if (temporallyBrain != null)
 							{
 								RemoveBrain(temporallyBrain);
 								temporallyBrain = null;
 							}
-							MobXAmbientBehaviour changeFlagAmbient = ambientText.Where(ambient => ambient.ChangeFlag > 0).FirstOrDefault();
-							if (changeFlagAmbient != null && temporallyBrain != null)
-							{
-								tempoarallyFlags = 0;
-								// Send flag update to the players
-								Flags = Flags;
-							}
+						}
+						MobXAmbientBehaviour changeFlagAmbient = ambientText.Where(ambient => ambient.ChangeFlag > 0).FirstOrDefault();
+						if (changeFlagAmbient != null && changeFlagAmbient.HP < (byte)(value * 100 / MaxHealth))
+						{
+							tempoarallyFlags = 0;
+							// Send flag update to the players
+							Flags = Flags;
 						}
 					}
 				}
@@ -6115,38 +6160,38 @@ namespace DOL.GS
 				return;
 
 			// DamageTypeRepeate
-			if (chosen.DamageTypeRepeat>0)
+			if (trigger == eAmbientTrigger.immunised)
             {
 				hasImunity = true;
 				ImunityDomage = LastDamageType;
 				switch (LastDamageType)
 				{
 					case eDamageType.Body:
-						BaseBuffBonusCategory[(int)eProperty.Resist_Body] += 100;
+						AbilityBonus[(int)eProperty.Resist_Body] += 100;
 						break;
 					case eDamageType.Crush:
-						BaseBuffBonusCategory[(int)eProperty.Resist_Crush] += 100;
+						AbilityBonus[(int)eProperty.Resist_Crush] += 100;
 						break;
 					case eDamageType.Slash:
-						BaseBuffBonusCategory[(int)eProperty.Resist_Slash] += 100;
+						AbilityBonus[(int)eProperty.Resist_Slash] += 100;
 						break;
 					case eDamageType.Thrust:
-						BaseBuffBonusCategory[(int)eProperty.Resist_Thrust] += 100;
+						AbilityBonus[(int)eProperty.Resist_Thrust] += 100;
 						break;
 					case eDamageType.Cold:
-						BaseBuffBonusCategory[(int)eProperty.Resist_Cold] += 100;
+						AbilityBonus[(int)eProperty.Resist_Cold] += 100;
 						break;
 					case eDamageType.Energy:
-						BaseBuffBonusCategory[(int)eProperty.Resist_Energy] += 100;
+						AbilityBonus[(int)eProperty.Resist_Energy] += 100;
 						break;
 					case eDamageType.Heat:
-						BaseBuffBonusCategory[(int)eProperty.Resist_Heat] += 100;
+						AbilityBonus[(int)eProperty.Resist_Heat] += 100;
 						break;
 					case eDamageType.Matter:
-						BaseBuffBonusCategory[(int)eProperty.Resist_Matter] += 100;
+						AbilityBonus[(int)eProperty.Resist_Matter] += 100;
 						break;
 					case eDamageType.Spirit:
-						BaseBuffBonusCategory[(int)eProperty.Resist_Spirit] += 100;
+						AbilityBonus[(int)eProperty.Resist_Spirit] += 100;
 						break;
 				}
 				LastDamageType = eDamageType.GM;
@@ -6179,9 +6224,10 @@ namespace DOL.GS
             }
             
 			// ChangeFlag
-			if(chosen.ChangeFlag >0)
+			if(chosen.ChangeFlag > 0 && !Flags.HasFlag((eFlags)chosen.ChangeFlag))
             {
-				tempoarallyFlags = (eFlags)chosen.ChangeFlag;
+				tempoarallyFlags = Flags | (eFlags)chosen.ChangeFlag;
+				Flags = m_flags;
             }
 
 			// ChangeBrain
@@ -6189,9 +6235,10 @@ namespace DOL.GS
             {
 				foreach (Assembly script in ScriptMgr.GameServerScripts)
 				{
-					temporallyBrain = (ABrain)script.CreateInstance(chosen.ChangeBrain, false);
-					if (temporallyBrain != null)
+					ABrain newBrain = (ABrain)script.CreateInstance(chosen.ChangeBrain, false);
+					if (newBrain != null && newBrain.GetType() != Brain.GetType())
 					{
+						temporallyBrain = newBrain;
 						AddBrain(temporallyBrain);
 						break;
 					}
@@ -6199,14 +6246,15 @@ namespace DOL.GS
 			}
 
 			// ChangeNPCTemplate
-			if (chosen.ChangeNPCTemplate > 0)
+			if (chosen.ChangeNPCTemplate > 0 && (temporallyTemplate == null || chosen.ChangeNPCTemplate != temporallyTemplate.TemplateId))
 			{
 				foreach (Assembly script in ScriptMgr.GameServerScripts)
 				{
-					temporallyTemplate = NpcTemplateMgr.GetTemplate(chosen.ChangeNPCTemplate);
-					if (temporallyTemplate != null)
+					INpcTemplate newTemplate = NpcTemplateMgr.GetTemplate(chosen.ChangeNPCTemplate);
+					if (newTemplate != null)
 					{
-						if(chosen.ChangeEffect > 0)
+						temporallyTemplate = newTemplate;
+						if (chosen.ChangeEffect > 0)
                         {
 							foreach(GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 								player.Out.SendSpellEffectAnimation(this, this, (ushort)chosen.ChangeEffect, 0, false, 1);

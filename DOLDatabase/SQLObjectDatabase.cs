@@ -384,18 +384,18 @@ namespace DOL.Database
                 throw new DatabaseException(string.Format("Table {0} has no primary key for finding by key...", tableHandler.TableName));
             }
 
-            var whereExpressions = new List<WhereClause>();
+            var whereClauses = new List<WhereClause>();
             foreach (var key in keys)
             {
-                var whereExpression = WhereClause.Empty;
+                var whereClause = WhereClause.Empty;
                 foreach (var column in primary)
                 {
-                    whereExpression = whereExpression.And(DB.Column(column.ColumnName).IsEqualTo(key));
+                    whereClause = whereClause.And(DB.Column(column.ColumnName).IsEqualTo(key));
                 }
-                whereExpressions.Add(whereExpression);
+                whereClauses.Add(whereClause);
             }
 
-            var resultByKeys = MultipleSelectObjectsImpl(tableHandler, whereExpressions).Select(results => results.SingleOrDefault());
+            var resultByKeys = MultipleSelectObjectsImpl(tableHandler, whereClauses).Select(results => results.SingleOrDefault());
             return resultByKeys.ToArray();
         }
 
@@ -403,9 +403,9 @@ namespace DOL.Database
         /// Gets the number of objects in a given table in the database based on a given set of criteria. (where clause)
         /// </summary>
         /// <typeparam name="TObject">the type of objects to retrieve</typeparam>
-        /// <param name="whereExpression">the where clause to filter object count on</param>
+        /// <param name="whereClause">the where clause to filter object count on</param>
         /// <returns>a positive integer representing the number of objects that matched the given criteria; zero if no such objects existed</returns>
-        protected override int GetObjectCountImpl<TObject>(string whereExpression)
+        protected override int GetObjectCountImpl<TObject>(string whereClause)
         {
             string tableName = AttributesUtils.GetTableOrViewName(typeof(TObject));
             DataTableHandler tableHandler;
@@ -415,13 +415,13 @@ namespace DOL.Database
             }
 
             string command = null;
-            if (string.IsNullOrEmpty(whereExpression))
+            if (string.IsNullOrEmpty(whereClause))
             {
                 command = string.Format("SELECT COUNT(*) FROM `{0}`", tableName);
             }
             else
             {
-                command = string.Format("SELECT COUNT(*) FROM `{0}` WHERE {1}", tableName, whereExpression);
+                command = string.Format("SELECT COUNT(*) FROM `{0}` WHERE {1}", tableName, whereClause);
             }
 
             var count = ExecuteScalarImpl(command);
@@ -433,22 +433,22 @@ namespace DOL.Database
         /// Retrieve a Collection of DataObjects Sets from database filtered by Parametrized Where Expression
         /// </summary>
         /// <param name="tableHandler">Table Handler for these DataObjects</param>
-        /// <param name="whereExpression">Parametrized Where Expression</param>
+        /// <param name="whereClause">Parametrized Where Expression</param>
         /// <param name="parameters">Parameters for filtering</param>
         /// <param name="isolation">Isolation Level</param>
         /// <returns>Collection of DataObjects Sets matching Parametrized Where Expression</returns>
-        protected override IList<IList<DataObject>> SelectObjectsImpl(DataTableHandler tableHandler, string whereExpression, IEnumerable<IEnumerable<QueryParameter>> parameters, Transaction.IsolationLevel isolation)
+        protected override IList<IList<DataObject>> SelectObjectsImpl(DataTableHandler tableHandler, string whereClause, IEnumerable<IEnumerable<QueryParameter>> parameters, Transaction.IsolationLevel isolation)
         {
             var columns = tableHandler.FieldElementBindings.ToArray();
 
             string command = null;
-            if (!string.IsNullOrEmpty(whereExpression))
+            if (!string.IsNullOrEmpty(whereClause))
             {
                 command = string.Format(
                     "SELECT {0} FROM `{1}` WHERE {2}",
                                         string.Join(", ", columns.Select(col => string.Format("`{0}`", col.ColumnName))),
                                         tableHandler.TableName,
-                                        whereExpression);
+                                        whereClause);
             }
             else
             {
@@ -609,7 +609,7 @@ namespace DOL.Database
         protected void ExecuteSelectImpl(string SQLCommand, IEnumerable<QueryParameter> parameter, Action<IDataReader> Reader, Transaction.IsolationLevel Isolation)
             => ExecuteSelectImpl(SQLCommand, new[] { parameter }, Reader);
 
-        protected override IList<IList<DataObject>> MultipleSelectObjectsImpl(DataTableHandler tableHandler, IEnumerable<WhereClause> whereExpressionBatch)
+        protected override IList<IList<DataObject>> MultipleSelectObjectsImpl(DataTableHandler tableHandler, IEnumerable<WhereClause> whereClauseBatch)
         {
             var columns = tableHandler.FieldElementBindings.ToArray();
 
@@ -619,7 +619,7 @@ namespace DOL.Database
 
             var primary = columns.FirstOrDefault(col => col.PrimaryKey != null);
             var dataObjects = new List<IList<DataObject>>();
-            ExecuteSelectImpl(selectFromExpression, whereExpressionBatch, reader => FillQueryResultList(reader, tableHandler, columns, primary, dataObjects));
+            ExecuteSelectImpl(selectFromExpression, whereClauseBatch, reader => FillQueryResultList(reader, tableHandler, columns, primary, dataObjects));
 
             return dataObjects.ToArray();
         }
@@ -738,9 +738,9 @@ namespace DOL.Database
             while (repeat);
         }
 
-        protected virtual void ExecuteSelectImpl(string selectFromExpression, IEnumerable<WhereClause> whereExpressionBatch, Action<IDataReader> Reader)
+        protected virtual void ExecuteSelectImpl(string selectFromExpression, IEnumerable<WhereClause> whereClauseBatch, Action<IDataReader> Reader)
         {
-			if (!whereExpressionBatch.Any()) throw new ArgumentException("No parameter list was given.");
+			if (!whereClauseBatch.Any()) throw new ArgumentException("No parameter list was given.");
 
 			if (log.IsDebugEnabled)
 				log.DebugFormat("ExecuteSelectImpl: {0}", selectFromExpression);
@@ -760,10 +760,10 @@ namespace DOL.Database
 							conn.Open();
 							long start = (DateTime.UtcNow.Ticks / 10000);
 
-							foreach (var whereExpression in whereExpressionBatch.Skip(current))
+							foreach (var whereClause in whereClauseBatch.Skip(current))
 							{
-								cmd.CommandText = selectFromExpression + whereExpression.ParametizedText;
-								FillSQLParameter(whereExpression.QueryParameters, cmd.Parameters);
+								cmd.CommandText = selectFromExpression + whereClause.ParametizedText;
+								FillSQLParameter(whereClause.QueryParameters, cmd.Parameters);
 								cmd.Prepare();
 
 								using (var reader = cmd.ExecuteReader())

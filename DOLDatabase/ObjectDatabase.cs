@@ -711,8 +711,8 @@ namespace DOL.Database
             }
             else
             {
-                var whereExpressions = objects.Select(obj => DB.Column(remoteBind.ColumnName).IsEqualTo(localBind.GetValue(obj)));
-                objsResults = MultipleSelectObjectsImpl(remoteHandler, whereExpressions);
+                var whereClauses = objects.Select(obj => DB.Column(remoteBind.ColumnName).IsEqualTo(localBind.GetValue(obj)));
+                objsResults = MultipleSelectObjectsImpl(remoteHandler, whereClauses);
             }
 
             var resultByObjs = objsResults.Select((obj, index) => new { DataObject = objects[index], Results = obj }).ToArray();
@@ -794,22 +794,22 @@ namespace DOL.Database
         protected abstract IEnumerable<DataObject> FindObjectByKeyImpl(DataTableHandler tableHandler, IEnumerable<object> keys);
 
         #region Public Parameterized Query Abstraction
-        public TObject SelectObject<TObject>(WhereClause whereExpression)
+        public TObject SelectObject<TObject>(WhereClause whereClause)
             where TObject : DataObject
         {
-            return SelectObjects<TObject>(whereExpression).FirstOrDefault();
+            return SelectObjects<TObject>(whereClause).FirstOrDefault();
         }
 
-        public IList<TObject> SelectObjects<TObject>(WhereClause whereExpression)
+        public IList<TObject> SelectObjects<TObject>(WhereClause whereClause)
             where TObject : DataObject
         {
-            return MultipleSelectObjects<TObject>(new[] { whereExpression }).First();
+            return MultipleSelectObjects<TObject>(new[] { whereClause }).First();
         }
 
-        public IList<IList<TObject>> MultipleSelectObjects<TObject>(IEnumerable<WhereClause> whereExpressionBatch)
+        public IList<IList<TObject>> MultipleSelectObjects<TObject>(IEnumerable<WhereClause> whereClauseBatch)
             where TObject : DataObject
         {
-            if (whereExpressionBatch == null) throw new ArgumentNullException("Parameter whereExpressionBatch may not be null.");
+            if (whereClauseBatch == null) throw new ArgumentNullException("Parameter whereClauseBatch may not be null.");
 
             var tableHandler = GetTableOrViewHandler(typeof(TObject));
             if (tableHandler == null)
@@ -820,7 +820,7 @@ namespace DOL.Database
                 throw new DatabaseException(string.Format("Table {0} is not registered for Database Connection...", typeof(TObject).FullName));
             }
 
-            var objs = MultipleSelectObjectsImpl(tableHandler, whereExpressionBatch).Select(res => res.OfType<TObject>().ToArray()).ToArray();
+            var objs = MultipleSelectObjectsImpl(tableHandler, whereClauseBatch).Select(res => res.OfType<TObject>().ToArray()).ToArray();
 
             FillObjectRelations(objs.SelectMany(obj => obj), false);
 
@@ -828,25 +828,25 @@ namespace DOL.Database
         }
         #endregion
 
-        public TObject SelectObject<TObject>(string whereExpression, IEnumerable<IEnumerable<QueryParameter>> parameters) where TObject : DataObject
+        public TObject SelectObject<TObject>(string whereClause, IEnumerable<IEnumerable<QueryParameter>> parameters) where TObject : DataObject
         {
-            IList<TObject> list = SelectObjects<TObject>(whereExpression, parameters).FirstOrDefault();
+            IList<TObject> list = SelectObjects<TObject>(whereClause, parameters).FirstOrDefault();
             if (list != null)
                 return list.First();
             return null;
         }
 
-        public TObject SelectObject<TObject>(string whereExpression, IEnumerable<QueryParameter> parameter) where TObject : DataObject
+        public TObject SelectObject<TObject>(string whereClause, IEnumerable<QueryParameter> parameter) where TObject : DataObject
         {
-            return SelectObjects<TObject>(whereExpression, parameter).FirstOrDefault();
+            return SelectObjects<TObject>(whereClause, parameter).FirstOrDefault();
         }
 
-        public TObject SelectObject<TObject>(string whereExpression, QueryParameter param) where TObject : DataObject
+        public TObject SelectObject<TObject>(string whereClause, QueryParameter param) where TObject : DataObject
         {
-            return SelectObjects<TObject>(whereExpression, param).FirstOrDefault();
+            return SelectObjects<TObject>(whereClause, param).FirstOrDefault();
         }
 
-        public IList<IList<TObject>> SelectObjects<TObject>(string whereExpression, IEnumerable<IEnumerable<QueryParameter>> parameters)
+        public IList<IList<TObject>> SelectObjects<TObject>(string whereClause, IEnumerable<IEnumerable<QueryParameter>> parameters)
             where TObject : DataObject
         {
             if (parameters == null)
@@ -865,7 +865,7 @@ namespace DOL.Database
                 throw new DatabaseException(string.Format("Table {0} is not registered for Database Connection...", typeof(TObject).FullName));
             }
 
-            var objs = SelectObjectsImpl(tableHandler, whereExpression, parameters, Transaction.IsolationLevel.DEFAULT).Select(res => res.OfType<TObject>().ToArray()).ToArray();
+            var objs = SelectObjectsImpl(tableHandler, whereClause, parameters, Transaction.IsolationLevel.DEFAULT).Select(res => res.OfType<TObject>().ToArray()).ToArray();
 
             FillObjectRelations(objs.SelectMany(obj => obj), false);
 
@@ -875,10 +875,10 @@ namespace DOL.Database
         /// <summary>
         /// Retrieve a Collection of DataObjects from database based on the Where Expression and Parameter Collection
         /// </summary>
-        /// <param name="whereExpression">Parametrized Where Expression</param>
+        /// <param name="whereClause">Parametrized Where Expression</param>
         /// <param name="parameter">Collection of Parameter</param>
         /// <returns>Collection of Objects matching Parametrized Query</returns>
-        public IList<TObject> SelectObjects<TObject>(string whereExpression, IEnumerable<QueryParameter> parameter)
+        public IList<TObject> SelectObjects<TObject>(string whereClause, IEnumerable<QueryParameter> parameter)
             where TObject : DataObject
         {
             if (parameter == null)
@@ -886,16 +886,16 @@ namespace DOL.Database
                 throw new ArgumentNullException("parameter");
             }
 
-            return SelectObjects<TObject>(whereExpression, new [] { parameter }).First();
+            return SelectObjects<TObject>(whereClause, new [] { parameter }).First();
         }
 
         /// <summary>
         /// Retrieve a Collection of DataObjects from database based on the Where Expression and Parameter
         /// </summary>
-        /// <param name="whereExpression">Parametrized Where Expression</param>
+        /// <param name="whereClause">Parametrized Where Expression</param>
         /// <param name="param">Single Parameter</param>
         /// <returns>Collection of Objects matching Parametrized Query</returns>
-        public IList<TObject> SelectObjects<TObject>(string whereExpression, QueryParameter param)
+        public IList<TObject> SelectObjects<TObject>(string whereClause, QueryParameter param)
             where TObject : DataObject
         {
             if (param == null)
@@ -903,53 +903,53 @@ namespace DOL.Database
                 throw new ArgumentNullException("param");
             }
 
-            return SelectObjects<TObject>(whereExpression, new [] { new [] { param } }).First();
+            return SelectObjects<TObject>(whereClause, new [] { new [] { param } }).First();
         }
 
         /// <summary>
         /// Retrieve a Single DataObject from database based on Where Expression
         /// </summary>
-        /// <param name="whereExpression">Where Expression Filter</param>
+        /// <param name="whereClause">Where Expression Filter</param>
         /// <returns>Single Object or First Object if multiple matches</returns>
-        public TObject SelectObject<TObject>(string whereExpression)
+        public TObject SelectObject<TObject>(string whereClause)
             where TObject : DataObject
         {
-            return SelectObject<TObject>(whereExpression, Transaction.IsolationLevel.DEFAULT);
+            return SelectObject<TObject>(whereClause, Transaction.IsolationLevel.DEFAULT);
         }
 
         /// <summary>
         /// Retrieve a Single DataObject from database based on Where Expression
         /// </summary>
-        /// <param name="whereExpression">Where Expression Filter</param>
+        /// <param name="whereClause">Where Expression Filter</param>
         /// <param name="isolation">Isolation Level</param>
         /// <returns>Single Object or First Object if multiple matches</returns>
-        public TObject SelectObject<TObject>(string whereExpression, Transaction.IsolationLevel isolation)
+        public TObject SelectObject<TObject>(string whereClause, Transaction.IsolationLevel isolation)
             where TObject : DataObject
         {
-            return SelectObjects<TObject>(whereExpression, isolation).FirstOrDefault();
+            return SelectObjects<TObject>(whereClause, isolation).FirstOrDefault();
         }
 
         /// <summary>
         /// Retrieve a Collection of DataObjects from database based on Where Expression
         /// </summary>
-        /// <param name="whereExpression">Where Expression Filter</param>
+        /// <param name="whereClause">Where Expression Filter</param>
         /// <returns>Collection of DataObjects matching filter</returns>
-        public IList<TObject> SelectObjects<TObject>(string whereExpression)
+        public IList<TObject> SelectObjects<TObject>(string whereClause)
             where TObject : DataObject
         {
-            return SelectObjects<TObject>(whereExpression, Transaction.IsolationLevel.DEFAULT);
+            return SelectObjects<TObject>(whereClause, Transaction.IsolationLevel.DEFAULT);
         }
 
         /// <summary>
         /// Retrieve a Collection of DataObjects from database based on Where Expression
         /// </summary>
-        /// <param name="whereExpression">Where Expression Filter</param>
+        /// <param name="whereClause">Where Expression Filter</param>
         /// <param name="isolation">Isolation Level</param>
         /// <returns>Collection of DataObjects matching filter</returns>
-        public IList<TObject> SelectObjects<TObject>(string whereExpression, Transaction.IsolationLevel isolation)
+        public IList<TObject> SelectObjects<TObject>(string whereClause, Transaction.IsolationLevel isolation)
             where TObject : DataObject
         {
-            return SelectObjects<TObject>(whereExpression, new [] { new QueryParameter[] { } }).First().ToArray();
+            return SelectObjects<TObject>(whereClause, new [] { new QueryParameter[] { } }).First().ToArray();
         }
 
         /// <summary>
@@ -1004,12 +1004,12 @@ namespace DOL.Database
         /// Gets the number of objects in a given table in the database based on a given set of criteria. (where clause)
         /// </summary>
         /// <typeparam name="TObject">the type of objects to retrieve</typeparam>
-        /// <param name="whereExpression">the where clause to filter object count on</param>
+        /// <param name="whereClause">the where clause to filter object count on</param>
         /// <returns>a positive integer representing the number of objects that matched the given criteria; zero if no such objects existed</returns>
-        public int GetObjectCount<TObject>(string whereExpression)
+        public int GetObjectCount<TObject>(string whereClause)
             where TObject : DataObject
         {
-            return GetObjectCountImpl<TObject>(whereExpression);
+            return GetObjectCountImpl<TObject>(whereClause);
         }
 
         /// <summary>
@@ -1061,7 +1061,7 @@ namespace DOL.Database
         /// <returns>True if objects were saved successfully; false otherwise</returns>
         protected abstract IEnumerable<bool> SaveObjectImpl(DataTableHandler tableHandler, IEnumerable<DataObject> dataObjects);
 
-        protected abstract IList<IList<DataObject>> MultipleSelectObjectsImpl(DataTableHandler tableHandler, IEnumerable<WhereClause> whereExpressionBatch);
+        protected abstract IList<IList<DataObject>> MultipleSelectObjectsImpl(DataTableHandler tableHandler, IEnumerable<WhereClause> whereClauseBatch);
 
         /// <summary>
         /// Deletes DataObjects from the database.
@@ -1075,19 +1075,19 @@ namespace DOL.Database
         /// Retrieve a Collection of DataObjects Sets from database filtered by Parametrized Where Expression
         /// </summary>
         /// <param name="tableHandler">Table Handler for these DataObjects</param>
-        /// <param name="whereExpression">Parametrized Where Expression</param>
+        /// <param name="whereClause">Parametrized Where Expression</param>
         /// <param name="parameters">Parameters for filtering</param>
         /// <param name="isolation">Isolation Level</param>
         /// <returns>Collection of DataObjects Sets matching Parametrized Where Expression</returns>
-        protected abstract IList<IList<DataObject>> SelectObjectsImpl(DataTableHandler tableHandler, string whereExpression, IEnumerable<IEnumerable<QueryParameter>> parameters, Transaction.IsolationLevel isolation);
+        protected abstract IList<IList<DataObject>> SelectObjectsImpl(DataTableHandler tableHandler, string whereClause, IEnumerable<IEnumerable<QueryParameter>> parameters, Transaction.IsolationLevel isolation);
 
         /// <summary>
         /// Gets the number of objects in a given table in the database based on a given set of criteria. (where clause)
         /// </summary>
         /// <typeparam name="TObject">the type of objects to retrieve</typeparam>
-        /// <param name="whereExpression">the where clause to filter object count on</param>
+        /// <param name="whereClause">the where clause to filter object count on</param>
         /// <returns>a positive integer representing the number of objects that matched the given criteria; zero if no such objects existed</returns>
-        protected abstract int GetObjectCountImpl<TObject>(string whereExpression)
+        protected abstract int GetObjectCountImpl<TObject>(string whereClause)
             where TObject : DataObject;
 
         /// <summary>
