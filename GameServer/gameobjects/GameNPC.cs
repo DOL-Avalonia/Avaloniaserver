@@ -70,7 +70,7 @@ namespace DOL.GS
 		public ushort DamageTypeLimit { get; set; }
 		private RegionTimer ambientTextTimer;
 		private bool hasImunity = false;
-		private eDamageType ImunityDomage = eDamageType.GM;
+		public eDamageType ImunityDomage = eDamageType.GM;
 		private Dictionary<MobXAmbientBehaviour, short> ambientXNbUse = new Dictionary<MobXAmbientBehaviour, short>();
 		private eFlags tempoarallyFlags = 0;
 		private ABrain temporallyBrain = null;
@@ -3251,39 +3251,13 @@ namespace DOL.GS
 				temporallyBrain = null;
 			}
 			tempoarallyFlags = 0;
-			temporallyTemplate = null;
+			if(temporallyTemplate != null)
+            {
+				temporallyTemplate = null;
+				LoadTemplate(NPCTemplate);
+			}
 			if (hasImunity)
 			{
-				switch (ImunityDomage)
-				{
-					case eDamageType.Body:
-						AbilityBonus[(int)eProperty.Resist_Body] -= 100;
-						break;
-					case eDamageType.Crush:
-						AbilityBonus[(int)eProperty.Resist_Crush] -= 100;
-						break;
-					case eDamageType.Slash:
-						AbilityBonus[(int)eProperty.Resist_Slash] -= 100;
-						break;
-					case eDamageType.Thrust:
-						AbilityBonus[(int)eProperty.Resist_Thrust] -= 100;
-						break;
-					case eDamageType.Cold:
-						AbilityBonus[(int)eProperty.Resist_Cold] -= 100;
-						break;
-					case eDamageType.Energy:
-						AbilityBonus[(int)eProperty.Resist_Energy] -= 100;
-						break;
-					case eDamageType.Heat:
-						AbilityBonus[(int)eProperty.Resist_Heat] -= 100;
-						break;
-					case eDamageType.Matter:
-						AbilityBonus[(int)eProperty.Resist_Matter] -= 100;
-						break;
-					case eDamageType.Spirit:
-						AbilityBonus[(int)eProperty.Resist_Spirit] -= 100;
-						break;
-				}
 				ImunityDomage = eDamageType.GM;
 				DamageTypeCounter = 0;
 				LastDamageType = eDamageType.GM;
@@ -4349,36 +4323,6 @@ namespace DOL.GS
         {
 			if(hasImunity)
             {
-				switch (ImunityDomage)
-				{
-					case eDamageType.Body:
-						AbilityBonus[(int)eProperty.Resist_Body] -= 100;
-						break;
-					case eDamageType.Crush:
-						AbilityBonus[(int)eProperty.Resist_Crush] -= 100;
-						break;
-					case eDamageType.Slash:
-						AbilityBonus[(int)eProperty.Resist_Slash] -= 100;
-						break;
-					case eDamageType.Thrust:
-						AbilityBonus[(int)eProperty.Resist_Thrust] -= 100;
-						break;
-					case eDamageType.Cold:
-						AbilityBonus[(int)eProperty.Resist_Cold] -= 100;
-						break;
-					case eDamageType.Energy:
-						AbilityBonus[(int)eProperty.Resist_Energy] -= 100;
-						break;
-					case eDamageType.Heat:
-						AbilityBonus[(int)eProperty.Resist_Heat] -= 100;
-						break;
-					case eDamageType.Matter:
-						AbilityBonus[(int)eProperty.Resist_Matter] -= 100;
-						break;
-					case eDamageType.Spirit:
-						AbilityBonus[(int)eProperty.Resist_Spirit] -= 100;
-						break;
-				}
 				ImunityDomage = eDamageType.GM;
 				DamageTypeCounter = 0;
 				LastDamageType = eDamageType.GM;
@@ -4388,7 +4332,12 @@ namespace DOL.GS
             {
 				tempoarallyFlags = 0;
 				// Send flag update to the players
-				Flags = Flags;
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
+				{
+					player.Out.SendNPCCreate(this);
+					if (m_inventory != null)
+						player.Out.SendLivingEquipmentUpdate(this);
+				}
 			}
 			if(temporallyBrain != null)
             {
@@ -4414,18 +4363,30 @@ namespace DOL.GS
 				MobXAmbientBehaviour ambientText = ambientTexts.Where(mobXAmbient => mobXAmbient.DamageTypeRepeat > 0).FirstOrDefault();
 				if (ambientText != null && (ambientText.Chance == 100 || ambientText.Chance == 0) && (ambientText.HP == 0 || HealthPercent < ambientText.HP))
 				{
-					if (damageType != LastDamageType)
+					if (hasImunity && ImunityDomage == damageType)
 					{
-						DamageTypeCounter = 1;
 						LastDamageType = damageType;
+						FireAmbientSentence(eAmbientTrigger.immunised, gamePlayer);
+						ad.CriticalDamage = 0;
+						ad.Damage = 0;
 					}
 					else
 					{
-						DamageTypeCounter++;
-					}
-					if (DamageTypeCounter >= ambientText.DamageTypeRepeat && !hasImunity)
-					{
-						FireAmbientSentence(eAmbientTrigger.immunised, gamePlayer);
+						if (damageType != LastDamageType)
+						{
+							DamageTypeCounter = 1;
+							LastDamageType = damageType;
+						}
+						else
+						{
+							DamageTypeCounter++;
+						}
+						if (DamageTypeCounter >= ambientText.DamageTypeRepeat)
+						{
+							FireAmbientSentence(eAmbientTrigger.immunised, gamePlayer);
+							ad.CriticalDamage = 0;
+							ad.Damage = 0;
+						}
 					}
 				}
 			}
@@ -4476,7 +4437,12 @@ namespace DOL.GS
 						{
 							tempoarallyFlags = 0;
 							// Send flag update to the players
-							Flags = Flags;
+							foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
+							{
+								player.Out.SendNPCCreate(this);
+								if (m_inventory != null)
+									player.Out.SendLivingEquipmentUpdate(this);
+							}
 						}
 					}
 				}
@@ -6140,15 +6106,6 @@ namespace DOL.GS
 					return;
             }
 
-			//TriggerTimer
-			if (chosen.TriggerTimer > 0)
-			{
-				if (ambientTextTimer != null)
-					return;
-				ambientTextTimer = new RegionTimer(this, new RegionTimerCallback(AmbientTextTypeCallback));
-				ambientTextTimer.Start(chosen.TriggerTimer * 1000);
-			}
-
 			if (chosen.HP < 1 && chosen.Chance > 0)
             {
 				if (!Util.Chance(chosen.Chance))
@@ -6163,40 +6120,21 @@ namespace DOL.GS
 			if (trigger == eAmbientTrigger.immunised)
             {
 				hasImunity = true;
-				ImunityDomage = LastDamageType;
-				switch (LastDamageType)
-				{
-					case eDamageType.Body:
-						AbilityBonus[(int)eProperty.Resist_Body] += 100;
-						break;
-					case eDamageType.Crush:
-						AbilityBonus[(int)eProperty.Resist_Crush] += 100;
-						break;
-					case eDamageType.Slash:
-						AbilityBonus[(int)eProperty.Resist_Slash] += 100;
-						break;
-					case eDamageType.Thrust:
-						AbilityBonus[(int)eProperty.Resist_Thrust] += 100;
-						break;
-					case eDamageType.Cold:
-						AbilityBonus[(int)eProperty.Resist_Cold] += 100;
-						break;
-					case eDamageType.Energy:
-						AbilityBonus[(int)eProperty.Resist_Energy] += 100;
-						break;
-					case eDamageType.Heat:
-						AbilityBonus[(int)eProperty.Resist_Heat] += 100;
-						break;
-					case eDamageType.Matter:
-						AbilityBonus[(int)eProperty.Resist_Matter] += 100;
-						break;
-					case eDamageType.Spirit:
-						AbilityBonus[(int)eProperty.Resist_Spirit] += 100;
-						break;
-				}
+				if(LastDamageType != eDamageType.GM)
+					ImunityDomage = LastDamageType;
 				LastDamageType = eDamageType.GM;
 				DamageTypeCounter = 0;
 			}
+
+			//TriggerTimer
+			if (chosen.TriggerTimer > 0)
+			{
+				if (ambientTextTimer != null)
+					ambientTextTimer.Stop();
+				ambientTextTimer = new RegionTimer(this, new RegionTimerCallback(AmbientTextTypeCallback));
+				ambientTextTimer.Start(chosen.TriggerTimer * 1000);
+			}
+
 
 			string controller = string.Empty;
 			if (Brain is IControlledBrain)
@@ -6209,26 +6147,34 @@ namespace DOL.GS
             if(chosen.Spell > 0)
             {
                 DBSpell dbspell = GameServer.Database.SelectObject<DBSpell>("SpellID = " + chosen.Spell);
-                // check if the player is punished
                 if (dbspell != null)
                 {
-                    foreach (GamePlayer pl in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
+					/*foreach (GamePlayer pl in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
                     {
 						if(!(living is GamePlayer) || (living as GamePlayer != pl))
 							pl.Out.SendSpellEffectAnimation(this, living, (ushort)dbspell.ClientEffect, 0, false, 1);
                     }
                     if (living is GamePlayer player)
                         player.Out.SendSpellEffectAnimation(this, player, (ushort)dbspell.ClientEffect, 0, false, 1);
-                    living.TakeDamage(this, eDamageType.Energy, (int)dbspell.Damage, 0);
-                }
+                    living.TakeDamage(this, eDamageType.Energy, (int)dbspell.Damage, 0);*/
+					Spell spell = new Spell(dbspell, Level);
+					ISpellHandler dd = CreateSpellHandler(this, spell, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
+					dd.IgnoreDamageCap = true;
+					dd.StartSpell(living);
+				}
             }
             
 			// ChangeFlag
 			if(chosen.ChangeFlag > 0 && !Flags.HasFlag((eFlags)chosen.ChangeFlag))
             {
 				tempoarallyFlags = Flags | (eFlags)chosen.ChangeFlag;
-				Flags = m_flags;
-            }
+				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
+				{
+					player.Out.SendNPCCreate(this);
+					if (m_inventory != null)
+						player.Out.SendLivingEquipmentUpdate(this);
+				}
+			}
 
 			// ChangeBrain
 			if(!string.IsNullOrEmpty(chosen.ChangeBrain))

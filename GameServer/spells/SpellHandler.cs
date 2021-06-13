@@ -3958,10 +3958,12 @@ namespace DOL.GS.Spells
 			//Update value if npc is Invincible Group
 			if (Caster is GamePlayer && ad.Target is GameNPC npc)
             {
-				if (npc.CurrentGroupMob != null && npc.CurrentGroupMob.GroupInfos.IsInvincible == true)
+				if ((npc.CurrentGroupMob != null && npc.CurrentGroupMob.GroupInfos.IsInvincible == true) || (npc.ImunityDomage != eDamageType.GM && ad.DamageType == npc.ImunityDomage))
                 {
 					ad.Damage = 0;
 					ad.CriticalDamage = 0;
+					OnSpellResisted(ad.Target);
+					return;
                 }
             }
 
