@@ -232,7 +232,7 @@ namespace DOL.GS
             GameRelicPad m_parent;
 
             public PadArea(GameRelicPad parentPad)
-                : base(string.Empty, parentPad.X, parentPad.Y, parentPad.Z, PAD_AREA_RADIUS)
+                : base(string.Empty, parentPad.Position, PAD_AREA_RADIUS)
             {
                 m_parent = parentPad;
             }

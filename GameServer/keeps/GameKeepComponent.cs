@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Text;
 using DOL.Database;
 using DOL.Events;
+using System.Numerics;
 
 namespace DOL.GS.Keeps
 {
@@ -283,7 +284,7 @@ namespace DOL.GS.Keeps
 
             if (player.Client.Account.PrivLevel > 1)
             {
-                list.Add(Name + " with a Z of " + Z.ToString());
+                list.Add(Name + " with a Z of " + Position.Z.ToString("F0"));
             }
 
             return list;
@@ -354,9 +355,11 @@ namespace DOL.GS.Keeps
 
             // this x and y is for get object in radius
             double angle = keep.Heading * ((Math.PI * 2) / 360); // angle*2pi/360;
-            X = (int)(keep.X + ((sbyte)component.X * 148 * Math.Cos(angle) + (sbyte)component.Y * 148 * Math.Sin(angle)));
-            Y = (int)(keep.Y - ((sbyte)component.Y * 148 * Math.Cos(angle) - (sbyte)component.X * 148 * Math.Sin(angle)));
-            Z = keep.Z;
+            Position = new Vector3(
+                keep.X + (float)((sbyte)component.X * 148 * Math.Cos(angle) + (sbyte)component.Y * 148 * Math.Sin(angle)),
+                keep.Y - (float)((sbyte)component.Y * 148 * Math.Cos(angle) - (sbyte)component.X * 148 * Math.Sin(angle)),
+                keep.Z
+            );
 
             // and this one for packet sent
             ComponentX = component.X;
@@ -567,18 +570,14 @@ namespace DOL.GS.Keeps
                     continue;
                 }
 
-                if (guard.Position == null)
-                {
-                    continue;
-                }
-
-                if (guard.Position.Height > guard.Component.Height)
+                if (guard.DBPosition == null) continue;
+                if (guard.DBPosition.Height > guard.Component.Height)
                 {
                     guard.RemoveFromWorld();
                 }
                 else
                 {
-                    if (guard.Position.Height <= guard.Component.Height &&
+                    if (guard.DBPosition.Height <= guard.Component.Height &&
                         guard.ObjectState != GameObject.eObjectState.Active && !guard.IsRespawning)
                     {
                         guard.AddToWorld();
@@ -588,18 +587,14 @@ namespace DOL.GS.Keeps
 
             foreach (GameKeepBanner banner in Keep.Banners.Values)
             {
-                if (banner.Position == null)
-                {
-                    continue;
-                }
-
-                if (banner.Position.Height > banner.Component.Height)
+                if (banner.DBPosition == null) continue;
+                if (banner.DBPosition.Height > banner.Component.Height)
                 {
                     banner.RemoveFromWorld();
                 }
                 else
                 {
-                    if (banner.Position.Height <= banner.Component.Height &&
+                    if (banner.DBPosition.Height <= banner.Component.Height &&
                         banner.ObjectState != GameObject.eObjectState.Active)
                     {
                         banner.AddToWorld();
@@ -741,8 +736,8 @@ namespace DOL.GS.Keeps
 
                     foreach (GameKeepGuard guard in Keep.Guards.Values)
                     {
-                        guard.MoveTo(guard.CurrentRegionID, guard.X, guard.Y, Keep.Z, guard.Heading);
-                        guard.SpawnPoint.Z = Keep.Z;
+                        guard.MoveTo(guard.CurrentRegionID, guard.Position.X, guard.Position.Y, Keep.Z, guard.Heading);
+                        guard.SpawnPoint += Vector3.UnitZ * Keep.Z;
                     }
                 }
             }

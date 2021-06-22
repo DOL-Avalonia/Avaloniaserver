@@ -25,7 +25,7 @@ using System.Reflection;
 using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Database;
-using DOL.GS;
+using System.Numerics;
 using DOL.GS.Effects;
 using DOL.GS.Housing;
 using DOL.GS.Movement;
@@ -363,9 +363,7 @@ namespace DOL.GS.Commands
             }
 
             // Fill the object variables
-            mob.X = client.Player.X;
-            mob.Y = client.Player.Y;
-            mob.Z = client.Player.Z;
+            mob.Position = client.Player.Position;
             mob.CurrentRegion = client.Player.CurrentRegion;
             mob.Heading = client.Player.Heading;
             mob.Level = 1;
@@ -430,9 +428,7 @@ namespace DOL.GS.Commands
             GameNPC mob = new GameNPC();
 
             // Fill the object variables
-            mob.X = client.Player.X;
-            mob.Y = client.Player.Y;
-            mob.Z = client.Player.Z;
+            mob.Position = client.Player.Position;
             mob.CurrentRegion = client.Player.CurrentRegion;
             mob.Heading = client.Player.Heading;
             mob.Level = level;
@@ -511,11 +507,9 @@ namespace DOL.GS.Commands
                 GameNPC mob = new GameNPC();
 
                 // Fill the object variables
-                int x = client.Player.X + Util.Random(-radius, radius);
-                int y = client.Player.Y + Util.Random(-radius, radius);
-                mob.X = FastMath.Abs(x);
-                mob.Y = FastMath.Abs(y);
-                mob.Z = client.Player.Z;
+                var x = Math.Abs(client.Player.Position.X + Util.Random(-radius, radius));
+                var y = Math.Abs(client.Player.Position.Y + Util.Random(-radius, radius));
+                mob.Position = new Vector3(x, y, client.Player.Position.Z);
                 mob.CurrentRegion = client.Player.CurrentRegion;
                 mob.Heading = client.Player.Heading;
                 mob.Level = level;
@@ -574,11 +568,9 @@ namespace DOL.GS.Commands
                 GameNPC mob = new GameNPC();
 
                 // Fill the object variables
-                int x = client.Player.X + DOL.GS.Util.Random(-radius, radius);
-                int y = client.Player.Y + DOL.GS.Util.Random(-radius, radius);
-                mob.X = FastMath.Abs(x);
-                mob.Y = FastMath.Abs(y);
-                mob.Z = client.Player.Z;
+                var x = Math.Abs(client.Player.Position.X + DOL.GS.Util.Random(-radius, radius));
+                var y = Math.Abs(client.Player.Position.Y + DOL.GS.Util.Random(-radius, radius));
+                mob.Position = new Vector3(x, y, client.Player.Position.Z);
                 mob.CurrentRegion = client.Player.CurrentRegion;
                 mob.Heading = client.Player.Heading;
                 mob.Level = (byte)Util.Random(10, 50);
@@ -1103,7 +1095,7 @@ namespace DOL.GS.Commands
 
         private void movehere(GameClient client, GameNPC targetMob, string[] args)
         {
-            targetMob.MoveTo(client.Player.CurrentRegionID, client.Player.X, client.Player.Y, client.Player.Z, client.Player.Heading);
+            targetMob.MoveTo(client.Player.CurrentRegionID, client.Player.Position, client.Player.Heading);
             targetMob.SaveIntoDatabase();
             client.Out.SendMessage("Target Mob '" + targetMob.Name + "' moved to your location!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
         }
@@ -1113,9 +1105,9 @@ namespace DOL.GS.Commands
             client.Out.SendMessage(
                 "\"" + targetMob.Name + "\", " +
                                    targetMob.CurrentRegionID + ", " +
-                                   targetMob.X + ", " +
-                                   targetMob.Y + ", " +
-                                   targetMob.Z + ", " +
+                                   targetMob.Position.X.ToString("F0") + ", " +
+                                   targetMob.Position.Y.ToString("F0") + ", " +
+                                   targetMob.Position.Z.ToString("F0") + ", " +
                                    targetMob.Heading,
                                    eChatType.CT_System, eChatLoc.CL_SystemWindow);
         }
@@ -1232,7 +1224,7 @@ namespace DOL.GS.Commands
 
             if ((targetMob.Flags & GameNPC.eFlags.FLYING) != 0)
             {
-                targetMob.MoveTo(targetMob.CurrentRegionID, targetMob.X, targetMob.Y, targetMob.Z + height, targetMob.Heading);
+                targetMob.MoveTo(targetMob.CurrentRegionID, targetMob.Position + Vector3.UnitZ * height, targetMob.Heading);
             }
 
             targetMob.FlagsDb = (uint)targetMob.Flags;
@@ -1513,7 +1505,7 @@ namespace DOL.GS.Commands
 
             info.Add(" ");
 
-            info.Add(" + Position (X, Y, Z, H): " + targetMob.X + ", " + targetMob.Y + ", " + targetMob.Z + ", " + targetMob.Heading);
+            info.Add(" + Position (X, Y, Z, H): " + targetMob.Position.ToString("F0") + ", " + targetMob.Heading);
 
             if (targetMob.GuildName != null && targetMob.GuildName.Length > 0)
             {
@@ -2595,9 +2587,7 @@ namespace DOL.GS.Commands
             targetMob.StopAttack();
             targetMob.StopCurrentSpellcast();
 
-            mob.X = targetMob.X;
-            mob.Y = targetMob.Y;
-            mob.Z = targetMob.Z;
+            mob.Position = targetMob.Position;
             mob.CurrentRegion = targetMob.CurrentRegion;
             mob.Heading = targetMob.Heading;
             mob.Level = targetMob.Level;
@@ -2768,9 +2758,7 @@ namespace DOL.GS.Commands
             mob.LoadTemplate(targetMob.NPCTemplate);
 
             // Fill the object variables
-            mob.X = client.Player.X;
-            mob.Y = client.Player.Y;
-            mob.Z = client.Player.Z;
+            mob.Position = client.Player.Position;
             mob.CurrentRegion = client.Player.CurrentRegion;
             mob.Heading = client.Player.Heading;
             mob.Level = targetMob.Level;
@@ -2908,9 +2896,7 @@ namespace DOL.GS.Commands
             if (targetMob == null)
             {
                 GameNPC mob = new GameNPC(template);
-                mob.X = client.Player.X;
-                mob.Y = client.Player.Y;
-                mob.Z = client.Player.Z;
+                mob.Position = client.Player.Position;
                 mob.Heading = client.Player.Heading;
                 mob.CurrentRegion = client.Player.CurrentRegion;
                 mob.AddToWorld();

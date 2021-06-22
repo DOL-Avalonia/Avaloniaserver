@@ -58,9 +58,9 @@ namespace DOL.AI.Brain
 
 			if ((guard is GuardArcher || guard is GuardStaticArcher || guard is GuardLord))
 			{
-				// Drop aggro and disengage if the target is out of range.
-				if (Body.IsAttacking && Body.TargetObject is GameLiving living && Body.IsWithinRadius(Body.TargetObject, AggroRange, false) == false)
-				{
+                // Drop aggro and disengage if the target is out of range.
+                if (Body.IsAttacking && Body.TargetObject is GameLiving living && Body.IsWithinRadius(Body.TargetObject, AggroRange) == false)
+                {
 					Body.StopAttack();
 					RemoveFromAggroList(living);
 					Body.TargetObject = null;
@@ -78,7 +78,7 @@ namespace DOL.AI.Brain
                 // Tolakram - always clear the aggro list so if this is done by mistake the list will correctly re-fill on next think
                 ClearAggroList();
 
-                if (guard.GetDistanceTo(guard.SpawnPoint, 0) > 50)
+                if (guard.GetDistance2DTo(guard.SpawnPoint) > 50)
                 {
                     guard.WalkToSpawn();
                 }
@@ -146,7 +146,7 @@ namespace DOL.AI.Brain
                         continue;
                     }
 
-                    WarMapMgr.AddGroup((byte)player.CurrentZone.ID, player.X, player.Y, player.Name, (byte)player.Realm);
+                    WarMapMgr.AddGroup((byte)player.CurrentZone.ID, (int)player.Position.X, (int)player.Position.Y, player.Name, (byte)player.Realm);
 
                     if (DOL.GS.ServerProperties.Properties.ENABLE_DEBUG)
                     {
@@ -190,7 +190,7 @@ namespace DOL.AI.Brain
                         continue;
                     }
 
-                    WarMapMgr.AddGroup((byte)player.CurrentZone.ID, player.X, player.Y, player.Name, (byte)player.Realm);
+                    WarMapMgr.AddGroup((byte)player.CurrentZone.ID, (int)player.Position.X, (int)player.Position.Y, player.Name, (byte)player.Realm);
 
                     if (DOL.GS.ServerProperties.Properties.ENABLE_DEBUG)
                     {

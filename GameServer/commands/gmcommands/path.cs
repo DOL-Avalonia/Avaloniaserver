@@ -21,6 +21,7 @@ using System.Collections;
 using DOL.Database;
 using DOL.GS.Movement;
 using DOL.GS.PacketHandler;
+using System.Numerics;
 
 namespace DOL.GS.Commands
 {
@@ -51,9 +52,7 @@ namespace DOL.GS.Commands
             GameStaticItem obj = new GameStaticItem();
 
             // Fill the object variables
-            obj.X = pp.X;
-            obj.Y = pp.Y;
-            obj.Z = pp.Z + 1; // raise a bit off of ground level
+            obj.Position = pp.Position + Vector3.UnitZ; // raise a bit off of ground level
             obj.CurrentRegion = client.Player.CurrentRegion;
             obj.Heading = client.Player.Heading;
             obj.Name = name;
@@ -114,7 +113,7 @@ namespace DOL.GS.Commands
             // Remove old temp objects
             RemoveAllTempPathObjects(client);
 
-            PathPoint startpoint = new PathPoint(client.Player.X, client.Player.Y, client.Player.Z, 5000, ePathType.Once);
+            PathPoint startpoint = new PathPoint(client.Player.Position, 5000, ePathType.Once);
             client.Player.TempProperties.setProperty(TEMP_PATH_FIRST, startpoint);
             client.Player.TempProperties.setProperty(TEMP_PATH_LAST, startpoint);
             client.Player.Out.SendMessage("Path creation started! You can add new pathpoints via /path add now!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -157,7 +156,7 @@ namespace DOL.GS.Commands
                 }
             }
 
-            PathPoint newpp = new PathPoint(client.Player.X, client.Player.Y, client.Player.Z, speedlimit, path.Type);
+            PathPoint newpp = new PathPoint(client.Player.Position, speedlimit, path.Type);
             newpp.WaitTime = waittime * 10;
             path.Next = newpp;
             newpp.Prev = path;

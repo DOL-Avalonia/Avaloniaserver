@@ -18,6 +18,7 @@
  */
 using DOL.GS.PacketHandler;
 using DOL.Language;
+using System.Numerics;
 namespace DOL.GS.Commands
 {
 	[CmdAttribute("&groundassist", //command to handle
@@ -85,7 +86,7 @@ namespace DOL.GS.Commands
 				return;
 			}
 
-			if (target.GroundTarget == null || (target.GroundTarget.X == 0 && target.GroundTarget.Y == 0 && target.GroundTarget.Z == 0))
+			if (target.GroundTarget == null || (target.GroundTarget.Value == Vector3.Zero))
 			{
 				client.Out.SendMessage(
 					LanguageMgr.GetTranslation(
@@ -98,8 +99,8 @@ namespace DOL.GS.Commands
 				);
 				return;
 			}
-			client.Player.Out.SendChangeGroundTarget(target.GroundTarget);
-			client.Player.SetGroundTarget(target.GroundTarget.X, target.GroundTarget.Y, target.GroundTarget.Z);
+			client.Player.Out.SendChangeGroundTarget(target.GroundTarget.Value);
+			client.Player.GroundTarget = target.GroundTarget;
 		}
 	}
 }

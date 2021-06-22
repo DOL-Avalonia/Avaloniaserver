@@ -17,18 +17,14 @@
  *
  */
 using DOL.Database;
+using System.Numerics;
 
 namespace DOL.GS.Keeps
 {
     public interface IKeepItem
     {
-        ushort CurrentRegionID { get;set; }
-
-        int X { get;set; }
-
-        int Y { get;set; }
-
-        int Z { get;set; }
+        ushort CurrentRegionID { get; set; }
+        Vector3 Position { get; set; }
 
         ushort Heading { get;set; }
 
@@ -36,7 +32,7 @@ namespace DOL.GS.Keeps
 
         GameKeepComponent Component { get; set; }
 
-        DBKeepPosition Position { get;set; }
+        DBKeepPosition DBPosition { get; set; }
 
         void LoadFromPosition(DBKeepPosition position, GameKeepComponent component);
 

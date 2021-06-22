@@ -72,9 +72,9 @@ namespace DOL.GS.Keeps
                     DbArea.Radius = Radius;
                     DbArea.Region = (ushort)Keep.Region;
                     DbArea.Sound = Sound;
-                    DbArea.X = X;
-                    DbArea.Y = Y;
-                    DbArea.Z = Z;
+                    DbArea.X = (int)Position.X;
+                    DbArea.Y = (int)Position.Y;
+                    DbArea.Z = (int)Position.Z;
 
                     GameServer.Database.AddObject(DbArea);
                 }
@@ -85,7 +85,7 @@ namespace DOL.GS.Keeps
         {
             base.LoadFromDatabase(area);
             GameServer.KeepManager.Log.Debug("KeepArea " + area.Description + " LoadFromDatabase called");
-            GameServer.KeepManager.Log.Debug("X: " + area.X + "(" + X + ") Y: " + area.Y + "(" + Y + ") Region:" + area.Region + " Radius: " + Radius);
+            GameServer.KeepManager.Log.Debug("X: " + area.X + "(" + Position.X + ") Y: " + area.Y + "(" + Position.Y + ") Region:" + area.Region + " Radius: " + m_Radius);
         }
     }
 }

@@ -37,7 +37,7 @@ namespace DOL.GS.Commands
 				LanguageMgr.GetTranslation(
 					client.Account.Language,
 					"Commands.Players.Gloc.Position",
-					client.Player.X, client.Player.Y, client.Player.Z, client.Player.Heading, client.Player.CurrentRegionID,
+					client.Player.Position.X, client.Player.Position.Y, client.Player.Position.Z, client.Player.Heading, client.Player.CurrentRegionID,
 					client.Player.CurrentRegion is BaseInstance ? string.Format("Skin:{0}", client.Player.CurrentRegion.Skin) : "")
 				);
 		}

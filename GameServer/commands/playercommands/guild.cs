@@ -2947,7 +2947,7 @@ namespace DOL.GS.Commands
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Guild.NotMember"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
 							}
-							AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(client.Player.CurrentRegionID, client.Player, WorldMgr.VISIBILITY_DISTANCE(client.Player.CurrentRegion));
+							AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(client.Player.CurrentRegionID, client.Player.Position, WorldMgr.VISIBILITY_DISTANCE(client.Player.CurrentRegion));
 							if (keep == null)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Commands.Players.Guild.ClaimNotNear"), eChatType.CT_System, eChatLoc.CL_SystemWindow);

@@ -27,6 +27,7 @@ using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.RealmAbilities;
 using log4net;
+using System.Numerics;
 
 namespace DOL.AI.Brain
 {
@@ -47,9 +48,7 @@ namespace DOL.AI.Brain
 		public static readonly short MIN_ENEMY_FOLLOW_DIST = 90;
 		public static readonly short MAX_ENEMY_FOLLOW_DIST = 512;
 
-		protected int m_tempX = 0;
-		protected int m_tempY = 0;
-		protected int m_tempZ = 0;
+		protected Vector3 m_temp = Vector3.Zero;
 
 		/// <summary>
 		/// Holds the controlling player of this brain
@@ -202,8 +201,8 @@ namespace DOL.AI.Brain
 					Body.TargetObject = null;
 					if (WalkState == eWalkState.Follow)
 						FollowOwner();
-					else if (m_tempX > 0 && m_tempY > 0 && m_tempZ > 0)
-						Body.WalkTo(m_tempX, m_tempY, m_tempZ, Body.MaxSpeed);
+					else if (m_temp.X > 0 && m_temp.Y > 0 && m_temp.Z > 0)
+						Body.WalkTo(m_temp, Body.MaxSpeed);
 				}
 				AttackMostWanted();
 			}
@@ -242,9 +241,7 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public virtual void Stay()
 		{
-			m_tempX = Body.X;
-			m_tempY = Body.Y;
-			m_tempZ = Body.Z;
+			m_temp = Body.Position;
 			WalkState = eWalkState.Stay;
 			Body.StopFollowing();
 		}
@@ -254,12 +251,10 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public virtual void ComeHere()
 		{
-			m_tempX = Body.X;
-			m_tempY = Body.Y;
-			m_tempZ = Body.Z;
+			m_temp = Body.Position;
 			WalkState = eWalkState.ComeHere;
 			Body.StopFollowing();
-			Body.WalkTo(Owner, Body.MaxSpeed);
+			Body.WalkTo(Owner.Position, Body.MaxSpeed);
 		}
 
 		/// <summary>
@@ -268,12 +263,10 @@ namespace DOL.AI.Brain
 		/// <param name="target"></param>
 		public virtual void Goto(GameObject target)
 		{
-			m_tempX = Body.X;
-			m_tempY = Body.Y;
-			m_tempZ = Body.Z;
+			m_temp = Body.Position;
 			WalkState = eWalkState.GoTarget;
 			Body.StopFollowing();
-			Body.WalkTo(target, Body.MaxSpeed);
+			Body.WalkTo(target.Position, Body.MaxSpeed);
 		}
 
 		public virtual void SetAggressionState(eAggressionState state)
@@ -365,9 +358,9 @@ namespace DOL.AI.Brain
 			if (playerowner != null && (GameTimer.GetTickCount() - lastUpdate) > ThinkInterval)
 				playerowner.Out.SendObjectUpdate(Body);
 
-            //See if the pet is too far away, if so release it!
-            if (Owner is GamePlayer && IsMainPet && !Body.IsWithinRadius(Owner, MAX_OWNER_FOLLOW_DIST))
-                (Owner as GamePlayer).CommandNpcRelease();
+			//See if the pet is too far away, if so release it!
+			if (Owner is GamePlayer && IsMainPet && !GameMath.IsWithinRadius(Body, Owner, MAX_OWNER_FOLLOW_DIST))
+				(Owner as GamePlayer).CommandNpcRelease();
 
             // if pet is in agressive mode then check aggressive spells and attacks first
             if (!Body.AttackState && AggressionState == eAggressionState.Aggressive)
@@ -441,8 +434,8 @@ namespace DOL.AI.Brain
 							{
                                 if (Body.TargetObject is GameLiving target
                                     && GameServer.ServerRules.IsAllowedToAttack(Body, target, true)
-                                    && !Body.IsWithinRadius(target, 500))
-                                {
+									&& !GameMath.IsWithinRadius(Body, target, 500))
+								{
 									ChargeAbility charge = Body.GetAbility<ChargeAbility>();
 									if (charge != null && Body.GetSkillDisabledDuration(charge) <= 0)
 									{
@@ -616,9 +609,9 @@ namespace DOL.AI.Brain
                         {
                             owner = (this as IControlledBrain).Owner;
                             player = null;
-                            //Buff owner
-                            if (!LivingHasEffect(owner, spell) && Body.IsWithinRadius(owner, spell.Range))
-                            {
+							//Buff owner
+							if (!LivingHasEffect(owner, spell) && GameMath.IsWithinRadius(Body, owner, spell.Range))
+							{
                                 Body.TargetObject = owner;
                                 break;
                             }
@@ -629,8 +622,8 @@ namespace DOL.AI.Brain
                                 foreach (IControlledBrain icb in npc.ControlledNpcList)
                                 {
                                     if (icb != null && icb.Body != null && !LivingHasEffect(icb.Body, spell)
-                                        && Body.IsWithinRadius(icb.Body, spell.Range))
-                                    {
+										&& GameMath.IsWithinRadius(Body, icb.Body, spell.Range))
+									{
                                         Body.TargetObject = icb.Body;
                                         break;
                                     }
@@ -652,8 +645,8 @@ namespace DOL.AI.Brain
                                 {
                                     foreach (GamePlayer p in player.Group.GetPlayersInTheGroup())
                                     {
-                                        if (!LivingHasEffect(p, spell) && Body.IsWithinRadius(p, spell.Range))
-                                        {
+										if (!LivingHasEffect(p, spell) && GameMath.IsWithinRadius(Body, p, spell.Range))
+										{
                                             Body.TargetObject = p;
                                             break;
                                         }
@@ -690,8 +683,8 @@ namespace DOL.AI.Brain
                     {
                         foreach (GamePlayer p in player.Group.GetPlayersInTheGroup())
                         {
-                            if (p.IsDiseased && Body.IsWithinRadius(p, spell.Range))
-                            {
+							if (p.IsDiseased && GameMath.IsWithinRadius(Body, p, spell.Range))
+							{
                                 Body.TargetObject = p;
                                 break;
                             }
@@ -722,8 +715,8 @@ namespace DOL.AI.Brain
                     {
                         foreach (GamePlayer p in player.Group.GetPlayersInTheGroup())
                         {
-                            if (LivingIsPoisoned(p) && Body.IsWithinRadius(p, spell.Range))
-                            {
+							if (LivingIsPoisoned(p) && GameMath.IsWithinRadius(Body, p, spell.Range))
+							{
                                 Body.TargetObject = p;
                                 break;
                             }
@@ -761,8 +754,8 @@ namespace DOL.AI.Brain
                     //Heal owner
                     owner = (this as IControlledBrain).Owner;
                     int ownerPercent = owner.HealthPercent;
-                    if (ownerPercent < emergencyThreshold && !spell.TargetHasEffect(owner) && Body.IsWithinRadius(owner, spell.Range))
-                    {
+					if (ownerPercent < emergencyThreshold && !spell.TargetHasEffect(owner) && GameMath.IsWithinRadius(Body, owner, spell.Range))
+					{
                         Body.TargetObject = owner;
                         break;
                     }
@@ -785,8 +778,8 @@ namespace DOL.AI.Brain
                         foreach (GamePlayer p in playerGroup)
                         {
                             if (p.HealthPercent < emergencyThreshold && !spell.TargetHasEffect(p)
-                                && Body.IsWithinRadius(p, spell.Range))
-                            {
+								&& GameMath.IsWithinRadius(Body, p, spell.Range))
+							{
                                 Body.TargetObject = p;
                                 break;
                             }
@@ -809,8 +802,8 @@ namespace DOL.AI.Brain
                     //Heal owner
                     owner = (this as IControlledBrain).Owner;
                     if (ownerPercent < GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD
-                        && !spell.TargetHasEffect(owner) && Body.IsWithinRadius(owner, spell.Range))
-                    {
+						&& !spell.TargetHasEffect(owner) && GameMath.IsWithinRadius(Body, owner, spell.Range))
+					{
                         Body.TargetObject = owner;
                         break;
                     }
@@ -829,8 +822,8 @@ namespace DOL.AI.Brain
                         foreach (GamePlayer p in playerGroup)
                         {
                             if (p.HealthPercent < GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD
-                                && !spell.TargetHasEffect(p) && Body.IsWithinRadius(p, spell.Range))
-                            {
+								&& !spell.TargetHasEffect(p) && GameMath.IsWithinRadius(Body, p, spell.Range))
+							{
                                 Body.TargetObject = p;
                                 break;
                             }
@@ -877,8 +870,8 @@ namespace DOL.AI.Brain
             if (spell.HasRecastDelay && Body.GetSkillDisabledDuration(spell) > 0)
                 return false;
 
-            if (!Body.IsWithinRadius(Body.TargetObject, spell.Range))
-                return false;
+			if (!GameMath.IsWithinRadius(Body, Body.TargetObject, spell.Range))
+				return false;
 
             return base.CheckOffensiveSpells(spell);
         }
@@ -1272,7 +1265,7 @@ namespace DOL.AI.Brain
 					if (living.IsMezzed ||
 					    living.IsAlive == false ||
 					    living.ObjectState != GameObject.eObjectState.Active ||
-					    Body.GetDistanceTo(living, 0) > MAX_AGGRO_LIST_DISTANCE ||
+						!GameMath.IsWithinRadius2D(Body, living, MAX_AGGRO_LIST_DISTANCE) ||
 					    GameServer.ServerRules.IsAllowedToAttack(this.Body, living, true) == false)
 					{
 						removable.Add(living);
@@ -1389,9 +1382,9 @@ namespace DOL.AI.Brain
 				{
 					FollowOwner();
 				}
-				else if (m_tempX > 0 && m_tempY > 0 && m_tempZ > 0)
+				else if (m_temp.X > 0 && m_temp.Y > 0 && m_temp.Z > 0)
 				{
-					Body.WalkTo(m_tempX, m_tempY, m_tempZ, Body.MaxSpeed);
+					Body.WalkTo(m_temp, Body.MaxSpeed);
 				}
 			}
 		}
@@ -1434,7 +1427,7 @@ namespace DOL.AI.Brain
 			// don't
 		}
 
-		public override bool CheckFormation(ref int x, ref int y, ref int z) { return false; }
+		public override bool CheckFormation(ref float x, ref float y, ref float z) { return false; }
 
 		#endregion
 	}

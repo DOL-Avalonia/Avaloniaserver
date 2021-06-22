@@ -38,6 +38,8 @@
     <OutputPath>..\$(Configuration)\lib\</OutputPath>
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <BaseIntermediateOutputPath>..\build\GameServer\$(Configuration)\</BaseIntermediateOutputPath>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugType>Full</DebugType>
@@ -73,6 +75,9 @@
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.4\lib\net45-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=3.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -90,6 +95,7 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
@@ -429,6 +435,7 @@
     <Compile Include="gameobjects\GameSiegeItem.cs" />
     <Compile Include="gameutils\ClientExtensions.cs" />
     <Compile Include="gameutils\GameDuel.cs" />
+    <Compile Include="gameutils\GameMath.cs" />
     <Compile Include="gameutils\GamePlayerUtils.cs" />
     <Compile Include="gameutils\GraveMgr.cs" />
     <Compile Include="gameutils\LootGeneratorAtlanteanGlass.cs" />
@@ -2603,18 +2610,6 @@
     <Compile Include="world\Instance\BaseInstance.cs" />
     <Compile Include="world\Instance\Instance.cs" />
     <Compile Include="world\Instance\RegionInstance.cs" />
-    <Compile Include="world\IPoint2D.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="world\IPoint3D.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="world\Point2D.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="world\Point3D.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="world\Region.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -2658,4 +2653,11 @@
     <PreBuildEvent>del /Q  "$(SolutionDir)$(ConfigurationName)\$(TargetFileName)"
 del /Q  "$(SolutionDir)$(ConfigurationName)\$(ProjectName).pdb"</PreBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Ce projet fait référence à des packages NuGet qui sont manquants sur cet ordinateur. Utilisez l'option de restauration des packages NuGet pour les télécharger. Pour plus d'informations, consultez http://go.microsoft.com/fwlink/?LinkID=322105. Le fichier manquant est : {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets'))" />
+  </Target>
 </Project>

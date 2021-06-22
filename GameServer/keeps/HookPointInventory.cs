@@ -310,9 +310,7 @@ break;
                 ((GameSiegeWeapon)hookPointObj).EnableToMove = false;
             }
 
-            hookPointObj.X = hookpoint.X;
-            hookPointObj.Y = hookpoint.Y;
-            hookPointObj.Z = hookpoint.Z;
+            hookPointObj.Position = hookpoint.Position;
             hookPointObj.Heading = hookpoint.Heading;
 
             if (hookPointObj is GameSiegeWeapon)
@@ -378,9 +376,7 @@ break;
                 ((GameSiegeWeapon)hookPointObj).EnableToMove = false;
             }
 
-            hookPointObj.X = hookpoint.X;
-            hookPointObj.Y = hookpoint.Y;
-            hookPointObj.Z = hookpoint.Z;
+            hookPointObj.Position = hookpoint.Position;
             hookPointObj.Heading = hookpoint.Heading;
 
             if (hookPointObj is GameSiegeWeapon)

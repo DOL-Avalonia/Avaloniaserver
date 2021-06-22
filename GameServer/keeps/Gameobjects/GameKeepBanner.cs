@@ -17,6 +17,7 @@
  *
  */
 using DOL.Database;
+using System.Numerics;
 
 namespace DOL.GS.Keeps
 {
@@ -76,12 +77,11 @@ namespace DOL.GS.Keeps
             set { m_component = value; }
         }
 
-        protected DBKeepPosition m_position;
-
-        public DBKeepPosition Position
+        protected DBKeepPosition m_dbposition;
+        public DBKeepPosition DBPosition
         {
-            get { return m_position; }
-            set { m_position = value; }
+            get { return m_dbposition; }
+            set { m_dbposition = value; }
         }
 
         public void DeleteObject()
@@ -97,7 +97,7 @@ namespace DOL.GS.Keeps
             }
 
             Component = null;
-            Position = null;
+            DBPosition = null;
 
             base.Delete();
             CurrentRegion = null;
@@ -167,15 +167,15 @@ namespace DOL.GS.Keeps
                     if (component.Keep.Guild != null)
                     {
                         ChangeGuild();
-                        Z += 1500;
+                        Position += Vector3.UnitZ * 1500;
                         AddToWorld();
                     }
                 }
                 else
                 {
                     ChangeRealm();
-                    Z += 1000;  // this works around an issue where all banners are at keep level instead of on top
-                                // with a z value > height of the keep the banners show correctly - tolakram
+                    Position += Vector3.UnitZ * 1000;   // this works around an issue where all banners are at keep level instead of on top
+                                                        // with a z value > height of the keep the banners show correctly - tolakram
                     AddToWorld();
                 }
             }
@@ -193,7 +193,7 @@ namespace DOL.GS.Keeps
                 zAdd = 1500;
             }
 
-            MoveTo(CurrentRegionID, X, Y, Z + zAdd, Heading);
+            MoveTo(CurrentRegionID, Position + Vector3.UnitZ * zAdd, Heading);
         }
 
         public void ChangeRealm()

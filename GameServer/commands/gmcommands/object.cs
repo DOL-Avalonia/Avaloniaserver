@@ -105,9 +105,7 @@ namespace DOL.GS.Commands
                 return;
             }
 
-            obj.X = client.Player.X;
-            obj.Y = client.Player.Y;
-            obj.Z = client.Player.Z;
+            obj.Position = client.Player.Position;
             obj.CurrentRegion = client.Player.CurrentRegion;
             obj.Heading = client.Player.Heading;
             obj.Level = targetObj.Level;
@@ -195,7 +193,7 @@ namespace DOL.GS.Commands
                         }
 
                         info.Add(" ");
-                        info.Add(" Location: X= " + targetObject.X + " ,Y= " + targetObject.Y + " ,Z= " + targetObject.Z);
+                        info.Add(" Location: " + targetObject.Position.ToString("F0"));
 
                         client.Out.SendCustomTextWindow("[ " + name + " ]", info);
                         break;
@@ -203,9 +201,7 @@ namespace DOL.GS.Commands
 
                 case "movehere":
                     {
-                        targetObject.X = client.Player.X;
-                        targetObject.Y = client.Player.Y;
-                        targetObject.Z = client.Player.Z;
+                        targetObject.Position = client.Player.Position;
                         targetObject.Heading = client.Player.Heading;
                         targetObject.SaveIntoDatabase();
                         break;
@@ -410,9 +406,7 @@ namespace DOL.GS.Commands
                             return;
                         }
 
-                        item.X = client.Player.X;
-                        item.Y = client.Player.Y;
-                        item.Z = client.Player.Z;
+                        item.Position = client.Player.Position;
                         item.CurrentRegion = client.Player.CurrentRegion;
                         item.Heading = client.Player.Heading;
                         item.Level = targetObject.Level;
@@ -549,9 +543,7 @@ namespace DOL.GS.Commands
 
             // Fill the object variables
             obj.LoadedFromScript = false;
-            obj.X = client.Player.X;
-            obj.Y = client.Player.Y;
-            obj.Z = client.Player.Z;
+            obj.Position = client.Player.Position;
             obj.CurrentRegion = client.Player.CurrentRegion;
             obj.Heading = client.Player.Heading;
             obj.Name = "New Object";

@@ -115,9 +115,9 @@ namespace DOL.GS
                         teleport.TeleportID = "battlegrounds";
                         teleport.Realm = (byte)portalKeep.Realm;
                         teleport.RegionID = portalKeep.Region;
-                        teleport.X = portalKeep.X;
-                        teleport.Y = portalKeep.Y;
-                        teleport.Z = portalKeep.Z;
+                        teleport.X = (int)location.Position.X;
+                        teleport.Y = (int)location.Position.Y;
+                        teleport.Z = (int)location.Position.Z;
                         teleport.Heading = 0;
                         OnDestinationPicked(player, teleport);
                         return true;
@@ -151,9 +151,9 @@ namespace DOL.GS
                     teleport.TeleportID = "personal";
                     teleport.Realm = (int)DestinationRealm;
                     teleport.RegionID = location.RegionID;
-                    teleport.X = location.X;
-                    teleport.Y = location.Y;
-                    teleport.Z = location.Z;
+                    teleport.X = (int)location.Position.X;
+                    teleport.Y = (int)location.Position.Y;
+                    teleport.Z = (int)location.Position.Z;
                     teleport.Heading = location.Heading;
                     OnDestinationPicked(player, teleport);
                     return true;
@@ -339,7 +339,7 @@ namespace DOL.GS
             if (player.InCombat == false && GameRelic.IsPlayerCarryingRelic(player) == false)
             {
                 player.LeaveHouse();
-                GameLocation currentLocation = new GameLocation("TeleportStart", player.CurrentRegionID, player.X, player.Y, player.Z);
+                GameLocation currentLocation = new GameLocation("TeleportStart", player.CurrentRegionID, player.Position, player.Heading);
                 player.MoveTo((ushort)destination.RegionID, destination.X, destination.Y, destination.Z, (ushort)destination.Heading);
                 GameServer.ServerRules.OnPlayerTeleport(player, currentLocation, destination);
             }

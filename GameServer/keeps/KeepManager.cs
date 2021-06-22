@@ -19,6 +19,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Reflection;
 using DOL.Database;
 using log4net;
@@ -315,7 +316,7 @@ namespace DOL.GS.Keeps
         /// </summary>
         /// <param name="id">id of keep</param>
         /// <returns> Game keep object with keepid = id</returns>
-        public virtual AbstractGameKeep GetKeepByID(int id)
+        public AbstractGameKeep GetKeepByID(int id)
         {
             return m_keepList[id] as AbstractGameKeep;
         }
@@ -327,7 +328,7 @@ namespace DOL.GS.Keeps
         /// <param name="point3d"></param>
         /// <param name="radius"></param>
         /// <returns></returns>
-        public virtual IEnumerable GetKeepsCloseToSpot(ushort regionid, IPoint3D point3d, int radius)
+        public ICollection<AbstractGameKeep> GetKeepsCloseToSpot(ushort regionid, Vector3 point3d, int radius)
         {
             return GetKeepsCloseToSpot(regionid, point3d.X, point3d.Y, point3d.Z, radius);
         }
@@ -339,7 +340,7 @@ namespace DOL.GS.Keeps
         /// <param name="point3d"></param>
         /// <param name="radius"></param>
         /// <returns></returns>
-        public virtual AbstractGameKeep GetKeepCloseToSpot(ushort regionid, IPoint3D point3d, int radius)
+        public AbstractGameKeep GetKeepCloseToSpot(ushort regionid, Vector3 point3d, int radius)
         {
             return GetKeepCloseToSpot(regionid, point3d.X, point3d.Y, point3d.Z, radius);
         }
@@ -467,7 +468,7 @@ namespace DOL.GS.Keeps
         /// <param name="z"></param>
         /// <param name="radius"></param>
         /// <returns></returns>
-        public virtual ICollection<AbstractGameKeep> GetKeepsCloseToSpot(ushort regionid, int x, int y, int z, int radius)
+        public virtual ICollection<AbstractGameKeep> GetKeepsCloseToSpot(ushort regionid, float x, float y, float z, int radius)
         {
             List<AbstractGameKeep> closeKeeps = new List<AbstractGameKeep>();
             long radiussqrt = radius * radius;
@@ -481,10 +482,8 @@ namespace DOL.GS.Keeps
                         continue;
                     }
 
-                    long xdiff = keep.DBKeep.X - x;
-                    long ydiff = keep.DBKeep.Y - y;
-                    long range = xdiff * xdiff + ydiff * ydiff;
-                    if (range < radiussqrt)
+                    var diff = new Vector2(keep.DBKeep.X, keep.DBKeep.Y) - new Vector2(x, y);
+                    if (diff.LengthSquared() < radiussqrt)
                     {
                         closeKeeps.Add(keep);
                     }
@@ -503,14 +502,14 @@ namespace DOL.GS.Keeps
         /// <param name="z"></param>
         /// <param name="radius"></param>
         /// <returns></returns>
-        public virtual AbstractGameKeep GetKeepCloseToSpot(ushort regionid, int x, int y, int z, int radius)
+        public virtual AbstractGameKeep GetKeepCloseToSpot(ushort regionid, float x, float y, float z, int radius)
         {
             AbstractGameKeep closestKeep = null;
 
             lock (m_keepList.SyncRoot)
             {
-                long radiussqrt = radius * radius;
-                long lastKeepDistance = radiussqrt;
+                float radiussqrt = radius * radius;
+                float lastKeepDistance = radiussqrt;
 
                 foreach (AbstractGameKeep keep in m_keepList.Values)
                 {
@@ -519,9 +518,8 @@ namespace DOL.GS.Keeps
                         continue;
                     }
 
-                    long xdiff = keep.DBKeep.X - x;
-                    long ydiff = keep.DBKeep.Y - y;
-                    long range = xdiff * xdiff + ydiff * ydiff;
+                    var diff = new Vector2(keep.DBKeep.X, keep.DBKeep.Y) - new Vector2(x, y);
+                    var range = diff.LengthSquared();
 
                     if (range > radiussqrt)
                     {

@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 using System.Threading;
 
@@ -113,9 +114,7 @@ namespace DOL.GS
 
             Heading = (ushort)_dbRelic.SpawnHeading;
             CurrentRegionID = (ushort)_dbRelic.SpawnRegion;
-            X = _dbRelic.SpawnX;
-            Y = _dbRelic.SpawnY;
-            Z = _dbRelic.SpawnZ;
+            Position = new Vector3(_dbRelic.SpawnX, _dbRelic.SpawnY, _dbRelic.SpawnZ);
 
             SpawnHeading = _dbRelic.SpawnHeading;
             SpawnRegion = _dbRelic.SpawnRegion;
@@ -148,9 +147,9 @@ namespace DOL.GS
         {
             _dbRelic.SpawnHeading = Heading;
             _dbRelic.SpawnRegion = CurrentRegionID;
-            _dbRelic.SpawnX = X;
-            _dbRelic.SpawnY = Y;
-            _dbRelic.SpawnZ = Z;
+            _dbRelic.SpawnX = (int)Position.X;
+            _dbRelic.SpawnY = (int)Position.Y;
+            _dbRelic.SpawnZ = (int)Position.Z;
 
             _dbRelic.Effect = Effect;
 
@@ -515,9 +514,7 @@ namespace DOL.GS
                 return 0;
             }
 
-            X = SpawnX;
-            Y = SpawnY;
-            Z = SpawnZ;
+            Position = new Vector3(SpawnX, SpawnY, SpawnZ);
             Heading = (ushort)SpawnHeading;
             CurrentRegionID = (ushort)SpawnRegion;
             Xp = MinotaurRelicManager.MaxRelicExp;
@@ -538,9 +535,7 @@ namespace DOL.GS
                 return;
             }
 
-            X = SpawnX;
-            Y = SpawnY;
-            Z = SpawnZ;
+            Position = new Vector3(SpawnX, SpawnY, SpawnZ);
             Heading = (ushort)SpawnHeading;
             CurrentRegionID = (ushort)SpawnRegion;
             Xp = MinotaurRelicManager.MaxRelicExp;
@@ -559,9 +554,7 @@ namespace DOL.GS
             }
 
             CurrentRegionID = living.CurrentRegionID;
-            X = living.X;
-            Y = living.Y;
-            Z = living.Z;
+            Position = living.Position;
             Heading = living.Heading;
             foreach (GameClient clt in WorldMgr.GetClientsOfRegion(CurrentRegionID))
             {
@@ -572,7 +565,7 @@ namespace DOL.GS
 
                 if (Xp > 0)
                 {
-                    clt.Player.Out.SendMinotaurRelicMapUpdate((byte)RelicId, CurrentRegionID, X, Y, Z);
+                    clt.Player.Out.SendMinotaurRelicMapUpdate((byte)RelicID, CurrentRegionID, (int)Position.X, (int)Position.Y, (int)Position.Z);
                 }
                 else
                 {
@@ -665,7 +658,7 @@ namespace DOL.GS
         {
             if (SpawnLocked)
             {
-                if (X == SpawnX && Y == SpawnY)
+                if ((int)Position.X == SpawnX && (int)Position.Y == SpawnY)
                 {
                     if (ProtectorClassType != string.Empty)
                     {

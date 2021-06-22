@@ -20,6 +20,7 @@ using System.Collections;
 
 using DOL.Database;
 using DOL.GS.PacketHandler;
+using System.Numerics;
 
 namespace DOL.GS.Keeps
 {
@@ -144,7 +145,7 @@ namespace DOL.GS.Keeps
 
             if (GameServer.ServerRules.IsSameRealm(player, this, true) || player.Client.Account.PrivLevel != 1)
             {
-                Point2D point;
+                Vector2 point;
 
                 // calculate x y
                 if (IsObjectInFront(player, 180, false))
@@ -157,7 +158,7 @@ namespace DOL.GS.Keeps
                 }
 
                 // move player
-                player.MoveTo(CurrentRegionID, point.X, point.Y, player.Z, player.Heading);
+                player.MoveTo(CurrentRegionID, new Vector3(point, player.Position.Z), player.Heading);
             }
 
             return base.Interact(player);
@@ -249,9 +250,7 @@ namespace DOL.GS.Keeps
             CurrentRegion = curZone.ZoneRegion;
             m_name = door.Name;
             m_Heading = (ushort)door.Heading;
-            X = door.X;
-            Y = door.Y;
-            Z = door.Z;
+            Position = new Vector3(door.X, door.Y, door.Z);
             m_level = 0;
             m_model = 0xFFFF;
             m_doorID = door.InternalID;

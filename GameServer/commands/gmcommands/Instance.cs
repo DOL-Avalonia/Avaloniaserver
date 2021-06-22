@@ -20,6 +20,7 @@ using System;
 using DOL.GS.PacketHandler;
 using System.Reflection;
 using DOL.Database;
+using System.Numerics;
 
 // By dinberg - so its him who you blame ;)
 namespace DOL.GS.Commands
@@ -90,9 +91,9 @@ namespace DOL.GS.Commands
                             // Create the database entry...
                             DBInstanceXElement element = new DBInstanceXElement();
                             element.Heading = client.Player.Heading;
-                            element.X = client.Player.X;
-                            element.Y = client.Player.Y;
-                            element.Z = client.Player.Z;
+                            element.X = (int)client.Player.Position.X;
+                            element.Y = (int)client.Player.Position.Y;
+                            element.Z = (int)client.Player.Position.Z;
                             element.InstanceID = key;
                             element.ClassType = args[2];
 
@@ -159,9 +160,7 @@ namespace DOL.GS.Commands
                                 obj.Name = element.ObjectId.Substring(0, 18);
                                 obj.GuildName = element.ObjectId.Substring(18);
 
-                                obj.X = element.X;
-                                obj.Y = element.Y;
-                                obj.Z = element.Z;
+                                obj.Position = new Vector3(element.X, element.Y, element.Z);
                                 obj.Heading = element.Heading;
 
                                 obj.CurrentRegion = client.Player.CurrentRegion;
@@ -311,31 +310,27 @@ namespace DOL.GS.Commands
                         else
                         {
                             // start with some generic coordinates that seem to work well in many instance zones
-                            int x = 32361;
-                            int y = 31744;
-                            int z = 16003;
+                            var pos = new Vector3(32361, 31744, 16003);
                             ushort heading = 1075;
 
                             // If you're having trouble zoning into an instance then try adding an entrance element so it can be used here
                             if (newInstance.InstanceEntranceLocation != null)
                             {
-                                x = newInstance.InstanceEntranceLocation.X;
-                                y = newInstance.InstanceEntranceLocation.Y;
-                                z = newInstance.InstanceEntranceLocation.Z;
+                                pos = newInstance.InstanceEntranceLocation.Position;
                                 heading = newInstance.InstanceEntranceLocation.Heading;
                             }
 
                             // save current position for use with /instance exit
-                            GameLocation saveLocation = new GameLocation(player.Name + "_exit", player.CurrentRegionID, player.X, player.Y, player.Z);
+                            GameLocation saveLocation = new GameLocation(player.Name + "_exit", player.CurrentRegionID, player.Position, player.Heading);
                             player.TempProperties.setProperty(saveLocation.Name, saveLocation);
 
                             bool success = true;
 
-                            if (!player.MoveTo(newInstance.ID, x, y, z, heading))
+                            if (!player.MoveTo(newInstance.ID, pos, heading))
                             {
                                 SendMessage(client, "MoveTo to entrance failed, now trying to move to current location inside the instance.");
 
-                                if (!player.MoveTo(newInstance.ID, player.X, player.Y, player.Z, player.Heading))
+                                if (!player.MoveTo(newInstance.ID, player.Position, player.Heading))
                                 {
                                     SendMessage(client, "That failed as well.  Either add an entrance to this instance or move in the world to a corresponding instance location.");
                                     success = false;
@@ -366,14 +361,14 @@ namespace DOL.GS.Commands
                         {
                             ushort sourceRegion = (player.CurrentRegion as BaseInstance).Skin;
 
-                            if (!player.MoveTo(sourceRegion, player.X, player.Y, player.Z, player.Heading))
+                            if (!player.MoveTo(sourceRegion, player.Position, player.Heading))
                             {
                                 player.MoveToBind();
                             }
                         }
                         else
                         {
-                            player.MoveTo(saveLocation.RegionID, saveLocation.X, saveLocation.Y, saveLocation.Z, saveLocation.Heading);
+                            player.MoveTo(saveLocation.RegionID, saveLocation.Position, saveLocation.Heading);
                         }
                     }
 

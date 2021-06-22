@@ -30,6 +30,7 @@ using DOL.GS.Quests;
 
 using log4net;
 using DOL.Database;
+using System.Numerics;
 
 namespace DOLGameServerConsole
 {
@@ -296,7 +297,7 @@ namespace DOLGameServerConsole
 
         public void SendChangeTarget(GameObject newTarget) { }
 
-        public void SendChangeGroundTarget(Point3D newTarget) { }
+        public void SendChangeGroundTarget(Vector3 newTarget) { }
 
         public void SendPetWindow(GameLiving pet, ePetWindowAction windowAction, eAggressionState aggroState, eWalkState walkState) { }
 
