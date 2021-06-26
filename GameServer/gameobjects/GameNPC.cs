@@ -2099,7 +2099,11 @@ namespace DOL.GS
 					return temporallyTemplate as NpcTemplate;
 				return m_npcTemplate; 
 			}
-			set { m_npcTemplate = value; }
+			set 
+			{
+				if(temporallyTemplate == null)
+					m_npcTemplate = value; 
+			}
 		}
 		/// <summary>
 		/// Loads the equipment template of this npc
@@ -3254,7 +3258,10 @@ namespace DOL.GS
 			if(temporallyTemplate != null)
             {
 				temporallyTemplate = null;
-				LoadTemplate(NPCTemplate);
+				if (NPCTemplate != null)
+					LoadTemplate(NPCTemplate);
+				else
+					LoadFromDatabase(GameServer.Database.FindObjectByKey<Mob>(InternalID));
 			}
 			if (hasImunity)
 			{
@@ -4990,6 +4997,7 @@ namespace DOL.GS
 			Y = m_spawnPoint.Y;
 			Z = m_spawnPoint.Z;
 			Heading = m_spawnHeading;
+			ambientXNbUse = new Dictionary<MobXAmbientBehaviour, short>();
 			AddToWorld();
 			m_spawnPoint.X = origSpawnX;
 			m_spawnPoint.Y = origSpawnY;
@@ -6091,21 +6099,6 @@ namespace DOL.GS
 			// grab random sentence
 			var chosen = mxa[Util.Random(mxa.Count - 1)];
 
-			//NbUse
-			if(chosen.NbUse > 0)
-            {
-				if(ambientXNbUse.ContainsKey(chosen))
-                {
-					ambientXNbUse[chosen]++;
-                }
-				else
-                {
-					ambientXNbUse.Add(chosen, 1);
-                }
-				if (ambientXNbUse[chosen] > chosen.NbUse)
-					return;
-            }
-
 			if (chosen.HP < 1 && chosen.Chance > 0)
             {
 				if (!Util.Chance(chosen.Chance))
@@ -6115,6 +6108,21 @@ namespace DOL.GS
 				return;
 			else if (chosen.HP > 0 && chosen.Chance > 0 && !Util.Chance(chosen.Chance))
 				return;
+
+			//NbUse
+			if (chosen.NbUse > 0 && (chosen.Spell == 0 || (chosen.Spell > 0 && !IsCasting)))
+			{
+				if (ambientXNbUse.ContainsKey(chosen))
+				{
+					ambientXNbUse[chosen]++;
+				}
+				else
+				{
+					ambientXNbUse.Add(chosen, 1);
+				}
+				if (ambientXNbUse[chosen] > chosen.NbUse)
+					return;
+			}
 
 			// DamageTypeRepeate
 			if (trigger == eAmbientTrigger.immunised)
@@ -6168,13 +6176,13 @@ namespace DOL.GS
 			if(chosen.ChangeFlag > 0 && !Flags.HasFlag((eFlags)chosen.ChangeFlag))
             {
 				tempoarallyFlags = Flags | (eFlags)chosen.ChangeFlag;
-				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
-				{
-					player.Out.SendNPCCreate(this);
-					if (m_inventory != null)
-						player.Out.SendLivingEquipmentUpdate(this);
-				}
-			}
+                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
+                {
+                    player.Out.SendNPCCreate(this);
+                    if (m_inventory != null)
+                        player.Out.SendLivingEquipmentUpdate(this);
+                }
+            }
 
 			// ChangeBrain
 			if(!string.IsNullOrEmpty(chosen.ChangeBrain))
