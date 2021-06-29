@@ -3258,10 +3258,7 @@ namespace DOL.GS
 			if(temporallyTemplate != null)
             {
 				temporallyTemplate = null;
-				if (NPCTemplate != null)
-					LoadTemplate(NPCTemplate);
-				else
-					LoadFromDatabase(GameServer.Database.FindObjectByKey<Mob>(InternalID));
+				LoadFromDatabase(GameServer.Database.FindObjectByKey<Mob>(InternalID));
 			}
 			if (hasImunity)
 			{
