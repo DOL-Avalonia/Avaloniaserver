@@ -2211,6 +2211,7 @@
     <Compile Include="spells\Stealthers\StealthersHandlers.cs" />
     <Compile Include="spells\StylePowerDrain.cs" />
     <Compile Include="spells\SummonIllusionBlade.cs" />
+    <Compile Include="spells\TeleportSpellHandler.cs" />
     <Compile Include="spells\Teleport\GatewayPersonalBind.cs" />
     <Compile Include="spells\HealthToFatigue.cs" />
     <Compile Include="spells\Heretic\HereticDamageLostOnPulse.cs" />

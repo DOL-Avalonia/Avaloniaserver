@@ -63,8 +63,6 @@ namespace DOL.GS
 		/// </remarks>
 		public const int CONST_WALKTOTOLERANCE = 25;
 
-        public TPPoint tPPoint;
-
 		public ushort DamageTypeCounter { get; set; }
 		public eDamageType LastDamageType { get; set; }
 		public ushort DamageTypeLimit { get; set; }
@@ -1624,8 +1622,8 @@ namespace DOL.GS
 
 			IsReturningHome = true;
 			IsReturningToSpawnPoint = true;
-            if (tPPoint != null)
-                WalkTo(tPPoint, speed);
+            if (TPPoint != null)
+                WalkTo(TPPoint, speed);
             else
 			    WalkTo(SpawnPoint, speed);
 		}
@@ -6230,7 +6228,7 @@ namespace DOL.GS
 				command.m_cmdHandler.OnCommand(null, param);
 			}
 
-			// MobtoTpPoint
+			// MobtoTPPoint
 			if (chosen.MobtoTPpoint > 0)
 			{
 				if(chosen.TPeffect > 0)
@@ -6238,41 +6236,41 @@ namespace DOL.GS
                     {
 						player.Out.SendSpellEffectAnimation(this, this, (ushort)chosen.TPeffect, 0, false, 1);
 					}
-				if (tPPoint != null)
+				if (TPPoint != null)
                 {
-					TPPoint newTPPoint = tPPoint.GetNextTPPoint();
-					if(tPPoint.DbTPPoint.ObjectId != newTPPoint.DbTPPoint.ObjectId)
+					TPPoint newTPPoint = TPPoint.GetNextTPPoint();
+					if(TPPoint.DbTPPoint.ObjectId != newTPPoint.DbTPPoint.ObjectId)
                     {
-						tPPoint = newTPPoint;
-						MoveTo(tPPoint.Region, tPPoint.X, tPPoint.Y, tPPoint.Z, tPPoint.GetHeading(tPPoint));
+						TPPoint = newTPPoint;
+						MoveTo(TPPoint.Region, TPPoint.X, TPPoint.Y, TPPoint.Z, TPPoint.GetHeading(TPPoint));
 					}
 				}
 				else
                 {
-					tPPoint = TeleportMgr.LoadTP(chosen.MobtoTPpoint);
-					MoveTo(tPPoint.Region, tPPoint.X, tPPoint.Y, tPPoint.Z, tPPoint.GetHeading(tPPoint));
+					TPPoint = TeleportMgr.LoadTP(chosen.MobtoTPpoint);
+					MoveTo(TPPoint.Region, TPPoint.X, TPPoint.Y, TPPoint.Z, TPPoint.GetHeading(TPPoint));
 				}
 			}
 
-			// PlayertoTpPoint
+			// PlayertoTPPoint
 			if (chosen.PlayertoTPpoint > 0)
 			{
 				if (chosen.TPeffect > 0)
 					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(CurrentRegion)))
 						player.Out.SendSpellEffectAnimation(this, player, (ushort)chosen.TPeffect, 0, false, 1);
-				if (tPPoint != null)
+				if (TPPoint != null)
 				{
-					TPPoint newTPPoint = tPPoint.GetNextTPPoint();
-					if (tPPoint.DbTPPoint.ObjectId != newTPPoint.DbTPPoint.ObjectId)
+					TPPoint newTPPoint = TPPoint.GetNextTPPoint();
+					if (TPPoint.DbTPPoint.ObjectId != newTPPoint.DbTPPoint.ObjectId)
 					{
-						tPPoint = newTPPoint;
-						living.MoveTo(tPPoint.Region, tPPoint.X, tPPoint.Y, tPPoint.Z, tPPoint.GetHeading(tPPoint));
+						TPPoint = newTPPoint;
+						living.MoveTo(TPPoint.Region, TPPoint.X, TPPoint.Y, TPPoint.Z, TPPoint.GetHeading(TPPoint));
 					}
 				}
 				else
 				{
-					tPPoint = TeleportMgr.LoadTP(chosen.PlayertoTPpoint);
-					living.MoveTo(tPPoint.Region, tPPoint.X, tPPoint.Y, tPPoint.Z, tPPoint.GetHeading(tPPoint));
+					TPPoint = TeleportMgr.LoadTP(chosen.PlayertoTPpoint);
+					living.MoveTo(TPPoint.Region, TPPoint.X, TPPoint.Y, TPPoint.Z, TPPoint.GetHeading(TPPoint));
 				}
 			}
 
