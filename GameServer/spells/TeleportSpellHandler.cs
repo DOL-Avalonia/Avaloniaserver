@@ -1,9 +1,5 @@
 ﻿using DOL.gameobjects.CustomNPC;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace DOL.GS.Spells
 {
@@ -22,22 +18,23 @@ namespace DOL.GS.Spells
             if (Spell.LifeDrainReturn > 0)
             {
                 TPPoint tPPoint = TeleportMgr.LoadTP((ushort)Spell.LifeDrainReturn);
-                switch(tPPoint.Type)
+                if (target.TPPoint != null && target.TPPoint.DbTPPoint.TPID == tPPoint.DbTPPoint.TPID)
                 {
-                    case Database.eTPPointType.Random:
-                        tPPoint = tPPoint.GetNextTPPoint();
-                        break;
-                    case Database.eTPPointType.Loop:
-                        if(target.TPPoint != null)
-                        {
-                            tPPoint = target.TPPoint.GetNextTPPoint();
-                        }
-                        target.TPPoint = tPPoint;
-                        break;
-                    case Database.eTPPointType.Smart:
-                        tPPoint = tPPoint.GetSmarttNextPoint();
-                        break;
+                    tPPoint = target.TPPoint.GetNextTPPoint();
                 }
+                else
+                {
+                    switch (tPPoint.Type)
+                    {
+                        case Database.eTPPointType.Random:
+                            tPPoint = tPPoint.GetNextTPPoint();
+                            break;
+                        case Database.eTPPointType.Smart:
+                            tPPoint = tPPoint.GetSmarttNextPoint();
+                            break;
+                    }
+                }
+                target.TPPoint = tPPoint;
                 target.MoveTo(tPPoint.Region, tPPoint.X, tPPoint.Y, tPPoint.Z, tPPoint.GetHeading(tPPoint));
             }
         }

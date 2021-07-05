@@ -2138,6 +2138,7 @@
     <Compile Include="spells\AvaloniaFakeSpellHandler.cs" />
     <Compile Include="spells\Bainshee\BainsheePulseDmgSpellHandler.cs" />
     <Compile Include="spells\CombineItemSpellHandler.cs" />
+    <Compile Include="spells\EarthquakeSpellHandler.cs" />
     <Compile Include="spells\negative\BeFriendSpellHandler.cs" />
     <Compile Include="spells\negative\DamnationSpellHandler.cs" />
     <Compile Include="spells\negative\FearBrain.cs" />
