@@ -20,7 +20,7 @@ namespace DOL.GS.Spells
             ad.IsSpellResisted = false;
             if (target.HealthPercent > 25)
             {
-                ad.Damage = (target.Health / 4)*3;
+                ad.Damage = (target.MaxHealth / 4)*3 - (target.MaxHealth - target.Health);
 
                 m_lastAttackData = ad;
                 SendDamageMessages(ad);
