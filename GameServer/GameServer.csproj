@@ -2138,6 +2138,7 @@
     <Compile Include="spells\AvaloniaFakeSpellHandler.cs" />
     <Compile Include="spells\Bainshee\BainsheePulseDmgSpellHandler.cs" />
     <Compile Include="spells\CombineItemSpellHandler.cs" />
+    <Compile Include="spells\DemiSpellHandler.cs" />
     <Compile Include="spells\EarthquakeSpellHandler.cs" />
     <Compile Include="spells\negative\BeFriendSpellHandler.cs" />
     <Compile Include="spells\negative\DamnationSpellHandler.cs" />
@@ -2194,6 +2195,7 @@
     <Compile Include="spells\negative\PetrifySpellHandler.cs" />
     <Compile Include="spells\NightShade\NightshadeNukeSpellhandler.cs" />
     <Compile Include="spells\OmniHealSpellHandler.cs" />
+    <Compile Include="spells\QuarterSpellHandler.cs" />
     <Compile Include="spells\RampingDamageFocus.cs" />
     <Compile Include="spells\RvRSicknessSpellHandler.cs" />
     <Compile Include="spells\AssassinateSpellHandler.cs" />
