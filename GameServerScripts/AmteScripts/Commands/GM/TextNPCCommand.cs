@@ -13,6 +13,7 @@ namespace DOL.GS.Scripts
          "Commands.GM.TextNPC.Description",
          "Commands.GM.TextNPC.Usage.Create",
          "Commands.GM.TextNPC.Usage.CreateMerchant",
+         "Commands.GM.TextNPC.Usage.CreateItemMerchant",
          "Commands.GM.TextNPC.Usage.CreateGuard",
          "Commands.GM.TextNPC.Usage.Response",
          "Commands.GM.TextNPC.Usage.Text",
@@ -82,9 +83,11 @@ namespace DOL.GS.Scripts
                 #region create - view - reponse - text
                 case "create":
                 case "createmerchant":
+                case "createitemmerchant":
                 case "createguard":
                     if (args[1].ToLower() == "create") npc = new TextNPC();
                     else if (args[1].ToLower() == "createmerchant") npc = new TextNPCMerchant();
+                    else if (args[1].ToLower() == "createitemmerchant") npc = new TextNPCItemMerchant();
                     else if (args[1].ToLower() == "createguard") npc = new GuardTextNPC();
 
                     if (args.Length > 2)

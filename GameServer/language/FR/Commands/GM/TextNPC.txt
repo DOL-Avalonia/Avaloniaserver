@@ -1,6 +1,7 @@
 Commands.GM.TextNPC.Description:			Gestions des TextNPC
 Commands.GM.TextNPC.Usage.Create:		'/textnpc create [isRenaissance]' Crée un nouveau pnj. [isRenaissance] définit si ce pnj a besoin de la renaissance du joueur pour interagir
 Commands.GM.TextNPC.Usage.CreateMerchant:	'/textnpc createmerchant [isRenaissance]' Crée un nouveau marchand qui parle. [isRenaissance] Définit si ce marchand a besoin de la renaissance du joueur pour interagir
+Commands.GM.TextNPC.Usage.CreateItemMerchant:	'/textnpc createitemmerchant [isRenaissance]' Créé un nouveau marchand qui prend des items comme monnaie. [isRenaissance] Définit si ce marchand a besoin de la renaissance du joueur pour interagir
 Commands.GM.TextNPC.Usage.CreateGuard:	'/textnpc createguard [isRenaissance]' Crée un garde qui parle [isRenaissance] Définit si ce garde a besoin de la renaissance du joueur pour interagir
 Commands.GM.TextNPC.Usage.Response:			'/textnpc reponse' Affiche les réponses du pnj (les 20 premières lettres de la réponse)
 Commands.GM.TextNPC.Usage.Text:			'/textnpc text <texte>' Définit le texte d'interaction (clic droit) (mettez le caractère | ou ; pour les sauts de ligne)
