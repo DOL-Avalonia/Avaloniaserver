@@ -17,7 +17,7 @@ namespace DOL.GS.Spells
             duration = 1000.0f;
         }
 
-        public override bool CastSpell()
+        public override bool StartSpell(GameLiving targetObject)
         {
             if (Caster.GroundTarget == null)
             {
@@ -87,7 +87,7 @@ namespace DOL.GS.Spells
                 player.Out.SendTCP(pak);
             }
                 
-            return base.CastSpell();
+            return base.StartSpell(targetObject);
         }
 
         public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)

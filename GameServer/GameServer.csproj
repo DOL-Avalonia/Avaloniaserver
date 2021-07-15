@@ -2203,6 +2203,7 @@
     <Compile Include="spells\SlowSpellHandler.cs" />
     <Compile Include="spells\SpellHelpers\SpellHelper.cs" />
     <Compile Include="spells\SpellHelpers\SpellMessagesHelper.cs" />
+    <Compile Include="spells\SpellReflectionHandler.cs" />
     <Compile Include="spells\StyleHandler.cs" />
     <Compile Include="spells\SummonNoveltyPet.cs" />
     <Compile Include="spells\PetLifedrainSpellHandler.cs" />

@@ -24,7 +24,6 @@ namespace DOL.GS.Spells
 
                 m_lastAttackData = ad;
                 SendDamageMessages(ad);
-                DamageTarget(ad, true);
                 target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, Caster);
             }
             else
@@ -35,6 +34,7 @@ namespace DOL.GS.Spells
                 if (aggroBrain != null)
                     aggroBrain.AddToAggroList(Caster, 1);
             }
+            DamageTarget(ad, true);
         }
     }
 }
