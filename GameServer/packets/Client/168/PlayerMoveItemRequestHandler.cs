@@ -283,12 +283,9 @@ namespace DOL.GS.PacketHandler.Client.v168
                 toClientSlot = 0;
                 if (item.Item_Type >= (int)eInventorySlot.MinEquipable && item.Item_Type <= (int)eInventorySlot.MaxEquipable)
                 {
-                    // If item can be used in left-hand we force it in the right hand (as we don't know whether it is intended to be used as right or left)
-                    if( item.Item_Type == (int)eInventorySlot.LeftHandWeapon && item.Hand == 2 )
-                        toClientSlot = (int)eInventorySlot.RightHandWeapon;
-                    else
-                        toClientSlot = (ushort)item.Item_Type;
+                    toClientSlot = (ushort)item.Item_Type;
                 }
+
                 if (toClientSlot == 0)
                 {
                     client.Out.SendInventorySlotsUpdate(new int[] { fromClientSlot });

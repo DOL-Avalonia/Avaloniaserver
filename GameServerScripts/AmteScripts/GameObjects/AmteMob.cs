@@ -144,7 +144,7 @@ public class AmteMob : GameNPC, IAmteNPC
                 {
                     MobID = InternalID,
                     Param = cp.name,
-                    Value = cp.Value,
+                    Value = cp.Value
                 };
                 if(_nameXcp.ContainsKey(cp.name))
                 {

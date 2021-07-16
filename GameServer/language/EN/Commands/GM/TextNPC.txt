@@ -1,7 +1,6 @@
 Commands.GM.TextNPC.Description:			TextNPC Commands:
 Commands.GM.TextNPC.Usage.Create:		'/textnpc create [isRenaissance]' Create a new NPC. [isRenaissance] Check if the player is Reborn in order to allow the NPC to interact
 Commands.GM.TextNPC.Usage.CreateMerchant:	'/textnpc createmerchant [isRenaissance]' Create a new Merchant who can talk to the player. [isRenaissance] Check if the player is Reborn in order to allow the merchant to interact
-Commands.GM.TextNPC.Usage.CreateItemMerchant:	'/textnpc createitemmerchant [isRenaissance]' Create a new Merchant who takes items as exchange currency. [isRenaissance] Check if the player is Reborn in order to allow the merchant to interact
 Commands.GM.TextNPC.Usage.CreateGuard:	'/textnpc createguard [isRenaissance]' Create a new Guard who can talk to the player. [isRenaissance] Check if the player is Reborn in order to allow the guard to interact
 Commands.GM.TextNPC.Usage.Response:			'/textnpc reponse' Shows NPC's response (the first 20 letters of the response)
 Commands.GM.TextNPC.Usage.Text:			'/textnpc text <text>' Set interact text (right click) (use the character | or ; to skip a line)

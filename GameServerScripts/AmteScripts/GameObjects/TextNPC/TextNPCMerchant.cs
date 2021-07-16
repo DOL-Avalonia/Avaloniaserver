@@ -21,12 +21,13 @@ namespace DOL.GS.Scripts
 	{
         public TextNPCPolicy TextNPCData { get; set; }
 
-        public TextNPCMerchant() : base()
+        public TextNPCMerchant()
         {
             TextNPCData = new TextNPCPolicy(this);
             SetOwnBrain(new TextNPCBrain());
         }
 
+        #region TextNPCPolicy
         public void SayRandomPhrase()
         {
             TextNPCData.SayRandomPhrase();
@@ -78,5 +79,6 @@ namespace DOL.GS.Scripts
 					? eQuestIndicator.Available
 					: eQuestIndicator.None;
 		}
+        #endregion
 	}
 }
