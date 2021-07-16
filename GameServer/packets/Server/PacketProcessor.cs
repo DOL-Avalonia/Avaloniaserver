@@ -444,8 +444,8 @@ namespace DOL.GS.PacketHandler
 				{
 					if (q.Count > 0)
 					{
-//						Log.WarnFormat("async sent {0} bytes, sending queued packets count: {1}", sent, q.Count);
-						dataLength = CombineTCPPackets(data, q);
+						// Log.WarnFormat("async sent {0} bytes, sending queued packets count: {1}", sent, q.Count);
+						count = CombineTCPPackets(data, q);
 					}
 					if (count <= 0)
 					{
@@ -632,7 +632,7 @@ namespace DOL.GS.PacketHandler
 			//fill the udpCounter
 			buf[2] = (byte) (m_udpCounter >> 8);
 			buf[3] = (byte) m_udpCounter;
-			m_encoding.EncryptPacket(buf, 0, true);
+			m_encoding.EncryptPacket(buf, true);
 
 			Statistics.BytesOut += packetSize;
 			Statistics.PacketsOut++;
