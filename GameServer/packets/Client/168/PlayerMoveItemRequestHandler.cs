@@ -279,11 +279,14 @@ namespace DOL.GS.PacketHandler.Client.v168
                 {
                     return;
                 }
-
                 toClientSlot = 0;
                 if (item.Item_Type >= (int)eInventorySlot.MinEquipable && item.Item_Type <= (int)eInventorySlot.MaxEquipable)
                 {
-                    toClientSlot = (ushort)item.Item_Type;
+                    // If item can be used in left-hand we force it in the right hand (as we don't know whether it is intended to be used as right or left)
+                    if( item.Item_Type == (int)eInventorySlot.LeftHandWeapon && item.Hand == 2 )
+                        toClientSlot = (int)eInventorySlot.RightHandWeapon;
+                    else
+                        toClientSlot = (ushort)item.Item_Type;
                 }
 
                 if (toClientSlot == 0)
@@ -291,7 +294,6 @@ namespace DOL.GS.PacketHandler.Client.v168
                     client.Out.SendInventorySlotsUpdate(new int[] { fromClientSlot });
                     return;
                 }
-
                 if (toClientSlot == (int)eInventorySlot.LeftBracer || toClientSlot == (int)eInventorySlot.RightBracer)
                 {
                     if (client.Player.Inventory.GetItem(eInventorySlot.LeftBracer) == null)
