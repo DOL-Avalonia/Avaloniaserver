@@ -1245,25 +1245,25 @@ namespace DOL.AI.Brain
                 case "OFFENSIVEPROC":
                 case "DEFENSIVEPROC":
                 case "DAMAGESHIELD":
-                    {
-                        // Buff self, if not in melee, but not each and every mob
-                        // at the same time, because it looks silly.
-                        if (!LivingHasEffect(Body, spell) && !Body.AttackState && Util.Chance(40) && spell.Target.ToLower() != "pet")
-                        {
-                            Body.TargetObject = Body;
-                            break;
-                        }
-                        if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null && Util.Chance(40) && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && !LivingHasEffect(Body.ControlledBrain.Body, spell) && spell.Target.ToLower() != "self")
-                        {
-                            Body.TargetObject = Body.ControlledBrain.Body;
-                            break;
-                        }
-                        break;
-                    }
-                #endregion Buffs
+				case "SPELLREFLECTION":
+				case "ALLSTATBUFF":
+					// Buff self, if not in melee, but not each and every mob
+					// at the same time, because it looks silly.
+					if (!LivingHasEffect(Body, spell) && !Body.AttackState && Util.Chance(40) && spell.Target.ToLower() != "pet")
+					{
+						Body.TargetObject = Body;
+						break;
+					}
+					if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null && Util.Chance(40) && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && !LivingHasEffect(Body.ControlledBrain.Body, spell) && spell.Target.ToLower() != "self")
+					{
+						Body.TargetObject = Body.ControlledBrain.Body;
+						break;
+					}
+					break;
+				#endregion Buffs
 
-                #region Disease Cure/Poison Cure/Summon
-                case "CUREDISEASE":
+				#region Disease Cure/Poison Cure/Summon
+				case "CUREDISEASE":
                     if (Body.IsDiseased)
                     {
                         Body.TargetObject = Body;
@@ -1534,30 +1534,30 @@ namespace DOL.AI.Brain
 				case "OFFENSIVEPROC":
 				case "DEFENSIVEPROC":
 				case "DAMAGESHIELD":
+				case "SPELLREFLECTION":
+				case "ALLSTATBUFF":
+					// Buff self, if not in melee, but not each and every mob
+					// at the same time, because it looks silly.
+					if (spell.Target != "pet" && !LivingHasEffect(Body, spell) && !Body.AttackState)
 					{
-						// Buff self, if not in melee, but not each and every mob
-						// at the same time, because it looks silly.
-						if (spell.Target != "pet" && !LivingHasEffect(Body, spell) && !Body.AttackState)
-						{
-							newTarget = Body;
-							break;
-						}
-						if (spell.Target != "self" && Body.ControlledBrain != null && Body.ControlledBrain.Body != null && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && !LivingHasEffect(Body.ControlledBrain.Body, spell))
-						{
-							newTarget = Body.ControlledBrain.Body;
-							break;
-						}
-						if (spell.Target == "realm")
-						{
-							foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)Math.Max(spell.Radius, spell.Range)))
-								if (Body.IsFriend(npc) && Util.Chance(60) && !LivingHasEffect(npc, spell))
-								{
-									newTarget = npc;
-									break;
-								}
-						}
+						newTarget = Body;
 						break;
 					}
+					if (spell.Target != "self" && Body.ControlledBrain != null && Body.ControlledBrain.Body != null && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && !LivingHasEffect(Body.ControlledBrain.Body, spell))
+					{
+						newTarget = Body.ControlledBrain.Body;
+						break;
+					}
+					if (spell.Target == "realm")
+					{
+						foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)Math.Max(spell.Radius, spell.Range)))
+							if (Body.IsFriend(npc) && Util.Chance(60) && !LivingHasEffect(npc, spell))
+							{
+								newTarget = npc;
+								break;
+							}
+					}
+					break;
 				#endregion Buffs
 
 				#region Disease Cure/Poison Cure

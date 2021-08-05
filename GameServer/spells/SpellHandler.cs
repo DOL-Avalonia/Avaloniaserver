@@ -3356,8 +3356,11 @@ namespace DOL.GS.Spells
 				return list;
 			}
 		}
-		// warlock add
-		public static GameSpellEffect FindEffectOnTarget(GameLiving target, string spellType, string spellName)
+
+        public ISpellHandler Parent { get ; set; }
+
+        // warlock add
+        public static GameSpellEffect FindEffectOnTarget(GameLiving target, string spellType, string spellName)
 		{
 			lock (target.EffectList)
 			{

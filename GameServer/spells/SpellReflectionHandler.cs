@@ -1,4 +1,5 @@
-﻿using DOL.Events;
+﻿using DOL.AI.Brain;
+using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.Language;
@@ -13,18 +14,6 @@ namespace DOL.GS.Spells
         {
         }
 
-        public override void ApplyEffectOnTarget(GameLiving target, double effectiveness)
-        {
-            GameSpellEffect damnationEffect = FindEffectOnTarget(target, "SpellReflection");
-            if (damnationEffect != null)
-            {
-                if (Caster is GamePlayer player)
-                    MessageToCaster(LanguageMgr.GetTranslation(player.Client, "SpellReflection.Target.Resist", target.Name), eChatType.CT_SpellResisted);
-                return;
-            }
-            base.ApplyEffectOnTarget(target, effectiveness);
-        }
-
         public override void OnEffectStart(GameSpellEffect effect)
         {
             GameLiving living = effect.Owner;
@@ -37,7 +26,7 @@ namespace DOL.GS.Spells
             SendEffectAnimation(effect.Owner, 0, false, 1);
         }
 
-        public void EventHandler(DOLEvent e, object sender, EventArgs arguments)
+        private void EventHandler(DOLEvent e, object sender, EventArgs arguments)
         {
             if (!(arguments is AttackedByEnemyEventArgs args))
             {
@@ -45,21 +34,28 @@ namespace DOL.GS.Spells
             }
             AttackData ad = args.AttackData;
 
-            if (ad.AttackType == AttackData.eAttackType.Spell)
+            if (ad.AttackType == AttackData.eAttackType.Spell && (ad.AttackResult == GameLiving.eAttackResult.HitUnstyled || ad.AttackResult == GameLiving.eAttackResult.HitStyle))
             {
                 Spell spellToCast = ad.SpellHandler.Spell.Copy();
+                SpellLine line = ad.SpellHandler.SpellLine;
+                if (ad.SpellHandler.Parent != null && ad.SpellHandler.Parent is BomberSpellHandler bomber)
+                {
+                    spellToCast = bomber.Spell;
+                    line = bomber.SpellLine;
+                }
+                
                 int cost;
                 GamePlayer player = ad.Target as GamePlayer;
                 if (player != null && player.CharacterClass is Salvage)
                 {
-                    cost = ((spellToCast.Power * Spell.AmnesiaChance / 100) / 2) / (ad.Target.Level / ad.Attacker.Level);
+                    cost = ((spellToCast.Power * Spell.AmnesiaChance / 100) / 2) / Math.Max(1, (ad.Target.Level / ad.Attacker.Level));
                     spellToCast.CostPower = false;
                 }
                 else
                 {
-                    cost = (spellToCast.Power * Spell.AmnesiaChance / 100) / (ad.Target.Level / ad.Attacker.Level);
+                    cost = (spellToCast.Power * Spell.AmnesiaChance / 100) / Math.Max(1, (ad.Target.Level / ad.Attacker.Level));
                     spellToCast.CostPower = true;
-                    if (player.Mana < cost)
+                    if (ad.Target.Mana < cost)
                         return;
                 }
                 spellToCast.Power = cost;
@@ -79,34 +75,40 @@ namespace DOL.GS.Spells
                 spellToCast.Value = spellToCast.Value * Spell.AmnesiaChance / 100;
                 spellToCast.Duration = spellToCast.Duration * Spell.AmnesiaChance / 100;
                 spellToCast.CastTime = 0;
+                ushort ClientEffect = 0;
 
                 switch(ad.DamageType)
                 {
                     case eDamageType.Body:
-                        spellToCast.ClientEffect = 6172;
+                        ClientEffect = 6172;
                         break;
                     case eDamageType.Cold:
-                        spellToCast.ClientEffect = 6057;
+                        ClientEffect = 6057;
                         break;
                     case eDamageType.Energy:
-                        spellToCast.ClientEffect = 6173;
+                        ClientEffect = 6173;
                         break;
                     case eDamageType.Heat:
-                        spellToCast.ClientEffect = 6171;
+                        ClientEffect = 6171;
                         break;
                     case eDamageType.Matter:
-                        spellToCast.ClientEffect = 6174;
+                        ClientEffect = 6174;
                         break;
                     case eDamageType.Spirit:
-                        spellToCast.ClientEffect = 6175;
+                        ClientEffect = 6175;
                         break;
                     default:
-                        spellToCast.ClientEffect = 6173;
+                        ClientEffect = 6173;
                         break;
                 }
-
-                ad.Target.TargetObject = ad.Attacker;
-                ad.Target.CastSpell(spellToCast, m_spellLine);
+                foreach (GamePlayer pl in ad.Target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE(ad.Target.CurrentRegion)))
+                {
+                    pl.Out.SendSpellEffectAnimation(ad.Target, ad.Target, ClientEffect, 0, false, 1);
+                }
+                ISpellHandler spellhandler = ScriptMgr.CreateSpellHandler(ad.Target, spellToCast, line);
+                if (spellhandler is BomberSpellHandler bomberspell)
+                    bomberspell.ReduceSubSpellDamage = Spell.AmnesiaChance;
+                spellhandler.CastSpell(ad.Attacker);
             }
         }
 

@@ -203,6 +203,7 @@
     <Compile Include="commands\gmcommands\GMTerritories.cs" />
     <Compile Include="commands\gmcommands\GroupMob.cs" />
     <Compile Include="commands\gmcommands\MoneyNPC.cs" />
+    <Compile Include="commands\gmcommands\ngg.cs" />
     <Compile Include="commands\gmcommands\tppoint.cs" />
     <Compile Include="commands\gmcommands\translate.cs" />
     <Compile Include="commands\gmcommands\zone.cs" />
