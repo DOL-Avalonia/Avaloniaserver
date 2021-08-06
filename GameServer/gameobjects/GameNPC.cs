@@ -4359,7 +4359,9 @@ namespace DOL.GS
 
         public override void TakeDamage(AttackData ad)
         {
-			if (ad.Attacker is GamePlayer gamePlayer && (ad.AttackType != AttackData.eAttackType.MeleeDualWield && ad.AttackType != AttackData.eAttackType.MeleeOneHand && ad.AttackType != AttackData.eAttackType.MeleeTwoHand))
+			GamePlayer gamePlayer = ad.Attacker as GamePlayer;
+			GamePet pet = ad.Attacker as GamePet;
+			if ((gamePlayer  != null || (pet != null && pet.Owner is GamePlayer)) && (ad.AttackType != AttackData.eAttackType.MeleeDualWield && ad.AttackType != AttackData.eAttackType.MeleeOneHand && ad.AttackType != AttackData.eAttackType.MeleeTwoHand))
 			{
 				eDamageType damageType = ad.DamageType;
 				MobXAmbientBehaviour ambientText = ambientTexts.Where(mobXAmbient => mobXAmbient.DamageTypeRepeat > 0).FirstOrDefault();
@@ -4368,7 +4370,7 @@ namespace DOL.GS
 					if (hasImunity && ImunityDomage == damageType)
 					{
 						LastDamageType = damageType;
-						FireAmbientSentence(eAmbientTrigger.immunised, gamePlayer);
+						FireAmbientSentence(eAmbientTrigger.immunised, pet != null ? pet.Owner : gamePlayer);
 						ad.CriticalDamage = 0;
 						ad.Damage = 0;
 					}
@@ -4385,7 +4387,7 @@ namespace DOL.GS
 						}
 						if (DamageTypeCounter >= ambientText.DamageTypeRepeat)
 						{
-							FireAmbientSentence(eAmbientTrigger.immunised, gamePlayer);
+							FireAmbientSentence(eAmbientTrigger.immunised, pet != null ? pet.Owner : gamePlayer);
 							ad.CriticalDamage = 0;
 							ad.Damage = 0;
 						}
