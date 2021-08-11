@@ -6165,7 +6165,7 @@ namespace DOL.GS
 					Spell spell = new Spell(dbspell, Level);
 					ISpellHandler dd = CreateSpellHandler(this, spell, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 					dd.IgnoreDamageCap = true;
-					dd.StartSpell(living);
+					dd.StartSpell(living, true);
 				}
             }
             
