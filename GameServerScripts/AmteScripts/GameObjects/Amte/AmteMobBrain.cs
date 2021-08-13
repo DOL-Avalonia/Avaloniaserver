@@ -49,38 +49,63 @@ namespace DOL.AI.Brain
 			if (Body.GetSkillDisabledDuration(spell) > 0) return false;
 			GameObject lastTarget = Body.TargetObject;
 			Body.TargetObject = null;
-			switch (spell.SpellType)
+			switch (spell.SpellType.ToUpper())
 			{
 				#region Buffs
-				case "StrengthConstitutionBuff":
-				case "DexterityQuicknessBuff":
-				case "StrengthBuff":
-				case "DexterityBuff":
-				case "ConstitutionBuff":
-				case "ArmorFactorBuff":
-				case "ArmorAbsorptionBuff":
-				case "CombatSpeedBuff":
-				case "MeleeDamageBuff":
-				case "AcuityBuff":
-				case "HealthRegenBuff":
-				case "DamageAdd":
-				case "DamageShield":
-				case "BodyResistBuff":
-				case "ColdResistBuff":
-				case "EnergyResistBuff":
-				case "HeatResistBuff":
-				case "MatterResistBuff":
-				case "SpiritResistBuff":
-				case "BodySpiritEnergyBuff":
-				case "HeatColdMatterBuff":
-				case "CrushSlashThrustBuff":
-				case "AllMagicResistsBuff":
-				case "AllMeleeResistsBuff":
-				case "AllResistsBuff":
-				case "OffensiveProc":
-				case "DefensiveProc":
-				case "Bladeturn":
-				case "ToHitBuff":
+				case "ACUITYBUFF":
+				case "AFHITSBUFF":
+				case "ALLMAGICRESISTSBUFF":
+				case "ARMORABSORPTIONBUFF":
+				case "ARMORFACTORBUFF":
+				case "BODYRESISTBUFF":
+				case "BODYSPIRITENERGYBUFF":
+				case "BUFF":
+				case "CELERITYBUFF":
+				case "COLDRESISTBUFF":
+				case "COMBATSPEEDBUFF":
+				case "CONSTITUTIONBUFF":
+				case "COURAGEBUFF":
+				case "CRUSHSLASHTHRUSTBUFF":
+				case "DEXTERITYBUFF":
+				case "DEXTERITYQUICKNESSBUFF":
+				case "EFFECTIVENESSBUFF":
+				case "ENDURANCEREGENBUFF":
+				case "ENERGYRESISTBUFF":
+				case "FATIGUECONSUMPTIONBUFF":
+				case "FELXIBLESKILLBUFF":
+				case "HASTEBUFF":
+				case "HEALTHREGENBUFF":
+				case "HEATCOLDMATTERBUFF":
+				case "HEATRESISTBUFF":
+				case "HEROISMBUFF":
+				case "KEEPDAMAGEBUFF":
+				case "MAGICRESISTSBUFF":
+				case "MATTERRESISTBUFF":
+				case "MELEEDAMAGEBUFF":
+				case "MESMERIZEDURATIONBUFF":
+				case "MLABSBUFF":
+				case "PALADINARMORFACTORBUFF":
+				case "PARRYBUFF":
+				case "POWERHEALTHENDURANCEREGENBUFF":
+				case "POWERREGENBUFF":
+				case "SAVAGECOMBATSPEEDBUFF":
+				case "SAVAGECRUSHRESISTANCEBUFF":
+				case "SAVAGEDPSBUFF":
+				case "SAVAGEPARRYBUFF":
+				case "SAVAGESLASHRESISTANCEBUFF":
+				case "SAVAGETHRUSTRESISTANCEBUFF":
+				case "SPIRITRESISTBUFF":
+				case "STRENGTHBUFF":
+				case "STRENGTHCONSTITUTIONBUFF":
+				case "SUPERIORCOURAGEBUFF":
+				case "TOHITBUFF":
+				case "WEAPONSKILLBUFF":
+				case "DAMAGEADD":
+				case "OFFENSIVEPROC":
+				case "DEFENSIVEPROC":
+				case "DAMAGESHIELD":
+				case "SPELLREFLECTION":
+				case "ALLSTATBUFF":
 					{
 						// Buff self, if not in melee, but not each and every mob
 						// at the same time, because it looks silly.
@@ -103,7 +128,7 @@ namespace DOL.AI.Brain
 				#endregion Buffs
 
 				#region Disease Cure/Poison Cure/Summon
-				case "CureDisease":
+				case "CUREDISEASE":
 					if (Body.IsDiseased)
 					{
 						Body.TargetObject = Body;
@@ -119,7 +144,7 @@ namespace DOL.AI.Brain
 							}
 					}
 					break;
-				case "CurePoison":
+				case "CUREPOISON":
 					if (LivingIsPoisoned(Body))
 					{
 						Body.TargetObject = Body;
@@ -135,29 +160,29 @@ namespace DOL.AI.Brain
 							}
 					}
 					break;
-				case "SummonAnimistFnF":
-				case "SummonAnimistPet":
-				case "SummonTheurgistPet":
+				case "SUMMONANIMISTFNF":
+				case "SUMMONANIMISTPET":
+				case "SUMMONTHEURGISTPET":
 					break;
-				case "Summon":
-				case "SummonCommander":
-				case "SummonDruidPet":
-				case "SummonHunterPet":
-				case "SummonMastery":
-				case "SummonMercenary":
-				case "SummonMonster":
-				case "SummonNoveltyPet":
-				case "SummonSalamander":
-				case "SummonSiegeWeapon":
-				case "SummonSimulacrum":
-				case "SummonSpiritFighter":
-				case "SummonTitan":
-				case "SummonUnderhill":
-				case "SummonWarcrystal":
-				case "SummonWood":
+				case "SUMMON":
+				case "SUMMONCOMMANDER":
+				case "SUMMONDRUIDPET":
+				case "SUMMONHUNTERPET":
+				case "SUMMONMASTERY":
+				case "SUMMONMERCENARY":
+				case "SUMMONMONSTER":
+				case "SUMMONNOVELTYPET":
+				case "SUMMONSALAMANDER":
+				case "SUMMONSIEGEWEAPON":
+				case "SUMMONSIMULACRUM":
+				case "SUMMONSPIRITFIGHTER":
+				case "SUMMONTITAN":
+				case "SUMMONUNDERHILL":
+				case "SUMMONWARCRYSTAL":
+				case "SUMMONWOOD":
 					//Body.TargetObject = Body;
 					break;
-				case "SummonMinion":
+				case "SUMMONMINION":
 					//If the list is null, lets make sure it gets initialized!
 					if (Body.ControlledNpcList == null)
 						Body.InitControlledBrainArray(2);
@@ -175,7 +200,13 @@ namespace DOL.AI.Brain
 				#endregion
 
 				#region Heals
-				case "Heal":
+				case "COMBATHEAL":
+				case "HEAL":
+				case "HEALOVERTIME":
+				case "MERCHEAL":
+				case "OMNIHEAL":
+				case "PBAEHEAL":
+				case "SPREADHEAL":
 					// Chance to heal self when dropping below 30%, do NOT spam it.
 
 					if (Body.HealthPercent < 70 && Util.Chance(80))
