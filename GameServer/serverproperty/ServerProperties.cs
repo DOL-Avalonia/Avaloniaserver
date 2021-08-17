@@ -1336,17 +1336,23 @@ namespace DOL.GS.ServerProperties
         public static double MOB_DAMAGE_INCREASE_PERLEVEL { get; set; }
 
         /// <summary>
-        /// New property to resolve the damges for Savage, Valkyrie and Hunter.
+        /// New property to resolve the damages for hand to hand weapon.
         /// </summary>
-        [ServerProperty("npc", "class_resolve_domages", "New property to resolve the damges for necromancer pets.", 0.30)]
-        public static double CLASS_RESOLVE_DAMAGES { get; set; }
+        [ServerProperty("npc", "handtohand_resolve_domages", "New property to resolve the damages for hand to hand weapon.", 0.30)]
+        public static double HANDTOHAND_RESOLVE_DAMAGES { get; set; }
+
+        /// <summary>
+        /// New property to resolve the damages for spear weapon.
+        /// </summary>
+        [ServerProperty("npc", "spears_resolve_domages", "New property to resolve the damages for spear weapon.", 0.17)]
+        public static double SPEARS_RESOLVE_DAMAGES { get; set; }
 
         // Necro pet stat properties
 
         /// <summary>
-        /// New property to resolve the damges for necromancer pets.
+        /// New property to resolve the damages for necromancer pets.
         /// </summary>
-        [ServerProperty("npc", "necro_pet_resolve_domages", "New property to resolve the damges for necromancer pets.", 0.30)]
+        [ServerProperty("npc", "necro_pet_resolve_domages", "New property to resolve the damages for necromancer pets.", 0.30)]
         public static double NECRO_PET_RESOLVE_DAMAGES { get; set; }
 
         /// <summary>

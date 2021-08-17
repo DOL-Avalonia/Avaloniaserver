@@ -1820,8 +1820,16 @@ namespace DOL.GS
 				dmg_mod = dmg_mod.Clamp(0.01, 3);
 
                 double weapon_dps;
-                if(player != null && style != null && ((player.CharacterClass is ClassSavage && style.Spec == "Hand to Hand") || (style.Spec == "Spear" && (player.CharacterClass is ClassHunter || player.CharacterClass is ClassValkyrie))))
-                    weapon_dps = AttackDamage(weapon) * Properties.CLASS_RESOLVE_DAMAGES;
+                if(player != null && style != null)
+                {
+					if (player.CharacterClass is ClassSavage && style.Spec == "Hand to Hand")
+						weapon_dps = AttackDamage(weapon) * Properties.HANDTOHAND_RESOLVE_DAMAGES;
+					else if (style.Spec == "Spear" && (player.CharacterClass is ClassHunter || player.CharacterClass is ClassValkyrie))
+						weapon_dps = AttackDamage(weapon) * Properties.SPEARS_RESOLVE_DAMAGES;
+					else
+						weapon_dps = WeaponDamage(weapon);
+				}
+                    
                 else
                     weapon_dps = WeaponDamage(weapon);
 				double base_dmg = dmg_mod * weapon_dps;
