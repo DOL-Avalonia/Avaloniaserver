@@ -9425,8 +9425,9 @@ namespace DOL.GS
 
 					// Item with a non-charge ability.
 
-					if (useItem.Object_Type == (int)eObjectType.Magical
-					    && useItem.Item_Type == (int)eInventorySlot.FirstBackpack
+					if (((useItem.Object_Type == (int)eObjectType.Magical
+					    && useItem.Item_Type == (int)eInventorySlot.FirstBackpack)
+						|| (useItem.Object_Type == (int)eObjectType.GenericItem && useItem.Item_Type == (int)eInventorySlot.Invalid))
 					    && useItem.SpellID > 0
 					    && useItem.MaxCharges == 0)
 					{
