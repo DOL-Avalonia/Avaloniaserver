@@ -9586,12 +9586,12 @@ namespace DOL.GS
 							{
 								Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.UseSlot.CantUseFromBackpack"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							}
-							else
-							{
+							else if (useItem.Name.ToUpper().StartsWith("PARCHEMIN"))
+                            {
 								long lastChargedItemUseTick = TempProperties.getProperty<long>(LAST_CHARGED_ITEM_USE_TICK);
 								long changeTime = CurrentRegion.Time - lastChargedItemUseTick;
-								long delay = TempProperties.getProperty<long>(ITEM_USE_DELAY, 0L);
-								long itemdelay = TempProperties.getProperty<long>("ITEMREUSEDELAY" + useItem.Id_nb);
+								long delay = 120000;
+								long itemdelay = TempProperties.getProperty<long>("ITEMREUSEDELAY" + useItem.Id_nb, 120000);
 								long itemreuse = (long)useItem.CanUseEvery * 1000;
 								if (itemdelay == 0) itemdelay = CurrentRegion.Time - itemreuse;
 
@@ -9608,6 +9608,49 @@ namespace DOL.GS
 									else
 									{
 										Out.SendMessage("You must wait " + (delay - changeTime) / 1000 + " more second before discharge another object!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									}
+									return;
+								}
+								else
+								{
+									if (type == 1) //use1
+									{
+										if (useItem.SpellID == 0)
+											return;
+
+										UseItemCharge(useItem, type);
+									}
+									else if (type == 2) //use2
+									{
+										if (useItem.SpellID1 == 0)
+											return;
+
+										UseItemCharge(useItem, type);
+									}
+								}
+							}
+							else
+							{
+								long lastChargedItemUseTick = TempProperties.getProperty<long>(LAST_CHARGED_ITEM_USE_TICK + useItem.Id_nb);
+								long changeTime = CurrentRegion.Time - lastChargedItemUseTick;
+								//long delay = TempProperties.getProperty<long>(ITEM_USE_DELAY, 0L);
+								long itemdelay = TempProperties.getProperty<long>("ITEMREUSEDELAY" + useItem.Id_nb, 120000);
+								long itemreuse = (long)useItem.CanUseEvery * 1000;
+								if (itemdelay == 0) itemdelay = CurrentRegion.Time - itemreuse;
+
+								if ((IsStunned && !(Steed != null && Steed.Name == "Forceful Zephyr")) || IsMezzed || !IsAlive)
+								{
+									Out.SendMessage("In your state you can't discharge any object.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								}
+								else if (Client.Account.PrivLevel == 1 && (changeTime < itemdelay || (CurrentRegion.Time - itemdelay) < itemreuse)) //2 minutes reuse timer
+								{
+									if ((CurrentRegion.Time - itemdelay) < itemreuse)
+									{
+										Out.SendMessage("You must wait " + (itemreuse - (CurrentRegion.Time - itemdelay)) / 1000 + " more second before discharge " + useItem.Name + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+									}
+									else
+									{
+										Out.SendMessage("You must wait " + (itemdelay - changeTime) / 1000 + " more second before discharge another object!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 									}
 									return;
 								}
@@ -9813,8 +9856,12 @@ namespace DOL.GS
 						IsOnHorse = false;
 
 					Stealth(false);
-
-					if (spellHandler.CastSpell())
+					bool test = false;
+					if (useItem.Name.ToUpper().StartsWith("PARCHEMIN"))
+						test = spellHandler.StartSpell(TargetObject as GameLiving, useItem);
+					else
+						test = spellHandler.CastSpell();
+					if (test)
 					{
 						bool castOk = spellHandler.StartReuseTimer;
 
@@ -9837,8 +9884,8 @@ namespace DOL.GS
 
 						if (castOk)
 						{
-							TempProperties.setProperty(LAST_CHARGED_ITEM_USE_TICK, CurrentRegion.Time);
-							TempProperties.setProperty(ITEM_USE_DELAY, (long)(60000 * 2));
+							TempProperties.setProperty(LAST_CHARGED_ITEM_USE_TICK + useItem.Id_nb, CurrentRegion.Time);
+							//TempProperties.setProperty(ITEM_USE_DELAY, (long)(60000 * 2));
 							TempProperties.setProperty("ITEMREUSEDELAY" + useItem.Id_nb, CurrentRegion.Time);
 						}
 					}
