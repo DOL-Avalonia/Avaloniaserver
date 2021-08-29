@@ -9524,7 +9524,7 @@ namespace DOL.GS
 
 													Stealth(false);
 
-													if (useItem.Item_Type == (int)eInventorySlot.FirstBackpack)
+													if (useItem.Item_Type == (int)eInventorySlot.FirstBackpack && !useItem.Id_nb.ToUpper().Contains("PARCH"))
 													{
 														Emote(eEmote.Drink);
 
@@ -9585,49 +9585,6 @@ namespace DOL.GS
 							if (!Inventory.EquippedItems.Contains(useItem))
 							{
 								Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GameObjects.GamePlayer.UseSlot.CantUseFromBackpack"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-							}
-							else if (useItem.Name.ToUpper().StartsWith("PARCHEMIN"))
-                            {
-								long lastChargedItemUseTick = TempProperties.getProperty<long>(LAST_CHARGED_ITEM_USE_TICK);
-								long changeTime = CurrentRegion.Time - lastChargedItemUseTick;
-								long delay = 120000;
-								long itemdelay = TempProperties.getProperty<long>("ITEMREUSEDELAY" + useItem.Id_nb, 120000);
-								long itemreuse = (long)useItem.CanUseEvery * 1000;
-								if (itemdelay == 0) itemdelay = CurrentRegion.Time - itemreuse;
-
-								if ((IsStunned && !(Steed != null && Steed.Name == "Forceful Zephyr")) || IsMezzed || !IsAlive)
-								{
-									Out.SendMessage("In your state you can't discharge any object.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-								}
-								else if (Client.Account.PrivLevel == 1 && (changeTime < delay || (CurrentRegion.Time - itemdelay) < itemreuse)) //2 minutes reuse timer
-								{
-									if ((CurrentRegion.Time - itemdelay) < itemreuse)
-									{
-										Out.SendMessage("You must wait " + (itemreuse - (CurrentRegion.Time - itemdelay)) / 1000 + " more second before discharge " + useItem.Name + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-									}
-									else
-									{
-										Out.SendMessage("You must wait " + (delay - changeTime) / 1000 + " more second before discharge another object!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-									}
-									return;
-								}
-								else
-								{
-									if (type == 1) //use1
-									{
-										if (useItem.SpellID == 0)
-											return;
-
-										UseItemCharge(useItem, type);
-									}
-									else if (type == 2) //use2
-									{
-										if (useItem.SpellID1 == 0)
-											return;
-
-										UseItemCharge(useItem, type);
-									}
-								}
 							}
 							else
 							{
@@ -9856,12 +9813,8 @@ namespace DOL.GS
 						IsOnHorse = false;
 
 					Stealth(false);
-					bool test = false;
-					if (useItem.Name.ToUpper().StartsWith("PARCHEMIN"))
-						test = spellHandler.StartSpell(TargetObject as GameLiving, useItem);
-					else
-						test = spellHandler.CastSpell();
-					if (test)
+					
+					if (spellHandler.CastSpell())
 					{
 						bool castOk = spellHandler.StartReuseTimer;
 

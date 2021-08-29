@@ -18,6 +18,7 @@
  */
 using System;
 using System.Reflection;
+using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using log4net;
@@ -92,6 +93,8 @@ namespace DOL.GS.Spells
             }
 
 			base.ApplyEffectOnTarget(target, effectiveness);
+			if (Spell.Target == "enemy" && (LastAttackData.AttackResult == GameLiving.eAttackResult.HitUnstyled || LastAttackData.AttackResult == GameLiving.eAttackResult.HitStyle))
+				target.Notify(GameLivingEvent.AttackedByEnemy, target, new AttackedByEnemyEventArgs(LastAttackData));
 		}
 
 		/// <summary>

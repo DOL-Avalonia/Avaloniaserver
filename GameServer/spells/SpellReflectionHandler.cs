@@ -40,7 +40,7 @@ namespace DOL.GS.Spells
                 SpellLine line = ad.SpellHandler.SpellLine;
                 if (ad.SpellHandler.Parent != null && ad.SpellHandler.Parent is BomberSpellHandler bomber)
                 {
-                    spellToCast = bomber.Spell;
+                    spellToCast = bomber.Spell.Copy();
                     line = bomber.SpellLine;
                 }
                 
@@ -69,7 +69,6 @@ namespace DOL.GS.Spells
                     MessageToLiving(player, LanguageMgr.GetTranslation(player.Client, "SpellReflection.Self.Absorb", damageAbsorbed), eChatType.CT_Spell);
                 if (ad.Attacker is GamePlayer attacker)
                     MessageToLiving(attacker, LanguageMgr.GetTranslation(attacker.Client, "SpellReflection.Target.Absorbs", damageAbsorbed), eChatType.CT_Spell);
-
                 
                 spellToCast.Damage = spellToCast.Damage * Spell.AmnesiaChance / 100;
                 spellToCast.Value = spellToCast.Value * Spell.AmnesiaChance / 100;
@@ -105,10 +104,15 @@ namespace DOL.GS.Spells
                 {
                     pl.Out.SendSpellEffectAnimation(ad.Target, ad.Target, ClientEffect, 0, false, 1);
                 }
+                if (!Util.Chance((int)Spell.Value))
+                    return;
                 ISpellHandler spellhandler = ScriptMgr.CreateSpellHandler(ad.Target, spellToCast, line);
                 if (spellhandler is BomberSpellHandler bomberspell)
                     bomberspell.ReduceSubSpellDamage = Spell.AmnesiaChance;
                 spellhandler.CastSpell(ad.Attacker);
+
+                if (Spell.HasSubSpell)
+                    CastSubSpells(ad.Attacker);
             }
         }
 
