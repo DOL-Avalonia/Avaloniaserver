@@ -30,7 +30,7 @@ namespace DOL.GS.Spells
             {
                 // Treat non-damaging effects as attacks to trigger an immediate response and BAF
                 m_lastAttackData = ad;
-                IOldAggressiveBrain aggroBrain = ((GameNPC)ad.Target).Brain as IOldAggressiveBrain;
+                IOldAggressiveBrain aggroBrain = (ad.Target is GameNPC) ? ((GameNPC)ad.Target).Brain as IOldAggressiveBrain : null;
                 if (aggroBrain != null)
                     aggroBrain.AddToAggroList(Caster, 1);
             }
