@@ -2248,6 +2248,7 @@
     <Compile Include="spells\Theurgist\SummonTheurgistPet.cs" />
     <Compile Include="spells\Teleport\UniPortal.cs" />
     <Compile Include="spells\SpellReflectionDebuff.cs" />
+    <Compile Include="spells\TriggerSpellHandler.cs" />
     <Compile Include="spells\UnpetrifySpellHandler.cs" />
     <Compile Include="spells\Valkyrie\FrontalAOEConeHandler.cs" />
     <Compile Include="spells\Valkyrie\PowerRendSpellHandler.cs" />

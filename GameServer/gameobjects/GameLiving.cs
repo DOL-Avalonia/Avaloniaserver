@@ -39,6 +39,7 @@ using DOL.GS.RealmAbilities;
 using System.Threading.Tasks;
 using DOL.GS.PlayerClass;
 using DOL.GS.ServerProperties;
+using static DOL.GS.ScriptMgr;
 
 namespace DOL.GS
 {
@@ -5492,6 +5493,31 @@ namespace DOL.GS
 				{
 					StartHealthRegeneration();
 				}
+
+				int triggerSpellValue = TempProperties.getProperty("TriggerSpell", -1);
+				int spellLevel = TempProperties.getProperty("TriggerSpellLevel", -1);
+				if (triggerSpellValue > 0)
+                {
+					if(m_health < triggerSpellValue)
+                    {
+						int triggerSubSpell = TempProperties.getProperty("TriggerSubSpell", -1);
+						if(triggerSubSpell > 0)
+                        {
+							DBSpell dbspell = GameServer.Database.SelectObject<DBSpell>("SpellID = " + triggerSubSpell);
+							if (dbspell != null)
+							{
+								Spell spell = new Spell(dbspell, spellLevel);
+								ISpellHandler dd = CreateSpellHandler(this, spell, SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects));
+								dd.IgnoreDamageCap = true;
+								dd.StartSpell(this, true);
+							}
+						}
+						else
+                        {
+							log.Warn("A triggerSpell haven't subspell id ! Plz check in DB");
+                        }
+					}
+                }
 			}
 		}
 
