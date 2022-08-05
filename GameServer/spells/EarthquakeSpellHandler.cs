@@ -1,5 +1,6 @@
 ﻿using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
+using DOL.GS.PlayerClass;
 using System;
 
 namespace DOL.GS.Spells
@@ -195,5 +196,35 @@ namespace DOL.GS.Spells
             DamageTarget(ad, true);
             target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, Caster);
         }
+
+        public override int CalculateToHitChance(GameLiving target)
+        {
+            if(target is GameNPC npc)
+            {
+                if(npc.Flags.HasFlag(GameNPC.eFlags.FLYING) || npc.Flags.HasFlag(GameNPC.eFlags.SWIMMING))
+                {
+                    return 0;
+                }
+                else
+                {
+                    return 100;
+                }
+            } 
+            else
+            {
+                GamePlayer player = target as GamePlayer;
+                if(player.IsSwimming || 
+                    (player.CharacterClass is ClassVampiir && player.IsSprinting && player.CurrentSpeed == player.MaxSpeed) || 
+                    (player.CharacterClass is ClassBainshee && (player.Model == 1883|| player.Model == 1884|| player.Model == 1885)))
+                {
+                    return 0;
+                } 
+                else
+                {
+                    return 100;
+                }
+            }
+        }
     }
+
 }
