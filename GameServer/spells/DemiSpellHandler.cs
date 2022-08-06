@@ -1,4 +1,5 @@
 ﻿using DOL.AI.Brain;
+using DOL.GS.PlayerClass;
 
 namespace DOL.GS.Spells
 {
@@ -35,6 +36,16 @@ namespace DOL.GS.Spells
                     aggroBrain.AddToAggroList(Caster, 1);
             }
             DamageTarget(ad, true);
+        }
+
+        public override int CalculateSpellResistChance(GameLiving target)
+        {
+            if (Spell.AmnesiaChance > 0 && target.Level > Spell.AmnesiaChance)
+                return 100;
+            if((target is GameNPC npc && (npc.Flags.HasFlag(GameNPC.eFlags.GHOST)|| npc.BodyType == (ushort)NpcTemplateMgr.eBodyType.Undead))
+                || (target is GamePlayer player && (player.CharacterClass is ClassNecromancer || player.CharacterClass is ClassBainshee || player.CharacterClass is ClassVampiir)))
+                return base.CalculateSpellResistChance(target) * 3;
+            return base.CalculateSpellResistChance(target);
         }
     }
 }
