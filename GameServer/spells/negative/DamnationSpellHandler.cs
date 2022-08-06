@@ -78,5 +78,12 @@ namespace DOL.GS.Spells
             
             return base.OnEffectExpires(effect, noMessages);
         }
+
+        public override int CalculateToHitChance(GameLiving target)
+        {
+            if (target is GameNPC npc && npc.BodyType == (ushort)NpcTemplateMgr.eBodyType.Undead)
+                return 0;
+            return base.CalculateToHitChance(target);
+        }
     }
 }
