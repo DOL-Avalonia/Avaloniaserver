@@ -1812,7 +1812,7 @@ namespace DOL.GS
 				int minVariance = WeaponSpecLevel(weaponTypeToUse).Clamp(0, 70) * 49 / 166; // x*0.6*49/100 => x * 49 / 166
 				int maxVariance = 49 - minVariance;
 
-				double dmg_mod = Level
+				double dmg_mod = (player == null && Level > 0) ? Level : 1.1
 					* factor / 10.0
 					* (1 + 0.01 * dmg_stat)
 					* (0.75 + 0.5 * Math.Min(ad.Target.Level + 1.0, wp_spec) / (ad.Target.Level + 1.0) + 0.01 * Util.Random(minVariance, maxVariance))

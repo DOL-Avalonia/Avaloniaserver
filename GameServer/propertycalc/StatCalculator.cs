@@ -43,7 +43,7 @@ namespace DOL.GS.PropertyCalc
 
 			// Base stats/abilities/debuffs/death.
 
-			int baseStat = living.GetBaseStat((eStat)property);
+			int baseStat = (living is GameNPC && property == eProperty.Strength && living.Level <= 1) ? 150 : living.GetBaseStat((eStat)property);
 			int abilityBonus = living.AbilityBonus[propertyIndex];
 			int debuff = living.DebuffCategory[propertyIndex];
 			int deathConDebuff = 0;
