@@ -15,23 +15,23 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            if (Body != null && Body.Spells.Count == 0)
-            {
-                switch (Body.Realm)
+			// Add auto heal for lord above level 15
+			if (Body != null && Body.Spells.Count == 0 && Body.Level>=15)
                 {
-                    case eRealm.None:
-                    case eRealm.Albion:
-                        Body.Spells.Add(GuardSpellDB.AlbLordHealSpell);
-                        break;
-                    case eRealm.Midgard:
-                        Body.Spells.Add(GuardSpellDB.MidLordHealSpell);
-                        break;
-                    case eRealm.Hibernia:
-                        Body.Spells.Add(GuardSpellDB.HibLordHealSpell);
-                        break;
+					switch (Body.Realm)
+					{
+						case eRealm.None:
+						case eRealm.Albion:
+							Body.Spells.Add(GuardSpellDB.AlbLordHealSpell);
+							break;
+						case eRealm.Midgard:
+							Body.Spells.Add(GuardSpellDB.MidLordHealSpell);
+							break;
+						case eRealm.Hibernia:
+							Body.Spells.Add(GuardSpellDB.HibLordHealSpell);
+							break;
+					}
                 }
-            }
-
             base.Think();
         }
 

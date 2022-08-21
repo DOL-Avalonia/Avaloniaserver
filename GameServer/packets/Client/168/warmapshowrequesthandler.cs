@@ -16,43 +16,52 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+using System;
+using System.Collections;
 
 using DOL.GS.Keeps;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
-    [PacketHandler(PacketHandlerType.TCP, eClientPackets.ShowWarmapRequest, "Show Warmap", eClientStatus.PlayerInGame)]
+    [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.ShowWarmapRequest, "Show Warmap", eClientStatus.PlayerInGame)]
     public class WarmapShowRequestHandler : IPacketHandler
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public void HandlePacket(GameClient client, GSPacketIn packet)
         {
             int code = packet.ReadByte();
-            int realmMap = packet.ReadByte();
+            int RealmMap = packet.ReadByte();
             int keepId = packet.ReadByte();
 
-            if (client?.Player == null)
-            {
+            if (client == null || client.Player == null)
                 return;
-            }            
+
+            //hack fix new keep ids
+            else if ((int)client.Version >= (int)GameClient.eClientVersion.Version190)
+            {
+                if (keepId >= 82)
+                    keepId -= 7;
+                else if (keepId >= 62)
+                    keepId -= 12;
+            }
 
             switch (code)
             {
-                // warmap open
-                // warmap update
+                //warmap open
+                //warmap update
                 case 0:
                 {
-                    client.Player.WarMapPage = (byte)realmMap;
+                    client.Player.WarMapPage = (byte)RealmMap;
                     break;
                 }
-
                 case 1:
                 {
                     client.Out.SendWarmapUpdate(GameServer.KeepManager.GetKeepsByRealmMap(client.Player.WarMapPage));
                     WarMapMgr.SendFightInfo(client);
                     break;
                 }
-
-                // teleport
+                //teleport
                 case 2:
                     {
                         client.Out.SendWarmapUpdate(GameServer.KeepManager.GetKeepsByRealmMap(client.Player.WarMapPage));
@@ -83,6 +92,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                             if (keep != null)
                             {
                                 // if we are requesting to teleport to a keep we need to check that keeps requirements first
+
                                 if (keep.Realm != client.Player.Realm)
                                 {
                                     return;
@@ -100,6 +110,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                             {
                                 // We are in the frontiers and all keep requirements are met or we are not near a keep
                                 // this may be a portal stone in the RvR village, for example
+
                                 foreach (GameStaticItem item in client.Player.GetItemsInRadius(WorldMgr.INTERACT_DISTANCE))
                                 {
                                     if (item is FrontiersPortalStone)
@@ -123,29 +134,28 @@ namespace DOL.GS.PacketHandler.Client.v168
                         ushort heading = 0;
                         switch (keepId)
                         {
-                            // sauvage
+                            //sauvage
                             case 1:
-                            // snowdonia
+                            //snowdonia
                             case 2:
-                            // svas
+                            //svas
                             case 3:
-                            // vind
+                            //vind
                             case 4:
-                            // ligen
+                            //ligen
                             case 5:
-                            // cain
+                            //cain
                             case 6:
                                 {
                                     GameServer.KeepManager.GetBorderKeepLocation(keepId, out x, out y, out z, out heading);
                                     break;
                                 }
-
                             default:
                                 {
-                                    if (keep is GameKeep)
+                                    if (keep != null && keep is GameKeep)
                                     {
                                         FrontiersPortalStone stone = keep.TeleportStone;
-                                        if (stone != null)
+                                        if (stone != null) 
                                         {
                                             heading = stone.Heading;
                                             z = stone.Z;
@@ -155,11 +165,10 @@ namespace DOL.GS.PacketHandler.Client.v168
                                         {
                                             x = keep.X;
                                             y = keep.Y;
-                                            z = keep.Z + 150;
+                                            z = keep.Z+150;
                                             heading = keep.Heading;
                                         }
                                     }
-
                                     break;
                                 }
                         }
@@ -174,4 +183,5 @@ namespace DOL.GS.PacketHandler.Client.v168
             }
         }
     }
+
 }

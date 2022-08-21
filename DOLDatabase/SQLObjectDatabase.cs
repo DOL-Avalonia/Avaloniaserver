@@ -764,7 +764,6 @@ namespace DOL.Database
 							{
 								cmd.CommandText = selectFromExpression + whereClause.ParametizedText;
 								FillSQLParameter(whereClause.QueryParameters, cmd.Parameters);
-								cmd.Prepare();
 
 								using (var reader = cmd.ExecuteReader())
 								{
