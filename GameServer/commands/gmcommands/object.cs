@@ -280,7 +280,7 @@ namespace DOL.GS.Commands
                         ushort model = targetObject.Model;
                         try
                         {
-                            if (model < 4249)
+                            if (model < 8000)
                             {
                             model++;
                             targetObject.Model = model;
