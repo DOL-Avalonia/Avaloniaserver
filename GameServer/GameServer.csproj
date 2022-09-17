@@ -416,6 +416,10 @@
     <Compile Include="gameobjects\CustomNPC\StaticMob.cs" />
     <Compile Include="gameobjects\Dragons\Hydra.cs" />
     <Compile Include="gameobjects\FeuDeCamp.cs" />
+    <Compile Include="gameobjects\InventoryItem\GameInventorySiegeBallista.cs" />
+    <Compile Include="gameobjects\InventoryItem\GameInventorySiegeCatapult.cs" />
+    <Compile Include="gameobjects\InventoryItem\GameInventorySiegeRam.cs" />
+    <Compile Include="gameobjects\InventoryItem\GameInventorySiegeTrebuchet.cs" />
     <Compile Include="gameobjects\MoneyEventNPC.cs" />
     <Compile Include="gameobjects\OutlawMerchant.cs" />
     <Compile Include="gameobjects\PlayerRace.cs" />

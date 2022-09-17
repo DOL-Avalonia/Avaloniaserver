@@ -1255,7 +1255,7 @@ namespace DOL.GS.Keeps
 				spell.AllowAdd = false;
 				spell.CastTime = 2;
 				spell.Name = "Guard Heal";
-				spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+				spell.Range = 3200;// Take Visibility distance in donjon by default
 				spell.Type = "Heal";
 				return spell;
 			}

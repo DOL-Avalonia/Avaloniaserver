@@ -1799,8 +1799,8 @@ namespace DOL.GS
 				}
 
 				double factor = player != null ? player.CharacterClass.WeaponSkillFactor((eObjectType)weapon.Object_Type) : 20;
-				double dmg_stat = GetWeaponStat(weapon);
-				double wp_spec = player != null ? GetModifiedSpecLevel(player.GetWeaponSpec(weapon)) : Level * 1.2;
+				double dmg_stat = (this is GameNPC && this.Level <= 1) ? 150 : GetWeaponStat(weapon);
+				double wp_spec = player != null ? GetModifiedSpecLevel(player.GetWeaponSpec(weapon)) : (Level > 0 ? Level: 1.1) * 1.2;
 				double enemy_armor = ad.Target.GetArmorAF(ad.ArmorHitLocation);
 				if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
 					enemy_armor = enemy_armor / (1 + ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
@@ -1812,7 +1812,7 @@ namespace DOL.GS
 				int minVariance = WeaponSpecLevel(weaponTypeToUse).Clamp(0, 70) * 49 / 166; // x*0.6*49/100 => x * 49 / 166
 				int maxVariance = 49 - minVariance;
 
-				double dmg_mod = (player == null && Level > 0) ? Level : 1.1
+				double dmg_mod = ((player == null && Level > 0) ? Level : 1.1)
 					* factor / 10.0
 					* (1 + 0.01 * dmg_stat)
 					* (0.75 + 0.5 * Math.Min(ad.Target.Level + 1.0, wp_spec) / (ad.Target.Level + 1.0) + 0.01 * Util.Random(minVariance, maxVariance))
@@ -1845,12 +1845,12 @@ namespace DOL.GS
 				ad.enemyResist = Math.Round(enemy_resist, 3);
 				ad.weaponStat = Math.Round(dmg_stat, 3);
 
-				if (Level > ServerProperties.Properties.MOB_DAMAGE_INCREASE_STARTLEVEL &&
+				if ((Properties.MOB_DAMAGE_INCREASE_STARTLEVEL == 0 || Level > ServerProperties.Properties.MOB_DAMAGE_INCREASE_STARTLEVEL) &&
 					ServerProperties.Properties.MOB_DAMAGE_INCREASE_PERLEVEL > 0 &&
 					damage > 0 &&
 					this is GameNPC && (this as GameNPC).Brain is IControlledBrain == false)
 				{
-					double modifiedDamage = ServerProperties.Properties.MOB_DAMAGE_INCREASE_PERLEVEL * (Level - ServerProperties.Properties.MOB_DAMAGE_INCREASE_STARTLEVEL);
+					double modifiedDamage = ServerProperties.Properties.MOB_DAMAGE_INCREASE_PERLEVEL * ((Level == 0 ? 1:Level) - ServerProperties.Properties.MOB_DAMAGE_INCREASE_STARTLEVEL);
 					damage += (modifiedDamage * effectiveness);
 				}
 
