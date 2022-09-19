@@ -1310,6 +1310,12 @@ namespace DOL.GS.ServerProperties
         public static int MOB_DAMAGE_INCREASE_STARTLEVEL { get; set; }
 
         /// <summary>
+        /// What level to start increasing mob damage
+        /// </summary>
+        [ServerProperty("npc", "mob_strength_increase_lowlevel", "Increase strength in domage calculator for mlob level 0 and 1.", 350)]
+        public static int MOB_STRENGTH_INCREASE_LOWLEVEL { get; set; }
+
+        /// <summary>
         /// Multiplier to use when auto-setting pet INT stat.
         /// INT is the stat used for spell damage for mobs/pets
         /// </summary>

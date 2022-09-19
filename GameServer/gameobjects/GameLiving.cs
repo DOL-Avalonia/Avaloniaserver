@@ -1026,6 +1026,8 @@ namespace DOL.GS
 		/// <returns></returns>
 		public virtual int GetWeaponStat(InventoryItem weapon)
 		{
+			if (this is GameNPC && this.Level <= 1)
+				return GetModifiedStrengthForLowLevel();
 			return GetModified(eProperty.Strength);
 		}
 
@@ -1799,8 +1801,13 @@ namespace DOL.GS
 				}
 
 				double factor = player != null ? player.CharacterClass.WeaponSkillFactor((eObjectType)weapon.Object_Type) : 20;
-				double dmg_stat = (this is GameNPC && this.Level <= 1) ? 150 : GetWeaponStat(weapon);
-				double wp_spec = player != null ? GetModifiedSpecLevel(player.GetWeaponSpec(weapon)) : (Level > 0 ? Level: 1.1) * 1.2;
+				double dmg_stat = GetWeaponStat(weapon);
+				double levelFake = Level;
+				if (this is GameNPC && levelFake == 0)
+					levelFake = 1;
+				else if (this is GameNPC && levelFake == 1)
+					levelFake = 1.1;
+				double wp_spec = player != null ? GetModifiedSpecLevel(player.GetWeaponSpec(weapon)) : levelFake * 1.2;
 				double enemy_armor = ad.Target.GetArmorAF(ad.ArmorHitLocation);
 				if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
 					enemy_armor = enemy_armor / (1 + ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
@@ -1812,7 +1819,7 @@ namespace DOL.GS
 				int minVariance = WeaponSpecLevel(weaponTypeToUse).Clamp(0, 70) * 49 / 166; // x*0.6*49/100 => x * 49 / 166
 				int maxVariance = 49 - minVariance;
 
-				double dmg_mod = ((this is GameNPC && Level == 0) ? 1.1 : Level)
+				double dmg_mod = levelFake
 					* factor / 10.0
 					* (1 + 0.01 * dmg_stat)
 					* (0.75 + 0.5 * Math.Min(ad.Target.Level + 1.0, wp_spec) / (ad.Target.Level + 1.0) + 0.01 * Util.Random(minVariance, maxVariance))
@@ -1850,7 +1857,7 @@ namespace DOL.GS
 					damage > 0 &&
 					this is GameNPC && (this as GameNPC).Brain is IControlledBrain == false)
 				{
-					double modifiedDamage = ServerProperties.Properties.MOB_DAMAGE_INCREASE_PERLEVEL * ((Level == 0 ? 1:Level) - ServerProperties.Properties.MOB_DAMAGE_INCREASE_STARTLEVEL);
+					double modifiedDamage = ServerProperties.Properties.MOB_DAMAGE_INCREASE_PERLEVEL * ((Level == 0 ? 0.9:Level) - ServerProperties.Properties.MOB_DAMAGE_INCREASE_STARTLEVEL);
 					damage += (modifiedDamage * effectiveness);
 				}
 
@@ -4906,6 +4913,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="property"></param>
 		/// <returns></returns>
+		/// 
 		public virtual int GetModified(eProperty property)
 		{
 			if (m_propertyCalc != null && m_propertyCalc[(int)property] != null)
@@ -4918,6 +4926,13 @@ namespace DOL.GS
 			}
 			return 0;
 		}
+
+		public int GetModifiedStrengthForLowLevel()
+		{
+			return (m_propertyCalc[(int)eProperty.Strength] as StatCalculator).CalcStrengthValueForMobLowLevel(this);
+		}
+
+
 
 		//Eden : secondary resists, such AoM, vampiir magic resistance etc, should not apply in CC duration, disease, debuff etc, using a new function
 		public virtual int GetModifiedBase(eProperty property)
