@@ -16,5 +16,205 @@ System.LanguagesName.ES:					Espagnol
 System.LanguagesName.CZ:					Tchèque
 System.LanguagesName.IT:					Italien 
 
+# STYLES
+# /StyleProcessor
+StyleProcessor.ExecuteStyle.BackStrike:			Vous infligez un coup critique dans le dos de votre cible
+StyleProcessor.ExecuteStyle.ExecuteFail:		You fail to execute your {0} perfectly!
+StyleProcessor.ExecuteStyle.PerformPerfectly:		You perform your {0} perfectly! {1}
+StyleProcessor.ExecuteStyle.PerformsPerfectly:		Your {0} performs its {1} perfectly.{2}
+StyleProcessor.ExecuteStyle.ThroatStrike:		You inflict a critical strike in the throat of your target 
+StyleProcessor.TryToUseStyle.AlreadyPreparing:		You are already preparing to use this style! Type /cancelstyle to enable style cancelling.
+StyleProcessor.TryToUseStyle.AlreadySelectedStyles:	You have already selected your styles for this round!
+StyleProcessor.TryToUseStyle.BackupStyle:		You are now preparing to perform a {0} style as a backup for {1}!
+StyleProcessor.TryToUseStyle.CantCombatMode:		Vous ne pouvez pas entrer en mode combat en position couchée!
+StyleProcessor.TryToUseStyle.CantMeleeCombat:		You can't enter melee combat mode with a fired weapon!
+StyleProcessor.TryToUseStyle.DualWielding:		You must be dual wielding to use this style!
+StyleProcessor.TryToUseStyle.Fatigued:			Vous êtes trop peu d'endurance pour utiliser ce style!
+StyleProcessor.TryToUseStyle.MustHaveTarget:		Vous devez avoir une cible pour votre prochain style d'attaque!
+StyleProcessor.TryToUseStyle.NoLongerPreparing:		You are no longer preparing to use your {0} style!
+StyleProcessor.TryToUseStyle.PerformStyleBefore:	You must perform the {0} style before this one!
+StyleProcessor.TryToUseStyle.PreparePerform:		Vous vous préparez à effectuer une {0}!
+StyleProcessor.TryToUseStyle.StyleRequires:		This style requires a {0} weapon!
 
+# /packets/Client/168
+# /DetailDisplayHandler
+DetailDisplayHandler.GetShortItemInfo.CrafterName:	Crafter : {0}
+DetailDisplayHandler.GetShortItemInfo.NoDrop:		 No Drop.
+DetailDisplayHandler.GetShortItemInfo.NoSell:		 No Sell.
+DetailDisplayHandler.GetShortItemInfo.NoTrade:		 No Trade.
+DetailDisplayHandler.HandlePacket.Any:			Any
+DetailDisplayHandler.HandlePacket.Back:			(Back)
+DetailDisplayHandler.HandlePacket.BonusLevel:		Niveau Bonus: {0}
+DetailDisplayHandler.HandlePacket.CannotDestroyed:	Ne peut pas être détruit.
+DetailDisplayHandler.HandlePacket.CannotDropped:	Ne peut pas être déposé ou déposé dans votre banque.
+DetailDisplayHandler.HandlePacket.CannotSold:		Ne peut pas être vendu aux marchands.
+DetailDisplayHandler.HandlePacket.CannotTraded:		Ne peut pas être échangé avec d'autres joueurs.
+DetailDisplayHandler.HandlePacket.ChampionLevel:	 - Requires: Champion Level {0}
+DetailDisplayHandler.HandlePacket.ChatItem:		[Chat] {0}/Item: "{1}"
+DetailDisplayHandler.HandlePacket.CrafterName:		Crafter : {0}
+DetailDisplayHandler.HandlePacket.Damage:		Dégâts: 
+DetailDisplayHandler.HandlePacket.Defense:		Défense: 
+DetailDisplayHandler.HandlePacket.Devastating:		Dévastateur
+DetailDisplayHandler.HandlePacket.DontBelongGuild:	Vous n'appartenez à aucune guilde.
+DetailDisplayHandler.HandlePacket.FatigueCost:		Coût en fatigue: 
+DetailDisplayHandler.HandlePacket.FollowupStyle:	Style suivant: {0}
+DetailDisplayHandler.HandlePacket.Front:		(Front)	
+DetailDisplayHandler.HandlePacket.GuildItem:		[Guild] {0}/Item: "{1}"
+DetailDisplayHandler.HandlePacket.High:			High
+DetailDisplayHandler.HandlePacket.HighBonus:		High Bonus
+DetailDisplayHandler.HandlePacket.HighPenalty:		High Penalty
+DetailDisplayHandler.HandlePacket.Item:			{0}/Item: "{1}
+DetailDisplayHandler.HandlePacket.LevName:		Niveau   Nom
+DetailDisplayHandler.HandlePacket.Low:			Low
+DetailDisplayHandler.HandlePacket.LowBonus:		Low Bonus
+DetailDisplayHandler.HandlePacket.LowPenalty:		Low Penalty
+DetailDisplayHandler.HandlePacket.Medium:		Medium
+DetailDisplayHandler.HandlePacket.MediumBonus:		Medium Bonus
+DetailDisplayHandler.HandlePacket.MediumPenalty:	Medium Penalty
+DetailDisplayHandler.HandlePacket.MustBeInChatGroup:	You must be in a chat group.
+DetailDisplayHandler.HandlePacket.MustBeInBattleGroup:	You must be in a battle group.
+DetailDisplayHandler.HandlePacket.NoBonus:		Aucun bonus
+DetailDisplayHandler.HandlePacket.NoGroup:		Vous ne faites pas partie d'un groupe.
+DetailDisplayHandler.HandlePacket.NoInformation:	No special information!
+DetailDisplayHandler.HandlePacket.None:		None
+DetailDisplayHandler.HandlePacket.NoPermissionToSpeak:	Vous n'avez pas la permission de parler sur le channel de guilde.	
+DetailDisplayHandler.HandlePacket.OnlyModerator:	Seul le modérateur peut parler sur ce groupe de discussion.
+DetailDisplayHandler.HandlePacket.Opening:		Ouverture: 
+DetailDisplayHandler.HandlePacket.OpeningStyle:		Attaque d'ouverture: 
+DetailDisplayHandler.HandlePacket.Or:			 or {0}
+DetailDisplayHandler.HandlePacket.Positional:		Positionnelle 
+DetailDisplayHandler.HandlePacket.Side:			(Side)
+DetailDisplayHandler.HandlePacket.TargetBlocks:		La cible bloque
+DetailDisplayHandler.HandlePacket.TargetEffect:		Effet sur la cible: 
+DetailDisplayHandler.HandlePacket.TargetEvades:		La cible évite
+DetailDisplayHandler.HandlePacket.TargetFumbles:	La cible trébuche
+DetailDisplayHandler.HandlePacket.TargetHits:		La cible frappe
+DetailDisplayHandler.HandlePacket.TargetMisses:		La cible manque
+DetailDisplayHandler.HandlePacket.TargetParrys:		La cible pare
+DetailDisplayHandler.HandlePacket.TargetStyle:		La cible attaque
+DetailDisplayHandler.HandlePacket.ToHit:		To Hit: 
+DetailDisplayHandler.HandlePacket.VeryHigh:		Very High
+DetailDisplayHandler.HandlePacket.VeryHighBonus:	Very High Bonus	
+DetailDisplayHandler.HandlePacket.VeryHighPenalty:	Very High Penalty
+DetailDisplayHandler.HandlePacket.VeryLow:		Very Low
+DetailDisplayHandler.HandlePacket.VeryLowBonus:		Very Low Bonus
+DetailDisplayHandler.HandlePacket.VeryLowPenalty:	Very Low Penalty
+DetailDisplayHandler.HandlePacket.VeryStrange:		It's very strange, i cant recognise this item.
+DetailDisplayHandler.HandlePacket.WeaponType:		Type de l'arme: {0}
+DetailDisplayHandler.HandlePacket.YouBlock:		Vous bloquez
+DetailDisplayHandler.HandlePacket.YouEvade:		Vous évitez
+DetailDisplayHandler.HandlePacket.YouFumble:		Vous trébuchez
+DetailDisplayHandler.HandlePacket.YouHit:		Vous frappez
+DetailDisplayHandler.HandlePacket.YouMiss:		Vous manquez
+DetailDisplayHandler.HandlePacket.YouParry:		Vous parez
+DetailDisplayHandler.WriteBonusLine.Points:		 pts
+DetailDisplayHandler.WriteBonusLine.PowerPool:		% de réserve en mana.
+DetailDisplayHandler.WriteClassicArmorInfos.Absorption:	- Absorption: {0}%
+DetailDisplayHandler.WriteClassicArmorInfos.ArmorMod:	Modificateurs d'armure:
+DetailDisplayHandler.WriteClassicArmorInfos.BaseFactor:	- Facteurs de base: {0}
+DetailDisplayHandler.WriteClassicArmorInfos.ClampFact:	- {0} Facteurs fixes: {0}
+DetailDisplayHandler.WriteClassicArmorInfos.Condition:	- Condition: {0}%
+DetailDisplayHandler.WriteClassicArmorInfos.EffArmor:	Armure efficiente:
+DetailDisplayHandler.WriteClassicArmorInfos.Factor:	- Facteur: {0}
+DetailDisplayHandler.WriteClassicArmorInfos.Quality:	- Qualité: {0}%
+DetailDisplayHandler.WriteClassicShieldInfos.BaseDPS:	- DPS de base: {0}
+DetailDisplayHandler.WriteClassicShieldInfos.ClampDPS:	- DPS Fixe: {0}
+DetailDisplayHandler.WriteClassicShieldInfos.DamageMod:	Modificateurs de dégâts (lorsqu'ils sont utilisés avec des styles de bouclier):
+DetailDisplayHandler.WriteClassicShieldInfos.Large:	- Shield Size : Large
+DetailDisplayHandler.WriteClassicShieldInfos.Medium:	- Shield Size : Moyen
+DetailDisplayHandler.WriteClassicShieldInfos.Small:	- Shield Size : Petit
+DetailDisplayHandler.WriteClassicShieldInfos.SPD:	- Vitesse de frappe bouclier: {0}
+DetailDisplayHandler.WriteClassicWeaponInfos.BaseDPS:	- DPS de base: {0}
+DetailDisplayHandler.WriteClassicWeaponInfos.ClampDPS:	- DPS fixe: {0}
+DetailDisplayHandler.WriteClassicWeaponInfos.Condition:	- Condition: {0}%
+DetailDisplayHandler.WriteClassicWeaponInfos.DamageMod:	Damage Modifiers:
+DetailDisplayHandler.WriteClassicWeaponInfos.DamageType:- Damage Type: {0}
+DetailDisplayHandler.WriteClassicWeaponInfos.EffDamage:	Effective Damage:
+DetailDisplayHandler.WriteClassicWeaponInfos.Quality:	- Qualité: {0}%
+DetailDisplayHandler.WriteClassicWeaponInfos.SPD:	- Vitesse de l'arme: {0}
+DetailDisplayHandler.WriteHorseInfo.AdvancedHorse:	This is an advanced horse.
+DetailDisplayHandler.WriteHorseInfo.Armor:		- Armure: {0}
+DetailDisplayHandler.WriteHorseInfo.Barding:		- Barding: None
+DetailDisplayHandler.WriteHorseInfo.BasicHorse:		This is a basic horse.
+DetailDisplayHandler.WriteHorseInfo.Food:		- Favorite food: Hay and the occasional apple
+DetailDisplayHandler.WriteHorseInfo.MountWindow:	To make this horse your active mount, place this icon in the appropriate slot of your Mount window.
+DetailDisplayHandler.WriteHorseInfo.Name:		- Name: {0}.
+DetailDisplayHandler.WriteHorseInfo.NameMount:		  (Use /namemount to name your horse.)
+DetailDisplayHandler.WriteHorseInfo.Quickbar:		To summon this horse, from your Mount window drag the horse icon to your quickbar, and summon by using the quickbar icon.
+DetailDisplayHandler.WriteHorseInfo.RvRZzones:		Can't be summoned in RvR zones.
+DetailDisplayHandler.WriteHorseInfo.Speed1:		(+35% speed)
+DetailDisplayHandler.WriteHorseInfo.Speed2:		(+45% speed)
+DetailDisplayHandler.WriteHorseInfo.Summon:		Click this icon in your quickbar to summon (or dismount) your horse.
+DetailDisplayHandler.WriteMagicalBonuses.ChargedMagic:	Capacité magique chargée:
+DetailDisplayHandler.WriteMagicalBonuses.Charges:	- Charges: {0}
+DetailDisplayHandler.WriteMagicalBonuses.FocusBonus:	Bonus en Focus:
+DetailDisplayHandler.WriteMagicalBonuses.Level:		- Niveau {0}
+DetailDisplayHandler.WriteMagicalBonuses.LevelRequired:	Level Requirement
+DetailDisplayHandler.WriteMagicalBonuses.LevelRequired2:	Niveau requis: Niveau {0}
+DetailDisplayHandler.WriteMagicalBonuses.MagicAbility:	Capacité magique:
+DetailDisplayHandler.WriteMagicalBonuses.MagicBonus:	Bonus magiques:
+DetailDisplayHandler.WriteMagicalBonuses.MaxCharges:	- {0} Max
+DetailDisplayHandler.WriteMagicalBonuses.StrikeArmor:	- Le sort a une chance d'être lancé lorsque l'ennemi frappe cette armure.
+DetailDisplayHandler.WriteMagicalBonuses.StrikeEnemy:	- Le sort a une chance d'être lancé lorsque cette arme frappe un ennemi.
+DetailDisplayHandler.WriteMagicalBonuses.UsedItem:	- Le sort a une chance d'être lancé lorsque cet objet est utilisé.
+DetailDisplayHandler.WriteMagicalBonuses.UseItem1:	Objet pouvant être utilisé toutes les: {0}
+DetailDisplayHandler.WriteMagicalBonuses.UseItem2:	Objet pouvant être utilisé toutes les: 3:00 min.
+DetailDisplayHandler.WriteMagicalBonuses.UseItem3:	Peut être réutilisée dans: {0}.
+DetailDisplayHandler.WritePoisonInfo.Charges:		- {0} Charges
+DetailDisplayHandler.WritePoisonInfo.Level:		- {0} Niveau
+DetailDisplayHandler.WritePoisonInfo.LevelRequired:	Niveau requis:
+DetailDisplayHandler.WritePoisonInfo.MaxCharges:	- {0} Max
+DetailDisplayHandler.WritePoisonInfo.ProcAbility:	Capacité de déclenchement offensif:
+DetailDisplayHandler.WritePotionInfo.ChargedMagic:	Capacité magique chargée:
+DetailDisplayHandler.WritePotionInfo.Charges:		- {0} Charges
+DetailDisplayHandler.WritePotionInfo.Level:		- {0} Niveau
+DetailDisplayHandler.WritePotionInfo.LevelRequired:	Niveau requis:
+DetailDisplayHandler.WritePotionInfo.MaxCharges:	- {0} Max
+DetailDisplayHandler.WritePotionInfo.NoUseInCombat:	Ne peut pas être utilisé en combat
+DetailDisplayHandler.WritePotionInfo.UseItem2:		Objet pouvant être utilisé toutes les: 1:00 min
+DetailDisplayHandler.WritePotionInfo.UseItem3:		Peut être réutilisée dans: {0}
+DetailDisplayHandler.WritePotionInfo.Type:		Type : {0}
+DetailDisplayHandler.WritePotionInfo.Value:		Valeur : {0}
+DetailDisplayHandler.WritePotionInfo.Target:	Cible : {0}
+DetailDisplayHandler.WritePotionInfo.Range:		Portée : {0}
+DetailDisplayHandler.WriteUsableClasses.UsableBy:	Utilisable par: 
+
+# /PlayerPickUpRequestHandler
+PlayerPickUpRequestHandler.HandlePacket.InvalidTarget:	Votre cible est invalide!
 PlayerPickUpRequestHandler.HandlePacket.Target:		Vous devez avoir une cible valide à ramasser.
+
+# /PlayerPositionUpdateHandler
+PlayerPositionUpdateHandler.Endurance:			Vous perdez de l'endurance!
+PlayerPositionUpdateHandler.Entered:			Vous êtes entré dans {0}.
+PlayerPositionUpdateHandler.FallingDamage:		Votre chute vous cause des dommages!
+PlayerPositionUpdateHandler.FallPercent:		You take {0}% of your max hits in damage.
+PlayerPositionUpdateHandler.SafeFall:			
+Les dégâts ont été atténués grâce à votre capacité Safe Fall!
+PlayerPositionUpdateHandler.MythSafeFall:		Les dégâts ont été atténués grâce à votre équipment!
+PlayerPositionUpdateHandler.UnknownZone:		Zone inconnue, déplacement vers le point de ralliement.
+
+# REALMABILITIES
+# /Handlers
+# /DashingDefenseAbility
+DashingDefenseAbility.AddEffectsInfo.Info1:		
+DashingDefenseAbility.AddEffectsInfo.Info2:		Cible: Moi-même
+DashingDefenseAbility.AddEffectsInfo.Info3:		Temps d'incantation: instantané
+DashingDefenseAbility.Execute.AlreadyEffect:		Vous avez déjà un effet de ce type!
+DashingDefenseAbility.Execute.MustInGroup:		Vous devez être dans un groupe pour utiliser cette capacité!
+
+# WORLD
+# /AbstractArea
+AbstractArea.Entered:					(Région) Vous êtes entré dans {0}.
+AbstractArea.Left:					(Région) Vous avez quitté {0}.
+
+# SCRIPTS
+# GameEvents
+# /Playerenterexit
+Scripts.Events.PlayerEnterExit.Entered:			{0} vient d'entrer dans le jeu!
+Scripts.Events.PlayerEnterExit.Left:			{0} vient de quitter le jeu!
+Scripts.Events.PlayerEnterExit.Staff:			[Membre du staff] {0}
+
+# /Anonymous
+Scripts.Players.Anonymous.Error:			Le mode anonyme est désactivé.
+Scripts.Players.Anonymous.Off:				Vous avez quitté le mode anonyme.
+Scripts.Players.Anonymous.On:				Vous êtes maintenant en mode anonyme.

@@ -115,6 +115,7 @@
     <Compile Include="Amtescripts\Commands\player\afk.cs" />
     <Compile Include="Amtescripts\Commands\player\StealCommand.cs" />
     <Compile Include="Amtescripts\Commands\player\VolCommand.cs" />
+    <Compile Include="Amtescripts\GameObjects\Antipass.cs" />
     <Compile Include="Amtescripts\GameObjects\Coffre\DBCoffre.cs" />
     <Compile Include="Amtescripts\GameObjects\Coffre\GameCoffre.cs" />
     <Compile Include="Amtescripts\GameObjects\Douanier.cs" />
@@ -128,6 +129,7 @@
     <Compile Include="Amtescripts\GameObjects\MasterTrainer.cs" />
     <Compile Include="Amtescripts\GameObjects\MobHirule.cs" />
     <Compile Include="Amtescripts\GameObjects\Spawner.cs" />
+    <Compile Include="Amtescripts\GameObjects\SplitMob.cs" />
     <Compile Include="Amtescripts\GameObjects\TextNPC\EchangeurPlayerItemsCount.cs" />
     <Compile Include="Amtescripts\GameObjects\TextNPC\RequireItemInfo.cs" />
     <Compile Include="Amtescripts\GvG\GuildCaptainGuard.cs" />

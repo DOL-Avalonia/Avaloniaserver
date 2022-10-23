@@ -38,8 +38,8 @@ Commands.GM.Item.Usage.IsTradable:				'/item istradable <true|false> [slot #]' #
 Commands.GM.Item.Usage.Material:				'/item material <Material> <MaterialLevel> [slot #]' # Change les matériaux de l’objet.
 Commands.GM.Item.Usage.MaxCount:				'/item maxcount <Amount> [slot #]' # Change le nombre maximum empilable dans un emplacement.
 Commands.GM.Item.Usage.Model:					'/item model <ModelID> [slot #]' # Change le modèle de l’objet.
-Commands.GM.Item.Usage.Name:					'/item name <NameID> [slot #]' # Change le nom de l’objet.
-Commands.GM.Item.Usage.Object:					'/item object <ObjectID> [slot #]' # Change le type de l’objet.
+Commands.GM.Item.Usage.Name:					'/item name <NameID> [slot #]' # Change le nom de l'objet.
+Commands.GM.Item.Usage.Object:					'/item object <ObjectID> [slot #]' # Change le type de l'objet.
 Commands.GM.Item.Usage.PackSize:				'/item packsize <Amount> [slot #]' # Change le nombre d’objet pouvant être vendu en même temps.
 Commands.GM.Item.Usage.Poison:					'/item poison <Charges> <MaxCharges> <SpellID> [slot #]' # Change le type de poison.
 Commands.GM.Item.Usage.Price:					'/item price <platinum> <gold> <silver> <copper> [slot #]' # Change le prix d’un objet.

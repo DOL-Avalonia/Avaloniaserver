@@ -206,6 +206,7 @@
     <Compile Include="commands\gmcommands\ngg.cs" />
     <Compile Include="commands\gmcommands\tppoint.cs" />
     <Compile Include="commands\gmcommands\translate.cs" />
+    <Compile Include="commands\gmcommands\xmob.cs" />
     <Compile Include="commands\gmcommands\zone.cs" />
     <Compile Include="commands\gmcommands\crafting.cs" />
     <Compile Include="commands\gmcommands\debug.cs" />

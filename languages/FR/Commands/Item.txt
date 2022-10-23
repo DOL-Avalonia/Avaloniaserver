@@ -58,8 +58,8 @@ Commands.GM.Item.Usage.Weight:					'/item weight <weight> [slot #]' # Définit l
 Commands.GM.Item.Usage.isDropable:				'/item isdropable <true|false> [slot #]' # Définit si oui ou non un objet peut poser à terre.
 Commands.GM.Item.Usage.isPickable:				'/item ispickable <true|false> [slot #]' # Définit si oui ou non un objet peut être ramassé.
 Commands.GM.Item.Usage.mBonus:					'/item mbonus <num> <BonusType> <value> [slot #]' # Définit les bonus magiques de l'objet (0 = ExtraBonus)
-Commands.GM.Item.mBonus.NotSetBonusNumber:		Le numéro de bonus n'est pas définit !
-Commands.GM.Item.mBonus.NotSetBonusType:		Le type de bonus n'est pas définit !
-Commands.GM.Item.mBonus.NotSetBonusValue:		La valeur du bonus n'a pas été définit !
+Commands.GM.Item.mBonus.NotSetBonusNumber:		Le numéro de bonus n'est pas défini !
+Commands.GM.Item.mBonus.NotSetBonusType:		Le type de bonus n'est pas défini !
+Commands.GM.Item.mBonus.NotSetBonusValue:		La valeur du bonus n'a pas été défini !
 Commands.GM.Item.mBonus.TypeShouldBeInRange:	Le type de bonus doit être entre 0 et {0}.
 Commands.GM.Item.mBonus.UnknownBonusNumber:		Numéro de bonus inconnu : {0}
